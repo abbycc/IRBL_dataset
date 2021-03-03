@@ -1,0 +1,1359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="MATH">
+	<bug fixdate="2010-07-28 18:49:31" id="398" opendate="2010-07-28 17:31:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MathUtilsTest uses Math.nextUp from Java 6</summary>
+			
+			
+			<description>The class  org.apache.commons.math.util.MathUtilsTest uses the method Math.nextUp(double) which is only available in Java 6, not in Java 5.  This makes Commons Math dependent on Java 6 rather than Java 5 which is in conflict with item 5 at the top of Commons Math Overview.</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.MathUtilsTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-06 19:43:47" id="467" opendate="2011-01-06 14:49:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HarmonicCoefficientsGuesser.sortObservations() potentlal NPE warning</summary>
+			
+			
+			<description>HarmonicCoefficientsGuesser.sortObservations()
+generates an NPE warning from Eclipse which thinks that mI can be null in the while condition.
+The code looks like:
+
+
+
+WeightedObservedPoint mI = observations[i];
+
+while ((i &amp;gt;= 0) &amp;amp;&amp;amp; (curr.getX() &amp;lt; mI.getX())) {
+
+    observations[i + 1] = mI;
+
+    if (i-- != 0) {
+
+        mI = observations[i];
+
+    } else {
+
+        mI = null;
+
+    }
+
+}
+
+// mI is not used further
+
+
+
+It looks to me as though the &quot;mI = null&quot; statement is either redundant or wrong - why would one want to replace one of the observations with null during a sort?</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.fitting.HarmonicCoefficientsGuesser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-17 20:01:32" id="482" opendate="2011-01-17 19:52:10" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FastMath.max(50.0f, -50.0f) =&gt; -50.0f; should be +50.0f</summary>
+			
+			
+			<description>FastMath.max(50.0f, -50.0f) =&amp;gt; -50.0f; should be +50.0f.
+This is because the wrong variable is returned.
+The bug was not detected by the test case &quot;testMinMaxFloat()&quot; because that has a bug too - it tests doubles, not floats.</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>2.2, 3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.FastMathTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.util.FastMath.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-19 19:06:25" id="479" opendate="2011-01-14 22:46:08" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FastMath.signum(-0.0) does not agree with Math.signum(-0.0) ; no tests for signum</summary>
+			
+			
+			<description>There are no unit tests for FastMath.signum(double) as yet.
+Here is one that should work, but fails:
+
+
+
+@Test
+
+public void testSignum() {
+
+    Assert.assertTrue(Double.valueOf(FastMath.signum(+0.0)).equals(Double.valueOf(Math.signum(+0.0)))); // OK
+
+    Assert.assertTrue(Double.valueOf(FastMath.signum(-0.0)).equals(Double.valueOf(Math.signum(-0.0)))); // FAILS
+
+}
+
+
+
+</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>2.2, 3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.FastMath.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-19 19:18:19" id="480" opendate="2011-01-14 23:51:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&quot;ulp&quot; in &quot;FastMath&quot;</summary>
+			
+			
+			<description>When the argument is infinite, method &quot;ulp&quot; in &quot;FastMath&quot; produces &quot;NaN&quot; (whereas &quot;Math&quot; gives &quot;Infinity&quot;).</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>2.2, 3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.FastMath.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-19 19:51:07" id="483" opendate="2011-01-18 00:24:51" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FastMath does not handle all special cases correctly</summary>
+			
+			
+			<description>FastMath has some issues with special cases such as +0.0 and -0.0.
+Here are the double cases so far found:
+abs(-0.0) expected:&amp;lt;0.0&amp;gt; but was:&amp;lt;-0.0&amp;gt;
+signum(-0.0) expected:&amp;lt;-0.0&amp;gt; but was:&amp;lt;0.0&amp;gt;
+asin(-0.0) expected:&amp;lt;-0.0&amp;gt; but was:&amp;lt;0.0&amp;gt;
+atan(-0.0) expected:&amp;lt;-0.0&amp;gt; but was:&amp;lt;0.0&amp;gt;
+log10(-0.0) expected:&amp;lt;-Infinity&amp;gt; but was:&amp;lt;NaN&amp;gt;
+toDegrees(-0.0) expected:&amp;lt;-0.0&amp;gt; but was:&amp;lt;0.0&amp;gt;
+toRadians(-0.0) expected:&amp;lt;-0.0&amp;gt; but was:&amp;lt;0.0&amp;gt;
+ulp(-Infinity) expected:&amp;lt;Infinity&amp;gt; but was:&amp;lt;NaN&amp;gt;
+And float cases:
+abs(-0.0) expected:&amp;lt;0.0&amp;gt; but was:&amp;lt;-0.0&amp;gt;</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>2.2, 3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.FastMath.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.util.FastMathTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-19 20:28:06" id="486" opendate="2011-01-19 04:46:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FastMath toRadian and toDegree don&amp;apos;t handle large double numbers well</summary>
+			
+			
+			<description>FastMath toRadian and toDegree don&amp;amp;apos;t handle very large double numbers well.
+For example, toDegrees(Double.MAX_VALUE) =&amp;gt; NaN, but it should be INFINITY
+and toRadian(Double.MAX_VALUE) =&amp;gt; NaN instead of the proper value
+This is because of the lines:
+
+
+
+double temp = x * 1073741824.0; // == 0x40 00 00 00
+
+double xa = x + temp - temp; // =&amp;gt; NaN for x large enough
+
+
+
+This seems to be an attempt to split x into a large and a small part, but fails when x &amp;gt;= MAX_VALUE / 1073741824.0
+Not sure how to fix this</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>2.2, 3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.FastMath.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-21 03:33:05" id="489" opendate="2011-01-19 17:11:13" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FastMath acos fails when input abs value is less than about 5.7851920321187236E-300 - returns NaN</summary>
+			
+			
+			<description>FastMath acos fails when input absolute value is less than about 5.7851920321187236E-300
+It returns NaN instead of an expected value close to PI/2.0
+This appears to be due to the following code:
+
+
+
+// Compute ratio r = y/x
+
+double r = y/x;
+
+temp = r * 1073741824.0;
+
+
+
+r and temp can become infinite or Nan.</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>2.2, 3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.FastMath.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-22 20:21:22" id="494" opendate="2011-01-21 21:56:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FastMath atan2 does not agree with StrictMath for special cases</summary>
+			
+			
+			<description>FastMath atan2 does not agree with StrictMath for special cases.
+There are two sign problems:
+atan2(double -0.0, double -Infinity) expected -3.141592653589793 actual 3.141592653589793 entries [1, 4]
+atan2(double -0.0, double Infinity) expected -0.0 actual 0.0 entries [1, 5]
+A lot of NaNs where there should be a valid return:
+atan2(double -1.7976931348623157E308, double -1.7976931348623157E308) expected -2.356194490192345 actual NaN entries [6, 6]
+atan2(double -1.7976931348623157E308, double 1.7976931348623157E308) expected -0.7853981633974483 actual NaN entries [6, 7]
+atan2(double -1.7976931348623157E308, double -1.1102230246251565E-16) expected -1.5707963267948968 actual NaN entries [6, 8]
+atan2(double -1.7976931348623157E308, double 1.1102230246251565E-16) expected -1.5707963267948966 actual NaN entries [6, 9]
+atan2(double -1.7976931348623157E308, double -2.2250738585072014E-308) expected -1.5707963267948968 actual NaN entries [6, 10]
+atan2(double -1.7976931348623157E308, double 2.2250738585072014E-308) expected -1.5707963267948966 actual NaN entries [6, 11]
+atan2(double -1.7976931348623157E308, double -4.9E-324) expected -1.5707963267948968 actual NaN entries [6, 12]
+atan2(double -1.7976931348623157E308, double 4.9E-324) expected -1.5707963267948966 actual NaN entries [6, 13]
+atan2(double 1.7976931348623157E308, double -1.7976931348623157E308) expected 2.356194490192345 actual NaN entries [7, 6]
+atan2(double 1.7976931348623157E308, double 1.7976931348623157E308) expected 0.7853981633974483 actual NaN entries [7, 7]
+atan2(double 1.7976931348623157E308, double -1.1102230246251565E-16) expected 1.5707963267948968 actual NaN entries [7, 8]
+atan2(double 1.7976931348623157E308, double 1.1102230246251565E-16) expected 1.5707963267948966 actual NaN entries [7, 9]
+atan2(double 1.7976931348623157E308, double -2.2250738585072014E-308) expected 1.5707963267948968 actual NaN entries [7, 10]
+atan2(double 1.7976931348623157E308, double 2.2250738585072014E-308) expected 1.5707963267948966 actual NaN entries [7, 11]
+atan2(double 1.7976931348623157E308, double -4.9E-324) expected 1.5707963267948968 actual NaN entries [7, 12]
+atan2(double 1.7976931348623157E308, double 4.9E-324) expected 1.5707963267948966 actual NaN entries [7, 13]
+atan2(double -1.1102230246251565E-16, double -1.7976931348623157E308) expected -3.141592653589793 actual NaN entries [8, 6]
+atan2(double -1.1102230246251565E-16, double 1.7976931348623157E308) expected -0.0 actual NaN entries [8, 7]
+atan2(double -1.1102230246251565E-16, double -4.9E-324) expected -1.5707963267948968 actual NaN entries [8, 12]
+atan2(double -1.1102230246251565E-16, double 4.9E-324) expected -1.5707963267948966 actual NaN entries [8, 13]
+atan2(double 1.1102230246251565E-16, double -1.7976931348623157E308) expected 3.141592653589793 actual NaN entries [9, 6]
+atan2(double 1.1102230246251565E-16, double 1.7976931348623157E308) expected 0.0 actual NaN entries [9, 7]
+atan2(double 1.1102230246251565E-16, double -4.9E-324) expected 1.5707963267948968 actual NaN entries [9, 12]
+atan2(double 1.1102230246251565E-16, double 4.9E-324) expected 1.5707963267948966 actual NaN entries [9, 13]
+atan2(double -2.2250738585072014E-308, double -1.7976931348623157E308) expected -3.141592653589793 actual NaN entries [10, 6]
+atan2(double -2.2250738585072014E-308, double 1.7976931348623157E308) expected -0.0 actual NaN entries [10, 7]
+atan2(double 2.2250738585072014E-308, double -1.7976931348623157E308) expected 3.141592653589793 actual NaN entries [11, 6]
+atan2(double 2.2250738585072014E-308, double 1.7976931348623157E308) expected 0.0 actual NaN entries [11, 7]
+atan2(double -4.9E-324, double -1.7976931348623157E308) expected -3.141592653589793 actual NaN entries [12, 6]
+atan2(double -4.9E-324, double 1.7976931348623157E308) expected -0.0 actual NaN entries [12, 7]
+atan2(double 4.9E-324, double -1.7976931348623157E308) expected 3.141592653589793 actual NaN entries [13, 6]
+atan2(double 4.9E-324, double 1.7976931348623157E308) expected 0.0 actual NaN entries [13, 7]
+There are also some spurious errors, which are due to a bug in the test case - expecting the values to be exactly the same as StrictMath
+atan2(double 2.2250738585072014E-308, double -4.9E-324) expected 1.570796326794897 actual 1.5707963267948968 entries [11, 12]
+atan2(double -2.2250738585072014E-308, double -4.9E-324) expected -1.570796326794897 actual -1.5707963267948968 entries [10, 12]
+atan2(double 1.1102230246251565E-16, double -2.2250738585072014E-308) expected 1.5707963267948968 actual 1.5707963267948966 entries [9, 10]
+atan2(double -1.1102230246251565E-16, double -2.2250738585072014E-308) expected -1.5707963267948968 actual -1.5707963267948966 entries [8, 10]</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>2.2, 3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.FastMath.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.util.FastMathTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-24 12:49:32" id="493" opendate="2011-01-21 21:12:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FastMath min and max fail with (Infinity,-Infinity) and (0,0, -0.0)</summary>
+			
+			
+			<description>FastMath min and max fail with (Infinity,-Infinity) and (0,0, -0.0):
+min(float 0.0, float -0.0) expected -0.0 actual 0.0
+min(float Infinity, float -Infinity) expected -Infinity actual NaN
+max(float 0.0, float -0.0) expected 0.0 actual -0.0
+max(float Infinity, float -Infinity) expected Infinity actual NaN
+Similarly for the double versions.
+The Infinity failures are because the code uses Float.isNaN(a + b) which gives NaN when +/1- Infinity are added together.</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>2.2, 3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.FastMath.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-02-22 19:19:51" id="529" opendate="2011-02-22 15:37:10" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[Math] Clirr report and &amp;apos;org.apache.commons.math.stat.regression.AbstractMultipleLinearRegression&amp;apos;</summary>
+			
+			
+			<description>Clirr report states that method &amp;amp;apos;protected double calculateErrorVariance()&amp;amp;apos; has been added, but in the javadoc no &quot;@since 2.2&quot; tag found...</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.AbstractMultipleLinearRegression.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-02-22 19:30:50" id="530" opendate="2011-02-22 16:58:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[Math] Clirr report and &amp;apos;org.apache.commons.math.stat.regression.GLSMultipleLinearRegression</summary>
+			
+			
+			<description>Clirr report mentions that method &amp;amp;apos;protected double calculateErrorVariance()&amp;amp;apos; has been added... However this addition isn&amp;amp;apos;t reflected to the javadoc with the &quot;@since 2.2&quot; clause.</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.GLSMultipleLinearRegression.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-02-22 19:36:15" id="531" opendate="2011-02-22 17:19:53" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[Math] Clirr report and &amp;apos;org.apache.commons.math.stat.regression.OLSMultipleLinearRegression&amp;apos;</summary>
+			
+			
+			<description>All the methods that are marked as added in the above class in the clirr report haven&amp;amp;apos;t &quot;@since 2.2&quot; tag on their javadocs respectively... </description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.OLSMultipleLinearRegression.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-02-22 19:50:19" id="532" opendate="2011-02-22 17:57:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[Math] Clirr report and &amp;apos;org.apache.commons.math.util.MathUtils&amp;apos;</summary>
+			
+			
+			<description>Clirr report mentions that method &amp;amp;apos;public void checkOrder(double[], org.apache.commons.math.util.MathUtils$OrderDirection, boolean)&amp;amp;apos; has been added, however this doesn&amp;amp;apos;t comply with the javadoc of the very same function (because not &quot;@since 2.2&quot; tag was found). The same thing happens with the methods listed bellow:
+&amp;amp;apos;public void checkOrder(double[])&amp;amp;apos;
+&amp;amp;apos;public boolean equals(float, float, float)&amp;amp;apos;
+&amp;amp;apos;public boolean equals(float, float, int)&amp;amp;apos;
+&amp;amp;apos;public boolean equalsIncludingNaN(float, float)&amp;amp;apos;
+&amp;amp;apos;public boolean equalsIncludingNaN(float, float, float)&amp;amp;apos;
+&amp;amp;apos;public boolean equalsIncludingNaN(float, float, int)&amp;amp;apos;
+&amp;amp;apos;public boolean equalsIncludingNaN(float[], float[])&amp;amp;apos;
+&amp;amp;apos;public boolean equalsIncludingNaN(double, double)&amp;amp;apos;
+&amp;amp;apos;public boolean equalsIncludingNaN(double, double, double)&amp;amp;apos;
+&amp;amp;apos;public boolean equalsIncludingNaN(double, double, int)&amp;amp;apos;
+&amp;amp;apos;public boolean equalsIncludingNaN(double[], double[])&amp;amp;apos;
+&amp;amp;apos;public double safeNorm(double[])&amp;amp;apos;
+In addition to this some functions have been deprecated but neither is it mentioned in the javadoc the version as of which they have been deprecated nor the clirr report refers to these methods. These are:
+Deprecated Methods:
+&amp;amp;apos;public boolean equals(float, float)&amp;amp;apos;
+&amp;amp;apos;public boolean equals(float[], float[])&amp;amp;apos;</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.MathUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-02-22 19:53:39" id="533" opendate="2011-02-22 18:08:25" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[Math] Clirr report and &amp;apos;org.apache.commons.math.util.ResizableDoubleArray&amp;apos;</summary>
+			
+			
+			<description>Clirr reports mention that method &amp;amp;apos;public void addElements(double[])&amp;amp;apos; has been added, however there is no &quot;@since 2.2&quot; indication in the javadoc of this function...</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.ResizableDoubleArray.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-04-01 10:12:29" id="552" opendate="2011-03-31 22:36:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MultidimensionalCounter.getCounts(int) returns wrong array of indices</summary>
+			
+			
+			<description>MultidimensionalCounter counter = new MultidimensionalCounter(2, 4);
+for (Integer i : counter) 
+{
+
+    int[] x = counter.getCounts(i);
+
+    System.out.println(i + &quot; &quot; + Arrays.toString(x));
+
+}
+
+Output is:
+0 [0, 0]
+1 [0, 1]
+2 [0, 2]
+3 [0, 2]   &amp;lt;=== should be [0, 3]
+4 [1, 0]
+5 [1, 1]
+6 [1, 2]
+7 [1, 2]   &amp;lt;=== should be [1, 3]</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.MultidimensionalCounter.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.util.MultidimensionalCounterTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-11 22:30:17" id="582" opendate="2011-05-24 11:33:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Percentile does not work as described in API</summary>
+			
+			
+			<description>example call:
+StatUtils.percentile(new double[]
+{0d, 1d}
+, 25)   returns 0.0
+The API says that there is a position being computed:  p*(n+1)/100 -&amp;gt; we have p=25 and n=2
+I would expect position 0.75 as result. Next step according to the API is: interpolation between both values at floor(0.25) and at ceil(0.25). Those values are 0d and 1d ... so lower + d * (upper - lower) should give 0d + 0.25*(1d - 0d) = 0.25
+But the above call returns 0 as result. This does not make sense to me.
+another example where I think the result is not correct:
+StatUtils.percentile(new double[]
+{0d, 1d, 1d, 1d}
+, 25)   returns 0.25
+we have pos = 25*5/100 = 1.25  ... so d = 0.25
+values at position floor(1.25) and ceil(1.25) are 1d and 1d. How comes that the result is not between 1d?
+</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.rank.PercentileTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.rank.Percentile.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-15 16:43:21" id="589" opendate="2011-06-13 23:00:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JavaDoc error in OneWayAnovaImpl</summary>
+			
+			
+			<description>JavaDoc por OneWayAnovaImpl say:
+Implements one-way ANOVA statistics defined in the OneWayAnovaImpl interface. 
+And the Javadoc must say:
+Implements one-way ANOVA statistics defined in the OneWayAnova interface. </description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.inference.OneWayAnovaImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-08-20 21:46:40" id="648" opendate="2011-08-20 21:27:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SimpleRegression has extraneous constructor</summary>
+			
+			
+			<description>The SimpleRegression(int) constructor added in version 2.2 has no effect on any statistics computed by the class.  The private TDistributionImpl data member that this constructor initializes is no longer meaningful, as a new distribution instance is created each time it is needed.  The T distribution implementation used in computations is no longer meaningfully pluggable, so the instance field should be removed, along with this constructor.</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.SimpleRegression.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-09-18 21:07:04" id="601" opendate="2011-06-23 19:31:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SingularValueDecompositionImpl psuedoinverse is not consistent with Rank calculation</summary>
+			
+			
+			<description>In the SingularValueDecompositionImpl&amp;amp;apos;s internal private class Solver, a pseudo inverse matrix is calculated:
+In lines 2600-264 we have:
+                if (singularValues[i] &amp;gt; 0) 
+{
+
+                 a = 1 / singularValues[i];
+
+                }
+ else 
+{
+
+                 a = 0;
+
+                }
+
+This is not consistent with the manner in which rank is determined (lines 225 to 233). That is to say a matrix could potentially be rank deficient, yet the psuedoinverse would still include the redundant columns... 
+Also, there is the problem of very small singular values which could result in overflow.  </description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.linear.SingularValueDecompositionImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-11-27 05:20:46" id="691" opendate="2011-10-16 17:18:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Statistics.setVarianceImpl makes getStandardDeviation produce NaN</summary>
+			
+			
+			<description>Invoking SummaryStatistics.setVarianceImpl(new Variance(true/false) makes getStandardDeviation produce NaN. The code to reproduce it:
+
+
+
+int[] scores = {1, 2, 3, 4};
+
+SummaryStatistics stats = new SummaryStatistics();
+
+stats.setVarianceImpl(new Variance(false)); //use &quot;population variance&quot;
+
+for(int i : scores) {
+
+  stats.addValue(i);
+
+}
+
+double sd = stats.getStandardDeviation();
+
+System.out.println(sd);
+
+
+
+A workaround suggested by Mikkel is:
+
+
+
+  double sd = FastMath.sqrt(stats.getSecondMoment() / stats.getN());
+
+
+</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.SummaryStatistics.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.SummaryStatisticsTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-11-30 06:25:55" id="704" opendate="2011-11-08 23:08:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>One of Variance.evaluate() methods does not work correctly</summary>
+			
+			
+			<description>The method org.apache.commons.math.stat.descriptive.moment.Variance.evaluate(double[] values, double[] weights, double mean, int begin, int length) does not work properly. Looks loke it ignores the length parameter and grabs the whole dataset.
+Similar method in Mean class seems to work.
+I did not check other methods taking the part of the array; they may have the same problem.
+Workaround: I had to shrink my arrays and use the method without the length.</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.UnivariateStatisticAbstractTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-05 06:50:36" id="699" opendate="2011-11-01 08:35:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>inverseCumulativeDistribution fails with cumulative distribution having a plateau</summary>
+			
+			
+			<description>This bug report follows MATH-692. The attached unit test fails. As required by the definition in MATH-692, the lower-bound of the interval on which the cdf is constant should be returned. This is not so at the moment.</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.ChiSquaredDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.NormalDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.TDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.BetaDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.FDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.GammaDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.AbstractRealDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.BinomialDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.PoissonDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.KolmogorovSmirnovDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.ZipfDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.PascalDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.HypergeometricDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.AbstractRealDistributionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.IntegerDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.CauchyDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.WeibullDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.AbstractIntegerDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.RealDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.ExponentialDistribution.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-01-27 07:01:40" id="722" opendate="2011-12-09 21:34:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[math] Complex Tanh for &quot;big&quot; numbers</summary>
+			
+			
+			<description>Hi,
+In Complex.java the tanh is computed with the following formula:
+tanh(a + bi) = sinh(2a)/(cosh(2a)+cos(2b)) + [sin(2b)/(cosh(2a)+cos(2b))]i
+The problem that I&amp;amp;apos;m finding is that as soon as &quot;a&quot; is a &quot;big&quot; number,
+both sinh(2a) and cosh(2a) are infinity and then the method tanh returns in
+the real part NaN (infinity/infinity) when it should return 1.0.
+Wouldn&amp;amp;apos;t it be appropiate to add something as in the FastMath library??:
+if (real&amp;gt;20.0)
+{
+
+      return createComplex(1.0, 0.0);
+
+}
+if (real&amp;lt;-20.0)
+{
+
+      return createComplex(-1.0, 0.0);
+
+}
+
+
+Best regards,
+JBB</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.complex.Complex.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.complex.ComplexTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-02-14 13:31:25" id="744" opendate="2012-02-12 16:11:17" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BigFraction.doubleValue() returns Double.NaN for large numerators or denominators</summary>
+			
+			
+			<description>The current implementation of doubleValue() divides numerator.doubleValue() / denominator.doubleValue().  BigInteger.doubleValue() fails for any number greater than Double.MAX_VALUE.  So if the user has 308-digit numerator or denominator, the resulting quotient fails, even in cases where the result would be well inside Double&amp;amp;apos;s range.
+I have a patch to fix it, if I can figure out how to attach it here I will.</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.fraction.BigFraction.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.fraction.BigFractionTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-05-21 19:56:36" id="718" opendate="2011-12-04 00:40:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>inverseCumulativeProbability of BinomialDistribution returns wrong value for large trials.</summary>
+			
+			
+			<description>The inverseCumulativeProbability method of the BinomialDistributionImpl class returns wrong value for large trials.  Following code will be reproduce the problem.
+System.out.println(new BinomialDistributionImpl(1000000, 0.5).inverseCumulativeProbability(0.5));
+This returns 499525, though it should be 499999.
+I&amp;amp;apos;m not sure how it should be fixed, but the cause is that the cumulativeProbability method returns Infinity, not NaN.  As the result the checkedCumulativeProbability method doesn&amp;amp;apos;t work as expected.</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.FDistributionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.BinomialDistributionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.util.ContinuedFraction.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.PascalDistribution.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">785</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-05-31 23:45:24" id="644" opendate="2011-08-13 06:26:59" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>for the class of hyper-geometric distribution, for some number the method &quot;upperCumulativeProbability&quot; return a probability greater than 1 which is impossible.  </summary>
+			
+			
+			<description>In windows 7, I used common.Math library. I used class &quot;HypergeometricDistributionImpl&quot; and method &quot;upperCumulativeProbability&quot; of zero for distribution and the return value is larget than 1. the following code is working error. 
+HypergeometricDistributionImpl u = new HypergeometricDistributionImpl(14761461, 1035 ,1841 );
+System.out.println(u.upperCumulativeProbability(0))
+Thanks</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.HypergeometricDistributionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.HypergeometricDistribution.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-22 15:01:30" id="578" opendate="2011-05-16 14:34:47" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Decrease DescriptiveStatistics performance from 2.0 to 2.2</summary>
+			
+			
+			<description>Switching between commons-math 2.0 to 2.2 we note how the
+DescriptiveStatistics.addValue(double) has decrease the performance.
+I tested with 2 million values.
+DescriptiveStatistics ds = new DescriptiveStatistics();
+for(int i = 0; i&amp;lt;1000*1000*2; i++) 
+{ //2 million values
+
+    ds.addValue(v);
+
+}
+
+ds.getPercentile(50);
+Seems that depending by the values inserted in the DescriptiveStatistics it takes different time:
+
+with a single value (0)
+	
+2.0 -&amp;gt; take ~500 ms
+2.2 -&amp;gt; take more than 10 minutes
+
+
+with 50% fixed value (0) and 50% Math.random()
+	
+2.0 -&amp;gt; take ~500 ms
+2.2 -&amp;gt; take ~250000 ms -&amp;gt; ~250 second
+
+
+with 100% Math.random()
+	
+2.0 -&amp;gt; take ~500 ms
+2.2 -&amp;gt; take ~70 ms
+
+
+
+</description>
+			
+			
+			<version>2.2</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.descriptive.rank.Percentile.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">805</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

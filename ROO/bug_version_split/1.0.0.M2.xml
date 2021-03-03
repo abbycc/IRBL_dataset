@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="ROO">
+	<bug fixdate="2009-07-01 18:26:41" id="123" opendate="2009-07-01 04:59:58" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Generated controller finder method loses case on length() check for mixed case string fields</summary>
+			
+			
+			<description>If I generate a domain class that has a camel-cased name such as courseName, and then generate a dynamic finder based on the name, the length check within the Controller&amp;amp;apos;s find/findByFieldNameLike method incorrectly generates an all lower-case field name within the length check, although it is correct in the null check:
+    @org.springframework.web.bind.annotation.RequestMapping(value = &quot;find/ByCourseNameLike&quot;, method = org.springframework.web.bind.annotation.RequestMethod.GET)    
+    public java.lang.String CourseController.findCoursesByCourseNameLike(@org.springframework.web.bind.annotation.RequestParam(&quot;coursename&quot;) java.lang.String courseName, org.springframework.ui.ModelMap modelMap) 
+{    
+        if(courseName == null || coursename.length() == 0) throw new IllegalArgumentException(&quot;A courseName is required.&quot;);        
+        modelMap.addAttribute(&quot;courses&quot;, com.chariot.roo.demo.domain.Course.findCoursesByCourseNameLike(courseName).getResultList());        
+        return &quot;course/list&quot;;        
+    }
+ 
+Roo commands:
+create project -topLevelPackage roodemo
+install jpa -provider HIBERNATE -database HYPERSONIC_IN_MEMORY
+new persistent class jpa -name ~.Course
+add field string -fieldName courseName
+list finders for -class roodemo.Course
+install finder -finderName findCoursesByCourseNameLike
+new controller automatic -name roodemo.CourseController -formBackingObject  roodemo.Course
+Execute a mvn jetty:run to see the compiler error (or just mvn compile).  I get:
+[ERROR] BUILD ERROR
+[INFO] ------------------------------------------------------------------------
+[INFO] Compiler errors : 
+error at if(courseName == null || coursename.length() == 0) throw new IllegalArgumentException(&quot;A courseName is required.&quot;); 
+Note the coursename.length() is the error.</description>
+			
+			
+			<version>1.0.0.M2</version>
+			
+			
+			<fixedVersion>1.0.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-07 12:25:26" id="116" opendate="2009-06-24 00:21:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Cannot install finder for entity with similarly named fields</summary>
+			
+			
+			<description>When installing finder for an entity which has two fields that has similar names eg.:
+name of field1: code, field2: codeGroup, finderName: findCodesByCodeAndCodeGroup
+error:
+Unable to match all fields of Code for CodeAndCodeGroup (remaining &amp;amp;apos;Group&amp;amp;apos;)
+attached a .roo script which reproduces the bug.</description>
+			
+			
+			<version>1.0.0.M2</version>
+			
+			
+			<fixedVersion>1.0.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.ReservedToken.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.FinderTokenizer.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.FieldToken.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.Token.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.DynamicFinderServicesImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-07 12:55:08" id="134" opendate="2009-07-07 12:52:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MS SQL driver class definition incorrect</summary>
+			
+			
+			<description>install jpa -database MSSQL currently yields: database.driverClassName=com.microsoft.jdbc.sqlserver.SQLServerDriver when it should be database.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver</description>
+			
+			
+			<version>1.0.0.M2</version>
+			
+			
+			<fixedVersion>1.0.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JdbcDatabase.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-07 17:50:37" id="124" opendate="2009-07-01 06:41:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Roo does not clean up finder methods from UI navigation menu when removed from @RooEntity</summary>
+			
+			
+			<description>Add a finder method to a roo entity.  Update and run, and see the finder method appear in navigation.
+Remove the finder method from the @RooEntity annotation in the domain object.  Re-run Roo.  It cleans up the .aj files but does not rework the menu on the UI.</description>
+			
+			
+			<version>1.0.0.M2</version>
+			
+			
+			<fixedVersion>1.0.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspMetadataListener.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.menu.MenuOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-08 09:45:29" id="136" opendate="2009-07-08 06:42:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>WebFlow defined with -flowName when installing webflow - camel-cased name gets lowercased in navigation UI</summary>
+			
+			
+			<description>When building a web flow with a given name, such as registerAttendees:
+install web flow -flowName registerAttendees
+When the UI generates the &quot;Enter the registerAttendeesFlow&quot; link on the navigation bar, it lowercases the URL.  The URL becomes:
+/registerattendees
+  This creates a flow not found situation; the flow is properly configured with the camel case name.  The correct flow URi is:
+/registerAttendees
+</description>
+			
+			
+			<version>1.0.0.M2</version>
+			
+			
+			<fixedVersion>1.0.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.flow.WebFlowOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-08 15:30:06" id="96" opendate="2009-06-16 18:27:08" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Two textareas which are decorated with dijit.form.SimpleTextarea in the same page will sumit as a single parameter for POST submits</summary>
+			
+			
+			<description>Currently, you cannot have two dijit.form.SimpleTextarea fields in the same page. Both fields (field &amp;amp;apos;a&amp;amp;apos; and field &amp;amp;apos;b&amp;amp;apos;) will end up being submitted as a single param (&amp;amp;apos;a&amp;amp;apos;) and the text entered in both will be merged under parameter &amp;amp;apos;a&amp;amp;apos;
+field definitions to reproduce:
+add field string -class ~.domain.Test -fieldName a -sizeMax 70
+add field string -class ~.domain.Test -fieldName b -sizeMax 70
+Firebug shows that a is submitted twice with different values (once the value from textarea &amp;amp;apos;a&amp;amp;apos; and once from &amp;amp;apos;b&amp;amp;apos;):
+a TestA
+a TestB
+This results in field &amp;amp;apos;b&amp;amp;apos; not being populated in AbstractPerson and field &amp;amp;apos;a&amp;amp;apos; containing: &amp;amp;apos;TestA TestB&amp;amp;apos;</description>
+			
+			
+			<version>1.0.0.M2</version>
+			
+			
+			<fixedVersion>1.0.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.DojoUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-09 10:39:18" id="141" opendate="2009-07-09 10:34:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>create project foo, followed by &quot;mvn package&quot; causes a build failure because there is no web.xml file</summary>
+			
+			
+			<description>This problem was reported by Adrian Colyer in ROO-138.
+Essentially we have changed the initial project generation to start without any Web artifacts (see ROO-26). This allows users to create a simple Spring project without any persistence or Web artefacts.
+However, the project maven pom file still refers to packaging type &amp;amp;apos;war&amp;amp;apos; which causes &amp;amp;apos;mvn package&amp;amp;apos; to fail due to a missing web.xml which is expected in Web projects. </description>
+			
+			
+			<version>1.0.0.M2</version>
+			
+			
+			<fixedVersion>1.0.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.project.ProjectOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.maven.MavenProjectMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.project.ProjectMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.flow.WebFlowOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebMvcOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">138</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-09 19:10:39" id="106" opendate="2009-06-18 02:53:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Unable to create project from petclinic sample script due to XPath exception</summary>
+			
+			
+			<description>Running the clinic.roo script fails with: &quot;org.apache.xpath.domapi.XPathStylesheetDOM3Exception: Prefix must resolve to a namespace: tx&quot;
+Attached log from the run.</description>
+			
+			
+			<version>1.0.0.M2</version>
+			
+			
+			<fixedVersion>1.0.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.jms.JmsOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebMvcOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.email.MailOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.maven.MavenOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.support.util.XmlUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.security.SecurityOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JpaOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">105</link>
+			
+			
+			<link description="is related to" type="Related">150</link>
+			
+			
+			<link description="is related to" type="Related">112</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-10 11:31:51" id="143" opendate="2009-07-10 11:29:16" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Two MultiSelect boxes which are decorated with dijit.form.MultiSelect in the same page will sumit as a single parameter for POST submits</summary>
+			
+			
+			<description>This issue has the same symptoms as described in ROO-96</description>
+			
+			
+			<version>1.0.0.M2</version>
+			
+			
+			<fixedVersion>1.0.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.DojoUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-12 15:50:15" id="142" opendate="2009-07-10 07:31:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Problem with new controller automatic when you use the same Class Name</summary>
+			
+			
+			<description>This has happened to me a couple of times during testing when I accidentally give the controller the same name as the domain class (or I forgot i wasn&amp;amp;apos;t using grails).
+roo&amp;gt;new persistent class jpa -name ~.domain.SomeClass
+Created SRC_MAIN_JAVA\org\stjude\ri\bwfp\domain\SomeClass.java
+Created SRC_MAIN_JAVA\org\stjude\ri\bwfp\domain\SomeClass_Roo_Entity.aj
+Created SRC_MAIN_JAVA\org\stjude\ri\bwfp\domain\SomeClass_Roo_ToString.aj
+Created SRC_MAIN_JAVA\org\stjude\ri\bwfp\domain\SomeClass_Roo_Configurable.aj
+roo&amp;gt; add field string -fieldName SomeField
+Managed SRC_MAIN_JAVA\org\stjude\ri\bwfp\domain\SomeClass.java
+Created SRC_MAIN_JAVA\org\stjude\ri\bwfp\domain\SomeClass_Roo_JavaBean.aj
+Managed SRC_MAIN_JAVA\org\stjude\ri\bwfp\domain\SomeClass_Roo_ToString.aj
+roo&amp;gt; new controller automatic -formBackingObject ~.domain.SomeClass -name ~.web.SomeClass
+Created SRC_MAIN_JAVA\org\stjude\ri\bwfp\web\SomeClass.java
+Managed SRC_MAIN_WEBAPP\WEB-INF\web.xml
+What happens is the generated controller looks like this
+package org.stjude.ri.bwfp.web;
+import org.springframework.roo.addon.web.mvc.controller.RooWebScaffold;
+import org.stjude.ri.bwfp.domain.SomeClass;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.stereotype.Controller;
+@RooWebScaffold(automaticallyMaintainView = true, formBackingObject = SomeClass.class)
+@RequestMapping(&quot;/someclass/**&quot;)
+@Controller
+public class SomeClass {
+}
+The class will not compile because the import conflicts with the class name but from the roo command line there is no indication of an error.
+ It&amp;amp;apos;s an annoyance level issue and is easily fixed but could be common for users with previous grails experience.
+The new controller automatic command line needs to be able to detect if the provided classname in -name is the same as the provided classname in -formbackingobject and give an error, or be grails-like and append Controller to the generated class name.
+</description>
+			
+			
+			<version>1.0.0.M2</version>
+			
+			
+			<fixedVersion>1.0.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.ClasspathOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.ControllerCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-13 13:19:50" id="145" opendate="2009-07-12 18:45:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Not all current types in java.lang correctly recognized by JavaParserUtils</summary>
+			
+			
+			<description>The @RooJavaBean creates invalid fully qualified package names for Iterable:
+package foo.bar.baz;
+import org.springframework.roo.addon.javabean.RooJavaBean;
+@RooJavaBean
+public class X {
+  Iterable&amp;lt;Object&amp;gt; it;
+}
+produces a ITD with a method with the following declaration:
+ public foo.bar.baz.Iterable&amp;lt;java.lang.Object&amp;gt; X.getIt()
+For a other types sitting in java.lang, e.g., String the declaration is correct and refers to java.lang.String. As JavaBeanMetadata#getDeclaredGetter currently simply copies the type of the getter&amp;amp;apos;s field as its return type, I assumed that JavaParser&amp;amp;apos;s knowledge of java.lang is incomplete.</description>
+			
+			
+			<version>1.0.0.M2</version>
+			
+			
+			<fixedVersion>1.0.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-13 14:05:46" id="122" opendate="2009-06-30 20:01:25" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>@RooConfigurable produces errornous ITD for parameterized types</summary>
+			
+			
+			<description>The ITD created by @RooConfigurable uses the parameterized type name for accessing the annotated class:
+@RooConfigurable
+public class Foo&amp;lt;T&amp;gt; {
+}
+privileged aspect Foo_Roo_Configurable {
+    declare @type: Foo&amp;lt;T&amp;gt;: @org.springframework.beans.factory.annotation.Configurable;    
+}
+This is an error in AspectJ: &quot;T cannot be resolved to a type&quot;. The error can be resolved by removing the type parameter:
+declare @type: Foo: @org.springframework.beans.factory.annotation.Configurable;    </description>
+			
+			
+			<version>1.0.0.M2</version>
+			
+			
+			<fixedVersion>1.0.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.itd.ItdSourceFileComposer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">94</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-26 18:50:51" id="162" opendate="2009-07-19 23:34:19" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Parsing fails for types that are sub-subclasses of a type unknown to Roo</summary>
+			
+			
+			<description>If Roo encounters a class hierarchy nested for at least 2 levels where the super class is unknown to Roo, then its parser barfs:
+roo&amp;gt; create project -topLevelPackage test.sub.types
+
+java.lang.Exception is unknown to Roo, this line is just to show Roo&amp;amp;apos;s error message
+roo&amp;gt; new java file -name test.sub.types.Foo -extends java.lang.Exception
+Unable to locate requested type&amp;amp;apos;java.lang.Exception&amp;amp;apos;
+
+roo&amp;gt; new java file -name test.sub.types.Foo
+
+Manually modify test.sub.types.Foo and let it extend Exception, save it
+
+
+After saving Foo; inheritence from Foo works without problems
+roo&amp;gt; new java file -name test.sub.types.Bar -extends ~.Foo
+Created SRC_MAIN_JAVA\test\sub\types\Bar.java
+
+
+Inheritence from a class that indirectly has Foo as a supertype does not work
+roo&amp;gt; new java file -name foo.bar.baz.Baz -extends ~.Bar
+Type &amp;amp;apos;foo.bar.baz.Bar&amp;amp;apos; exists on disk but cannot be parsed
+
+If metadata trace is at level 1 or 2, its output suggests that Roo enters some recursion that finally aborts once a StackOverflowError is thrown.</description>
+			
+			
+			<version>1.0.0.M2</version>
+			
+			
+			<fixedVersion>1.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserMetadataProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">170</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

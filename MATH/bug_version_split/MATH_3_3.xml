@@ -1,0 +1,1251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="MATH">
+	<bug fixdate="2013-12-07 13:08:49" id="1068" opendate="2013-12-01 11:48:25" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>KendallsCorrelation suffers from integer overflow for large arrays.</summary>
+			
+			
+			<description>For large array size (say, over 5,000), numPairs &amp;gt; 10 million.
+in line 258, (numPairs - tiedXPairs) * (numPairs - tiedYPairs) possibly &amp;gt; 100 billion, which will cause an integer overflow, resulting in a negative number, which will result in the end result in a NaN since the square-root of that number is calculated.
+This can easily be solved by changing line 163 to
+final long numPairs = ((long)n) * (n - 1) / 2; // to avoid overflow</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.correlation.KendallsCorrelation.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.correlation.KendallsCorrelationTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-02-02 20:54:58" id="1096" opendate="2014-01-29 20:28:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>implementation of smallest enclosing ball algorithm sometime fails</summary>
+			
+			
+			<description>The algorithm for finding the smallest ball is designed in such a way the radius should be strictly increasing at each iteration.
+In some cases, it is not true and one iteration has a smaller ball. In most cases, there is no consequence, there is just one or two more iterations. However, in rare cases discovered while testing 3D, this generates an infinite loop.
+Some very short offending cases have already been identified and added to the test suite. These cases are currently deactivated in the main repository while I am already working on them. The test cases are
+
+WelzlEncloser2DTest.testReducingBall
+WelzlEncloser2DTest.testLargeSamples
+WelzlEncloser3DTest.testInfiniteLoop
+WelzlEncloser3DTest.testLargeSamples
+
+</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.geometry.enclosing.WelzlEncloser.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.geometry.enclosing.Encloser.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.geometry.enclosing.WelzlEncloser2DTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-07-10 21:40:09" id="1135" opendate="2014-07-10 18:00:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Bug in MonotoneChain: a collinear point landing on the existing boundary should be dropped (patch)</summary>
+			
+			
+			<description>The is a bug on the code in MonotoneChain.java that attempts to handle the case of a point on the line formed by the previous last points and the last point of the chain being constructed. When `includeCollinearPoints` is false, the point should be dropped entirely. In common-math 3,3, the point is added, which in some cases can cause a `ConvergenceException` to be thrown.
+In the patch below, the data points are from a case that showed up in testing before we went to production.
+
+
+
+Index: src/main/java/org/apache/commons/math3/geometry/euclidean/twod/hull/MonotoneChain.java
+
+===================================================================
+
+--- src/main/java/org/apache/commons/math3/geometry/euclidean/twod/hull/MonotoneChain.java	(revision 1609491)
+
++++ src/main/java/org/apache/commons/math3/geometry/euclidean/twod/hull/MonotoneChain.java	(working copy)
+
+@@ -160,8 +160,8 @@
+
+                 } else {
+
+                     if (distanceToCurrent &amp;gt; distanceToLast) {
+
+                         hull.remove(size - 1);
+
++                        hull.add(point);
+
+                     }
+
+-                    hull.add(point);
+
+                 }
+
+                 return;
+
+             } else if (offset &amp;gt; 0) {
+
+Index: src/test/java/org/apache/commons/math3/geometry/euclidean/twod/hull/ConvexHullGenerator2DAbstractTest.java
+
+===================================================================
+
+--- src/test/java/org/apache/commons/math3/geometry/euclidean/twod/hull/ConvexHullGenerator2DAbstractTest.java	(revision 1609491)
+
++++ src/test/java/org/apache/commons/math3/geometry/euclidean/twod/hull/ConvexHullGenerator2DAbstractTest.java	(working copy)
+
+@@ -204,6 +204,24 @@
+
+     }
+
+ 
+
+     @Test
+
++    public void testCollinnearPointOnExistingBoundary() {
+
++        final Collection&amp;lt;Vector2D&amp;gt; points = new ArrayList&amp;lt;Vector2D&amp;gt;();
+
++        points.add(new Vector2D(7.3152, 34.7472));
+
++        points.add(new Vector2D(6.400799999999997, 34.747199999999985));
+
++        points.add(new Vector2D(5.486399999999997, 34.7472));
+
++        points.add(new Vector2D(4.876799999999999, 34.7472));
+
++        points.add(new Vector2D(4.876799999999999, 34.1376));
+
++        points.add(new Vector2D(4.876799999999999, 30.48));
+
++        points.add(new Vector2D(6.0959999999999965, 30.48));
+
++        points.add(new Vector2D(6.0959999999999965, 34.1376));
+
++        points.add(new Vector2D(7.315199999999996, 34.1376));
+
++        points.add(new Vector2D(7.3152, 30.48));
+
++
+
++        final ConvexHull2D hull = generator.generate(points);
+
++        checkConvexHull(points, hull);
+
++    }
+
++
+
++    @Test
+
+     public void testIssue1123() {
+
+ 
+
+         List&amp;lt;Vector2D&amp;gt; points = new ArrayList&amp;lt;Vector2D&amp;gt;();
+
+
+</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>3.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.geometry.euclidean.twod.hull.ConvexHullGenerator2DAbstractTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.geometry.euclidean.twod.hull.MonotoneChain.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-13 15:37:02" id="1149" opendate="2014-08-22 11:35:51" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>unsafe initialization in DummyStepInterpolator</summary>
+			
+			
+			<description>DummyStepInterpolator.java
+
+
+  public DummyStepInterpolator(final DummyStepInterpolator interpolator) {
+
+    super(interpolator);
+
+    currentDerivative = interpolator.currentDerivative.clone();
+
+  }
+
+   @Override
+
+  protected StepInterpolator doCopy() {
+
+    return new DummyStepInterpolator(this);
+
+  }
+
+
+
+A constructor in DummyStepInterpolator dereferences a field of the parameter, but a NullPointerException can occur during a call to doCopy().
+Test.java
+
+
+public void test1() throws Throwable {
+
+  DummyStepInterpolator var0 = new DummyStepInterpolator();
+
+  var0.copy();
+
+}
+
+
+
+Here in Test.java, a NPE occurs because copy() calls doCopy() which calls  DummyStepInterpolator(final DummyStepInterpolator) that passes var0 as an argument.
+I think this constructor should have a null check for  interpolator.currentDerivative like NordsieckStepInterpolator does.
+NordsieckStepInterpolator.java
+
+
+    public NordsieckStepInterpolator(final NordsieckStepInterpolator interpolator) {
+
+        super(interpolator);
+
+        scalingH      = interpolator.scalingH;
+
+        referenceTime = interpolator.referenceTime;
+
+        if (interpolator.scaled != null) {
+
+            scaled = interpolator.scaled.clone();
+
+        }
+
+        if (interpolator.nordsieck != null) {
+
+            nordsieck = new Array2DRowRealMatrix(interpolator.nordsieck.getDataRef(), true);
+
+        }
+
+        if (interpolator.stateVariation != null) {
+
+            stateVariation = interpolator.stateVariation.clone();
+
+        }
+
+    }
+
+
+
+    @Override
+
+    protected StepInterpolator doCopy() {
+
+        return new NordsieckStepInterpolator(this);
+
+    }
+
+
+</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>3.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.ode.sampling.DummyStepInterpolator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-13 15:47:12" id="1145" opendate="2014-08-11 18:33:05" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Integer overflows MannWhitneyUTest#mannWhitneyU</summary>
+			
+			
+			<description>In the calculation of MannWhitneyUTest#mannWhitneyU there are two instances where the lengths of the input arrays are multiplied together. Because Array#length is an integer this means that the effective maximum size of your dataset until reaching overflow is Math.sqrt(Integer.MAX_VALUE).
+The following is a link to a diff, with a test the exposes the issue, and a fix (casting lengths up into doubles before multiplying).
+https://gist.github.com/aconbere/4fef56e5182e510aceb3</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>3.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.MannWhitneyUTestTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.MannWhitneyUTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-19 16:23:35" id="1131" opendate="2014-06-25 08:12:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Kolmogorov-Smirnov Tests takes &amp;apos;forever&amp;apos; on 10,000 item dataset</summary>
+			
+			
+			<description>I have code simplified to the following:
+    KolmogorovSmirnovTest kst = new KolmogorovSmirnovTest();
+    NormalDistribution nd = new NormalDistribution(mean,stddev);
+    kst.kolmogorovSmirnovTest(nd,dataset)
+I find that for my dataset of 10,000 items, the call to kolmogorovSmirnovTest takes &amp;amp;apos;forever&amp;amp;apos;. It has not returned after nearly 15minutes and in one my my tests has gone over 150MB in  memory usage. </description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>3.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.KolmogorovSmirnovTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.KolmogorovSmirnovTestTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.util.MathUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-29 16:28:42" id="1148" opendate="2014-08-20 16:17:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MonotoneChain handling of collinear points drops low points in a near-column</summary>
+			
+			
+			<description>This code
+
+
+
+val points = List(
+
+  new Vector2D(
+
+    16.078200000000184,
+
+    -36.52519999989808
+
+  ),
+
+  new Vector2D(
+
+    19.164300000000186,
+
+    -36.52519999989808
+
+  ),
+
+  new Vector2D(
+
+    19.1643,
+
+    -25.28136477910407
+
+  ),
+
+  new Vector2D(
+
+    19.1643,
+
+    -17.678400000004157
+
+  )
+
+)
+
+new hull.MonotoneChain().generate(points.asJava)
+
+
+
+results in the exception:
+
+
+
+org.apache.commons.math3.exception.ConvergenceException: illegal state: convergence failed
+
+	at org.apache.commons.math3.geometry.euclidean.twod.hull.AbstractConvexHullGenerator2D.generate(AbstractConvexHullGenerator2D.java:106)
+
+	at org.apache.commons.math3.geometry.euclidean.twod.hull.MonotoneChain.generate(MonotoneChain.java:50)
+
+	at .&amp;lt;init&amp;gt;(&amp;lt;console&amp;gt;:13)
+
+	at .&amp;lt;clinit&amp;gt;(&amp;lt;console&amp;gt;)
+
+	at .&amp;lt;init&amp;gt;(&amp;lt;console&amp;gt;:11)
+
+	at .&amp;lt;clinit&amp;gt;(&amp;lt;console&amp;gt;)
+
+	at $print(&amp;lt;console&amp;gt;)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+
+	at java.lang.reflect.Method.invoke(Method.java:597)
+
+	at scala.tools.nsc.interpreter.IMain$ReadEvalPrint.call(IMain.scala:704)
+
+	at scala.tools.nsc.interpreter.IMain$Request$$anonfun$14.apply(IMain.scala:920)
+
+	at scala.tools.nsc.interpreter.Line$$anonfun$1.apply$mcV$sp(Line.scala:43)
+
+	at scala.tools.nsc.io.package$$anon$2.run(package.scala:25)
+
+	at java.lang.Thread.run(Thread.java:662)
+
+
+
+This will be tricky to fix. Not only is the point (19.164300000000186, -36.52519999989808) is being dropped incorrectly, but any point dropped in one hull risks creating a kink when combined with the other hull.
+</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>3.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.geometry.euclidean.twod.hull.ConvexHullGenerator2DAbstractTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.geometry.euclidean.twod.hull.MonotoneChainTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.geometry.euclidean.twod.hull.MonotoneChain.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.geometry.euclidean.twod.hull.ConvexHull2D.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-30 19:17:20" id="1152" opendate="2014-09-12 07:46:38" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Suboptimal implementation of EnumeratedDistribution.sample()</summary>
+			
+			
+			<description>org.apache.commons.math3.distribution.EnumeratedDistribution.sample() performs a linear search to find the appropriate element in the probability space (called singletons here) given a random double value. For large probability spaces, this is not effective. Instead, we should cache the cumulative probabilities and do a binary search.
+Rough implementation:
+EnumeratedDistribution.java
+
+
+void computeCumulative() {
+
+  cumulative = new double[size]; 
+
+  double sum = 0;
+
+  for (int i = 1; i &amp;lt; weights.length - 1; i++) {
+
+      cumulative[i] = cumulative[i-1] + weights[i-1];
+
+   }
+
+  cumulative[size - 1] = 1;
+
+}
+
+
+
+and then 
+EnumeratedDistribution.java
+
+
+int sampleIndex() {
+
+ double randomValue = random.nextDouble();
+
+ int result = Arrays.binarySearch(cumulative, randomValue);
+
+ if (result &amp;gt;= 0) return result;
+
+ int insertionPoint = -result-1;
+
+ return insertionPoint;
+
+}
+
+
+
+
+</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>3.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.EnumeratedDistribution.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-10-17 08:54:56" id="1138" opendate="2014-07-11 18:51:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BicubicSplineInterpolator is returning incorrect interpolated values</summary>
+			
+			
+			<description>I have encountered a use case with the BicubicSplineInterpolator where the interpolated values that are being returned seem incorrect.  Furthermore, the values do not match those generated by MatLab using the interp2 &amp;amp;apos;cubic&amp;amp;apos; method.
+Here is a snippet of code that uses the interpolator:
+        double[] xValues = new double[] 
+{36, 36.001, 36.002}
+;
+        double[] yValues = new double[] {-108.00, -107.999, -107.998};
+        double[][] fValues = new double[][] {{1915, 1906, 1931},
+
+{1877, 1889, 1894}
+,
+                                        {1878, 1873, 1888}};
+        BicubicSplineInterpolator interpolator = new BicubicSplineInterpolator();
+        BicubicSplineInterpolatingFunction interpolatorFunction = interpolator.interpolate(xValues, yValues, fValues);
+        double[][] results = new double[9][9];
+        double x = 36;
+        int arrayIndexX = 0, arrayIndexY = 0;
+        while(x &amp;lt;= 36.002) {
+            double y = -108;
+            arrayIndexY = 0;
+            while (y &amp;lt;= -107.998) 
+{
+
+                results[arrayIndexX][arrayIndexY] = interpolatorFunction.value(x,  y);
+
+                System.out.println(results[arrayIndexX][arrayIndexY]);
+
+                y = y + 0.00025;
+
+                arrayIndexY++;
+
+            }
+
+            x = x + 0.00025;
+            arrayIndexX++;
+        }
+Attached is a grid showing x and y values and the corresponding interpolated value from both commons math and MatLab.
+The values produced by commons math are far off from those created by MatLab.</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>3.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolatingFunction.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.interpolation.TricubicSplineInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.interpolation.TricubicSplineInterpolator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolatingFunctionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.interpolation.SmoothingPolynomialBicubicSplineInterpolator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.interpolation.SmoothingPolynomialBicubicSplineInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.interpolation.SplineInterpolatorTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">1166</link>
+			
+			
+			<link description="is related to" type="Reference">985</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-11-07 22:10:00" id="1165" opendate="2014-11-06 11:57:49" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Rare case for updateMembershipMatrix() in FuzzyKMeansClusterer</summary>
+			
+			
+			<description>The function updateMembershipMatrix() in FuzzyKMeansClusterer assigns the points to the cluster with the highest membership. Consider the following case:
+If the distance between a point and the cluster center is zero, then we will have a cluster membership of one, and all other membership values will be zero.
+So the if condition:
+if (membershipMatrix[i][j] &amp;gt; maxMembership) 
+{
+
+                    maxMembership = membershipMatrix[i][j];
+
+                    newCluster = j;
+
+}
+will never be true during the for loop and newCluster will remain -1. This will throw an exception because of the line:
+clusters.get(newCluster)
+                    .addPoint(point);
+Adding the following condition can solve the problem:
+double d;
+if (sum == 0)
+d = 1;
+else
+d = 1.0/sum;</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>3.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.ml.clustering.FuzzyKMeansClustererTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.ml.clustering.FuzzyKMeansClusterer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-11-12 11:22:27" id="1167" opendate="2014-11-12 11:06:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>OLSMultipleLinearRegression STILL needs a way to specify non-zero singularity threshold when instantiating QRDecomposition</summary>
+			
+			
+			<description>A fix was made for this issue in MATH-1110 for the newSampleData method but not for the newXSampleData method.
+It&amp;amp;apos;s a simple change to propagate the threshold to QRDecomposition:
+237c237
+&amp;lt;         qr = new QRDecomposition(getX());
+
+&amp;gt;         qr = new QRDecomposition(getX(), threshold);</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>3.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-12-02 21:22:26" id="1174" opendate="2014-12-02 21:04:09" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Some thin rectangles are not handled properly as PolygonsSet</summary>
+			
+			
+			<description>If the width of a rectangle is smaller than the close point tolerances, some weird effects appear when vertices are extracted. Typically the size will be set to infinity and barycenter will be forced at origin.</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>3.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.geometry.euclidean.twod.PolygonsSetTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-12-15 20:22:08" id="1154" opendate="2014-10-05 19:34:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Statistical tests in stat.inference package are very slow due to implicit RandomGenerator initialization</summary>
+			
+			
+			<description>Some statistical tests defined in the stat.inference package (e.g. BinomialTest or ChiSquareTest) are unnecessarily very slow (up to a factor 20 slower than necessary). The reason is the implicit slow initialization of a default (Well19937c) random generator instance each time a test is performed. The affected tests create some distribution instance in order to use some methods defined therein. However, they do not use any method for random generation. Nevertheless a random number generator instance is automatically created when creating a distribution instance, which is the reason for the serious slowdown. The problem is related to MATH-1124.
+There are following solutions:
+1) Fix the affected statistical tests by passing a light-weight RandomGenerator implementation (or even null) to the constructor of the distribution.
+2) Or use for all distributions a RandomGenerator implementation that uses lazy initialization to generate the Well19937c instance as late as possible. This would also solve MATH-1124.
+I will attach a patch proposal together with a performance test, that will demonstrate the speed up after a fix.</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>3.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.UniformIntegerDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.MixtureMultivariateRealDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.NormalDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.EnumeratedDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.LevyDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.WeibullDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.GammaDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.HypergeometricDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.TDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.BetaDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.PascalDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.LaplaceDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.UniformRealDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.GumbelDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.ChiSquaredDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.EnumeratedRealDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.GeometricDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.FDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.ParetoDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.ExponentialDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.BinomialDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.LogNormalDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.TriangularDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.ZipfDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.MultivariateNormalDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.MixtureMultivariateNormalDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.CauchyDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.EnumeratedIntegerDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.LogisticDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.PoissonDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.NakagamiDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.BinomialTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.OneWayAnova.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.WilcoxonSignedRankTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.GTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.ChiSquareTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.TTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.MannWhitneyUTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">1124</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-12-16 23:53:56" id="1146" opendate="2014-08-15 18:03:51" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>class Mean returns incorrect result after processing an Infinity value</summary>
+			
+			
+			<description>1. Create a Mean object.
+2. call increment() with Double.POSITIVE_INFINITY.
+3. Call getResult(). Result is INFINITY as expected.
+4. call increment() with 0.
+5. Call getResult(). Result is NaN; not INFINITY as expected.
+This is apparently due to the &quot;optimization&quot; for calculating mean described in the javadoc. Rather than accumulating a sum, it maintains a running mean value using the formula &quot;m = m + (new value - m) / (number of observations)&quot;, which unlike the &quot;definition way&quot;, fails after an infinity.
+I was using Mean within a SummaryStatistics. Other statistics also seem to be affected; for example, the standard deviation also incorrectly gives NaN rather than Infinity. I don&amp;amp;apos;t know if that&amp;amp;apos;s due to the error in Mean or if the other stats classes have similar bugs.</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>3.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.descriptive.moment.FirstMoment.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.descriptive.moment.SecondMoment.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.descriptive.moment.FourthMoment.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.descriptive.moment.ThirdMoment.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.descriptive.moment.Variance.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.descriptive.moment.Kurtosis.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.descriptive.moment.Mean.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.descriptive.moment.FirstMomentTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-02-27 14:13:19" id="1134" opendate="2014-06-30 19:35:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>unsafe initialization in BicubicSplineInterpolatingFunction</summary>
+			
+			
+			<description>The lazy initialization of the internal array of partialDerivatives in BicubicSplineInterpolatingFunction is not thread safe. If multiple threads call any of the partialDerivative functions concurrently one thread may start the initialization and others will see the array is non-null and assume it is fully initialized. If the internal array of partial derivatives was initialized in the constructor this would not be a problem.
+i.e. the following check in partialDerivative(which, x, y)
+        if (partialDerivatives == null) 
+{
+
+            computePartialDerivatives();
+
+        }
+will start the initialization. However in computePartialDerivatives()
+        partialDerivatives = new BivariateFunction[5][lastI][lastJ];
+makes it appear to other threads as the the initialization has completed when it may not have.</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>3.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.interpolation.TricubicSplineInterpolator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.interpolation.BicubicSplineInterpolatingFunction.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-04-09 12:39:52" id="1206" opendate="2015-02-26 13:55:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Cost in least-squares fitting</summary>
+			
+			
+			<description>In org.apache.commons.math4.fitting.leastsquares.AbstractEvaluation, the value returned by the &quot;getCost&quot; method is not consistent with the definition of &quot;cost&quot; in a least-squares problem: It is the sum of the squares of the residuals, but the method returns the square-root of that quantity.</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.fitting.leastsquares.EvaluationRmsCheckerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.fitting.leastsquares.OptimumImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.fitting.leastsquares.LevenbergMarquardtOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.fitting.leastsquares.LeastSquaresProblem.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.fitting.leastsquares.AbstractEvaluation.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-04-10 01:32:22" id="1214" opendate="2015-04-10 00:09:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SolutionCallback has incorrect class javadoc</summary>
+			
+			
+			<description>The class javadoc for o.a.c.m.optim.linear.SolutionCallback does not describe the class.</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>4.0, 3.5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.optim.linear.SolutionCallback.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-19 11:47:52" id="1224" opendate="2015-05-11 00:43:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NullPointerExceptions not documented in some classes</summary>
+			
+			
+			<description>In general, the need to initialize newly constructed objects with more data is now documented, but we have found two cases where a NullPointerException is thrown because of missing data.
+The documentation should be updated to reflect this. This is similar to issues report in MATH-1116 but concerns classes that are not going to be deprecated (as far as we can tell).
+I have previously posted this as a new comment on issue 1116, but that comment has not elicited any response. As the original issue is one year old, I post this bug as a new issue.
+Below is the code that produces the two cases:
+org.apache.commons.math3.ode.nonstiff.HighamHall54Integrator var1 = new org.apache.commons.math3.ode.nonstiff.HighamHall54Integrator(0.0d, 0.0d, 0.0d, 0.0d);
+double[] var2 = new double[] 
+{ 0.0d }
+;
+var1.computeDerivatives(0.0d, var2, var2); // NPE
+new org.apache.commons.math3.stat.correlation.SpearmansCorrelation().getCorrelationMatrix(); // NPE
+</description>
+			
+			
+			<version>3.3</version>
+			
+			
+			<fixedVersion>4.0, 3.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.stat.correlation.SpearmansCorrelation.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

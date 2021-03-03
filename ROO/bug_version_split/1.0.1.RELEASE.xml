@@ -1,0 +1,2238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="ROO">
+	<bug fixdate="2010-01-31 10:53:01" id="570" opendate="2010-01-29 07:23:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Outdated DTD on Tiles configuration files</summary>
+			
+			
+			<description>The generated Tiles configuration files use the following DTD:
+&amp;lt;!DOCTYPE tiles-definitions PUBLIC &quot;-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN&quot; &quot;http://tiles.apache.org/dtds/tiles-config_2_0.dtd&quot;&amp;gt;
+which is for the 2.0 release and doesn&amp;amp;apos;t contain some features found in the 2.1 release
+should be:
+&amp;lt;!DOCTYPE tiles-definitions PUBLIC &quot;-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN&quot; &quot;http://tiles.apache.org/dtds/tiles-config_2_1.dtd&quot;&amp;gt;</description>
+			
+			
+			<version>1.0.1.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.2.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.TilesOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-04 15:08:18" id="578" opendate="2010-02-01 09:10:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Incorrect help text for &quot;finder add&quot; command when invalid finder name entered</summary>
+			
+			
+			<description>For any entity, enter this command:
+
+
+
+
+
+
+finder add --finderName f
+
+
+
+
+
+
+Roo will respond with:
+
+
+
+
+
+
+required --finderName: The finder string as generated with &amp;amp;apos;list finders for&amp;amp;apos;; no default value
+
+
+
+
+
+
+The problem is that there is no &quot;list finders for&quot; command; it&amp;amp;apos;s actually the &quot;finder list&quot; command.</description>
+			
+			
+			<version>1.0.1.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.2.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.FinderCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-14 12:37:10" id="575" opendate="2010-01-31 10:44:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Tab expansion fails for &quot;script --file&quot; if using ~ in the path name</summary>
+			
+			
+			<description>(Logged by Ben on behalf of rj)
+Entering &quot;script --file ~/Do&quot; then hitting TAB will blow up:
+
+
+
+
+
+
+balex@tara:~/t2$ roo-dev
+
+
+
+
+    ____  ____  ____  
+
+
+
+
+   / __ \/ __ \/ __ \ 
+
+
+
+
+  / /_/ / / / / / / / 
+
+
+
+
+ / _, _/ /_/ / /_/ /  
+
+
+
+
+/_/ |_|\____/\____/    ENGINEERING BUILD [rev 601:602]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Welcome to Spring Roo. For assistance press TAB or type &quot;hint&quot; then hit ENTER.
+
+
+
+
+roo&amp;gt; script --file ~/DoException in thread &quot;main&quot; java.lang.IllegalArgumentException: [Assertion failed] - this expression must be true
+
+
+
+
+	at org.springframework.roo.support.util.Assert.isTrue(Assert.java:65)
+
+
+
+
+	at org.springframework.roo.support.util.Assert.isTrue(Assert.java:77)
+
+
+
+
+	at org.springframework.roo.shell.converters.FileConverter.populate(FileConverter.java:42)
+
+
+
+
+	at org.springframework.roo.shell.converters.FileConverter.getAllPossibleValues(FileConverter.java:35)
+
+
+
+
+	at org.springframework.roo.shell.SimpleParser.complete(SimpleParser.java:633)
+
+
+
+
+	at org.springframework.roo.shell.jline.JLineCompletorAdapter.complete(JLineCompletorAdapter.java:30)
+
+
+
+
+	at jline.ConsoleReader.complete(ConsoleReader.java:832)
+
+
+
+
+	at jline.ConsoleReader.readLine(ConsoleReader.java:518)
+
+
+
+
+	at jline.ConsoleReader.readLine(ConsoleReader.java:448)
+
+
+
+
+	at jline.ConsoleReader.readLine(ConsoleReader.java:300)
+
+
+
+
+	at org.springframework.roo.shell.jline.JLineShell.promptLoop(JLineShell.java:150)
+
+
+
+
+	at org.springframework.roo.bootstrap.Bootstrap.run(Bootstrap.java:114)
+
+
+
+
+	at org.springframework.roo.bootstrap.Bootstrap.main(Bootstrap.java:53)
+
+
+
+
+
+</description>
+			
+			
+			<version>1.0.1.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.2.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.shell.converters.FileConverter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-15 14:09:38" id="615" opendate="2010-02-11 16:05:25" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Incorrect elementId in finder view for multi-word fields</summary>
+			
+			
+			<description>If you create a project using this script:
+
+
+
+
+
+
+project --topLevelPackage casing
+
+
+
+
+persistence setup --provider HIBERNATE --database HYPERSONIC_IN_MEMORY 
+
+
+
+
+entity --class Car
+
+
+
+
+entity --class Person
+
+
+
+
+field reference --fieldName rentalCar --type ~.Car
+
+
+
+
+finder list --class ~.Person
+
+
+
+
+finder add --finderName findPeopleByRentalCar
+
+
+
+
+controller all --package ~.web
+
+
+
+
+
+
+Then the generated findPeopleByRentalCar.jspx view will contain this markup (tidied a bit here):
+
+
+
+
+
+
+&amp;lt;label for=&quot;_rentalcar_id&quot;&amp;gt;Rental Car:&amp;lt;/label&amp;gt;
+
+
+
+
+&amp;lt;select id=&quot;_rentalcar_id&quot; name=&quot;rentalcar&quot;&amp;gt;
+
+
+
+
+    &amp;lt;c:forEach items=&quot;${cars}&quot; var=&quot;rentalcar_item&quot;&amp;gt;
+
+
+
+
+        &amp;lt;option value=&quot;${rentalcar_item.id}&quot;&amp;gt;${rentalcar_item}&amp;lt;/option&amp;gt;
+
+
+
+
+    &amp;lt;/c:forEach&amp;gt;
+
+
+
+
+&amp;lt;/select&amp;gt;
+
+
+
+
+&amp;lt;script type=&quot;text/javascript&quot;&amp;gt;
+
+
+
+
+    Spring.addDecoration(new Spring.ElementDecoration({
+
+
+
+
+        elementId: &amp;amp;apos;_rentalCar_id&amp;amp;apos;,
+
+
+
+
+        widgetType: &amp;amp;apos;dijit.form.FilteringSelect&amp;amp;apos;,
+
+
+
+
+        widgetAttrs: {hasDownArrow : true}
+
+
+
+
+    }));
+
+
+
+
+&amp;lt;/script&amp;gt;
+
+
+
+
+
+
+The bug is that the decoration&amp;amp;apos;s elementId &quot;_rentalCar_id&quot; is differently cased to the select tag&amp;amp;apos;s id of &quot;_rentalcar_id&quot;. The impact is that the decoration is not applied, so the drop-down looks and behaves like a plain HTML dropdown.</description>
+			
+			
+			<version>1.0.1.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.2.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.DojoUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-15 14:14:10" id="619" opendate="2010-02-15 09:05:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>@RooJavaBean does not allow for final fields when settersByDefault is set to false</summary>
+			
+			
+			<description>@RooJavaBean has a &quot;settersByDefault&quot; attribute that you can set to false to only generate getters for all your properties.  As a user, I was expecting to also be able to mark such properties final.  However, once I did that Roo no longer managed those fields.</description>
+			
+			
+			<version>1.0.1.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.2.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.javabean.JavaBeanMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">36</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-15 14:31:49" id="618" opendate="2010-02-14 17:52:17" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>AutoPopulationUtils fails to set @AutoPopulate fields with array value unless input annotation in array form</summary>
+			
+			
+			<description>If I have a Roo-managed &quot;Pizza&quot; entity annotated thus:
+
+
+
+
+
+
+@RooEntity
+
+
+
+
+
+
+and I add this &quot;finders&quot; element to it:
+
+
+
+
+
+
+@RooEntity(finders = &quot;findPizzasByName&quot;)
+
+
+
+
+
+
+then nothing happens in the Roo shell. It&amp;amp;apos;s only when I add the curly braces like this:
+
+
+
+
+
+
+@RooEntity(finders = {&quot;findPizzasByName&quot;})
+
+
+
+
+
+
+that Roo creates the Pizza_Roo_Finder.aj file. Yet the compiler is happy without the braces, and all other annotations I&amp;amp;apos;ve worked with are equally happy without the braces. Ben reckons this looks like a Roo bug.</description>
+			
+			
+			<version>1.0.1.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.2.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.annotations.populator.AutoPopulationUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-15 18:42:00" id="589" opendate="2010-02-04 23:43:49" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Setting method names to blank on @RooEntity does not prevent those methods from being generated</summary>
+			
+			
+			<description>Setting methods names to blank on @RooEntity does not prevent those methods from being generated the same way versionField=&quot;&quot; does, the settings appear to be ignored.
+My specific requirement is to make an Entity read only (persistMethod=&quot;&quot;, removeMethod=&quot;&quot;, mergeMethod=&quot;&quot;) but all of the method name attributes should probably work the same way.</description>
+			
+			
+			<version>1.0.1.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.2.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-15 19:09:27" id="576" opendate="2010-01-31 13:28:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Restore handling of imports in generated .java types</summary>
+			
+			
+			<description>Currently, Roo generated .java files contain only fully qualified types. The import resolution mechanism seems broken.
+This looks like a regression between the 1.0.0 release and 1.0.1 release.</description>
+			
+			
+			<version>1.0.1.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.2.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">508</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-17 13:41:16" id="633" opendate="2010-02-17 02:21:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>date finder: wrong date format</summary>
+			
+			
+			<description>App:
+project --topLevelPackage com.hz.doc
+persistence setup --provider HIBERNATE --database HYPERSONIC_PERSISTENT 
+entity --class ~.dto.Document
+field string --fieldName title --sizeMax 25 --notNull true 
+field string --fieldName body --sizeMax 1024
+field date --fieldName publishDate --type java.util.Date --notNull true
+controller all --package ~.web
+finder list --class com.hz.doc.dto.Document --depth 2 --filter title,date
+finder add --finderName findDocumentsByPublishDateBetweenAndTitleEquals
+Try to find entity by date between --&amp;gt; exception:
+Unable to convert value 2010-02-01 from type &amp;amp;apos;java.lang.String&amp;amp;apos; to type &amp;amp;apos;java.util.Date&amp;amp;apos;; nested exception is org.springframework.core.convert.ConversionFailedException: Unable to convert value 2010-02-01 from type &amp;amp;apos;java.lang.String&amp;amp;apos; to type &amp;amp;apos;java.util.Date&amp;amp;apos;; nested exception is java.lang.IllegalArgumentException: Invalid format: &quot;2010-02-01&quot; is malformed at &quot;10-02-01&quot;</description>
+			
+			
+			<version>1.0.1.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.2.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspViewManager.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-08 10:36:30" id="679" opendate="2010-03-06 22:06:14" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>The command line parser fails when there is more than a single space after the command</summary>
+			
+			
+			<description>If you have more than a single space after the command (for example &quot;project..&quot; instead of &quot;project.&quot;), then the parser doesn&amp;amp;apos;t recognize the command anymore and TAB completion will fail.</description>
+			
+			
+			<version>1.0.1.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.shell.SimpleParser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-23 17:03:05" id="647" opendate="2010-02-22 16:46:59" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>roo generated create.jspx for entities with names ending with &amp;apos;s&amp;apos; and @OneToMany relation with it self cause  internal server error error </summary>
+			
+			
+			<description>
+Steps to re generate the bug:
+	
+Run the following roo script
+
+
+
+
+
+
+test-roo.roo
+
+
+
+
+
+
+// Spring Roo 1.0.1.RELEASE [rev 601] log opened at 2010-02-23 08:15:39
+
+
+
+
+project --topLevelPackage com.bzone.test --projectName test-roo
+
+
+
+
+persistence setup --provider HIBERNATE --database MYSQL --userName ** --password ** --databaseName rootest
+
+
+
+
+entity --class ~.domain.Series
+
+
+
+
+field string --fieldName seriesName
+
+
+
+
+field reference --type com.bzone.test.domain.Series --fieldName parentSeries
+
+
+
+
+field set --fieldName subSeriesList --element com.bzone.test.domain.Series --cardinality MANY_TO_MANY --mappedBy parentSeries
+
+
+
+
+controller scaffold --class com.bzone.test.web.SeriesController --entity com.bzone.test.domain.Series
+
+
+
+
+
+
+
+
+
+
+
+
+now run the application (I use mvn jetty:run) and try to access &quot;Create new Series&quot; link.
+
+
+
+
+what happens:
+internal server see the stack trace 
+
+
+
+
+
+
+roo-exception.txt
+
+
+
+
+
+
+2010-02-23 08:26:20.275::WARN:  Nested in org.springframework.web.util.NestedServletException: Request processing failed; nested exception is org.apache.tiles.impl.CannotRenderException: ServletException including path &amp;amp;apos;/WEB-INF/layouts/default.jspx&amp;amp;apos;.:
+
+
+
+
+org.apache.tiles.impl.CannotRenderException: ServletException including path &amp;amp;apos;/WEB-INF/layouts/default.jspx&amp;amp;apos;.
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:691)
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:643)
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:626)
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:322)
+
+
+
+
+	at org.springframework.web.servlet.view.tiles2.TilesView.renderMergedOutputModel(TilesView.java:100)
+
+
+
+
+	at org.springframework.web.servlet.view.AbstractView.render(AbstractView.java:250)
+
+
+
+
+	at org.springframework.web.servlet.DispatcherServlet.render(DispatcherServlet.java:1060)
+
+
+
+
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:798)
+
+
+
+
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:716)
+
+
+
+
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:647)
+
+
+
+
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:552)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:707)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:487)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:362)
+
+
+
+
+	at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+
+
+
+
+	at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:181)
+
+
+
+
+	at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:726)
+
+
+
+
+	at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:405)
+
+
+
+
+	at org.mortbay.jetty.servlet.Dispatcher.forward(Dispatcher.java:285)
+
+
+
+
+	at org.mortbay.jetty.servlet.Dispatcher.forward(Dispatcher.java:126)
+
+
+
+
+	at org.tuckey.web.filters.urlrewrite.NormalRewrittenUrl.doRewrite(NormalRewrittenUrl.java:195)
+
+
+
+
+	at org.tuckey.web.filters.urlrewrite.RuleChain.handleRewrite(RuleChain.java:159)
+
+
+
+
+	at org.tuckey.web.filters.urlrewrite.RuleChain.doRules(RuleChain.java:141)
+
+
+
+
+	at org.tuckey.web.filters.urlrewrite.UrlRewriter.processRequest(UrlRewriter.java:90)
+
+
+
+
+	at org.tuckey.web.filters.urlrewrite.UrlRewriteFilter.doFilter(UrlRewriteFilter.java:417)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1084)
+
+
+
+
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:71)
+
+
+
+
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1084)
+
+
+
+
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:88)
+
+
+
+
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1084)
+
+
+
+
+	at org.springframework.web.filter.ShallowEtagHeaderFilter.doFilterInternal(ShallowEtagHeaderFilter.java:57)
+
+
+
+
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1084)
+
+
+
+
+	at org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter.doFilterInternal(OpenEntityManagerInViewFilter.java:113)
+
+
+
+
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1084)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:360)
+
+
+
+
+	at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+
+
+
+
+	at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:181)
+
+
+
+
+	at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:726)
+
+
+
+
+	at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:405)
+
+
+
+
+	at org.mortbay.jetty.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:206)
+
+
+
+
+	at org.mortbay.jetty.handler.HandlerCollection.handle(HandlerCollection.java:114)
+
+
+
+
+	at org.mortbay.jetty.handler.HandlerWrapper.handle(HandlerWrapper.java:152)
+
+
+
+
+	at org.mortbay.jetty.Server.handle(Server.java:324)
+
+
+
+
+	at org.mortbay.jetty.HttpConnection.handleRequest(HttpConnection.java:505)
+
+
+
+
+	at org.mortbay.jetty.HttpConnection$RequestHandler.headerComplete(HttpConnection.java:829)
+
+
+
+
+	at org.mortbay.jetty.HttpParser.parseNext(HttpParser.java:514)
+
+
+
+
+	at org.mortbay.jetty.HttpParser.parseAvailable(HttpParser.java:211)
+
+
+
+
+	at org.mortbay.jetty.HttpConnection.handle(HttpConnection.java:380)
+
+
+
+
+	at org.mortbay.io.nio.SelectChannelEndPoint.run(SelectChannelEndPoint.java:395)
+
+
+
+
+	at org.mortbay.thread.QueuedThreadPool$PoolThread.run(QueuedThreadPool.java:488)
+
+
+
+
+Caused by: org.apache.tiles.util.TilesIOException: ServletException including path &amp;amp;apos;/WEB-INF/layouts/default.jspx&amp;amp;apos;.
+
+
+
+
+	at org.apache.tiles.servlet.context.ServletUtil.wrapServletException(ServletUtil.java:232)
+
+
+
+
+	at org.apache.tiles.servlet.context.ServletTilesRequestContext.forward(ServletTilesRequestContext.java:243)
+
+
+
+
+	at org.apache.tiles.servlet.context.ServletTilesRequestContext.dispatch(ServletTilesRequestContext.java:222)
+
+
+
+
+	at org.apache.tiles.renderer.impl.TemplateAttributeRenderer.write(TemplateAttributeRenderer.java:44)
+
+
+
+
+	at org.apache.tiles.renderer.impl.AbstractBaseAttributeRenderer.render(AbstractBaseAttributeRenderer.java:103)
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:669)
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:689)
+
+
+
+
+	... 54 more
+
+
+
+
+Caused by: org.apache.tiles.util.TilesIOException: JSPException including path &amp;amp;apos;/WEB-INF/views/series/create.jspx&amp;amp;apos;.
+
+
+
+
+	at org.apache.tiles.servlet.context.ServletUtil.wrapServletException(ServletUtil.java:232)
+
+
+
+
+	at org.apache.tiles.jsp.context.JspTilesRequestContext.include(JspTilesRequestContext.java:105)
+
+
+
+
+	at org.apache.tiles.jsp.context.JspTilesRequestContext.dispatch(JspTilesRequestContext.java:96)
+
+
+
+
+	at org.apache.tiles.renderer.impl.UntypedAttributeRenderer.write(UntypedAttributeRenderer.java:61)
+
+
+
+
+	at org.apache.tiles.renderer.impl.AbstractBaseAttributeRenderer.render(AbstractBaseAttributeRenderer.java:103)
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:669)
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:337)
+
+
+
+
+	at org.apache.tiles.jsp.taglib.InsertAttributeTag.render(InsertAttributeTag.java:234)
+
+
+
+
+	at org.apache.tiles.jsp.taglib.InsertAttributeTag.render(InsertAttributeTag.java:211)
+
+
+
+
+	at org.apache.tiles.jsp.taglib.RenderTag.doEndTag(RenderTag.java:220)
+
+
+
+
+	at org.apache.jsp.WEB_002dINF.layouts.default_jspx._jspx_meth_tiles_insertAttribute_1(org.apache.jsp.WEB_002dINF.layouts.default_jspx:469)
+
+
+
+
+	at org.apache.jsp.WEB_002dINF.layouts.default_jspx._jspService(org.apache.jsp.WEB_002dINF.layouts.default_jspx:144)
+
+
+
+
+	at org.apache.jasper.runtime.HttpJspBase.service(HttpJspBase.java:93)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+
+
+
+
+	at org.apache.jasper.servlet.JspServletWrapper.service(JspServletWrapper.java:373)
+
+
+
+
+	at org.apache.jasper.servlet.JspServlet.serviceJspFile(JspServlet.java:470)
+
+
+
+
+	at org.apache.jasper.servlet.JspServlet.service(JspServlet.java:364)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:487)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:362)
+
+
+
+
+	at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+
+
+
+
+	at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:181)
+
+
+
+
+	at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:726)
+
+
+
+
+	at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:405)
+
+
+
+
+	at org.mortbay.jetty.servlet.Dispatcher.forward(Dispatcher.java:285)
+
+
+
+
+	at org.mortbay.jetty.servlet.Dispatcher.forward(Dispatcher.java:126)
+
+
+
+
+	at org.apache.tiles.servlet.context.ServletTilesRequestContext.forward(ServletTilesRequestContext.java:241)
+
+
+
+
+	... 59 more
+
+
+
+
+Caused by: org.springframework.beans.NotReadablePropertyException: Invalid property &amp;amp;apos;seriesName&amp;amp;apos; of bean class [java.util.ArrayList]: Bean property &amp;amp;apos;seriesName&amp;amp;apos; is not readable or has an invalid getter method: Does the return type of the getter match the parameter type of the setter?
+
+
+
+
+	at org.springframework.beans.BeanWrapperImpl.getPropertyValue(BeanWrapperImpl.java:665)
+
+
+
+
+	at org.springframework.beans.BeanWrapperImpl.getPropertyValue(BeanWrapperImpl.java:657)
+
+
+
+
+	at org.springframework.web.servlet.support.BindStatus.&amp;lt;init&amp;gt;(BindStatus.java:147)
+
+
+
+
+	at org.springframework.web.servlet.tags.form.AbstractDataBoundFormElementTag.getBindStatus(AbstractDataBoundFormElementTag.java:175)
+
+
+
+
+	at org.springframework.web.servlet.tags.form.AbstractDataBoundFormElementTag.getPropertyPath(AbstractDataBoundFormElementTag.java:195)
+
+
+
+
+	at org.springframework.web.servlet.tags.form.AbstractDataBoundFormElementTag.getName(AbstractDataBoundFormElementTag.java:161)
+
+
+
+
+	at org.springframework.web.servlet.tags.form.AbstractDataBoundFormElementTag.writeDefaultAttributes(AbstractDataBoundFormElementTag.java:124)
+
+
+
+
+	at org.springframework.web.servlet.tags.form.AbstractHtmlElementTag.writeDefaultAttributes(AbstractHtmlElementTag.java:409)
+
+
+
+
+	at org.springframework.web.servlet.tags.form.InputTag.writeTagContent(InputTag.java:140)
+
+
+
+
+	at org.springframework.web.servlet.tags.form.AbstractFormTag.doStartTagInternal(AbstractFormTag.java:91)
+
+
+
+
+	at org.springframework.web.servlet.tags.RequestContextAwareTag.doStartTag(RequestContextAwareTag.java:78)
+
+
+
+
+	at org.apache.jsp.WEB_002dINF.views.series.create_jspx._jspx_meth_form_input_0(org.apache.jsp.WEB_002dINF.views.series.create_jspx:512)
+
+
+
+
+	at org.apache.jsp.WEB_002dINF.views.series.create_jspx._jspService(org.apache.jsp.WEB_002dINF.views.series.create_jspx:147)
+
+
+
+
+	at org.apache.jasper.runtime.HttpJspBase.service(HttpJspBase.java:93)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+
+
+
+
+	at org.apache.jasper.servlet.JspServletWrapper.service(JspServletWrapper.java:373)
+
+
+
+
+	at org.apache.jasper.servlet.JspServlet.serviceJspFile(JspServlet.java:470)
+
+
+
+
+	at org.apache.jasper.servlet.JspServlet.service(JspServlet.java:364)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:487)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:362)
+
+
+
+
+	at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+
+
+
+
+	at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:181)
+
+
+
+
+	at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:726)
+
+
+
+
+	at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:405)
+
+
+
+
+	at org.mortbay.jetty.servlet.Dispatcher.include(Dispatcher.java:192)
+
+
+
+
+	at org.apache.jasper.runtime.JspRuntimeLibrary.include(JspRuntimeLibrary.java:997)
+
+
+
+
+	at org.apache.jasper.runtime.PageContextImpl.include(PageContextImpl.java:682)
+
+
+
+
+	at org.apache.tiles.jsp.context.JspTilesRequestContext.include(JspTilesRequestContext.java:103)
+
+
+
+
+	... 84 more
+
+
+
+
+2010-02-23 08:26:20.322::WARN:  /test-roo/series/form
+
+
+
+
+org.apache.tiles.impl.CannotRenderException: ServletException including path &amp;amp;apos;/WEB-INF/layouts/default.jspx&amp;amp;apos;.
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:691)
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:643)
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:626)
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:322)
+
+
+
+
+	at org.springframework.web.servlet.view.tiles2.TilesView.renderMergedOutputModel(TilesView.java:100)
+
+
+
+
+	at org.springframework.web.servlet.view.AbstractView.render(AbstractView.java:250)
+
+
+
+
+	at org.springframework.web.servlet.DispatcherServlet.render(DispatcherServlet.java:1060)
+
+
+
+
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:798)
+
+
+
+
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:716)
+
+
+
+
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:647)
+
+
+
+
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:552)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:707)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:487)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:362)
+
+
+
+
+	at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+
+
+
+
+	at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:181)
+
+
+
+
+	at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:726)
+
+
+
+
+	at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:405)
+
+
+
+
+	at org.mortbay.jetty.servlet.Dispatcher.forward(Dispatcher.java:285)
+
+
+
+
+	at org.mortbay.jetty.servlet.Dispatcher.forward(Dispatcher.java:126)
+
+
+
+
+	at org.tuckey.web.filters.urlrewrite.NormalRewrittenUrl.doRewrite(NormalRewrittenUrl.java:195)
+
+
+
+
+	at org.tuckey.web.filters.urlrewrite.RuleChain.handleRewrite(RuleChain.java:159)
+
+
+
+
+	at org.tuckey.web.filters.urlrewrite.RuleChain.doRules(RuleChain.java:141)
+
+
+
+
+	at org.tuckey.web.filters.urlrewrite.UrlRewriter.processRequest(UrlRewriter.java:90)
+
+
+
+
+	at org.tuckey.web.filters.urlrewrite.UrlRewriteFilter.doFilter(UrlRewriteFilter.java:417)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1084)
+
+
+
+
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:71)
+
+
+
+
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1084)
+
+
+
+
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:88)
+
+
+
+
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1084)
+
+
+
+
+	at org.springframework.web.filter.ShallowEtagHeaderFilter.doFilterInternal(ShallowEtagHeaderFilter.java:57)
+
+
+
+
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1084)
+
+
+
+
+	at org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter.doFilterInternal(OpenEntityManagerInViewFilter.java:113)
+
+
+
+
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1084)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:360)
+
+
+
+
+	at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+
+
+
+
+	at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:181)
+
+
+
+
+	at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:726)
+
+
+
+
+	at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:405)
+
+
+
+
+	at org.mortbay.jetty.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:206)
+
+
+
+
+	at org.mortbay.jetty.handler.HandlerCollection.handle(HandlerCollection.java:114)
+
+
+
+
+	at org.mortbay.jetty.handler.HandlerWrapper.handle(HandlerWrapper.java:152)
+
+
+
+
+	at org.mortbay.jetty.Server.handle(Server.java:324)
+
+
+
+
+	at org.mortbay.jetty.HttpConnection.handleRequest(HttpConnection.java:505)
+
+
+
+
+	at org.mortbay.jetty.HttpConnection$RequestHandler.headerComplete(HttpConnection.java:829)
+
+
+
+
+	at org.mortbay.jetty.HttpParser.parseNext(HttpParser.java:514)
+
+
+
+
+	at org.mortbay.jetty.HttpParser.parseAvailable(HttpParser.java:211)
+
+
+
+
+	at org.mortbay.jetty.HttpConnection.handle(HttpConnection.java:380)
+
+
+
+
+	at org.mortbay.io.nio.SelectChannelEndPoint.run(SelectChannelEndPoint.java:395)
+
+
+
+
+	at org.mortbay.thread.QueuedThreadPool$PoolThread.run(QueuedThreadPool.java:488)
+
+
+
+
+Caused by: org.apache.tiles.util.TilesIOException: ServletException including path &amp;amp;apos;/WEB-INF/layouts/default.jspx&amp;amp;apos;.
+
+
+
+
+	at org.apache.tiles.servlet.context.ServletUtil.wrapServletException(ServletUtil.java:232)
+
+
+
+
+	at org.apache.tiles.servlet.context.ServletTilesRequestContext.forward(ServletTilesRequestContext.java:243)
+
+
+
+
+	at org.apache.tiles.servlet.context.ServletTilesRequestContext.dispatch(ServletTilesRequestContext.java:222)
+
+
+
+
+	at org.apache.tiles.renderer.impl.TemplateAttributeRenderer.write(TemplateAttributeRenderer.java:44)
+
+
+
+
+	at org.apache.tiles.renderer.impl.AbstractBaseAttributeRenderer.render(AbstractBaseAttributeRenderer.java:103)
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:669)
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:689)
+
+
+
+
+	... 54 more
+
+
+
+
+Caused by: org.apache.tiles.util.TilesIOException: JSPException including path &amp;amp;apos;/WEB-INF/views/series/create.jspx&amp;amp;apos;.
+
+
+
+
+	at org.apache.tiles.servlet.context.ServletUtil.wrapServletException(ServletUtil.java:232)
+
+
+
+
+	at org.apache.tiles.jsp.context.JspTilesRequestContext.include(JspTilesRequestContext.java:105)
+
+
+
+
+	at org.apache.tiles.jsp.context.JspTilesRequestContext.dispatch(JspTilesRequestContext.java:96)
+
+
+
+
+	at org.apache.tiles.renderer.impl.UntypedAttributeRenderer.write(UntypedAttributeRenderer.java:61)
+
+
+
+
+	at org.apache.tiles.renderer.impl.AbstractBaseAttributeRenderer.render(AbstractBaseAttributeRenderer.java:103)
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:669)
+
+
+
+
+	at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:337)
+
+
+
+
+	at org.apache.tiles.jsp.taglib.InsertAttributeTag.render(InsertAttributeTag.java:234)
+
+
+
+
+	at org.apache.tiles.jsp.taglib.InsertAttributeTag.render(InsertAttributeTag.java:211)
+
+
+
+
+	at org.apache.tiles.jsp.taglib.RenderTag.doEndTag(RenderTag.java:220)
+
+
+
+
+	at org.apache.jsp.WEB_002dINF.layouts.default_jspx._jspx_meth_tiles_insertAttribute_1(org.apache.jsp.WEB_002dINF.layouts.default_jspx:469)
+
+
+
+
+	at org.apache.jsp.WEB_002dINF.layouts.default_jspx._jspService(org.apache.jsp.WEB_002dINF.layouts.default_jspx:144)
+
+
+
+
+	at org.apache.jasper.runtime.HttpJspBase.service(HttpJspBase.java:93)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+
+
+
+
+	at org.apache.jasper.servlet.JspServletWrapper.service(JspServletWrapper.java:373)
+
+
+
+
+	at org.apache.jasper.servlet.JspServlet.serviceJspFile(JspServlet.java:470)
+
+
+
+
+	at org.apache.jasper.servlet.JspServlet.service(JspServlet.java:364)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:487)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:362)
+
+
+
+
+	at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+
+
+
+
+	at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:181)
+
+
+
+
+	at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:726)
+
+
+
+
+	at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:405)
+
+
+
+
+	at org.mortbay.jetty.servlet.Dispatcher.forward(Dispatcher.java:285)
+
+
+
+
+	at org.mortbay.jetty.servlet.Dispatcher.forward(Dispatcher.java:126)
+
+
+
+
+	at org.apache.tiles.servlet.context.ServletTilesRequestContext.forward(ServletTilesRequestContext.java:241)
+
+
+
+
+	... 59 more
+
+
+
+
+Caused by: org.springframework.beans.NotReadablePropertyException: Invalid property &amp;amp;apos;seriesName&amp;amp;apos; of bean class [java.util.ArrayList]: Bean property &amp;amp;apos;seriesName&amp;amp;apos; is not readable or has an invalid getter method: Does the return type of the getter match the parameter type of the setter?
+
+
+
+
+	at org.springframework.beans.BeanWrapperImpl.getPropertyValue(BeanWrapperImpl.java:665)
+
+
+
+
+	at org.springframework.beans.BeanWrapperImpl.getPropertyValue(BeanWrapperImpl.java:657)
+
+
+
+
+	at org.springframework.web.servlet.support.BindStatus.&amp;lt;init&amp;gt;(BindStatus.java:147)
+
+
+
+
+	at org.springframework.web.servlet.tags.form.AbstractDataBoundFormElementTag.getBindStatus(AbstractDataBoundFormElementTag.java:175)
+
+
+
+
+	at org.springframework.web.servlet.tags.form.AbstractDataBoundFormElementTag.getPropertyPath(AbstractDataBoundFormElementTag.java:195)
+
+
+
+
+	at org.springframework.web.servlet.tags.form.AbstractDataBoundFormElementTag.getName(AbstractDataBoundFormElementTag.java:161)
+
+
+
+
+	at org.springframework.web.servlet.tags.form.AbstractDataBoundFormElementTag.writeDefaultAttributes(AbstractDataBoundFormElementTag.java:124)
+
+
+
+
+	at org.springframework.web.servlet.tags.form.AbstractHtmlElementTag.writeDefaultAttributes(AbstractHtmlElementTag.java:409)
+
+
+
+
+	at org.springframework.web.servlet.tags.form.InputTag.writeTagContent(InputTag.java:140)
+
+
+
+
+	at org.springframework.web.servlet.tags.form.AbstractFormTag.doStartTagInternal(AbstractFormTag.java:91)
+
+
+
+
+	at org.springframework.web.servlet.tags.RequestContextAwareTag.doStartTag(RequestContextAwareTag.java:78)
+
+
+
+
+	at org.apache.jsp.WEB_002dINF.views.series.create_jspx._jspx_meth_form_input_0(org.apache.jsp.WEB_002dINF.views.series.create_jspx:512)
+
+
+
+
+	at org.apache.jsp.WEB_002dINF.views.series.create_jspx._jspService(org.apache.jsp.WEB_002dINF.views.series.create_jspx:147)
+
+
+
+
+	at org.apache.jasper.runtime.HttpJspBase.service(HttpJspBase.java:93)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+
+
+
+
+	at org.apache.jasper.servlet.JspServletWrapper.service(JspServletWrapper.java:373)
+
+
+
+
+	at org.apache.jasper.servlet.JspServlet.serviceJspFile(JspServlet.java:470)
+
+
+
+
+	at org.apache.jasper.servlet.JspServlet.service(JspServlet.java:364)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:487)
+
+
+
+
+	at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:362)
+
+
+
+
+	at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+
+
+
+
+	at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:181)
+
+
+
+
+	at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:726)
+
+
+
+
+	at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:405)
+
+
+
+
+	at org.mortbay.jetty.servlet.Dispatcher.include(Dispatcher.java:192)
+
+
+
+
+	at org.apache.jasper.runtime.JspRuntimeLibrary.include(JspRuntimeLibrary.java:997)
+
+
+
+
+	at org.apache.jasper.runtime.PageContextImpl.include(PageContextImpl.java:682)
+
+
+
+
+	at org.apache.tiles.jsp.context.JspTilesRequestContext.include(JspTilesRequestContext.java:103)
+
+
+
+
+	... 84 more
+
+
+
+
+
+
+
+
+
+
+
+
+when i opened the SeriesController_Roo_Controller.aj file i found the reason, the createForm method adds the series entity and the series list with the same name to the model map
+
+
+
+
+
+
+@RequestMapping(value = &quot;/series/form&quot;, method = RequestMethod.GET)
+
+
+
+
+    public String SeriesController.createForm(ModelMap modelMap) {
+
+
+
+
+        modelMap.addAttribute(&quot;series&quot;, new Series());
+
+
+
+
+        modelMap.addAttribute(&quot;series&quot;, Series.findAllSeries());
+
+
+
+
+        return &quot;series/create&quot;;
+
+
+
+
+    }
+
+
+
+
+
+</description>
+			
+			
+			<version>1.0.1.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspMetadataListener.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspViewManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-06-20 12:49:45" id="914" opendate="2010-05-30 04:59:47" resolution="Invalid">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Oracle persistence: wrong URL in database.properties</summary>
+			
+			
+			<description>After having create a topLevelPackage for a new roo project and after executing the persistence setup with
+persistence setup --provider ECLIPSELINK --database ORACLE --databaseName orcl --userName oe --password  oe
+(OE is a default test-schema delivered from Oracle for testing and training purposes)
+the created database.properties contains a wrong URL:
+jdbc\:oracle\:thin\:@localhost\:1521/orcl
+The correct one should not contain any slashes/backslashes and is of the following form (maintaining the replacements):
+jdbc:oracle:thin:@localhost:1521:orcl
+Having replaced that, the database connection works.</description>
+			
+			
+			<version>1.0.1.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JpaOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1203</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-19 18:10:07" id="1203" opendate="2010-08-10 20:30:02" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CLONE -Oracle persistence: wrong URL in database.properties</summary>
+			
+			
+			<description>After having create a topLevelPackage for a new roo project and after executing the persistence setup with
+persistence setup --provider ECLIPSELINK --database ORACLE --databaseName orcl --userName oe --password  oe
+(OE is a default test-schema delivered from Oracle for testing and training purposes)
+the created database.properties contains a wrong URL:
+jdbc\:oracle\:thin\:@localhost\:1521/orcl
+The correct one should not contain any slashes/backslashes and is of the following form (maintaining the replacements):
+jdbc:oracle:thin:@localhost:1521:orcl
+Having replaced that, the database connection works.</description>
+			
+			
+			<version>1.0.1.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JpaOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">914</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

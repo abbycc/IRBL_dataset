@@ -1,0 +1,1 @@
+JpaOperationsImpl should close OutputStream The OutputStream was not closing, resulting in empty database.properties files.

@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="WFCORE">
+	<bug fixdate="2014-09-03 01:01:23" id="79" opendate="2014-09-01 00:23:30" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ExplodedDeploymentMarker is not set for sub deployments</summary>
+			
+			
+			<description/>
+			
+			
+			<version>1.0.0.Alpha5</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.module.DeploymentRootMountProcessor.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.SubDeploymentProcessor.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Dependency">3765</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-03 16:13:20" id="71" opendate="2014-08-26 19:34:17" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ProtocolLogger is used outside org.jboss.as.protocol module but isn&amp;apos;t available</summary>
+			
+			
+			<description>The ProtocolLogger class is used in a few places in host-controller and server, but the module.xml for the org.jboss.as.protocol module specifically excludes it from being exported.
+The uses aren&amp;amp;apos;t complex enough to justify exporting the class, so I&amp;amp;apos;ll just change them.</description>
+			
+			
+			<version>1.0.0.Alpha5</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.mgmt.domain.HostControllerConnection.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.mgmt.HostControllerRegistrationHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.mgmt.ServerToHostProtocolHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.protocol.mgmt.FutureManagementChannel.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-04 06:45:31" id="64" opendate="2014-08-11 15:19:22" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Filesystem deployment scanner deployment failure removes unrelated deployments</summary>
+			
+			
+			<description>If one&amp;amp;apos;s standalone-full.xml configuration contains something like:
+&amp;lt;deployments&amp;gt;
+  &amp;lt;deployment name=&quot;MyWebApp.war&quot; runtime-name=&quot;MyWebApp.war&quot; enabled=&quot;true&quot;&amp;gt;
+    &amp;lt;fs-exploded path=&quot;../../SomeDir/MyWebApp.war&quot; relative-to=&quot;jboss.home.dir&quot;/&amp;gt;
+  &amp;lt;/deployment&amp;gt;
+&amp;lt;/deployments&amp;gt;
+whether manually inserted (while the server is not running) or installed via the CLI via
+  /deployment=ServiceCenter.war/:add(runtime-name=ServiceCenter.war,content=[
+{archive=false,path=&quot;../../Windchill/ServiceCenter.war&quot;,relative-to=&quot;jboss.home.dir&quot;}
+])
+and a deployment scanner like:
+  &amp;lt;subsystem xmlns=&quot;urn:jboss:domain:deployment-scanner:2.0&quot;&amp;gt; 
+    &amp;lt;deployment-scanner name=&quot;1&quot; path=&quot;../../../Applications&quot; relative-to=&quot;jboss.server.base.dir&quot; scan-interval=&quot;5000&quot; auto-deploy-exploded=&quot;true&quot;/&amp;gt; 
+  &amp;lt;/subsystem&amp;gt; 
+a failure by a deployment-scanner to deploy an application (exploded in my case, though I&amp;amp;apos;m not sure this makes a difference) will cause the explicitly listed &amp;lt;deployments&amp;gt; to be removed from the configuration!
+This occurs irrespective of the value used for auto-deploy-exploded and to &amp;lt;deployment&amp;gt; elements that had already successfully been deployed and started.</description>
+			
+			
+			<version>1.0.0.Alpha5</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.FileSystemDeploymentService.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.FileSystemDeploymentServiceUnitTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">4984</link>
+			
+			
+			<link description="is related to" type="Related">4985</link>
+			
+			
+			<link description="is incorporated by" type="Superset">65</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-05 15:53:40" id="88" opendate="2014-09-05 15:28:38" resolution="Duplicate Issue">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Management interface to track (timestamp) when an application was last deployed.</summary>
+			
+			
+			<description>
+When an application is Deployed/Undeployed or Enabled/Disabled then there should be some mechanism in order to track the timestamp of these events  using some CLI commands.
+
+
+This will help in tracking when last time the application was enabled/disabled/deployed/undeployed.
+
+I have some reservations about this as it&amp;amp;apos;s not clear why these management resources should be treated differently from other resources in terms of showing this kind of information about their history. But there&amp;amp;apos;s user demand for it and Claudio Miranda is doing good work on implementing it, so I&amp;amp;apos;m fine with it.</description>
+			
+			
+			<version>1.0.0.Alpha5</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Feature Request</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentReplaceHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentUtils.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.controller.resources.DeploymentAttributes.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentUndeployHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentFullReplaceHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentDeployHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.descriptions.ModelDescriptionConstants.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentAddHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">87</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-09 11:09:07" id="82" opendate="2014-09-03 17:18:13" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Defining a HTTP management interface with secure-port or https socket binding but not security realm causes NullPointerException</summary>
+			
+			
+			<description>There are actually two checks that need to be performed: -
+ 1 - If a secure port is required then a security realm must be associated with the interface.
+ 2 - That security realm must supply an SSLContext
+For #1 that can at least be validated in the model at the end of stage MODEL.  This will need to be validated for both standalone mode and domain mode - each of these use independent resource definitions.
+#2 will have to wait until RUNTIME where we have the opportunity to check that the injected realm does supply a SSLContext.</description>
+			
+			
+			<version>1.0.0.Alpha5</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.domain.management.security.LdapAuthorizationResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.logging.ServerLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.logging.HostControllerLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.operations.HttpManagementAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.logging.DomainControllerLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.resources.HttpManagementResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.mgmt.HttpManagementResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.operations.HttpManagementAddHandler.java</file>
+			
+			
+			<file type="D">org.jboss.as.server.operations.HttpManagementWriteAttributeHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.http.server.logging.HttpServerLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.http.server.ManagementHttpServer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-11 12:32:49" id="92" opendate="2014-09-09 05:58:42" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>cli deploy command with unpaired quotation mark causes StringIndexOutOfBoundsException</summary>
+			
+			
+			<description>
+CLI &quot;deploy&quot; command with open quote and tab for completion results in a &quot;StringIndexOutOfBoundsException&quot; exception
+
+
+Type &amp;amp;apos;connect&amp;amp;apos; to connect to the server or &amp;amp;apos;help&amp;amp;apos; for the list of supported commands.
+
+
+
+
+
+
+[disconnected /] connect
+
+
+
+
+[standalone@localhost:9999 /] deploy &quot;d&amp;lt;Tab&amp;gt;
+
+
+
+
+
+
+
+
+
+[standalone@localhost:9990 /] deploy &quot;djava.lang.StringIndexOutOfBoundsException: String index out of range: -1
+
+
+
+
+        at java.lang.String.substring(String.java:1958)
+
+
+
+
+        at org.jboss.as.cli.handlers.WindowsFilenameTabCompleter.complete(WindowsFilenameTabCompleter.java:54)
+
+
+
+
+        at org.jboss.as.cli.operation.OperationRequestCompleter.complete(OperationRequestCompleter.java:229)
+
+
+
+
+        at org.jboss.as.cli.operation.OperationRequestCompleter.complete(OperationRequestCompleter.java:73)
+
+
+
+
+        at org.jboss.as.cli.CommandCompleter.doComplete(CommandCompleter.java:126)
+
+
+
+
+        at org.jboss.as.cli.CommandCompleter.complete(CommandCompleter.java:63)
+
+
+
+
+        at org.jboss.as.cli.impl.Console$Factory$1$1.complete(Console.java:102)
+
+
+
+
+        at org.jboss.aesh.console.Console.complete(Console.java:1155)
+
+
+
+
+        at org.jboss.aesh.console.Console.parseOperation(Console.java:550)
+
+
+
+
+        at org.jboss.aesh.console.Console.read(Console.java:452)
+
+
+
+
+        at org.jboss.aesh.console.Console.read(Console.java:346)
+
+
+
+
+        at org.jboss.as.cli.impl.Console$Factory$1.readLine(Console.java:178)
+
+
+
+
+        at org.jboss.as.cli.impl.CommandContextImpl.interact(CommandContextImpl.java:1283)
+
+
+
+
+        at org.jboss.as.cli.impl.CliLauncher.main(CliLauncher.java:254)
+
+
+
+
+        at org.jboss.as.cli.CommandLineMain.main(CommandLineMain.java:34)
+
+
+
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+
+
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+
+
+
+
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+
+
+
+        at java.lang.reflect.Method.invoke(Method.java:601)
+
+
+
+
+        at org.jboss.modules.Module.run(Module.java:312)
+
+
+
+
+        at org.jboss.modules.Main.main(Main.java:460)
+
+
+
+
+Press any key to continue . . .
+
+
+
+
+
+
+
+</description>
+			
+			
+			<version>1.0.0.Alpha5</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.handlers.WindowsFilenameTabCompleter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-18 16:27:07" id="72" opendate="2014-08-27 02:09:20" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>deploy --force fails in CLI GUI</summary>
+			
+			
+			<description>The --force flag is not working with the deploy command in CLI GUI.  The CLI CommandContextImpl is generating the wrong DMR request.</description>
+			
+			
+			<version>1.0.0.Alpha5</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.impl.CliLauncher.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-19 06:37:09" id="95" opendate="2014-09-11 11:57:52" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>PrimitiveListAttributeDefinition.Builder copy constructor does not copy the listValidator</summary>
+			
+			
+			<description/>
+			
+			
+			<version>1.0.0.Alpha5</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha9</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.PrimitiveListAttributeDefinitionUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.SimpleListAttributeDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.PrimitiveListAttributeDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.SimpleListAttributeDefinitionUnitTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-30 20:19:15" id="87" opendate="2014-09-05 14:38:26" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Display deployment timestamp</summary>
+			
+			
+			<description>Display the deployment timestamp, that is the date of last modified deployment. It is useful for users to see the date and time of deployments.</description>
+			
+			
+			<version>1.0.0.Alpha5</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha9</fixedVersion>
+			
+			
+			<type>Enhancement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentReplaceHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentUtils.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.controller.resources.DeploymentAttributes.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentUndeployHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentFullReplaceHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentDeployHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.descriptions.ModelDescriptionConstants.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentAddHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Dependency">391</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">88</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-04-10 19:47:15" id="65" opendate="2014-08-21 16:40:26" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Filesystem deployment scanner deployment failure removes other scanners &amp;apos; deployments</summary>
+			
+			
+			<description>There is no way to associate a deployment to a specific scanner thus if one deployment fails for a scanner during startup all deployments not persistent will be removed </description>
+			
+			
+			<version>1.0.0.Alpha5</version>
+			
+			
+			<fixedVersion>1.0.0.Beta4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.DeploymentScannerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.controller.resources.DeploymentAttributes.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.api.DeploymentOperations.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.ShutdownFileSystemDeploymentServiceUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.DeploymentScannerAdd.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.DefaultDeploymentOperations.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.FileSystemDeploymentServiceUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentFullReplaceHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.FileSystemDeploymentService.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.descriptions.ModelDescriptionConstants.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.api.DeploymentScanner.java</file>
+			
+			
+			<file type="D">org.jboss.as.server.deployment.scanner.DeploymentOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Related">632</link>
+			
+			
+			<link description="is related to" type="Related">3708</link>
+			
+			
+			<link description="incorporates" type="Superset">64</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

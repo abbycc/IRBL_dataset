@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="MATH">
+	<bug fixdate="2015-05-30 17:27:41" id="1229" opendate="2015-05-30 16:25:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ResizableDoubleArray: Wrong &quot;initialCapacity&quot;</summary>
+			
+			
+			<description>In o.a.c.m.util.ResizableDoubleArray, in the constructor
+
+
+
+public ResizableDoubleArray(double[] initialArray) {
+
+    this(DEFAULT_INITIAL_CAPACITY,
+
+            DEFAULT_EXPANSION_FACTOR,
+
+            DEFAULT_CONTRACTION_DELTA + DEFAULT_EXPANSION_FACTOR,
+
+            DEFAULT_EXPANSION_MODE,
+
+            initialArray);
+
+}
+
+
+
+the initial capacity should be set to the length on the input, and not to the hard-coded default.</description>
+			
+			
+			<version>3.5</version>
+			
+			
+			<fixedVersion>3.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.util.ResizableDoubleArray.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-09 18:49:44" id="1230" opendate="2015-06-09 15:07:08" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SimplexSolver returning wrong answer from optimize</summary>
+			
+			
+			<description>SimplexSolver fails for the following linear program:
+min 2x1 +15x2 +18x3
+Subject to
+  -x1 +2x2  -6x3 &amp;lt;=-10
+            x2  +2x3 &amp;lt;= 6
+   2x1      +10x3 &amp;lt;= 19
+    -x1  +x2       &amp;lt;= -2
+    x1,x2,x3 &amp;gt;= 0
+Solution should be
+x1 = 7
+x2 = 0
+x3 = 1/2
+Objective function = 23
+Instead, it is returning
+x1 = 9.5
+x2 = 1/8
+x3 = 0
+Objective function = 20.875
+Constraint number 1 is violated by this answer</description>
+			
+			
+			<version>3.5</version>
+			
+			
+			<fixedVersion>4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.optim.linear.SimplexSolver.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.optim.linear.SimplexTableau.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.optim.linear.SimplexSolverTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-11 22:13:37" id="1231" opendate="2015-06-10 11:59:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MicrosphereInterpolator: Unnecessery restriction in constructor</summary>
+			
+			
+			<description>In o.a.c.m.analysis.interpolation.MicrosphereInterpolator, the constructor requires that the &quot;exponent&quot; be an integer, whereas the algorithm has no such restriction.</description>
+			
+			
+			<version>3.5</version>
+			
+			
+			<fixedVersion>4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.analysis.interpolation.MicrosphereInterpolatingFunction.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.analysis.interpolation.MicrosphereInterpolator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.analysis.interpolation.MicrosphereInterpolatorTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-24 13:43:21" id="1241" opendate="2015-06-24 12:49:05" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Digamma calculation produces SOE on NaN argument</summary>
+			
+			
+			<description>Digamma doesn&amp;amp;apos;t work particularly well with NaNs.
+How to reproduce: call Gamma.digamma(Double.NaN)
+Expected outcome: returns NaN or throws a meaningful exception
+Real outcome: crashes with StackOverflowException, as digamma enters infinite recursion.</description>
+			
+			
+			<version>3.5</version>
+			
+			
+			<fixedVersion>4.0, 3.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.special.Gamma.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.special.GammaTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-20 13:51:12" id="1251" opendate="2015-07-19 21:07:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Wrong &quot;number of calls&quot; in &quot;KohonenUpdateAction&quot;</summary>
+			
+			
+			<description>In class KohonenUpdateAction (package o.a.c.m.ml.neuralnet.sofm), the method getNumberOfCalls is off by 1 due to counter being initialized to -1.</description>
+			
+			
+			<version>3.5</version>
+			
+			
+			<fixedVersion>4.0, 3.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.ml.neuralnet.sofm.KohonenUpdateAction.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-08-13 21:35:26" id="1255" opendate="2015-08-13 21:14:51" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Bug in &quot;o.a.c.m.ml.neuralnet.sofm.KohonenUpdateAction&quot;</summary>
+			
+			
+			<description>In method &quot;update&quot;, the standard deviation of the &quot;Gaussian&quot; function is set to &quot;1 / n&quot; instead of &quot;n&quot; where n is the current neighbourhood size.</description>
+			
+			
+			<version>3.5</version>
+			
+			
+			<fixedVersion>4.0, 3.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.ml.neuralnet.sofm.KohonenUpdateAction.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-08-19 21:16:23" id="1257" opendate="2015-08-18 22:31:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NormalDistribution.cumulativeProbability() suffers from cancellation</summary>
+			
+			
+			<description>I see the following around line 194:
+
+        return 0.5 * (1 + Erf.erf(dev / (standardDeviation * SQRT2)));
+
+
+
+When erf() returns a very small value, this cancels in the addition with the &quot;1.0&quot; which leads to poor precision in the results.
+I would suggest changing this line to read more like:
+
+return 0.5 * Erf.erfc( -dev / standardDeviation * SQRT2 );
+
+
+
+Should you want some test cases for &quot;extreme values&quot; (one might argue that within 10 standard deviations isn&amp;amp;apos;t all that extreme) then you can check the following: http://www.jstatsoft.org/v52/i07/ then look in the v52i07-xls.zip at replication-01-distribution-standard-normal.xls
+I think you will also find that evaluation of expressions such as 
+
+NormalDistribution( 0, 1 ).cumulativeProbability( -10.0 );
+
+are pretty far off.</description>
+			
+			
+			<version>3.5</version>
+			
+			
+			<fixedVersion>4.0, 3.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.NormalDistributionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.NormalDistribution.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-09-20 08:15:39" id="1277" opendate="2015-09-18 21:39:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Incorrect Kendall Tau calc due to data type mistmatch</summary>
+			
+			
+			<description>The Kendall Tau calculation returns a number from -1.0 to 1.0
+due to a mixing of ints and longs, a mistake occurs on large size columns (arrays) passed to the function. an array size of &amp;gt; 50350 triggers the condition in my case - although it may be data dependent
+the ver 3.5 library returns 2.6 as a result (outside of the defined range of Kendall Tau)
+with the cast to long below - the result reutns to its expected value
+commons.math3.stat.correlation.KendallsCorrelation.correlation
+here&amp;amp;apos;s the sample code I used:
+I added the cast to long of swaps in the 
+			int swaps = 1077126315;
+			 final long numPairs = sum(50350 - 1);
+			    long tiedXPairs = 0;
+		        long tiedXYPairs = 0;
+		        long tiedYPairs = 0;
+		  final long concordantMinusDiscordant = numPairs - tiedXPairs - tiedYPairs + tiedXYPairs - 2 * (long) swaps;
+	        final double nonTiedPairsMultiplied = 1.6e18;
+	        double myTest = concordantMinusDiscordant / FastMath.sqrt(nonTiedPairsMultiplied);</description>
+			
+			
+			<version>3.5</version>
+			
+			
+			<fixedVersion>4.0, 3.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.stat.correlation.KendallsCorrelation.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.stat.correlation.KendallsCorrelationTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-22 20:34:05" id="1283" opendate="2015-10-22 08:40:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Gamma function computation</summary>
+			
+			
+			<description>In the gamma method, when handling the case &quot;absX &amp;gt; 20&quot;, the computation of gammaAbs should replace &quot;x&quot; (see code below with x in bold) by &quot;absX&quot;.
+For large negative values of x, the function returns with the wrong sign.
+final double gammaAbs = SQRT_TWO_PI / x *
+                                     FastMath.pow(y, absX + 0.5) *
+                                     FastMath.exp(-y) * lanczos(absX);</description>
+			
+			
+			<version>3.5</version>
+			
+			
+			<fixedVersion>4.0, 3.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.special.Gamma.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.special.GammaTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-02 14:58:12" id="1295" opendate="2015-12-01 15:56:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NonLinearConjugateGradientOptimizer and BracketFinder TooManyEvaluationsException</summary>
+			
+			
+			<description>I am getting the exception below when using NonLinearConjugateGradientOptimizer.  
+ org.apache.commons.math3.exception.TooManyEvaluationsException: illegal state: maximal count (50) exceeded: evaluations
+	at org.apache.commons.math3.optim.univariate.BracketFinder.eval(BracketFinder.java:287)
+	at org.apache.commons.math3.optim.univariate.BracketFinder.search(BracketFinder.java:181)
+	at org.apache.commons.math3.optim.nonlinear.scalar.LineSearch.search(LineSearch.java:127)
+	at org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer.doOptimize(NonLinearConjugateGradientOptimizer.java:283)
+	at org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer.doOptimize(NonLinearConjugateGradientOptimizer.java:47)
+	at org.apache.commons.math3.optim.BaseOptimizer.optimize(BaseOptimizer.java:154)
+	at org.apache.commons.math3.optim.BaseMultivariateOptimizer.optimize(BaseMultivariateOptimizer.java:66)
+	at org.apache.commons.math3.optim.nonlinear.scalar.MultivariateOptimizer.optimize(MultivariateOptimizer.java:64)
+	at org.apache.commons.math3.optim.nonlinear.scalar.GradientMultivariateOptimizer.optimize(GradientMultivariateOptimizer.java:74)
+	at org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer.optimize(NonLinearConjugateGradientOptimizer.java:245)
+NonLinearConjugateGradientOptimizer calls the no argument constructor of BracketFinder which defaults its max evaluations to 50.  I tried changing the source code of BracketFinder so that the default max evaluations is 200 and since making the change have not encountered the problem.  I was wondering if BracketFinder could have its default max evaluations increased or if NonLinearConjugateGradientOptimizer could set a higher max evaluations when it constructs a BracketFinder.</description>
+			
+			
+			<version>3.5</version>
+			
+			
+			<fixedVersion>4.0, 3.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.optim.univariate.BracketFinder.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-31 22:22:59" id="1310" opendate="2015-12-31 20:03:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Improve accuracy and performance of 2-sample Kolmogorov-Smirnov test</summary>
+			
+			
+			<description>As of 3.5, the exactP method used to compute exact  p-values for 2-sample Kolmogorov-Smirnov tests is very slow, as it is based on a naive implementation that enumarates all n-m partitions of the combined sample.  As a result, its use is not recommended for problems where the product of the two sample sizes exceeds 100 and the kolmogorovSmirnovTest method uses it only for samples in this range.  To handle sample size products between 100 and 10000, where the asymptotic KS distribution can be used, this method currently uses Monte Carlo simulation.  Convergence is poor for many problem instances, resulting in inaccurate results.
+To eliminate the need for the Monte Carlo simulation and increase the performance of exactP itself, a faster exactP implementation should be added.  This can be implemented by unwinding the recursive functions defined in Chapter 5, table 5.2 in:
+Wilcox, Rand. 2012. Introduction to Robust Estimation and Hypothesis Testing, Chapter 5, 3rd Ed. Academic Press.</description>
+			
+			
+			<version>3.5</version>
+			
+			
+			<fixedVersion>3.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.stat.inference.KolmogorovSmirnovTestTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.stat.inference.KolmogorovSmirnovTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-31 23:21:58" id="1300" opendate="2015-12-19 01:57:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BitsStreamGenerator#nextBytes(byte[]) is wrong</summary>
+			
+			
+			<description>Sequential calls to the BitsStreamGenerator#nextBytes(byte[]) must generate the same sequence of bytes, no matter by chunks of which size it was divided. This is also how java.util.Random#nextBytes(byte[]) works.
+When nextBytes(byte[]) is called with a bytes array of length multiple of 4 it makes one unneeded call to next(int) method. This is wrong and produces an inconsistent behavior of classes like MersenneTwister.
+I made a new implementation of the BitsStreamGenerator#nextBytes(byte[]) see attached code.</description>
+			
+			
+			<version>3.5</version>
+			
+			
+			<fixedVersion>3.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.random.AbstractRandomGenerator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.random.RandomGeneratorAbstractTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.random.BitsStreamGenerator.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">1304</link>
+			
+			
+			<link description="is related to" type="Reference">1305</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

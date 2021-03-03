@@ -1,0 +1,1002 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="WFCORE">
+	<bug fixdate="2016-11-17 22:18:02" id="1975" opendate="2016-11-11 20:22:38" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>EmbeddedProcessFactory does not accept module pathes with multiple directories</summary>
+			
+			
+			<description>The modulePath parameters passed to the org.wildfly.core.embedded.EmbeddedProcessFactory methods are are rejected if they they are actual paths with multiple directories. Only single directory names are accepted.
+This is inconsistent with the normal operation of the server, with the naming of the parameter, as well as with the semantics of the module.path system property that it ultimately sets.</description>
+			
+			
+			<version>3.0.0.Alpha12</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha13</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.wildfly.core.embedded.EmbeddedProcessFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-11-17 22:18:43" id="1980" opendate="2016-11-14 11:38:17" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Property file passed via CLI does not resolve expressions with relative path value in vault attributes</summary>
+			
+			
+			<description>Property file passed via CLI with --properties option does not resolve expressions in EAP 7, where in EAP 6 it works fine. </description>
+			
+			
+			<version>3.0.0.Alpha12</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha13</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.parsing.test.PropertyReplacementTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.ArgumentValueConverter.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.util.CLIExpressionResolver.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">7092</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-11-17 22:26:19" id="1997" opendate="2016-11-16 03:11:58" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NPE when non-existent attribute name is used for list-add operation</summary>
+			
+			
+			<description>When I use non-existent attribute name for &amp;amp;apos;list-add&amp;amp;apos; operation, I get following NPE in server.log:
+
+
+
+
+
+
+12:44:24,150 ERROR [org.jboss.as.controller.management-operation] (management-handler-thread - 10) WFLYCTL0013: Operation (&quot;list-add&quot;) failed - address: ([
+
+
+
+
+    (&quot;subsystem&quot; =&amp;gt; &quot;undertow&quot;),
+
+
+
+
+    (&quot;server&quot; =&amp;gt; &quot;default-server&quot;),
+
+
+
+
+    (&quot;https-listener&quot; =&amp;gt; &quot;https&quot;)
+
+
+
+
+]): java.lang.NullPointerException
+
+
+
+
+	at org.jboss.as.controller.operations.global.AbstractCollectionHandler.execute(AbstractCollectionHandler.java:92)
+
+
+
+
+	at org.jboss.as.controller.operations.global.ListOperations$ListAddHandler.execute(ListOperations.java:108)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext.executeStep(AbstractOperationContext.java:921)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext.processStages(AbstractOperationContext.java:664)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext.executeOperation(AbstractOperationContext.java:383)
+
+
+
+
+	at org.jboss.as.controller.OperationContextImpl.executeOperation(OperationContextImpl.java:1364)
+
+
+
+
+	at org.jboss.as.controller.ModelControllerImpl.internalExecute(ModelControllerImpl.java:416)
+
+
+
+
+	at org.jboss.as.controller.ModelControllerImpl.lambda$execute$1(ModelControllerImpl.java:237)
+
+
+
+
+	at org.wildfly.security.auth.client.PeerIdentity.runAsAll(PeerIdentity.java:431)
+
+
+
+
+	at org.wildfly.security.auth.server.SecurityIdentity.runAs(SecurityIdentity.java:206)
+
+
+
+
+	at org.jboss.as.controller.ModelControllerImpl.execute(ModelControllerImpl.java:237)
+
+
+
+
+	at org.jboss.as.controller.remote.ModelControllerClientOperationHandler$ExecuteRequestHandler.doExecute(ModelControllerClientOperationHandler.java:217)
+
+
+
+
+	at org.jboss.as.controller.remote.ModelControllerClientOperationHandler$ExecuteRequestHandler.access$400(ModelControllerClientOperationHandler.java:137)
+
+
+
+
+	at org.jboss.as.controller.remote.ModelControllerClientOperationHandler$ExecuteRequestHandler$1$1.run(ModelControllerClientOperationHandler.java:161)
+
+
+
+
+	at org.jboss.as.controller.remote.ModelControllerClientOperationHandler$ExecuteRequestHandler$1$1.run(ModelControllerClientOperationHandler.java:157)
+
+
+
+
+	at org.wildfly.security.auth.client.PeerIdentity.runAsAll(PeerIdentity.java:464)
+
+
+
+
+	at org.wildfly.security.auth.server.SecurityIdentity.runAs(SecurityIdentity.java:225)
+
+
+
+
+	at org.jboss.as.controller.AccessAuditContext.doAs(AccessAuditContext.java:185)
+
+
+
+
+	at org.jboss.as.controller.remote.ModelControllerClientOperationHandler$ExecuteRequestHandler$1.execute(ModelControllerClientOperationHandler.java:157)
+
+
+
+
+	at org.jboss.as.protocol.mgmt.ManagementRequestContextImpl$1.doExecute(ManagementRequestContextImpl.java:70)
+
+
+
+
+	at org.jboss.as.protocol.mgmt.ManagementRequestContextImpl$AsyncTaskRunner.run(ManagementRequestContextImpl.java:160)
+
+
+
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+
+
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+
+
+
+	at java.lang.Thread.run(Thread.java:745)
+
+
+
+
+	at org.jboss.threads.JBossThread.run(JBossThread.java:320)
+
+
+
+
+
+
+Yeah - I understand that it is my fault that I provided bad command. But still, server should not respond with NPE. Ideally it should told me that provided list attribute does not exist for particular element and should finish operation with error.</description>
+			
+			
+			<version>3.0.0.Alpha12</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha13</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.operations.global.AbstractCollectionHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">7110</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-11-17 22:27:41" id="1992" opendate="2016-11-15 14:35:44" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CLI inconsistently parse {} in another object as UNDEFINED</summary>
+			
+			
+			<description>CLI interprets {} as blank object in resource attribute (correct), but as UNDEFINED in object attribute. (in model parameter of performRuntime of ADD operation)
+
+
+
+
+
+
+/subsystem=elytron/properties-realm=realm:add(users-properties={path=$SOME_PATH},groups-properties={})
+
+
+
+
+=&amp;gt; groups-properties = OBJECT {}
+
+
+
+
+
+
+
+
+
+
+
+
+/subsystem=elytron/ldap-realm=ldap-realm8:add(dir-context=local-ldap,identity-mapping={rdn-identifier=uid,otp-credential-mapper={}})
+
+
+
+
+=&amp;gt; otp-credential-mapper=UNDEFINED
+
+
+
+
+
+</description>
+			
+			
+			<version>3.0.0.Alpha12</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha13</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.parsing.test.ArgumentValueConverterTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.parsing.arguments.ArgumentValueCallbackHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Dependency">7437</link>
+			
+			
+			<link description="is related to" type="Related">1983</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-11-17 22:28:57" id="2006" opendate="2016-11-17 13:37:11" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>PatchMerger should copy specific module slot when merging content instead of all the slots</summary>
+			
+			
+			<description>PatchMerger when merging content modification for a module copies all of the module slots instead of the one actually modified. This may lead to undesired content overwrite.</description>
+			
+			
+			<version>3.0.0.Alpha12</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha13</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.patching.metadata.PatchMerger.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.patching.MergedCpWithSubmoduleTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.patching.ContentModificationUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-11-18 17:03:08" id="2013" opendate="2016-11-18 09:47:51" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Unable to access http management interface secured by legacy ldap realm</summary>
+			
+			
+			<description>When http management interface is secured with legacy security realm using ldap, user is not prompted to provide credentials as should be in case of BASIC http authentication mechanism. Instead 403 http status is returned directly.
+Users won&amp;amp;apos;t be able to migrate their current (6.4, 7.0) configuration to 7.1 without change.</description>
+			
+			
+			<version>3.0.0.Alpha12</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha13</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.domain.management.security.SecurityRealmService.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">7393</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-11-18 19:40:20" id="2008" opendate="2016-11-17 14:07:57" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Unable to use path in input-stream-index argument in /core-service=patching:patch</summary>
+			
+			
+			<description>File system paths should be allowed as arguments for
+/core-service=patching:patch(input-stream-index=)</description>
+			
+			
+			<version>3.0.0.Alpha12</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha13</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.patching.management.PatchResourceDefinition.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">7116</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-11-22 23:55:45" id="2017" opendate="2016-11-15 07:40:55" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>embed-server does not start with standalone-elytron.xml</summary>
+			
+			
+			<description>I am unable to start embed-server with standalone-elytron.xml 
+1)./jboss-cli.sh
+2) embed-server --std-out=echo -c=standalone-elytron.xml
+3) server is missing org.wildfly.security.security-domain.ManagementDomain, which is however registered in elytron subsystem.
+Starting ./standalone.sh -c=standalone-elytron.xml works fine.
+Full log:
+
+
+
+
+
+
+[mchoma@localhost bin]$ ./jboss-cli.sh 
+
+
+
+
+You are disconnected at the moment. Type &amp;amp;apos;connect&amp;amp;apos; to connect to the server or &amp;amp;apos;help&amp;amp;apos; for the list of supported commands.
+
+
+
+
+[disconnected /] embed-server --std-out=echo -c=standalone-elytron.xml
+
+
+
+
+08:15:40,801 INFO  [org.jboss.modules] (AeshProcess: 1) JBoss Modules version 1.6.0.Beta3
+
+
+
+
+08:15:40,845 INFO  [org.jboss.msc] (AeshProcess: 1) JBoss MSC version 1.2.7.Final-redhat-1
+
+
+
+
+08:15:40,916 INFO  [org.jboss.as] (MSC service thread 1-6) WFLYSRV0049: JBoss EAP 7.1.0.Alpha1 (WildFly Core 3.0.0.Alpha12-redhat-1) starting
+
+
+
+
+08:15:41,088 INFO  [org.jboss.as.domain.management] (MSC service thread 1-5) WFLYDM0136: Registered OpenSSL provider
+
+
+
+
+08:15:41,804 INFO  [org.wildfly.security] (Controller Boot Thread) ELY00001: WildFly Elytron version 1.1.0.Beta13
+
+
+
+
+08:15:41,805 INFO  [org.wildfly.extension.elytron] (Controller Boot Thread) WFLYELY00001: Activating Elytron Subsystem Elytron Version=1.1.0.Beta13, Subsystem Version=1.0.0.Alpha13
+
+
+
+
+08:15:41,811 INFO  [org.jboss.as.controller.management-deprecated] (Controller Boot Thread) WFLYCTL0028: Attribute &amp;amp;apos;security-realm&amp;amp;apos; in the resource at address &amp;amp;apos;/subsystem=undertow/server=default-server/https-listener=https&amp;amp;apos; is deprecated, and may be removed in future version. See the attribute description in the output of the read-resource-description operation to learn more about the deprecation.
+
+
+
+
+08:15:41,859 INFO  [org.jboss.as.patching] (MSC service thread 1-6) WFLYPAT0050: JBoss EAP cumulative patch ID is: base, one-off patches include: none
+
+
+
+
+08:15:42,024 ERROR [org.jboss.as.controller.management-operation] (Controller Boot Thread) WFLYCTL0013: Operation (&quot;add&quot;) failed - address: ([
+
+
+
+
+    (&quot;core-service&quot; =&amp;gt; &quot;management&quot;),
+
+
+
+
+    (&quot;access&quot; =&amp;gt; &quot;identity&quot;)
+
+
+
+
+]) - failure description: {
+
+
+
+
+    &quot;WFLYCTL0412: Required services that are not installed:&quot; =&amp;gt; [&quot;org.wildfly.security.security-domain.ManagementDomain&quot;],
+
+
+
+
+    &quot;WFLYCTL0180: Services with missing/unavailable dependencies&quot; =&amp;gt; [&quot;org.wildfly.management.identity is missing [org.wildfly.security.security-domain.ManagementDomain]&quot;]
+
+
+
+
+}
+
+
+
+
+08:16:19,546 INFO  [org.jboss.as] (MSC service thread 1-4) WFLYSRV0050: JBoss EAP 7.1.0.Alpha1 (WildFly Core 3.0.0.Alpha12-redhat-1) stopped in 3ms
+
+
+
+
+Cannot start embedded server: WFLYEMB0021: Cannot start embedded process: java.lang.InterruptedException
+
+
+
+
+[disconnected /] 
+
+
+
+
+
+</description>
+			
+			
+			<version>3.0.0.Alpha12</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha13</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.domain.management.access.AccessIdentityResourceDefinition.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">7276</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-11-22 23:58:47" id="2026" opendate="2016-11-21 19:24:22" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>source-port is wrongly offsetted when configured to 0, i.e. ephemeral port; results in &quot;Permission denied (Bind failed)&quot;</summary>
+			
+			
+			<description>There is a discrepancy between how 0 is handled.
+XSD
+
+
+
+
+
+
+        &amp;lt;xs:attribute name=&quot;source-port&quot; type=&quot;xs:positiveInteger&quot; use=&quot;optional&quot;&amp;gt;
+
+
+
+
+
+
+doesn&amp;amp;apos;t allow 0.
+MODEL
+
+
+
+
+
+
+            .setAllowExpression(true).setValidator(new IntRangeValidator(0, 65535, true, true))
+
+
+
+
+
+
+allows 0.
+IMPLEMENTATION
+
+
+
+
+
+
+    public Integer getAbsoluteSourcePort() {
+
+
+
+
+        if (this.sourcePort == null) {
+
+
+
+
+            return null;
+
+
+
+
+        }
+
+
+
+
+        if (this.fixedSourcePort) {
+
+
+
+
+            return this.sourcePort;
+
+
+
+
+        }
+
+
+
+
+        final int portOffset = this.socketBindingManager.getPortOffset();
+
+
+
+
+        return this.sourcePort + portOffset;
+
+
+
+
+    }
+
+
+
+
+
+
+doesn&amp;amp;apos;t treat 0 at all, tests for null value only.
+Example to reproduce e.g. with modcluster integration in core:
+
+
+
+
+
+
+[standalone@localhost:9990 /] /socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=proxy1:add(port=9090,host=127.0.0.1,source-port=0
+
+
+
+
+{
+
+
+
+
+    &quot;outcome&quot; =&amp;gt; &quot;success&quot;,
+
+
+
+
+    &quot;response-headers&quot; =&amp;gt; {&quot;process-state&quot; =&amp;gt; &quot;reload-required&quot;}
+
+
+
+
+}
+
+
+
+
+[standalone@localhost:9990 /] /subsystem=modcluster/mod-cluster-config=configuration:write-attribute(name=proxies,value=[proxy1])
+
+
+
+
+{
+
+
+
+
+    &quot;outcome&quot; =&amp;gt; &quot;success&quot;,
+
+
+
+
+    &quot;response-headers&quot; =&amp;gt; {
+
+
+
+
+        &quot;operation-requires-reload&quot; =&amp;gt; true,
+
+
+
+
+        &quot;process-state&quot; =&amp;gt; &quot;reload-required&quot;
+
+
+
+
+    }
+
+
+
+
+}
+
+
+
+
+[standalone@localhost:9990 /] :reload
+
+
+
+
+{
+
+
+
+
+    &quot;outcome&quot; =&amp;gt; &quot;success&quot;,
+
+
+
+
+    &quot;result&quot; =&amp;gt; undefined
+
+
+
+
+}
+
+
+
+
+
+
+Starting server with 
+
+
+
+
+
+
+-Djboss.socket.binding.port-offset=100
+
+
+
+
+
+
+yields
+
+
+
+
+
+
+20:15:40,471 ERROR [org.jboss.modcluster] (UndertowEventHandlerAdapter - 1) MODCLUSTER000043: Failed to send INFO command to localhost/127.0.0.1:9090: Permission denied (Bind failed)
+
+
+
+
+
+</description>
+			
+			
+			<version>3.0.0.Alpha12</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha13</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.network.OutboundSocketBinding.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Dependency">7433</link>
+			
+			
+			<link description="blocks" type="Dependency">6915</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-12-06 12:06:09" id="2021" opendate="2016-11-21 08:50:23" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&quot;ls /socket-binding-group=*&quot; should print proper error message</summary>
+			
+			
+			<description>&quot;ls /socket-binding-group=&quot; should print proper error message. Similar operation &quot;ls /subsystem=&quot; print good error message.
+
+
+
+
+
+
+[standalone@localhost:9990 /] ls /subsystem=*
+
+
+
+
+{&quot;WFLYCTL0062: Composite operation failed and was rolled back. Steps that failed:&quot; =&amp;gt; {&quot;Operation step-1&quot; =&amp;gt; &quot;WFLYCTL0030: No resource definition is registered for address [(\&quot;subsystem\&quot; =&amp;gt; \&quot;*\&quot;)]&quot;}}
+
+
+
+
+[standalone@localhost:9990 /] ls /socket-binding-group=*
+
+
+
+
+Exception for ls /socket-binding-group=*: java.lang.IllegalArgumentException
+
+
+
+
+[standalone@localhost:9990 /]
+
+
+
+
+
+</description>
+			
+			
+			<version>3.0.0.Alpha12</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha15</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.handlers.LsHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">6953</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

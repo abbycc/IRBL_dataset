@@ -1,0 +1,1656 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="ROO">
+	<bug fixdate="2010-09-07 17:12:53" id="1360" opendate="2010-09-04 18:04:56" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Selenium error reports are delivered in target/target rather than just in target</summary>
+			
+			
+			<description>It looks like the Selenium test output is placed one extra directory deep, in target/target rather than just in target.  The problem is due to the generated selenium configuration:
+&amp;lt;results&amp;gt;$
+{project.build.directory}/target/selenium.txt&amp;lt;/results&amp;gt;
+should be
+&amp;lt;results&amp;gt;${project.build.directory}
+/selenium.txt&amp;lt;/results&amp;gt;</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.selenium.SeleniumOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-09-09 21:35:46" id="1366" opendate="2010-09-08 07:18:37" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DBRE generates incorrect &amp;apos;mappedBy&amp;apos; name in 1-to-many</summary>
+			
+			
+			<description>DBRE generates incorrect mappedBy. The bug seems to be in using foreign key/field sequence:
+Example:
+One the one-2-many side (Course):
+@OneToMany(mappedBy = &quot;course&quot;)
+private Set&amp;lt;Student&amp;gt; Course.students;
+On the many-2-one side (Student):
+@ManyToOne
+@JoinColumn(name = &quot;ST_CO&quot;, referencedColumnName = &quot;CO_PK&quot;)
+private Course Student.course2;
+&amp;amp;apos;mappedBy&amp;amp;apos; should be &amp;amp;apos;course2&amp;amp;apos; instead of &amp;amp;apos;course&amp;amp;apos;; OR field &amp;amp;apos;Student.course2&amp;amp;apos; should be &amp;amp;apos;Student.course&amp;amp;apos; instead?</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.Database.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-09-16 14:24:10" id="1399" opendate="2010-09-15 15:00:22" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>addon-dbre &amp; OneToOne</summary>
+			
+			
+			<description>addon-dbre generated entities with one-to-one relationship established have circular reference via toString aspects.
+Let&amp;amp;apos;s say you have entity A and B with @OneToOne on A.refB and B.refA. Then you call A.toString() it will call A.refB.toString() who in is&amp;amp;apos;s turn will call B.refA.toString() -&amp;gt; loop. Need to be fixed. We should exclude those from toString at all or include it only at identifying side</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.MutableClassOrInterfaceTypeDetails.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">1253</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-09-26 16:23:23" id="1409" opendate="2010-09-16 11:12:22" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DBRE should mark repeated column mapping as non-insertable/non-updatable</summary>
+			
+			
+			<description>If column already is in use to declare join via
+
+
+
+
+
+
+...
+
+
+
+
+@JoinColumn(name = &quot;columnX&quot;, referencedColumnName = &quot;columnX&quot;) 
+
+
+
+
+...
+
+
+
+
+
+
+all consequences uses of the same column in join have to be annotated to be &quot;non-insertable/non-updatable&quot;, i.e.
+
+
+
+
+
+
+    @ManyToOne
+
+
+
+
+    @JoinColumns({ 
+
+
+
+
+		@JoinColumn(name = &quot;column0&quot;, referencedColumnName = &quot;column0&quot;), 
+
+
+
+
+		@JoinColumn(name = &quot;column1&quot;, referencedColumnName = &quot;column1&quot;), 
+
+
+
+
+		@JoinColumn(name = &quot;column2&quot;, referencedColumnName = &quot;column2&quot;) 
+
+
+
+
+	})
+
+
+
+
+    private EntityX ...;
+
+
+
+
+    
+
+
+
+
+    @ManyToOne
+
+
+
+
+    @JoinColumn(name = &quot;column0&quot;, referencedColumnName = &quot;column0&quot;, insertable=false, updatable=false)
+
+
+
+
+    private EntityY ...;
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.Database.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.SchemaIntrospector.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.ForeignKey.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.Reference.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-06 02:10:17" id="1421" opendate="2010-09-19 13:22:29" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>AspectJ very slow in STSM3 after running DBRE</summary>
+			
+			
+			<description>I ran DBRE from an MSSQL 2008 database of 430 tables (and fair amount of relationships/FPKs).
+All was fine until I restarted roo (using roo-dev M4). Everything is very slow: roo command line and STS aspect compilation; and consumes tons of memory. I had increase STS memory to 4G.
+My questions are:
+1. Have I exceeded table count limit?
+2. Is there another way work with DBRE project of this size - is size the issue?
+3. Is there a way to customize _Roo_DbManaged to use foreign keys instead of relationship annotations - I think this the culprit?</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.Database.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.DatabaseXmlUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.file.monitor.polling.PollingFileMonitorService.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreModelServiceImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depends">1506</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-07 19:59:59" id="1403" opendate="2010-09-16 06:31:32" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NPE in GwtMetadata for @RooEntity(versionField = &quot;&quot;)</summary>
+			
+			
+			<description>GwtMetadata.resolveEntityInformation(GwtMetadata.java:142) throws NPE trying to access entityMetadata.getVersionField() since there is no version field defined. By default DBRE annotates entities with @RooEntity(versionField = &quot;&quot;). At the same time EntityMetadata.getVersionField() return null in this case. This causes GwtMetadata to e caught with NPE.</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-07 22:34:03" id="1406" opendate="2010-09-16 07:44:22" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>addon-gwt does not support java.math.BigDecimal and java.lang.Character</summary>
+			
+			
+			<description>for entities with java.math.BigDecimal and/or java.lang.Character field addon-gwt generate import like:
+
+
+
+
+
+
+package com.yourpackage.gwt.request;
+
+
+
+
+
+
+
+
+
+import java.util.Date;
+
+
+
+
+import org.springframework.roo.addon.gwt.RooGwtMirroredFrom;
+
+
+
+
+import com.google.gwt.requestfactory.shared.EntityProxy;
+
+
+
+
+import com.google.gwt.requestfactory.shared.ProxyFor;
+
+
+
+
+import com.google.gwt.requestfactory.shared.Property;
+
+
+
+
+
+
+
+
+
+import com.yourpackage.model.YouEntity;
+
+
+
+
+
+
+
+
+
+//?!
+
+
+
+
+import com.yourpackage.gwt.request.BigDecimalProxy;
+
+
+
+
+import com.yourpackage.gwt.request.CharacterProxy;
+
+
+
+
+
+
+
+
+
+@RooGwtMirroredFrom(YouEntity.class)
+
+
+
+
+@ProxyFor(YouEntity.class)
+
+
+
+
+public interface YouEntityProxy extends EntityProxy {
+
+
+
+
+
+
+
+
+
+
+
+But it does not generates com.yourpackage.gwt.request.BigDecimalProxy/CharacterProxy classes. And IMHO it should not. Instead why not use these classes as is?
+
+
+
+
+
+
+Property&amp;lt;com.yourpackage.gwt.request.BigDecimalProxy&amp;gt; field = ...
+
+
+
+
+-&amp;gt;
+
+
+
+
+Property&amp;lt;java.math.BigDecimal&amp;gt; filed = ...
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtProxyProperty.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.module.client.scaffold.ui.ShortRenderer-template.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.module.client.scaffold.ui.CharBox-template.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.module.client.scaffold.ui.CharParser-template.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-14 09:41:36" id="1559" opendate="2010-10-14 09:06:51" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Version is reported as UNKOWN VERSION when installing into a path containing spaces</summary>
+			
+			
+			<description/>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.shell.AbstractShell.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-14 21:59:10" id="1562" opendate="2010-10-14 21:56:06" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Intermittent Roo shell startup issue with Op4JMetadataProvider</summary>
+			
+			
+			<description>Oct 15, 2010 3:04:57 PM org.springframework.roo.felix.JdkDelegatingLogListener logNow
+SEVERE: [org.springframework.roo.addon.op4j [30]] [org.springframework.roo.addon.op4j.Op4jMetadataProvider] Cannot create component instance due to failure to bind reference metadataService
+Oct 15, 2010 3:04:57 PM org.springframework.roo.felix.JdkDelegatingLogListener logNow
+SEVERE: [org.springframework.roo.addon.op4j [30]] FrameworkEvent ERROR
+org.apache.felix.log.LogException: org.osgi.framework.ServiceException: Service factory returned null.</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.op4j.Op4jMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.json.JsonMetadataProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-14 22:32:08" id="1563" opendate="2010-10-14 22:27:44" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DataOnDemand fails to set correct data for numeric primitive fields</summary>
+			
+			
+			<description>When primitive numeric fields are declared without @NotNull, DoD uses null in the initializer resulting in failing tests. </description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-17 00:45:58" id="1581" opendate="2010-10-17 00:44:25" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Web MVC JSP views not updated on domain changes</summary>
+			
+			
+			<description>Web MVC JSP views not updated on domain changes. For example the removal of a field in a domain object does not cause the views to be updated.</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspMetadataListener.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-17 04:11:20" id="1582" opendate="2010-10-17 01:39:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Roo Internationalization add on not working</summary>
+			
+			
+			<description>I created a roo i18n addon for French language using the following command 
+addon create i18n --topLevelPackage com.shekhar.roo.addon --locale fr --messageBundle messages_fr.properties --language french
+perform eclipse
+perform package
+felix shell start file:///C:/dev/labs/spring-roo/addon-i18n-fr/target/com.shekhar.roo.addon-0.1.0.BUILD-SNAPSHOT.jar
+The addon got created without any problem. But When I am trying to use this addon in my application I am getting this exception
+roo&amp;gt; web mvc install language --code fr_fr
+Language choice required
+java.lang.IllegalArgumentException: Language choice required
+    at org.springframework.roo.support.util.Assert.notNull(Assert.java:112)
+    at org.springframework.roo.addon.web.mvc.jsp.JspOperationsImpl.installI18n(JspOperationsImpl.java:409)
+    at org.springframework.roo.addon.web.mvc.jsp.JspCommands.lang(JspCommands.java:46)
+    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+    at java.lang.reflect.Method.invoke(Method.java:597)
+    at org.springframework.roo.support.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:191)
+    at org.springframework.roo.process.manager.ProcessManagerHostedExecutionStrategy$1.callback(ProcessManagerHostedExecutionStrategy.java:49)
+    at org.springframework.roo.process.manager.internal.DefaultProcessManager.doTransactionally(DefaultProcessManager.java:177)
+    at org.springframework.roo.process.manager.internal.DefaultProcessManager.execute(DefaultProcessManager.java:140)
+    at org.springframework.roo.process.manager.ProcessManagerHostedExecutionStrategy.execute(ProcessManagerHostedExecutionStrategy.java:47)
+    at org.springframework.roo.shell.AbstractShell.executeCommand(AbstractShell.java:162)
+    at org.springframework.roo.shell.jline.JLineShell.promptLoop(JLineShell.java:326)
+    at org.springframework.roo.shell.jline.JLineShell.run(JLineShell.java:119)
+    at java.lang.Thread.run(Thread.java:619)</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.i18n.I18nConverter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.i18n.I18nComponent.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.creator.CreatorOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-17 14:57:49" id="1572" opendate="2010-10-16 00:09:46" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DataOnDemand.init() no longer checks if data already created</summary>
+			
+			
+			<description>I noticed that the init() method in the integration test generated DataOnDemand classes changed in RC1 from M3. It no longer checks to see if the test set has already been created. Becuase the getRandomXXX() method always calls init(), whenever getRandomXXX() is called, the test set is created again.
+For example, with the clinic.roo example, the Visit entity has a relationship with Pet. In the VisitDataOnDemand.getNewTransientVisit() entity, it gets a Pet instance by calling PetDataOnDemand.getRandomPet(). Thus every time VisitDataOnDemand.getNewTransientVisit() is called, 10 Pet entities are created in PetDataOnDemand.init().
+If Pet were to have a unique constraints (e.g. the description field), then the call to init() will fail with a constraint violation as the description will be repeated in the second set creation. This is what is happening with my application as I&amp;amp;apos;m using a unique constraint.
+RC1 code (no check):
+    public void PetDataOnDemand.init() {
+        data = new java.util.ArrayList&amp;lt;com.springsource.petclinic.domain.Pet&amp;gt;();
+        for (int i = 0; i &amp;lt; 10; i++) 
+{
+            com.springsource.petclinic.domain.Pet obj = getNewTransientPet(i);
+            obj.persist();
+            data.add(obj);
+        }
+    }
+
+M3 code:
+    public void PetDataOnDemand.init() {
+        if (data != null &amp;amp;&amp;amp; !data.isEmpty()) {
+            return;
+        }
+
+        data = com.springsource.petclinic.domain.Pet.findPetEntries(0, 10);
+        if (data == null) throw new IllegalStateException(&quot;Find entries implementation for &amp;amp;apos;Pet&amp;amp;apos; illegally returned null&quot;);
+        if (!data.isEmpty()) {            return;        }
+
+        data = new java.util.ArrayList&amp;lt;com.springsource.petclinic.domain.Pet&amp;gt;();
+        for (int i = 0; i &amp;lt; 10; i++) {            com.springsource.petclinic.domain.Pet obj = getNewTransientPet(i);            obj.persist();            data.add(obj);        }
+    }</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">1565</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-17 21:36:11" id="1585" opendate="2010-10-17 11:44:24" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HttpMethodFilter should come before springSecurityFilterChain in web.xml</summary>
+			
+			
+			<description>When adding security to a Roo project with the &quot;security setup&quot; command, a filter is added to the web.xml for Spring Security. This filter is put before HttpMethodFilter, but it needs to be put after. HttpMethodFilter is responsible for converting the Spring MVC HTTP POST with parameter _method=DELETE into an actual HTTP DELETE method. If you want to define a Spring Security &amp;lt;intercept-url&amp;gt; with method=&quot;DELETE&quot;, a delete request will only be intercepted if the request has been converted to the HTTP DELETE method previously. Thus the HttpMethodFilter needs to have been called first, and should be put before the springSecurityFilterChain filter in the web.xml.</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.security.SecurityCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.security.SecurityOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebMvcOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.security.SecurityOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-18 04:20:54" id="1565" opendate="2010-10-14 23:42:24" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Data on demand initialization causes integraion tests failures</summary>
+			
+			
+			<description>The problem appears when one entity has non-optional reference to another entity which has field with unique constraint.</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RELEASE</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1572</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-19 01:31:11" id="1590" opendate="2010-10-18 10:35:16" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Spring Roo cannot reverse engineer Oracle db</summary>
+			
+			
+			<description>I&amp;amp;apos;m trying to reverse engineer an Oracle database with Roo.
+I am able to instrospect the database without error, and the results look correct.
+When I reverse engineer the database, it creates the files then undoes the create. Below is what is sent to the screen (abbreviated to fit within a post), but I&amp;amp;apos;m not sure how to turn on any debugging to get more meaningful information.
+Code:
+
+
+
+
+
+
+roo&amp;gt; database reverse engineer --package ~.db --sCreated org.neoninc.db.TypeType
+
+
+
+
+Managed ROOT\.roo-dbre                               Created org.neoninc.db.Unit
+
+
+
+
+Created SRC_MAIN_JAVA\org\neoninc\db             Created org.neoninc.db.UnitTrsl
+
+
+
+
+Created SRC_MAIN_JAVA\org\neoninc\db\Attr.java   Created 
+
+
+
+
+
+
+
+
+
+....
+
+
+
+
+
+
+
+
+
+Created SRC_MAIN_JAVA\org\neoninc\db\Samp_Roo_Entity.aj
+
+
+
+
+Undo create SRC_MAIN_JAVA\org\neoninc\db\Samp_Roo_Entity.aj
+
+
+
+
+
+
+
+
+
+....
+
+
+
+
+
+
+
+
+
+Undo manage ROOT\.roo-dbre
+
+
+
+
+Field &amp;amp;apos;samps4&amp;amp;apos; already defined in ITD (ITD target &amp;amp;apos;org.neoninc.db.Samp_Roo_DbMan
+
+
+
+
+aged)&amp;amp;apos;
+
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.Table.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.JoinTable.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-21 14:37:31" id="1617" opendate="2010-10-21 14:36:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NPE in SolrMetadata</summary>
+			
+			
+			<description>NPE is raised in SolrMetadata because it assumes version fields always exist.</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.solr.SolrMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-21 22:38:25" id="1624" opendate="2010-10-21 22:30:48" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Assertion fails when adding annotation to ItdTypeDetailsBuilder</summary>
+			
+			
+			<description>The addFieldAnnotation(DeclaredFieldAnnotationDetails declaredFieldAnnotationDetails) method in ItdTypeDetailsBuilder doesn&amp;amp;apos;t take into account whether the DeclaredFieldAnnotationDetails is to remove an annotation and fails assuming that the annotation has been declared multiple time. The assertion fail messages also need to be tweaked to produce more accurate messages.
+Field annotation &amp;amp;apos;@ManyToOne&amp;amp;apos; already defined in target type &amp;amp;apos;org.springsource.roo.extrack.server.domain.Expense.report&amp;amp;apos; (ITD target &amp;amp;apos;org.springsource.roo.extrack.server.domain.Expense_Roo_Gae&amp;amp;apos;)
+           java.lang.IllegalArgumentException: Field annotation &amp;amp;apos;@ManyToOne&amp;amp;apos; already defined in target type &amp;amp;apos;org.springsource.roo.extrack.server.domain.Expense.report&amp;amp;apos; (ITD target &amp;amp;apos;org.springsource.roo.extrack.server.domain.Expense_Roo_Gae&amp;amp;apos;)
+             at org.springframework.roo.support.util.Assert.isTrue(Assert.java:65)
+             at org.springframework.roo.classpath.details.ItdTypeDetailsBuilder.addFieldAnnotation(ItdTypeDetailsBuilder.java:103)
+             at org.springframework.roo.addon.gae.GaeMetadata.&amp;lt;init&amp;gt;(GaeMetadata.java:57)
+             at org.springframework.roo.addon.gae.GaeMetadataProvider.getMetadata(GaeMetadataProvider.java:42)
+             at org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.get(AbstractItdMetadataProvider.java:250)
+             at org.springframework.roo.metadata.DefaultMetadataService.get(DefaultMetadataService.java:139)
+             at org.springframework.roo.metadata.DefaultMetadataService.get(DefaultMetadataService.java:159)
+             at org.springframework.roo.classpath.scanner.MemberDetailsScannerImpl.getMemberDetails(MemberDetailsScannerImpl.java:98)
+             at org.springframework.roo.addon.beaninfo.BeanInfoMetadataProviderImpl.getMetadata(BeanInfoMetadataProviderImpl.java:34)
+             at org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.get(AbstractItdMetadataProvider.java:250)
+             at org.springframework.roo.metadata.DefaultMetadataService.get(DefaultMetadataService.java:139)
+             at org.springframework.roo.metadata.DefaultMetadataService.get(DefaultMetadataService.java:159)
+             at org.springframework.roo.addon.dod.DataOnDemandMetadataProvider.getMetadata(DataOnDemandMetadataProvider.java:56)
+             at org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.get(AbstractItdMetadataProvider.java:250)
+             at org.springframework.roo.metadata.DefaultMetadataService.get(DefaultMetadataService.java:139)
+             at org.springframework.roo.metadata.DefaultMetadataService.get(DefaultMetadataService.java:159)
+             at org.springframework.roo.addon.test.IntegrationTestMetadataProvider.getMetadata(IntegrationTestMetadataProvider.java:57)
+             at org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.get(AbstractItdMetadataProvider.java:250)
+             at org.springframework.roo.metadata.DefaultMetadataService.get(DefaultMetadataService.java:139)
+             at org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.notify(AbstractItdMetadataProvider.java:124)
+             at org.springframework.roo.metadata.DefaultMetadataService.notify(DefaultMetadataService.java:179)
+             at org.springframework.roo.metadata.internal.DefaultMetadataDependencyRegistry.notifyDownstream(DefaultMetadataDependencyRegistry.java:262)
+             at org.springframework.roo.classpath.javaparser.JavaParserMetadataProvider.onFileEvent(JavaParserMetadataProvider.java:138)
+             at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.publish(PollingFileMonitorService.java:344)
+             at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.scanAll(PollingFileMonitorService.java:318)
+             at org.springframework.roo.process.manager.internal.DefaultFileManager.notify(DefaultFileManager.java:183)
+             at org.springframework.roo.metadata.internal.DefaultMetadataDependencyRegistry.notifyDownstream(DefaultMetadataDependencyRegistry.java:276)
+             at org.springframework.roo.addon.maven.MavenProjectMetadataProvider.onFileEvent(MavenProjectMetadataProvider.java:691)
+             at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.publish(PollingFileMonitorService.java:344)
+             at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.scanAll(PollingFileMonitorService.java:318)
+             at org.springframework.roo.process.manager.internal.MonitoringRequestCommand.callback(MonitoringRequestCommand.java:36)
+             at org.springframework.roo.process.manager.internal.MonitoringRequestCommand.callback(MonitoringRequestCommand.java:15)
+             at org.springframework.roo.process.manager.internal.DefaultProcessManager.doTransactionally(DefaultProcessManager.java:177)
+             at org.springframework.roo.process.manager.internal.DefaultProcessManager.completeStartup(DefaultProcessManager.java:99)
+             at org.springframework.roo.process.manager.internal.DefaultProcessManager$1.frameworkEvent(DefaultProcessManager.java:62)
+             at org.apache.felix.framework.util.EventDispatcher.invokeFrameworkListenerCallback(EventDispatcher.java:767)
+             at org.apache.felix.framework.util.EventDispatcher.fireEventImmediately(EventDispatcher.java:724)
+             at org.apache.felix.framework.util.EventDispatcher.run(EventDispatcher.java:942)
+             at org.apache.felix.framework.util.EventDispatcher.access$000(EventDispatcher.java:54)
+             at org.apache.felix.framework.util.EventDispatcher$1.run(EventDispatcher.java:106)
+             at java.lang.Thread.run(Thread.java:637)</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.ItdTypeDetailsBuilder.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">1611</link>
+			
+			
+			<link description="is related to" type="Related">773</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-21 22:39:41" id="1601" opendate="2010-10-20 05:51:54" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Exceptions with GWT when using class hierarchies with -mappedsuperclass during persisting</summary>
+			
+			
+			<description>When I use the following ROO script, I get the exeptions below when creating a e.g. &quot;BonusCard&quot; instance. The reason is the use of a &quot;mappedSuperclass&quot;. 
+Without inheriting from a superclass, the example works... 
+
+project --topLevelPackage at.frip --projectName Frip
+persistence setup --provider HIBERNATE --database HYPERSONIC_IN_MEMORY
+entity --class ~.domain.model.basic.CrudInfo --mappedSuperclass 
+field string --fieldName createUser --notNull --sizeMin 2 --sizeMax 100
+field date --type java.util.Date --fieldName createDate --timeFormat MEDIUM --notNull 
+field string --fieldName updateUser --notNull --sizeMin 2 --sizeMax 100
+field date --type java.util.Date --fieldName updateDate --timeFormat MEDIUM --notNull 
+enum type --class ~.client.shared.domain.model.contract.Salutation
+enum constant --name FEMALE
+enum constant --name MALE
+enum type --class ~.client.shared.domain.model.contract.Country
+enum constant --name AUSTRIA
+entity --class ~.domain.model.contract.Customer --extends ~.domain.model.basic.CrudInfo --testAutomatically
+field enum --fieldName salutation --type ~.client.shared.domain.model.contract.Salutation --notNull
+field string --fieldName title --sizeMax 30
+field string --fieldName firstName --notNull --sizeMin 2 --sizeMax 100
+field string --fieldName lastName --notNull --sizeMin 2 --sizeMax 100
+field string --fieldName street --notNull --sizeMin 2 --sizeMax 200
+field string --fieldName zip --notNull --sizeMin 2 --sizeMax 10
+field string --fieldName city --notNull --sizeMin 2 --sizeMax 100
+field enum --fieldName country --type ~.client.shared.domain.model.contract.Country --notNull
+field string --fieldName email --notNull --sizeMin 5 --sizeMax 150
+field string --fieldName phone --notNull --sizeMin 5 --sizeMax 50
+field boolean --fieldName activated --notNull --comment &quot;True if email activation has succeeded&quot;
+finder add --finderName findCustomersByFirstNameLike
+finder add --finderName findCustomersByLastNameLike
+entity --class ~.domain.model.contract.BonusCard --extends ~.domain.model.basic.CrudInfo --testAutomatically
+field number --type java.lang.Long --fieldName cardNumber --notNull
+finder add --finderName findBonusCardsByCardNumber
+gwt setup
+perform package
+Stack trace:
+[INFO] create exploded Jetty webapp in C:\roo\target\Frip-0.1.0.BUILD-SNAPSHOT
+[ERROR] 20.10.2010 13:58:16 com.google.gwt.requestfactory.server.RequestFactoryServlet doPost
+[ERROR] SCHWERWIEGEND: Unexpected error
+[ERROR] com.google.gwt.requestfactory.server.RequestProcessingException: Unexpected exception
+[ERROR]         at com.google.gwt.requestfactory.server.JsonRequestProcessor.decodeAndInvokeRequest(JsonRequestProcessor
+.java:242)
+[ERROR]         at com.google.gwt.requestfactory.server.JsonRequestProcessor.decodeAndInvokeRequest(JsonRequestProcessor
+.java:62)
+[ERROR]         at com.google.gwt.requestfactory.server.RequestFactoryServlet.doPost(RequestFactoryServlet.java:122)
+[ERROR]         at javax.servlet.http.HttpServlet.service(HttpServlet.java:727)
+[ERROR]         at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+[ERROR]         at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:487)
+[ERROR]         at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1097)
+[ERROR]         at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:77
+)
+[ERROR]         at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76)
+[ERROR]         at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1088)
+[ERROR]         at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:
+88)
+[ERROR]         at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76)
+[ERROR]         at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1088)
+[ERROR]         at org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter.doFilterInternal(OpenEntityManagerI
+nViewFilter.java:113)
+[ERROR]         at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76)
+[ERROR]         at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1088)
+[ERROR]         at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:360)
+[ERROR]         at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+[ERROR]         at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:181)
+[ERROR]         at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:729)
+[ERROR]         at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:405)
+[ERROR]         at org.mortbay.jetty.handler.HandlerWrapper.handle(HandlerWrapper.java:152)
+[ERROR]         at org.mortbay.jetty.handler.RequestLogHandler.handle(RequestLogHandler.java:49)
+[ERROR]         at org.mortbay.jetty.handler.HandlerWrapper.handle(HandlerWrapper.java:152)
+[ERROR]         at org.mortbay.jetty.Server.handle(Server.java:324)
+[ERROR]         at org.mortbay.jetty.HttpConnection.handleRequest(HttpConnection.java:505)
+[ERROR]         at org.mortbay.jetty.HttpConnection$RequestHandler.content(HttpConnection.java:843)
+[ERROR]         at org.mortbay.jetty.HttpParser.parseNext(HttpParser.java:647)
+[ERROR]         at org.mortbay.jetty.HttpParser.parseAvailable(HttpParser.java:211)
+[ERROR]         at org.mortbay.jetty.HttpConnection.handle(HttpConnection.java:380)
+[ERROR]         at org.mortbay.io.nio.SelectChannelEndPoint.run(SelectChannelEndPoint.java:395)
+[ERROR]         at org.mortbay.thread.QueuedThreadPool$PoolThread.run(QueuedThreadPool.java:488)
+[ERROR] Caused by: java.lang.IllegalArgumentException: Unknown operation at.frip.client.managed.request.BonusCardRequest
+::persist
+[ERROR]         at com.google.gwt.requestfactory.server.JsonRequestProcessor.getOperation(JsonRequestProcessor.java:702)
+[ERROR]         at com.google.gwt.requestfactory.server.JsonRequestProcessor.processJsonRequest(JsonRequestProcessor.jav
+a:844)
+[ERROR]         at com.google.gwt.requestfactory.server.JsonRequestProcessor.decodeAndInvokeRequest(JsonRequestProcessor
+.java:232)
+[ERROR]         ... 31 more
+[ERROR] Wed Oct 20 13:58:28 CEST 2010 at.frip.client.scaffold.Scaffold
+[ERROR] SEVERE: One or more exceptions caught, see full set in UmbrellaException#getCauses
+[ERROR] com.google.gwt.event.shared.UmbrellaException: One or more exceptions caught, see full set in UmbrellaException#
+getCauses
+[ERROR]         at com.google.gwt.event.shared.SimpleEventBus.doFire(SimpleEventBus.java:214)
+[ERROR]         at com.google.gwt.event.shared.SimpleEventBus.fireEvent(SimpleEventBus.java:103)
+[ERROR]         at com.google.gwt.place.shared.PlaceController.goTo(PlaceController.java:120)
+[ERROR]         at at.frip.client.scaffold.place.AbstractProxyEditActivity.exit(AbstractProxyEditActivity.java:134)
+[ERROR]         at at.frip.client.scaffold.place.CreateAndEditProxy.exit(CreateAndEditProxy.java:44)
+[ERROR]         at at.frip.client.scaffold.place.AbstractProxyEditActivity$1.onSuccess(AbstractProxyEditActivity.java:97
+)
+[ERROR]         at at.frip.client.scaffold.place.AbstractProxyEditActivity$1.onSuccess(AbstractProxyEditActivity.java:1)
+[ERROR]         at com.google.gwt.requestfactory.client.impl.AbstractRequestContext$4.onTransportSuccess(AbstractRequest
+Context.java:394)
+[ERROR]         at com.google.gwt.requestfactory.client.DefaultRequestTransport$1.onResponseReceived(DefaultRequestTrans
+port.java:140)
+[ERROR]         at com.google.gwt.http.client.Request.fireOnResponseReceived(Request.java:287)
+[ERROR]         at com.google.gwt.http.client.RequestBuilder$1.onReadyStateChange(RequestBuilder.java:395)
+[ERROR]         at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[ERROR]         at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+[ERROR]         at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+[ERROR]         at java.lang.reflect.Method.invoke(Method.java:597)
+[ERROR]         at com.google.gwt.dev.shell.MethodAdaptor.invoke(MethodAdaptor.java:103)
+[ERROR]         at com.google.gwt.dev.shell.MethodDispatch.invoke(MethodDispatch.java:71)
+[ERROR]         at com.google.gwt.dev.shell.OophmSessionHandler.invoke(OophmSessionHandler.java:157)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.reactToMessagesWhileWaitingForReturn(BrowserChannelServ
+er.java:326)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.invokeJavascript(BrowserChannelServer.java:207)
+[ERROR]         at com.google.gwt.dev.shell.ModuleSpaceOOPHM.doInvoke(ModuleSpaceOOPHM.java:126)
+[ERROR]         at com.google.gwt.dev.shell.ModuleSpace.invokeNative(ModuleSpace.java:562)
+[ERROR]         at com.google.gwt.dev.shell.ModuleSpace.invokeNativeObject(ModuleSpace.java:269)
+[ERROR]         at com.google.gwt.dev.shell.JavaScriptHost.invokeNativeObject(JavaScriptHost.java:91)
+[ERROR]         at com.google.gwt.core.client.impl.Impl.apply(Impl.java)
+[ERROR]         at com.google.gwt.core.client.impl.Impl.entry0(Impl.java:214)
+[ERROR]         at sun.reflect.GeneratedMethodAccessor40.invoke(Unknown Source)
+[ERROR]         at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+[ERROR]         at java.lang.reflect.Method.invoke(Method.java:597)
+[ERROR]         at com.google.gwt.dev.shell.MethodAdaptor.invoke(MethodAdaptor.java:103)
+[ERROR]         at com.google.gwt.dev.shell.MethodDispatch.invoke(MethodDispatch.java:71)
+[ERROR]         at com.google.gwt.dev.shell.OophmSessionHandler.invoke(OophmSessionHandler.java:157)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.reactToMessages(BrowserChannelServer.java:281)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.processConnection(BrowserChannelServer.java:531)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.run(BrowserChannelServer.java:352)
+[ERROR]         at java.lang.Thread.run(Thread.java:619)
+[ERROR] Caused by: com.google.gwt.event.shared.UmbrellaException: One or more exceptions caught, see full set in Umbrell
+aException#getCauses
+[ERROR]         at com.google.gwt.activity.shared.ActivityManager.onPlaceChange(ActivityManager.java:176)
+[ERROR]         at com.google.gwt.place.shared.PlaceChangeEvent.dispatch(PlaceChangeEvent.java:57)
+[ERROR]         at com.google.gwt.place.shared.PlaceChangeEvent.dispatch(PlaceChangeEvent.java:1)
+[ERROR]         at com.google.gwt.event.shared.SimpleEventBus.doFire(SimpleEventBus.java:204)
+[ERROR]         at com.google.gwt.event.shared.SimpleEventBus.fireEvent(SimpleEventBus.java:103)
+[ERROR]         at com.google.gwt.place.shared.PlaceController.goTo(PlaceController.java:120)
+[ERROR]         at at.frip.client.scaffold.place.AbstractProxyEditActivity.exit(AbstractProxyEditActivity.java:134)
+[ERROR]         at at.frip.client.scaffold.place.CreateAndEditProxy.exit(CreateAndEditProxy.java:44)
+[ERROR]         at at.frip.client.scaffold.place.AbstractProxyEditActivity$1.onSuccess(AbstractProxyEditActivity.java:97
+)
+[ERROR]         at at.frip.client.scaffold.place.AbstractProxyEditActivity$1.onSuccess(AbstractProxyEditActivity.java:1)
+[ERROR]         at com.google.gwt.requestfactory.client.impl.AbstractRequestContext$4.onTransportSuccess(AbstractRequest
+Context.java:394)
+[ERROR]         at com.google.gwt.requestfactory.client.DefaultRequestTransport$1.onResponseReceived(DefaultRequestTrans
+port.java:140)
+[ERROR]         at com.google.gwt.http.client.Request.fireOnResponseReceived(Request.java:287)
+[ERROR]         at com.google.gwt.http.client.RequestBuilder$1.onReadyStateChange(RequestBuilder.java:395)
+[ERROR]         at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[ERROR]         at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+[ERROR]         at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+[ERROR]         at java.lang.reflect.Method.invoke(Method.java:597)
+[ERROR]         at com.google.gwt.dev.shell.MethodAdaptor.invoke(MethodAdaptor.java:103)
+[ERROR]         at com.google.gwt.dev.shell.MethodDispatch.invoke(MethodDispatch.java:71)
+[ERROR]         at com.google.gwt.dev.shell.OophmSessionHandler.invoke(OophmSessionHandler.java:157)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.reactToMessagesWhileWaitingForReturn(BrowserChannelServ
+er.java:326)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.invokeJavascript(BrowserChannelServer.java:207)
+[ERROR]         at com.google.gwt.dev.shell.ModuleSpaceOOPHM.doInvoke(ModuleSpaceOOPHM.java:126)
+[ERROR]         at com.google.gwt.dev.shell.ModuleSpace.invokeNative(ModuleSpace.java:562)
+[ERROR]         at com.google.gwt.dev.shell.ModuleSpace.invokeNativeObject(ModuleSpace.java:269)
+[ERROR]         at com.google.gwt.dev.shell.JavaScriptHost.invokeNativeObject(JavaScriptHost.java:91)
+[ERROR]         at com.google.gwt.core.client.impl.Impl.apply(Impl.java)
+[ERROR]         at com.google.gwt.core.client.impl.Impl.entry0(Impl.java:214)
+[ERROR]         at sun.reflect.GeneratedMethodAccessor40.invoke(Unknown Source)
+[ERROR]         at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+[ERROR]         at java.lang.reflect.Method.invoke(Method.java:597)
+[ERROR]         at com.google.gwt.dev.shell.MethodAdaptor.invoke(MethodAdaptor.java:103)
+[ERROR]         at com.google.gwt.dev.shell.MethodDispatch.invoke(MethodDispatch.java:71)
+[ERROR]         at com.google.gwt.dev.shell.OophmSessionHandler.invoke(OophmSessionHandler.java:157)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.reactToMessages(BrowserChannelServer.java:281)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.processConnection(BrowserChannelServer.java:531)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.run(BrowserChannelServer.java:352)
+[ERROR]         at java.lang.Thread.run(Thread.java:619)
+[ERROR] Caused by: java.lang.IllegalArgumentException: Cannot fetch unpersisted entity
+[ERROR]         at com.google.gwt.requestfactory.client.impl.AbstractRequestFactory.find(AbstractRequestFactory.java:103
+)
+[ERROR]         at at.frip.client.managed.activity.BonusCardDetailsActivity.start(BonusCardDetailsActivity.java:106)
+[ERROR]         at com.google.gwt.activity.shared.ActivityManager.onPlaceChange(ActivityManager.java:161)
+[ERROR]         at com.google.gwt.place.shared.PlaceChangeEvent.dispatch(PlaceChangeEvent.java:57)
+[ERROR]         at com.google.gwt.place.shared.PlaceChangeEvent.dispatch(PlaceChangeEvent.java:1)
+[ERROR]         at com.google.gwt.event.shared.SimpleEventBus.doFire(SimpleEventBus.java:204)
+[ERROR]         at com.google.gwt.event.shared.SimpleEventBus.fireEvent(SimpleEventBus.java:103)
+[ERROR]         at com.google.gwt.place.shared.PlaceController.goTo(PlaceController.java:120)
+[ERROR]         at at.frip.client.scaffold.place.AbstractProxyEditActivity.exit(AbstractProxyEditActivity.java:134)
+[ERROR]         at at.frip.client.scaffold.place.CreateAndEditProxy.exit(CreateAndEditProxy.java:44)
+[ERROR]         at at.frip.client.scaffold.place.AbstractProxyEditActivity$1.onSuccess(AbstractProxyEditActivity.java:97
+)
+[ERROR]         at at.frip.client.scaffold.place.AbstractProxyEditActivity$1.onSuccess(AbstractProxyEditActivity.java:1)
+[ERROR]         at com.google.gwt.requestfactory.client.impl.AbstractRequestContext$4.onTransportSuccess(AbstractRequest
+Context.java:394)
+[ERROR]         at com.google.gwt.requestfactory.client.DefaultRequestTransport$1.onResponseReceived(DefaultRequestTrans
+port.java:140)
+[ERROR]         at com.google.gwt.http.client.Request.fireOnResponseReceived(Request.java:287)
+[ERROR]         at com.google.gwt.http.client.RequestBuilder$1.onReadyStateChange(RequestBuilder.java:395)
+[ERROR]         at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[ERROR]         at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+[ERROR]         at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+[ERROR]         at java.lang.reflect.Method.invoke(Method.java:597)
+[ERROR]         at com.google.gwt.dev.shell.MethodAdaptor.invoke(MethodAdaptor.java:103)
+[ERROR]         at com.google.gwt.dev.shell.MethodDispatch.invoke(MethodDispatch.java:71)
+[ERROR]         at com.google.gwt.dev.shell.OophmSessionHandler.invoke(OophmSessionHandler.java:157)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.reactToMessagesWhileWaitingForReturn(BrowserChannelServ
+er.java:326)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.invokeJavascript(BrowserChannelServer.java:207)
+[ERROR]         at com.google.gwt.dev.shell.ModuleSpaceOOPHM.doInvoke(ModuleSpaceOOPHM.java:126)
+[ERROR]         at com.google.gwt.dev.shell.ModuleSpace.invokeNative(ModuleSpace.java:562)
+[ERROR]         at com.google.gwt.dev.shell.ModuleSpace.invokeNativeObject(ModuleSpace.java:269)
+[ERROR]         at com.google.gwt.dev.shell.JavaScriptHost.invokeNativeObject(JavaScriptHost.java:91)
+[ERROR]         at com.google.gwt.core.client.impl.Impl.apply(Impl.java)
+[ERROR]         at com.google.gwt.core.client.impl.Impl.entry0(Impl.java:214)
+[ERROR]         at sun.reflect.GeneratedMethodAccessor40.invoke(Unknown Source)
+[ERROR]         at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+[ERROR]         at java.lang.reflect.Method.invoke(Method.java:597)
+[ERROR]         at com.google.gwt.dev.shell.MethodAdaptor.invoke(MethodAdaptor.java:103)
+[ERROR]         at com.google.gwt.dev.shell.MethodDispatch.invoke(MethodDispatch.java:71)
+[ERROR]         at com.google.gwt.dev.shell.OophmSessionHandler.invoke(OophmSessionHandler.java:157)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.reactToMessages(BrowserChannelServer.java:281)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.processConnection(BrowserChannelServer.java:531)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.run(BrowserChannelServer.java:352)
+[ERROR]         at java.lang.Thread.run(Thread.java:619)
+[ERROR] 20.10.2010 13:58:32 com.google.gwt.requestfactory.server.RequestFactoryServlet doPost
+[ERROR] SCHWERWIEGEND: Unexpected error
+[ERROR] com.google.gwt.requestfactory.server.RequestProcessingException: Unexpected exception
+[ERROR]         at com.google.gwt.requestfactory.server.JsonRequestProcessor.decodeAndInvokeRequest(JsonRequestProcessor
+.java:238)
+[ERROR]         at com.google.gwt.requestfactory.server.JsonRequestProcessor.decodeAndInvokeRequest(JsonRequestProcessor
+.java:62)
+[ERROR]         at com.google.gwt.requestfactory.server.RequestFactoryServlet.doPost(RequestFactoryServlet.java:122)
+[ERROR]         at javax.servlet.http.HttpServlet.service(HttpServlet.java:727)
+[ERROR]         at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+[ERROR]         at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:487)
+[ERROR]         at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1097)
+[ERROR]         at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:77
+)
+[ERROR]         at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76)
+[ERROR]         at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1088)
+[ERROR]         at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:
+88)
+[ERROR]         at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76)
+[ERROR]         at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1088)
+[ERROR]         at org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter.doFilterInternal(OpenEntityManagerI
+nViewFilter.java:113)
+[ERROR]         at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76)
+[ERROR]         at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1088)
+[ERROR]         at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:360)
+[ERROR]         at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+[ERROR]         at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:181)
+[ERROR]         at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:729)
+[ERROR]         at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:405)
+[ERROR]         at org.mortbay.jetty.handler.HandlerWrapper.handle(HandlerWrapper.java:152)
+[ERROR]         at org.mortbay.jetty.handler.RequestLogHandler.handle(RequestLogHandler.java:49)
+[ERROR]         at org.mortbay.jetty.handler.HandlerWrapper.handle(HandlerWrapper.java:152)
+[ERROR]         at org.mortbay.jetty.Server.handle(Server.java:324)
+[ERROR]         at org.mortbay.jetty.HttpConnection.handleRequest(HttpConnection.java:505)
+[ERROR]         at org.mortbay.jetty.HttpConnection$RequestHandler.content(HttpConnection.java:843)
+[ERROR]         at org.mortbay.jetty.HttpParser.parseNext(HttpParser.java:647)
+[ERROR]         at org.mortbay.jetty.HttpParser.parseAvailable(HttpParser.java:211)
+[ERROR]         at org.mortbay.jetty.HttpConnection.handle(HttpConnection.java:380)
+[ERROR]         at org.mortbay.io.nio.SelectChannelEndPoint.run(SelectChannelEndPoint.java:395)
+[ERROR]         at org.mortbay.thread.QueuedThreadPool$PoolThread.run(QueuedThreadPool.java:488)
+[ERROR] Caused by: java.lang.reflect.InvocationTargetException
+[ERROR]         at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[ERROR]         at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+[ERROR]         at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+[ERROR]         at java.lang.reflect.Method.invoke(Method.java:597)
+[ERROR]         at com.google.gwt.requestfactory.server.JsonRequestProcessor.invokeDomainMethod(JsonRequestProcessor.jav
+a:828)
+[ERROR]         at com.google.gwt.requestfactory.server.JsonRequestProcessor.processJsonRequest(JsonRequestProcessor.jav
+a:886)
+[ERROR]         at com.google.gwt.requestfactory.server.JsonRequestProcessor.decodeAndInvokeRequest(JsonRequestProcessor
+.java:232)
+[ERROR]         ... 31 more
+[ERROR] Caused by: java.lang.IllegalStateException: Can&amp;amp;apos;t overwrite cause
+[ERROR]         at java.lang.Throwable.initCause(Throwable.java:320)
+[ERROR]         at com.google.gwt.logging.server.StackTraceDeobfuscator.deobfuscateThrowable(StackTraceDeobfuscator.java
+:90)
+[ERROR]         at com.google.gwt.logging.server.StackTraceDeobfuscator.deobfuscateThrowable(StackTraceDeobfuscator.java
+:90)
+[ERROR]         at com.google.gwt.logging.server.StackTraceDeobfuscator.deobfuscateLogRecord(StackTraceDeobfuscator.java
+:60)
+[ERROR]         at com.google.gwt.logging.server.RemoteLoggingServiceUtil.logOnServer(RemoteLoggingServiceUtil.java:58)
+[ERROR]         at com.google.gwt.logging.server.RemoteLoggingServiceUtil.logOnServer(RemoteLoggingServiceUtil.java:73)
+[ERROR]         at com.google.gwt.requestfactory.server.Logging.logMessage(Logging.java:40)
+[ERROR]         ... 38 more
+[ERROR] Wed Oct 20 13:58:55 CEST 2010 at.frip.client.scaffold.Scaffold
+[ERROR] SEVERE: Server Error: Can&amp;amp;apos;t overwrite cause
+[ERROR] java.lang.RuntimeException: Server Error: Can&amp;amp;apos;t overwrite cause
+[ERROR]         at com.google.gwt.requestfactory.shared.Receiver.onFailure(Receiver.java:36)
+[ERROR]         at com.google.gwt.requestfactory.client.impl.AbstractRequest.fail(AbstractRequest.java:187)
+[ERROR]         at com.google.gwt.requestfactory.client.impl.AbstractRequest.handleResponseText(AbstractRequest.java:96)
+[ERROR]         at com.google.gwt.requestfactory.client.impl.AbstractRequestContext$4.onTransportSuccess(AbstractRequest
+Context.java:390)
+[ERROR]         at com.google.gwt.requestfactory.client.DefaultRequestTransport$1.onResponseReceived(DefaultRequestTrans
+port.java:140)
+[ERROR]         at com.google.gwt.http.client.Request.fireOnResponseReceived(Request.java:287)
+[ERROR]         at com.google.gwt.http.client.RequestBuilder$1.onReadyStateChange(RequestBuilder.java:395)
+[ERROR]         at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[ERROR]         at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+[ERROR]         at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+[ERROR]         at java.lang.reflect.Method.invoke(Method.java:597)
+[ERROR]         at com.google.gwt.dev.shell.MethodAdaptor.invoke(MethodAdaptor.java:103)
+[ERROR]         at com.google.gwt.dev.shell.MethodDispatch.invoke(MethodDispatch.java:71)
+[ERROR]         at com.google.gwt.dev.shell.OophmSessionHandler.invoke(OophmSessionHandler.java:157)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.reactToMessagesWhileWaitingForReturn(BrowserChannelServ
+er.java:326)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.invokeJavascript(BrowserChannelServer.java:207)
+[ERROR]         at com.google.gwt.dev.shell.ModuleSpaceOOPHM.doInvoke(ModuleSpaceOOPHM.java:126)
+[ERROR]         at com.google.gwt.dev.shell.ModuleSpace.invokeNative(ModuleSpace.java:562)
+[ERROR]         at com.google.gwt.dev.shell.ModuleSpace.invokeNativeObject(ModuleSpace.java:269)
+[ERROR]         at com.google.gwt.dev.shell.JavaScriptHost.invokeNativeObject(JavaScriptHost.java:91)
+[ERROR]         at com.google.gwt.core.client.impl.Impl.apply(Impl.java)
+[ERROR]         at com.google.gwt.core.client.impl.Impl.entry0(Impl.java:214)
+[ERROR]         at sun.reflect.GeneratedMethodAccessor40.invoke(Unknown Source)
+[ERROR]         at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+[ERROR]         at java.lang.reflect.Method.invoke(Method.java:597)
+[ERROR]         at com.google.gwt.dev.shell.MethodAdaptor.invoke(MethodAdaptor.java:103)
+[ERROR]         at com.google.gwt.dev.shell.MethodDispatch.invoke(MethodDispatch.java:71)
+[ERROR]         at com.google.gwt.dev.shell.OophmSessionHandler.invoke(OophmSessionHandler.java:157)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.reactToMessages(BrowserChannelServer.java:281)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.processConnection(BrowserChannelServer.java:531)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.run(BrowserChannelServer.java:352)
+[ERROR]         at java.lang.Thread.run(Thread.java:619)
+[ERROR] 20.10.2010 13:58:55 com.google.gwt.logging.server.RemoteLoggingServiceUtil logOnServer
+[ERROR] SCHWERWIEGEND: Server Error: Can&amp;amp;apos;t overwrite cause
+[ERROR] java.lang.Throwable: Server Error: Can&amp;amp;apos;t overwrite cause
+[ERROR]         at com.google.gwt.requestfactory.shared.Receiver.onFailure(Receiver.java:36)
+[ERROR]         at com.google.gwt.requestfactory.client.impl.AbstractRequest.fail(AbstractRequest.java:187)
+[ERROR]         at com.google.gwt.requestfactory.client.impl.AbstractRequest.handleResponseText(AbstractRequest.java:96)
+[ERROR]         at com.google.gwt.requestfactory.client.impl.AbstractRequestContext$4.onTransportSuccess(AbstractRequest
+Context.java:390)
+[ERROR]         at com.google.gwt.requestfactory.client.DefaultRequestTransport$1.onResponseReceived(DefaultRequestTrans
+port.java:140)
+[ERROR]         at com.google.gwt.http.client.Request.fireOnResponseReceived(Request.java:287)
+[ERROR]         at com.google.gwt.http.client.RequestBuilder$1.onReadyStateChange(RequestBuilder.java:395)
+[ERROR]         at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[ERROR]         at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+[ERROR]         at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+[ERROR]         at java.lang.reflect.Method.invoke(Method.java:597)
+[ERROR]         at com.google.gwt.dev.shell.MethodAdaptor.invoke(MethodAdaptor.java:103)
+[ERROR]         at com.google.gwt.dev.shell.MethodDispatch.invoke(MethodDispatch.java:71)
+[ERROR]         at com.google.gwt.dev.shell.OophmSessionHandler.invoke(OophmSessionHandler.java:157)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.reactToMessagesWhileWaitingForReturn(BrowserChannelServ
+er.java:326)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.invokeJavascript(BrowserChannelServer.java:207)
+[ERROR]         at com.google.gwt.dev.shell.ModuleSpaceOOPHM.doInvoke(ModuleSpaceOOPHM.java:126)
+[ERROR]         at com.google.gwt.dev.shell.ModuleSpace.invokeNative(ModuleSpace.java:562)
+[ERROR]         at com.google.gwt.dev.shell.ModuleSpace.invokeNativeObject(ModuleSpace.java:269)
+[ERROR]         at com.google.gwt.dev.shell.JavaScriptHost.invokeNativeObject(JavaScriptHost.java:91)
+[ERROR]         at com.google.gwt.core.client.impl.Impl.apply(Impl.java)
+[ERROR]         at com.google.gwt.core.client.impl.Impl.entry0(Impl.java:214)
+[ERROR]         at sun.reflect.GeneratedMethodAccessor40.invoke()
+[ERROR]         at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+[ERROR]         at java.lang.reflect.Method.invoke(Method.java:597)
+[ERROR]         at com.google.gwt.dev.shell.MethodAdaptor.invoke(MethodAdaptor.java:103)
+[ERROR]         at com.google.gwt.dev.shell.MethodDispatch.invoke(MethodDispatch.java:71)
+[ERROR]         at com.google.gwt.dev.shell.OophmSessionHandler.invoke(OophmSessionHandler.java:157)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.reactToMessages(BrowserChannelServer.java:281)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.processConnection(BrowserChannelServer.java:531)
+[ERROR]         at com.google.gwt.dev.shell.BrowserChannelServer.run(BrowserChannelServer.java:352)
+[ERROR]         at java.lang.Thread.run(Thread.java:619)
+</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-08-10 17:51:37" id="1408" opendate="2010-09-16 09:39:49" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DBRE multiple schema support</summary>
+			
+			
+			<description>At the moment we allow only one database schema per project in DBRE.
+What is the problem to support multiple? For instance:
+
+
+
+
+
+
+database reverse engineer --schema SCHEMA_1 --package ~.model.schema1
+
+
+
+
+database reverse engineer --schema SCHEMA_2 --package ~.model.schema2
+
+
+
+
+
+
+At the moment second script command wipes out all generated artifacts created by first command.</description>
+			
+			
+			<version>1.1.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.M1, 1.2.0.RC1</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.converter.SchemaConverter.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.dbre.model.TableBean.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.Table.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.Schema.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreTypeUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreDatabaseListenerImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.Database.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.DatabaseXmlUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.ForeignKey.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.DatabaseContentHandler.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.DbreModelServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.DbreModelService.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.DatabaseIntrospector.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2580</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2272</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

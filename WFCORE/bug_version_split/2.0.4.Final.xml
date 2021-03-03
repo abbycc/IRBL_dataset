@@ -1,0 +1,1008 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="WFCORE">
+	<bug fixdate="2015-12-16 22:46:12" id="1188" opendate="2015-12-04 23:12:51" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Exiting CLI requires stty sane command to be issued on Linux</summary>
+			
+			
+			<description>The PR https://github.com/wildfly/wildfly-core/pull/1268/ seemed to have introduced a regression where some times (seems to be most in my case) stty sane is required to get a shell back to normal. My guess is it&amp;amp;apos;s the aesh upgrade, but I&amp;amp;apos;m not certain on that so I&amp;amp;apos;ll start the JIRA here and it can be moved to AESH if necessary.</description>
+			
+			
+			<version>2.0.4.Final</version>
+			
+			
+			<fixedVersion>2.0.5.CR1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.impl.CommandContextImpl.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.impl.Console.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">2206</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-16 22:48:39" id="1214" opendate="2015-12-11 23:17:45" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Operation headers not propagated to domain servers when &amp;apos;composite&amp;apos; op is used</summary>
+			
+			
+			<description>When the user adds request headers to an op, they are not propagated to the servers during domain rollout if the &amp;amp;apos;composite&amp;amp;apos; op is involved.
+For example, if I add some stdout printing of what the headers are on the various processes and invoke this:
+
+
+
+
+
+
+[domain@localhost:9990 /] deploy ~/tmp/helloworld.war --headers={blocking-timeout=5;rollback-on-runtime-failure=false} --all-server-groups
+
+
+
+
+
+
+Then on a HC with two servers, this is logged:
+[Host Controller] 10:53:40,697 INFO  [stdout] (management-handler-thread - 3) &quot;composite&quot; headers: 
+{
+
+[Host Controller] 10:53:40,697 INFO  [stdout] (management-handler-thread - 3)     &quot;blocking-timeout&quot; =&amp;gt; &quot;5&quot;,
+
+[Host Controller] 10:53:40,698 INFO  [stdout] (management-handler-thread - 3)     &quot;rollback-on-runtime-failure&quot; =&amp;gt; &quot;false&quot;,
+
+[Host Controller] 10:53:40,698 INFO  [stdout] (management-handler-thread - 3)     &quot;caller-type&quot; =&amp;gt; &quot;user&quot;,
+
+[Host Controller] 10:53:40,698 INFO  [stdout] (management-handler-thread - 3)     &quot;access-mechanism&quot; =&amp;gt; &quot;NATIVE&quot;
+
+[Host Controller] 10:53:40,698 INFO  [stdout] (management-handler-thread - 3) }
+[Host Controller] 10:53:40,727 INFO  [org.jboss.as.repository] (management-handler-thread - 3) WFLYDR0001: Content added at location /Users/bstansberry/dev/wildfly/wildfly-core/dist/target/wildfly-core-2.0.5.Final-SNAPSHOT/domain/data/content/6f/cd9eae343ed6d5aa9fffa83012d155b1ef911c/content
+[Server:server-one] 10:53:40,772 INFO  [stdout] (ServerService Thread Pool  11) &quot;composite&quot; headers: null
+[Server:server-two] 10:53:40,772 INFO  [stdout] (ServerService Thread Pool  11) &quot;composite&quot; headers: null
+The HC logs, then the servers report. The user-specified headers are not included.
+Invoke the same op without the batch and this is logged:
+
+
+
+
+
+
+[Host Controller] 10:43:50,400 INFO  [stdout] (management-handler-thread - 4) &quot;composite&quot; headers: {
+
+
+
+
+[Host Controller] 10:43:50,401 INFO  [stdout] (management-handler-thread - 4)     &quot;blocking-timeout&quot; =&amp;gt; &quot;5&quot;,
+
+
+
+
+[Host Controller] 10:43:50,401 INFO  [stdout] (management-handler-thread - 4)     &quot;rollback-on-runtime-failure&quot; =&amp;gt; &quot;false&quot;,
+
+
+
+
+[Host Controller] 10:43:50,401 INFO  [stdout] (management-handler-thread - 4)     &quot;caller-type&quot; =&amp;gt; &quot;user&quot;,
+
+
+
+
+[Host Controller] 10:43:50,401 INFO  [stdout] (management-handler-thread - 4)     &quot;access-mechanism&quot; =&amp;gt; &quot;NATIVE&quot;
+
+
+
+
+[Host Controller] 10:43:50,401 INFO  [stdout] (management-handler-thread - 4) }
+
+
+
+
+[Host Controller] 10:43:50,425 INFO  [org.jboss.as.repository] (management-handler-thread - 4) WFLYDR0001: Content added at location /Users/bstansberry/dev/wildfly/wildfly-core/dist/target/wildfly-core-2.0.5.Final-SNAPSHOT/domain/data/content/6f/cd9eae343ed6d5aa9fffa83012d155b1ef911c/content
+
+
+
+
+[Server:server-two] 10:43:50,464 INFO  [stdout] (ServerService Thread Pool -- 11) &quot;composite&quot; headers: {
+
+
+
+
+[Server:server-two] 10:43:50,464 INFO  [stdout] (ServerService Thread Pool -- 11)     &quot;blocking-timeout&quot; =&amp;gt; &quot;5&quot;,
+
+
+
+
+[Server:server-two] 10:43:50,464 INFO  [stdout] (ServerService Thread Pool -- 11)     &quot;rollback-on-runtime-failure&quot; =&amp;gt; &quot;false&quot;,
+
+
+
+
+[Server:server-one] 10:43:50,464 INFO  [stdout] (ServerService Thread Pool -- 11) &quot;composite&quot; headers: {
+
+
+
+
+[Server:server-two] 10:43:50,464 INFO  [stdout] (ServerService Thread Pool -- 11)     &quot;access-mechanism&quot; =&amp;gt; &quot;NATIVE&quot;,
+
+
+
+
+[Server:server-one] 10:43:50,465 INFO  [stdout] (ServerService Thread Pool -- 11)     &quot;blocking-timeout&quot; =&amp;gt; &quot;5&quot;,
+
+
+
+
+[Server:server-two] 10:43:50,465 INFO  [stdout] (ServerService Thread Pool -- 11)     &quot;domain-uuid&quot; =&amp;gt; &quot;216d2e99-dba5-4c89-8020-b0c16bd553c5&quot;
+
+
+
+
+[Server:server-one] 10:43:50,465 INFO  [stdout] (ServerService Thread Pool -- 11)     &quot;rollback-on-runtime-failure&quot; =&amp;gt; &quot;false&quot;,
+
+
+
+
+[Server:server-two] 10:43:50,465 INFO  [stdout] (ServerService Thread Pool -- 11) }
+
+
+
+
+[Server:server-one] 10:43:50,465 INFO  [stdout] (ServerService Thread Pool -- 11)     &quot;access-mechanism&quot; =&amp;gt; &quot;NATIVE&quot;,
+
+
+
+
+[Server:server-one] 10:43:50,465 INFO  [stdout] (ServerService Thread Pool -- 11)     &quot;domain-uuid&quot; =&amp;gt; &quot;216d2e99-dba5-4c89-8020-b0c16bd553c5&quot;
+
+
+
+
+[Server:server-one] 10:43:50,465 INFO  [stdout] (ServerService Thread Pool -- 11) }
+
+
+
+
+
+
+Expected headers are present.
+Note the CLI &amp;amp;apos;deploy&amp;amp;apos; is far from the only time the &amp;amp;apos;composite&amp;amp;apos; op is used. Among other places, the high level CLI &amp;amp;apos;batch&amp;amp;apos; command in a domain involves use of &amp;amp;apos;composite&amp;amp;apos;.</description>
+			
+			
+			<version>2.0.4.Final</version>
+			
+			
+			<fixedVersion>2.0.5.CR1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.coordination.OperationCoordinatorStepHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.coordination.DomainRolloutStepHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="causes" type="Causality">2055</link>
+			
+			
+			<link description="cloned to" type="Cloners">2397</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-16 22:55:15" id="1212" opendate="2015-12-11 18:04:50" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestModule does not clean up after itself properly</summary>
+			
+			
+			<description>TestModule.create() calls mkdirs() to create its filesystem structure, but remove() only removes the dir above &amp;amp;apos;main&amp;amp;apos; and below, leaving behind intermediate dirs.
+The result of this is if you run the full testsuite with -Dts.basic, the dist/target/wildflyxxx/modules dir ends up with child dir &amp;amp;apos;test&amp;amp;apos; in addition to the proper &amp;amp;apos;system&amp;amp;apos;.
+I&amp;amp;apos;m not sure why this spurious dir doesn&amp;amp;apos;t end up in the final dists we publish. Perhaps its just luck due to the release process not running the testsuite when the final build with the &amp;amp;apos;deploy&amp;amp;apos; target is invoked. I know my process for releasing WildFly Core doesn&amp;amp;apos;t re-run tests in that step.
+Once remove() does its current work it should walk up the filesystem tree until it gets to the file returned by getModulesDir(). For each level in the tree it should check if that file is a dir with no children and if it is it should remove the dir. 
+https://issues.jboss.org/browse/JBEAP-2374</description>
+			
+			
+			<version>2.0.4.Final</version>
+			
+			
+			<fixedVersion>2.0.5.CR1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.test.module.util.TestModule.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned to" type="Cloners">2374</link>
+			
+			
+			<link description="is related to" type="Related">5423</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-16 22:56:19" id="1213" opendate="2015-12-11 22:27:53" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Graceful shutdown is interfering with the &amp;apos;kill&amp;apos; and &amp;apos;destroy&amp;apos; operations</summary>
+			
+			
+			<description>The &amp;amp;apos;kill&amp;amp;apos; and &amp;amp;apos;destroy&amp;amp;apos; operations on the HC are meant to force shutdown of misbehaving servers. But the graceful shutdown work ([1]) has introduced a management op into the mix. I believe that should be removed, as its not the intent of these operations to try and be graceful; the regular &amp;amp;apos;stop&amp;amp;apos; ops are for that.
+When experimenting with how domains react to OOME servers as part of my WFCORE-378 work I&amp;amp;apos;m seeing &amp;amp;apos;kill&amp;amp;apos; and &amp;amp;apos;destroy&amp;amp;apos; no longer function because the OOME on the server means the graceful shutdown management op hangs.
+[1] https://github.com/wildfly/wildfly-core/commit/6e95b5#diff-ecdfa997cd57af67393e4962b54ead64</description>
+			
+			
+			<version>2.0.4.Final</version>
+			
+			
+			<fixedVersion>2.0.5.CR1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.host.controller.ServerInventoryImpl.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.ManagedServer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned to" type="Cloners">2398</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-16 22:57:43" id="1210" opendate="2015-12-11 14:47:25" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Transformations are not triggered for aliases</summary>
+			
+			
+			<description>Currently only operations passed in to the controller by the client are passed over to the transformers. So if you have an alias /an=alias mapping to /some=resource, and a transformer mapped for /some=resource:
+    /some=resource:add gets transformed
+   /an=alias:add does not get transformed.
+Behind the scenes /an=alias:add ends up in AliasStepHandler, which adds the step to invoke the real /some=resource:add. Unfortunately the /some=resource:add does not get passed to the transformers.
+The transformer framework should use the same logic as AliasStepHandler to map the alias to the real address and the transform that.</description>
+			
+			
+			<version>2.0.4.Final</version>
+			
+			
+			<fixedVersion>2.0.5.CR1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.registry.AliasEntry.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.transform.TransformersImpl.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.transform.CompositeOperationTransformer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned to" type="Cloners">2363</link>
+			
+			
+			<link description="blocks" type="Dependency">5927</link>
+			
+			
+			<link description="blocks" type="Dependency">5494</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-21 18:02:45" id="1239" opendate="2015-12-18 17:53:24" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Embedded API is confusing re process types</summary>
+			
+			
+			<description>The embedded API has gotten a bit confusing with respect to names and types, primarily the use of the word &quot;server&quot; in a number of placing where the relevant thing could either be an embedded standalone server or an embedded host controller. 
+Originally I saw this module as just being an internal implementation detail for the CLI, used by the offline CLI feature, but now we&amp;amp;apos;ve opened it up for use by things like Arquillian&amp;amp;apos;s WildFly integration, so I want to clean this API up a bit.
+I see two minor breaking changes needed:
+1) The HostController interface has an odd &quot;public HostController getHostController()&quot; method that logically would only return &amp;amp;apos;this&amp;amp;apos;. I could keep this but it&amp;amp;apos;s not needed and I&amp;amp;apos;d rather get rid of it.
+2) The HostController interface&amp;amp;apos;s start() method does not throw a checked exception, while the equivalent start() on StandaloneServer does. To do anything coherent I need to unify the exception handling. HostController is extremely unlikely to be used outside wf core, while StandaloneServer is used, and removing a checked exception from StandaloneServer would be a breaking change or any user that catches it, so instead I will add the exception to HostController.start().</description>
+			
+			
+			<version>2.0.4.Final</version>
+			
+			
+			<fixedVersion>2.0.5.Final</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="D">org.wildfly.core.embedded.InitialModuleLoaderFactory.java</file>
+			
+			
+			<file type="M">org.wildfly.core.embedded.ServerEnvironment.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.handlers.ReloadHandler.java</file>
+			
+			
+			<file type="M">org.wildfly.core.embedded.EmbeddedHostControllerFactory.java</file>
+			
+			
+			<file type="D">org.jboss.as.cli.embedded.EmbeddedServerLaunch.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.impl.CommandContextImpl.java</file>
+			
+			
+			<file type="M">org.wildfly.core.embedded.ServerStartException.java</file>
+			
+			
+			<file type="M">org.wildfly.core.embedded.HostController.java</file>
+			
+			
+			<file type="M">org.wildfly.core.embedded.EmbeddedServerReference.java</file>
+			
+			
+			<file type="M">org.wildfly.core.embedded.logging.EmbeddedLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.embedded.StopEmbeddedServerHandler.java</file>
+			
+			
+			<file type="M">org.wildfly.core.embedded.EmbeddedStandaloneServerFactory.java</file>
+			
+			
+			<file type="M">org.wildfly.core.embedded.EmbeddedServerFactory.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.handlers.ShutdownHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.embedded.EmbedHostControllerHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.embedded.StopEmbeddedHostControllerHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.embedded.EmbeddedControllerHandlerRegistrar.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.embedded.EmbedServerHandler.java</file>
+			
+			
+			<file type="M">org.wildfly.core.embedded.StandaloneServer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Dependency">2505</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-23 05:02:22" id="1209" opendate="2015-12-10 05:28:33" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>jboss-cli.sh ignoring invalid attribute when used in batch mode</summary>
+			
+			
+			<description>CLI did not throw any error message and just ignored the invalid attribute while using in batch mode.If we use same CLI command in non-batch mode it throws exception.</description>
+			
+			
+			<version>2.0.4.Final</version>
+			
+			
+			<fixedVersion>2.0.5.Final</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.Util.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.handlers.OperationRequestHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.handlers.batch.BatchRunHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned to" type="Cloners">2377</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-23 05:08:33" id="1198" opendate="2015-12-09 09:30:00" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CLI does not resolve multiple properties if one property is undefined</summary>
+			
+			
+			<description>https://bugzilla.redhat.com/show_bug.cgi?id=1289316 description:
+
+
+
+
+
+
+Multiple property substitution is working with EAP 6.4.3+, however, if a variable amongst the multiple variables is empty or has no value, then the subsequent property in the CLI command is not substituted. 
+
+
+
+
+
+
+
+
+
+For example : 
+
+
+
+
+cat props.properties 
+
+
+
+
+-----------------------------------------
+
+
+
+
+PROFILE-NAME=TestProfile
+
+
+
+
+SERVER-INSTANCE-NUMBER=TestInstance
+
+
+
+
+APP-VERSION=
+
+
+
+
+VAR=test
+
+
+
+
+-----------------------------------------
+
+
+
+
+
+
+
+
+
+cat test.cli :
+
+
+
+
+---------------------------------------
+
+
+
+
+/host=master/server-config=${PROFILE-NAME}${APP-VERSION}${SERVER-INSTANCE-NUMBER}${VAR}:add(auto-start=true, group=&quot;${PROFILE-NAME}${APP-VERSION}-server-group&quot;)
+
+
+
+
+---------------------------------------
+
+
+
+
+
+
+
+
+
+and if I execute &quot;./jboss-cli.sh --connect --file=test.cli --properties=props.properties&quot; then I have the following in the host.xml &quot;: 
+
+
+
+
+
+
+
+
+
+----------
+
+
+
+
+...
+
+
+
+
+&amp;lt;server name=&quot;TestProfile${SERVER-INSTANCE-NUMBER}test&quot; group=&quot;TestProfile-server-group&quot; auto-start=&quot;true&quot;/&amp;gt;
+
+
+
+
+...
+
+
+
+
+-----------
+
+
+
+
+
+
+
+
+
+Note APP-VERSION had no value, and so the subsequent SERVER-INSTANCE-NUMBER was not properly resolved
+
+
+
+
+
+</description>
+			
+			
+			<version>2.0.4.Final</version>
+			
+			
+			<fixedVersion>2.0.5.Final</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.parsing.ExpressionBaseState.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.parsing.test.PropertyReplacementTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned to" type="Cloners">2379</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-08 05:54:36" id="1226" opendate="2015-12-15 08:35:28" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>undeploying disabled deployment stops service for same runtime-name in DeploymentUndeployHandler </summary>
+			
+			
+			<description>
+
+
+
+
+
+1. Start EAP 6.4.4 in domain mode and deploy application using following CLI command:
+
+
+
+
+~~
+
+
+
+
+[domain@localhost:9999 /] deploy /Applications/WebApp-1.war --server-groups=main-server-group --name=WebApp-1.war --runtime-name=WebApp-1.war
+
+
+
+
+~~~
+
+
+
+
+2. Deploy next version of application in &quot;disabled&quot; state with same &quot;runtime-name&quot;  
+
+
+
+
+~~~
+
+
+
+
+[domain@localhost:9999 /] deploy /Applications/WebApp-2.war --disabled --name=WebApp-2.war --runtime-name=WebApp-1.war 
+
+
+
+
+~~~
+
+
+
+
+
+
+
+
+
+3. Now use replace-deployment command to access latest version of application:
+
+
+
+
+~~~
+
+
+
+
+[domain@localhost:9999 /] /server-group=main-server-group:replace-deployment(name=WebApp-2.war,to-replace=WebApp-1.war)
+
+
+
+
+~~~
+
+
+
+
+its working fine,laest version of application is accessable.
+
+
+
+
+
+
+
+
+
+4. Now try to undeploy old version of application
+
+
+
+
+~~~
+
+
+
+
+/server-group=main-server-group/deployment=WebApp-1.war:undeploy()
+
+
+
+
+~~~
+
+
+
+
+After undploying older version, we are not able to access(404) latest version of application(WebApp-2.war) as well.To access it we have to redeploy it. 
+
+
+
+
+Same steps are working fine in Standalone mode.
+
+
+
+
+
+</description>
+			
+			
+			<version>2.0.4.Final</version>
+			
+			
+			<fixedVersion>2.0.6.Final</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentUndeployHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned to" type="Cloners">2564</link>
+			
+			
+			<link description="blocks" type="Dependency">5993</link>
+			
+			
+			<link description="is related to" type="Related">5993</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-23 00:39:02" id="1232" opendate="2015-12-16 08:34:12" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Adjust patching tests to use merged patches</summary>
+			
+			
+			<description>WFCORE-838 introduced a new way of joining multiple patches together - merging them into one. This needs some test coverage in patching TS.</description>
+			
+			
+			<version>2.0.4.Final</version>
+			
+			
+			<fixedVersion>2.0.8.Final</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.test.integration.management.util.CLIWrapper.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.patching.CliUtilsForPatching.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.patching.PatchingTestUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">2429</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-30 14:42:12" id="1231" opendate="2015-12-16 08:16:38" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Remove OSGi bundle related patching tests</summary>
+			
+			
+			<description>OSGi is no longer supported, there&amp;amp;apos;s no point in keeping these tests.
+This affects unit tests in the &amp;amp;apos;patching&amp;amp;apos; module and the patching module of integration TS.</description>
+			
+			
+			<version>2.0.4.Final</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.patching.cli.PatchInspectUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.patching.PatchingTestUtil.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.patching.RemotePatchInfoUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.patching.RemotePatchInfoPatchIdUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.patching.cli.ContentConflictsUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.patching.cli.RollbackLastUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.patching.runner.TestUtils.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.patching.RollbackLastUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.patching.cli.LocalPatchInfoPatchIdUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.patching.ContentModificationUtils.java</file>
+			
+			
+			<file type="D">org.jboss.as.patching.runner.BundlePatchingTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.patching.runner.ContentModificationUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">2428</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

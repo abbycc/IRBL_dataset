@@ -1,0 +1,616 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="SEC">
+	<bug fixdate="2014-01-29 12:38:32" id="2457" opendate="2013-12-21 12:12:42" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Warning &quot;Method &amp;apos;setFilterProcessesUrl&amp;apos; is marked deprecated&quot; on http-login and http-logout tag</summary>
+			
+			
+			<description>&amp;lt;security:form-login login-page=&amp;amp;apos;/login&amp;amp;apos; default-target-url=&quot;/&quot; authentication-failure-url=&quot;/loginfailed&quot; /&amp;gt;
+&amp;lt;security:logout logout-success-url=&quot;/&quot; invalidate-session=&quot;true&quot; logout-url=&quot;/logout&quot; /&amp;gt;
+Warning appear on each line : &quot;Method &amp;amp;apos;setFilterProcessesUrl&amp;amp;apos; is marked deprecated&quot;
+Is there now a new recommended way to do this?
+I have not seen anything in the documentation about it.</description>
+			
+			
+			<version>3.2.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.http.AuthenticationConfigBuilder.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.http.FormLoginBeanDefinitionParser.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.authentication.logout.LogoutFilter.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.http.LogoutBeanDefinitionParser.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2455</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-01-29 13:36:10" id="2455" opendate="2013-12-18 01:35:17" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>form@login-processing-url and logout@logout-url produce warnings</summary>
+			
+			
+			<description>On upgrading to 3.2.0 RELEASE, we encountered this warning in the &amp;lt;http&amp;gt; block in the namespace configuration. 
+&amp;lt;form-login&amp;gt; and &amp;lt;logout&amp;gt;
+The warning says that setFilterProcessesUrl (which is inherited from AbstractAuthenticationProcessingFilter whose subclass be used by http@form-login and http@logout) is deprecated. Did we miss on replacing the deprecated method with the new method to be used? Can we remove this method altogether? Or is this warning here to stay? What does this warning mean?</description>
+			
+			
+			<version>3.2.0</version>
+			
+			
+			<fixedVersion>3.2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.http.AuthenticationConfigBuilder.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.http.FormLoginBeanDefinitionParser.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.authentication.logout.LogoutFilter.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.http.LogoutBeanDefinitionParser.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2457</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-02-09 19:48:46" id="2461" opendate="2014-01-09 09:09:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Multiple WebSecurityConfiguration instances cause null springSecurityFilterChain</summary>
+			
+			
+			<description>See SpringApplicationHierarchyTests within https://github.com/rwinch/spring-boot/tree/SEC-2461</description>
+			
+			
+			<version>3.2.0</version>
+			
+			
+			<fixedVersion>3.2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.web.configuration.sec2377.b.Sec2377BConfig.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-02-13 13:41:15" id="2392" opendate="2013-11-08 08:31:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Unexpectedly long key created by KeyBasedPersistenceTokenService.allocateToken()</summary>
+			
+			
+			<description>The method allocateToken in KeyBasedPersistenceTokenService creates a token with an unexpectedly long key.
+The reason for this is that the attribute pseudoRandomNumberBits (default = 256) is not converted to a number of bytes in the method generatePseudoRandomNumber() :
+
+
+
+
+
+
+    private String generatePseudoRandomNumber() {
+
+
+
+
+        byte[] randomizedBits = new byte[pseudoRandomNumberBits];
+
+
+
+
+        secureRandom.nextBytes(randomizedBits);
+
+
+
+
+        return new String(Hex.encode(randomizedBits));
+
+
+
+
+    }
+
+
+
+
+
+
+This string is then concatenated to others to create the final key of the Token :
+
+
+
+
+
+
+        String content = Long.toString(creationTime) + &quot;:&quot; + pseudoRandomNumber + &quot;:&quot; + extendedInformation;
+
+
+
+
+
+
+
+
+
+        // Compute key
+
+
+
+
+        String sha512Hex = Sha512DigestUtils.shaHex(content + &quot;:&quot; + serverSecret);
+
+
+
+
+        String keyPayload = content + &quot;:&quot; + sha512Hex;
+
+
+
+
+        String key = Utf8.decode(Base64.encode(Utf8.encode(keyPayload)));
+
+
+
+
+
+</description>
+			
+			
+			<version>3.2.0</version>
+			
+			
+			<fixedVersion>3.2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.core.token.KeyBasedPersistenceTokenService.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Relate">2491</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-02-15 12:42:10" id="2492" opendate="2014-02-15 11:00:29" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ExpressionUrlAuthorizationConfigurer.interceptUrl Javadoc incorrect</summary>
+			
+			
+			<description>Looks like refactoring garbage. As stated in javadoc comment method could be chained, but now it is private.</description>
+			
+			
+			<version>3.2.0</version>
+			
+			
+			<fixedVersion>3.2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-05-21 15:03:04" id="2472" opendate="2014-01-28 10:08:41" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Can&amp;apos;t use recommended BCryptPasswordEncoder for PasswordComparisonAuthenticator on a Ldap Authenticator</summary>
+			
+			
+			<description>According to the Spring Security Reference for version 3.2, we should use BCryptPasswordEncoder for encrypting passwords.  The class org.springframework.security.ldap.authentication.AbstractLdapAuthenticator has a method setPasswordEncoder that takes a single parameter of type org.springframework.security.authentication.encoding.PasswordEncoder, which is an interface that is deprecated.  All known classes that implement that interface are deprecated and represent various encryption algorithms that are no longer recommended.  org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder (the recommended encoder) does not implement that deprecated interface, it implements org.springframework.security.crypto.password.PasswordEncoder (tricky because the interface name is the same, but belongs to a different package as the deprecated interface).  The parameter type on the method setPasswordEncoder in the class org.springframework.security.ldap.authentication.AbstractLdapAuthenticator needs to be changed to org.springframework.security.crypto.password.PasswordEncoder.</description>
+			
+			
+			<version>3.2.0</version>
+			
+			
+			<fixedVersion>3.2.4, 4.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.authentication.configurers.ldap.LdapAuthenticationProviderConfigurer.java</file>
+			
+			
+			<file type="M">org.springframework.security.ldap.authentication.PasswordComparisonAuthenticator.java</file>
+			
+			
+			<file type="M">org.springframework.security.ldap.authentication.PasswordComparisonAuthenticatorTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-07-18 11:58:00" id="2683" opendate="2014-07-15 08:05:10" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Spelling Mistake in AuthenticationPrincipalArgumentResolver</summary>
+			
+			
+			<description>In AuthenticationPrincipalArgumentResolver, line 109, assignable is misspelled as &quot;assiable&quot; in the Exception reason.</description>
+			
+			
+			<version>3.2.0</version>
+			
+			
+			<fixedVersion>3.2.5, 4.0.0.M2</fixedVersion>
+			
+			
+			<type>Defect</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-11-19 14:50:57" id="2574" opendate="2014-04-23 09:38:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Default JavaConfig SessionRegistryImpl does not receive SessionDestroyedEvents</summary>
+			
+			
+			<description>SessionManagementConfigurer creates a default SessionRegistryImpl directly, without wiring it as a Spring bean. So, the SessionRegistryImpl does not receive SessionDestroyedEvents and does not maintain an accurate list of current sessions.
+Once consequence of this is that concurrency control will work off inaccurate data, and in the worst case prevents users from ever logging in a second time with maximumSessions(1) and maxSessionPreventsLogin(true).
+A workaround is for an application to define its own @Bean sessionRegistry(), and use it with &quot;ConcurrencyControlConfigurer.sessionRegistry(sessionRegistry())&quot;. But this shouldn&amp;amp;apos;t be necessary.</description>
+			
+			
+			<version>3.2.0</version>
+			
+			
+			<fixedVersion>3.2.6, 4.0.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-12-16 07:46:58" id="2497" opendate="2014-02-23 14:04:01" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>checkForPrincipalChanges limited to String Principal</summary>
+			
+			
+			<description>In AbstractPreAuthenticatedProcessingFilter,
+method requiresAuthentication , Principal are assumed to be String 
+ if (currentUser.getName().equals(principal)) 
+should be
+  if (currentUser.getPrincipal().equals(principal)) </description>
+			
+			
+			<version>3.2.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilterTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2078</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-14 11:37:14" id="2493" opendate="2014-02-19 08:11:40" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Javadoc for DefaultLdapAuthoritiesPopulator lists wrong class name &amp; incorrect property</summary>
+			
+			
+			<description>http://docs.spring.io/spring-security/site/docs/3.2.0.RELEASE/apidocs/org/springframework/security/ldap/userdetails/DefaultLdapAuthoritiesPopulator.html
+shows
+
+
+
+
+
+
+&amp;lt;bean id=&quot;ldapAuthoritiesPopulator&quot;
+
+
+
+
+       class=&quot;org.springframework.security.authentication.ldap.populator.DefaultLdapAuthoritiesPopulator&quot;&amp;gt;
+
+
+
+
+   &amp;lt;constructor-arg ref=&quot;contextSource&quot;/&amp;gt;
+
+
+
+
+   &amp;lt;constructor-arg value=&quot;ou=groups&quot;/&amp;gt;
+
+
+
+
+   &amp;lt;property name=&quot;groupRoleAttribute&quot; value=&quot;ou&quot;/&amp;gt;
+
+
+
+
+ &amp;lt;!-- the following properties are shown with their default values --&amp;gt;
+
+
+
+
+   &amp;lt;property name=&quot;searchSubTree&quot; value=&quot;false&quot;/&amp;gt;
+
+
+
+
+   &amp;lt;property name=&quot;rolePrefix&quot; value=&quot;ROLE_&quot;/&amp;gt;
+
+
+
+
+   &amp;lt;property name=&quot;convertToUpperCase&quot; value=&quot;true&quot;/&amp;gt;
+
+
+
+
+ &amp;lt;/bean&amp;gt;
+
+
+
+
+
+
+but should be
+
+
+
+
+
+
+&amp;lt;bean id=&quot;ldapAuthoritiesPopulator&quot;
+
+
+
+
+       class=&quot;org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator&quot;&amp;gt;
+
+
+
+
+   &amp;lt;constructor-arg ref=&quot;contextSource&quot;/&amp;gt;
+
+
+
+
+   &amp;lt;constructor-arg value=&quot;ou=groups&quot;/&amp;gt;
+
+
+
+
+   &amp;lt;property name=&quot;groupRoleAttribute&quot; value=&quot;ou&quot;/&amp;gt;
+
+
+
+
+ &amp;lt;!-- the following properties are shown with their default values --&amp;gt;
+
+
+
+
+   &amp;lt;property name=&quot;searchSubTree&quot; value=&quot;false&quot;/&amp;gt;
+
+
+
+
+   &amp;lt;property name=&quot;rolePrefix&quot; value=&quot;ROLE_&quot;/&amp;gt;
+
+
+
+
+   &amp;lt;property name=&quot;convertToUpperCase&quot; value=&quot;true&quot;/&amp;gt;
+
+
+
+
+ &amp;lt;/bean&amp;gt;
+
+
+
+
+
+
+</description>
+			
+			
+			<version>3.2.0</version>
+			
+			
+			<fixedVersion>3.2.8, 4.0.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

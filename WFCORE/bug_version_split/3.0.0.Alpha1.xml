@@ -1,0 +1,1122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="WFCORE">
+	<bug fixdate="2015-11-19 20:41:55" id="1115" opendate="2015-11-09 11:29:41" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Intermittent failures of CompositeOperationTestCase &amp; CoreResourceManagementTestCase</summary>
+			
+			
+			<description>org.jboss.as.test.integration.domain.suites.CompositeOperationTestCase and org.jboss.as.test.integration.domain.suites.CoreResourceManagementTestCase from wildfly-core testsuite domain module starts to intermittently fail since 7.0.0.DR13 (2.0.0.CR8).
+Tests fails only once I run the whole Domain Mode Integration Tests module, running only these two tests in isolation never fails. 
+Reproducer job which starts the tests in testsuite/domain module:
+ - 2.0.0.CR6 - intermittent failures of HcExtensionAndSubsystemManagementTestCase JBEAP-1598
+ - 2.0.0.CR7 - intermittent failures of HcExtensionAndSubsystemManagementTestCase JBEAP-1598
+ - 2.0.0.CR8 - no more HcExtensionAndSubsystemManagementTestCase failures, CompositeOperationTestCase and CoreResourceManagementTestCase starts failing
+- 3.0.0.Alpha1-SNAPSHOT - CompositeOperationTestCase and CoreResourceManagementTestCase intermittent fails
+Attaching surefire reports.</description>
+			
+			
+			<version>3.0.0.Alpha1</version>
+			
+			
+			<fixedVersion>2.0.2.Final</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.test.integration.domain.suites.IgnoredResourcesProfileCloneTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">1793</link>
+			
+			
+			<link description="relates to" type="Related">1089</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-05 18:12:16" id="1462" opendate="2016-04-04 14:22:42" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ssl element not usable in xml cli config</summary>
+			
+			
+			<description>Setting a trust store in the cli-config.xml (ssl XML element) has the side effect to load classes from picketBox that is not present in the core feature pack. This makes ssl element not usable in a core configuration. This works well in a fully featured wildly.</description>
+			
+			
+			<version>3.0.0.Alpha1</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.impl.CliConfigImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-18 20:15:44" id="1471" opendate="2016-04-13 13:26:04" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CLI class is mixing commands and operations</summary>
+			
+			
+			<description>CLI.cmd method logic is not in sync with the CLI syntax. 
+A fallback is implemented in order to route requests to cx.handle only if ctx.buildRequest(cliCommand) is failing. 
+For example this doesn&amp;amp;apos;t cope with reload vs :reload. In this case, buildRequest will succeed both for reload and :reload. CLI.cmd(&quot;reload&quot;) will end to be treated as CLI.cmd(&quot;:reload&quot;);
+Furthermore batch and workflow are not supported by CLI.
+I am suggesting to implement the following logic:
+1) If batch is enabled or a workflow is enabled, route the command to handle
+2) Parse the request.
+3) If this is an operation, route to execute
+4) Otherwise route to handle
+</description>
+			
+			
+			<version>3.0.0.Alpha1</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.completion.mock.MockCommandContext.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.impl.CommandContextImpl.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.scriptsupport.CLI.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.CommandContext.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-05-02 22:59:19" id="1522" opendate="2016-05-02 06:18:36" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>PersistanceResourceTestCase fails if defaultPermissions contain only groups</summary>
+			
+			
+			<description>PersistanceResourceTestCase fails on Windows 10 (out-of-box configuration) where defaultPermissins list contain only groups, ownerPermissions is empty set thus assertion fail - see discussion on https://github.com/wildfly/wildfly-core/pull/1513.
+Test the ownerPermissions for emptiness before making the assertion.</description>
+			
+			
+			<version>3.0.0.Alpha1</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.persistence.PersistanceResourceTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Related">1486</link>
+			
+			
+			<link description="is related to" type="Related">2335</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-20 02:04:49" id="1572" opendate="2016-05-27 16:20:10" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Suggestion list for argument value is not generated if the value contains a whitespace</summary>
+			
+			
+			<description>When an argument value contains a space (eg. deploy /path/to/test-application.war --all-server-groups --headers={rollout id=foo}) and if user hits tab after the whitespace, suggestions are generated based on the command, rather than the current argument&amp;amp;apos;s name.</description>
+			
+			
+			<version>3.0.0.Alpha1</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.parsing.ParserUtil.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.parsing.test.CommandTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.parsing.DefaultStateWithEndCharacter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">4743</link>
+			
+			
+			<link description="blocks" type="Dependency">5338</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-20 02:05:22" id="1570" opendate="2016-05-27 12:51:56" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Saved rollout-plan &amp;apos;name&amp;apos; or &amp;apos;id&amp;apos; attribute discrepancy</summary>
+			
+			
+			<description>When using rollout plans for EAP deployment scenarios I can create my own named rollout-plan for ease of use. I can then apply rollout command later on, referring with name of my own rollout plan that should be used. There is minor discrepancy in the way I create and use such rollout plan though.
+When I create rollout-plan, I use command like:
+
+
+
+
+
+
+rollout-plan add --name=my-rollout-plan --content={rollout main-server-group(rolling-to-servers=false,max-failed-servers=1),other-server-group(rolling-to-servers=true,max-failure-percentage=20) rollback-across-groups=true}
+
+
+
+
+
+
+
+see --name attribute given to name my rollout plan
+
+When I then refer to it I use following command:
+
+
+
+
+
+
+deploy /path/to/test-application.war --all-server-groups --headers={rollout id=my-rollout-plan}
+
+
+
+
+
+
+
+see id attribute given to rollout header operation
+
+Yes, this is really minor issue, but I think that these two attributes used in aforementioned commands should be unified (preferably to name instead of id) as user might be confused when using it.
+Note: examples are used from our documentation.
+Note: I do not know whether I am missing something but I was not able to retrieve more info how to use rollout header operation in deploy command directly in CLI.</description>
+			
+			
+			<version>3.0.0.Alpha1</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.parsing.operation.header.RolloutPlanState.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.parsing.operation.header.RolloutPlanHeaderCallbackHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.operation.impl.RolloutPlanCompleter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">3771</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-24 15:28:45" id="1595" opendate="2016-06-15 10:10:43" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CLI doesn&amp;apos;t autocomplete for unalias command</summary>
+			
+			
+			<description>Tab completion for CLI unalias commend doesn&amp;amp;apos;t seem to work. CLI will suggest available option, but doesn&amp;amp;apos;t autocomplete.
+actual
+
+
+
+
+
+
+[standalone@localhost:9990 /] unalias read_&amp;lt;TAB&amp;gt;
+
+
+
+
+  read_undertow  
+
+
+
+
+[standalone@localhost:9990 /] unalias read_&amp;lt;TAB&amp;gt;
+
+
+
+
+  read_undertow 
+
+
+
+
+
+
+expected
+
+
+
+
+
+
+[standalone@localhost:9990 /] unalias read_&amp;lt;TAB&amp;gt;
+
+
+
+
+[standalone@localhost:9990 /] unalias read_undertow
+
+
+
+
+
+</description>
+			
+			
+			<version>3.0.0.Alpha1</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.operation.OperationRequestCompleter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">4939</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-30 22:42:01" id="1578" opendate="2016-06-07 05:13:13" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Better check of names of existing resources when adding &amp;apos;{local|remote-destination-outbound-socket-binding&amp;apos;</summary>
+			
+			
+			<description>Lets have some /socket-binding-group=standard-sockets/socket-binding with particular name. Then when I create some /socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding or /socket-binding-group=standard-sockets/local-destination-outbound-socket-binding using same name as of already existing socket-binding resource, add operation is successful but when I perform server reload, it crashes as it is not able to parse configuration. See:
+
+Start EAP and log to CLI
+create your own socket-binding resource and {remote|local}-destination-outbound-socket-binding resource with same names and perform reload
+
+
+
+
+
+
+/socket-binding-group=standard-sockets/socket-binding=myBinding:add()
+
+
+
+
+/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=myBinding:add(host=localhost,port=8765)
+
+
+
+
+or
+
+
+
+
+/socket-binding-group=standard-sockets/local-destination-outbound-socket-binding=myBinding:add(socket-binding-ref=http)
+
+
+
+
+reload
+
+
+
+
+
+
+server crashes with following stacktrace in console log:
+
+
+
+
+
+
+17:31:40,447 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-7) WFLYJCA0019: Stopped Driver service with driver-name = h2
+
+
+
+
+17:31:40,453 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-8) WFLYUT0008: Undertow HTTP listener default suspending
+
+
+
+
+17:31:40,454 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-8) WFLYUT0007: Undertow HTTP listener default stopped, was bound to 127.0.0.1:8080
+
+
+
+
+17:31:40,454 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-3) WFLYUT0004: Undertow 1.3.21.Final-redhat-1 stopping
+
+
+
+
+17:31:40,458 INFO  [org.jboss.as.mail.extension] (MSC service thread 1-7) WFLYMAIL0002: Unbound mail session [java:jboss/mail/Default]
+
+
+
+
+17:31:40,461 INFO  [org.jboss.as] (MSC service thread 1-5) WFLYSRV0050: JBoss EAP 7.0.0.GA (WildFly Core 2.1.2.Final-redhat-1) stopped in 22ms
+
+
+
+
+17:31:40,461 INFO  [org.jboss.as] (MSC service thread 1-5) WFLYSRV0049: JBoss EAP 7.0.0.GA (WildFly Core 2.1.2.Final-redhat-1) starting
+
+
+
+
+17:31:40,489 ERROR [org.jboss.as.server] (Controller Boot Thread) WFLYSRV0055: Caught exception during boot: org.jboss.as.controller.persistence.ConfigurationPersistenceException: WFLYCTL0085: Failed to parse configuration
+
+
+
+
+	at org.jboss.as.controller.persistence.XmlConfigurationPersister.load(XmlConfigurationPersister.java:131)
+
+
+
+
+	at org.jboss.as.server.ServerService.boot(ServerService.java:356)
+
+
+
+
+	at org.jboss.as.controller.AbstractControllerService$1.run(AbstractControllerService.java:299)
+
+
+
+
+	at java.lang.Thread.run(Thread.java:745)
+
+
+
+
+Caused by: javax.xml.stream.XMLStreamException: ParseError at [row,col]:[410,9]
+
+
+
+
+Message: WFLYCTL0042: A socket-binding or a outbound-socket-binding myBinding already declared has already been declared in socket-binding-group standard-sockets
+
+
+
+
+	at org.jboss.as.server.parsing.StandaloneXml_4.parseSocketBindingGroup(StandaloneXml_4.java:518)
+
+
+
+
+	at org.jboss.as.server.parsing.StandaloneXml_4.readServerElement(StandaloneXml_4.java:254)
+
+
+
+
+	at org.jboss.as.server.parsing.StandaloneXml_4.readElement(StandaloneXml_4.java:141)
+
+
+
+
+	at org.jboss.as.server.parsing.StandaloneXml.readElement(StandaloneXml.java:103)
+
+
+
+
+	at org.jboss.as.server.parsing.StandaloneXml.readElement(StandaloneXml.java:49)
+
+
+
+
+	at org.jboss.staxmapper.XMLMapperImpl.processNested(XMLMapperImpl.java:110)
+
+
+
+
+	at org.jboss.staxmapper.XMLMapperImpl.parseDocument(XMLMapperImpl.java:69)
+
+
+
+
+	at org.jboss.as.controller.persistence.XmlConfigurationPersister.load(XmlConfigurationPersister.java:123)
+
+
+
+
+	... 3 more
+
+
+
+
+
+
+
+
+
+17:31:40,490 FATAL [org.jboss.as.server] (Controller Boot Thread) WFLYSRV0056: Server boot has failed in an unrecoverable manner; exiting. See previous messages for details.
+
+
+
+
+17:31:40,491 INFO  [org.jboss.as.server] (Thread-2) WFLYSRV0220: Server shutdown has been requested.
+
+
+
+
+17:31:40,496 INFO  [org.jboss.as] (MSC service thread 1-2) WFLYSRV0050: JBoss EAP 7.0.0.GA (WildFly Core 2.1.2.Final-redhat-1) stopped in 3ms
+
+
+
+
+
+
+
+After this occurs, one needs to fix ./standalone/configuration/standalone.xml manually by removing duplicate resources.
+If there is a problem for those resources to have same names I would welcome that names are checked during the add operation already regarding to all resources in socket-binding and {remote|local}-destination-outbound-socket-binding.
+Note: not sure whether CLI component is appropriate, please change if there is better component for this.</description>
+			
+			
+			<version>3.0.0.Alpha1</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.services.net.SocketBindingAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.logging.ControllerLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.services.net.RemoteDestinationOutboundSocketBindingAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.services.net.LocalDestinationOutboundSocketBindingAddHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">4861</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-11 15:17:26" id="1590" opendate="2016-06-12 14:18:43" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Default parameter length validating ignores setMinSize(0)</summary>
+			
+			
+			<description>With the following attribute definition: -
+
+
+
+
+
+
+    static final SimpleAttributeDefinition REPLACEMENT = new SimpleAttributeDefinitionBuilder(ElytronDescriptionConstants.REPLACEMENT, ModelType.STRING, false)
+
+
+
+
+        .setAllowExpression(true)
+
+
+
+
+        .setMinSize(0)
+
+
+
+
+        .setFlags(AttributeAccess.Flag.RESTART_RESOURCE_SERVICES)
+
+
+
+
+        .build();
+
+
+
+
+
+
+The following error is reported if an empty string is used as a parameter: -
+
+
+
+
+
+
+
+
+
+
+
+[standalone@localhost:9990 /] ./subsystem=elytron/regex-name-rewriter=strip-realm:add(pattern=&quot;@ELYTRON.ORG&quot;, replacement=&quot;&quot;, replace-all=true)
+
+
+
+
+{
+
+
+
+
+    &quot;outcome&quot; =&amp;gt; &quot;failed&quot;,
+
+
+
+
+    &quot;failure-description&quot; =&amp;gt; &quot;WFLYCTL0113: &amp;amp;apos;&amp;amp;apos; is an invalid value for parameter replacement. Values must have a minimum length of 1 characters&quot;,
+
+
+
+
+    &quot;rolled-back&quot; =&amp;gt; true
+
+
+
+
+}
+
+
+
+
+
+
+</description>
+			
+			
+			<version>3.0.0.Alpha1</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.AbstractAttributeDefinitionBuilder.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.test.WriteAttributeOperationTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.AttributeDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.SimpleAttributeDefinitionUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.operations.validation.BytesValidator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-24 21:50:36" id="1579" opendate="2016-06-07 13:31:53" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Perform check when changing &amp;apos;path&amp;apos; attribute of &amp;apos;deployment-scanner&amp;apos; instance</summary>
+			
+			
+			<description>When creating my own deployment-scanner, I have to provide path attribute where given value is checked whether it is a real directory on current filesystem. Although when I change value of this attribute in existing deployment-scanner instance, such check is not performed and I can provide non-existent directory. This leads to server crash after calling reload operation:
+
+start EAP7 server and connect to CLI
+create your own deployment-scanner instance pointing to existing directory
+
+
+
+
+
+
+[standalone@localhost:9990 /] /subsystem=deployment-scanner/scanner=mysc:add(path=/home/jstourac/Downloads/jboss-eap-7.0/standalone/deployments)
+
+
+
+
+{&quot;outcome&quot; =&amp;gt; &quot;success&quot;}
+
+
+
+
+
+
+change path of deployment-scanner to some nonexisting directory
+
+
+
+
+
+
+[standalone@localhost:9990 /] /subsystem=deployment-scanner/scanner=mysc:write-attribute(name=path,value=/nonexistent)
+
+
+
+
+{
+
+
+
+
+    &quot;outcome&quot; =&amp;gt; &quot;success&quot;,
+
+
+
+
+    &quot;response-headers&quot; =&amp;gt; {
+
+
+
+
+        &quot;operation-requires-reload&quot; =&amp;gt; true,
+
+
+
+
+        &quot;process-state&quot; =&amp;gt; &quot;reload-required&quot;
+
+
+
+
+    }
+
+
+
+
+}
+
+
+
+
+
+
+perform reload operation
+server fails with following output in console.log
+
+
+
+
+
+
+15:29:08,039 INFO  [org.jboss.as.server.deployment.scanner] (MSC service thread 1-5) WFLYDS0013: Started FileSystemDeploymentService for directory /home/jstourac/Downloads/jboss-eap-7.0/standalone/deployments
+
+
+
+
+15:29:29,068 INFO  [org.jboss.as.connector.subsystems.datasources] (MSC service thread 1-3) WFLYJCA0010: Unbound data source [java:jboss/datasources/ExampleDS]
+
+
+
+
+15:29:29,070 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-8) WFLYUT0019: Host default-host stopping
+
+
+
+
+15:29:29,071 INFO  [org.jboss.as.connector.deployers.jdbc] (MSC service thread 1-5) WFLYJCA0019: Stopped Driver service with driver-name = h2
+
+
+
+
+15:29:29,073 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-4) WFLYUT0008: Undertow HTTP listener default suspending
+
+
+
+
+15:29:29,075 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-4) WFLYUT0007: Undertow HTTP listener default stopped, was bound to 127.0.0.1:8080
+
+
+
+
+15:29:29,076 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-2) WFLYUT0004: Undertow 1.3.21.Final-redhat-1 stopping
+
+
+
+
+15:29:29,081 INFO  [org.jboss.as.mail.extension] (MSC service thread 1-2) WFLYMAIL0002: Unbound mail session [java:jboss/mail/Default]
+
+
+
+
+15:29:29,082 INFO  [org.jboss.as] (MSC service thread 1-8) WFLYSRV0050: JBoss EAP 7.0.0.GA (WildFly Core 2.1.2.Final-redhat-1) stopped in 16ms
+
+
+
+
+15:29:29,083 INFO  [org.jboss.as] (MSC service thread 1-8) WFLYSRV0049: JBoss EAP 7.0.0.GA (WildFly Core 2.1.2.Final-redhat-1) starting
+
+
+
+
+15:29:29,135 ERROR [org.jboss.as.controller.management-operation] (ServerService Thread Pool -- 13) WFLYCTL0013: Operation (&quot;add&quot;) failed - address: ([
+
+
+
+
+    (&quot;subsystem&quot; =&amp;gt; &quot;deployment-scanner&quot;),
+
+
+
+
+    (&quot;scanner&quot; =&amp;gt; &quot;mysc&quot;)
+
+
+
+
+]): java.lang.IllegalArgumentException: WFLYDS0023: /nonexistent does not exist
+
+
+
+
+	at org.jboss.as.server.deployment.scanner.FileSystemDeploymentService.&amp;lt;init&amp;gt;(FileSystemDeploymentService.java:273)
+
+
+
+
+	at org.jboss.as.server.deployment.scanner.DeploymentScannerAdd.execute(DeploymentScannerAdd.java:124)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext.executeStep(AbstractOperationContext.java:890)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext.processStages(AbstractOperationContext.java:659)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext.executeOperation(AbstractOperationContext.java:370)
+
+
+
+
+	at org.jboss.as.controller.ParallelBootOperationStepHandler$ParallelBootTask.run(ParallelBootOperationStepHandler.java:359)
+
+
+
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+
+
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+
+
+
+	at java.lang.Thread.run(Thread.java:745)
+
+
+
+
+	at org.jboss.threads.JBossThread.run(JBossThread.java:320)
+
+
+
+
+
+
+
+
+
+15:29:29,139 ERROR [org.jboss.as.controller.management-operation] (Controller Boot Thread) &quot;WFLYCTL0193: Failed executing subsystem deployment-scanner boot operations&quot;
+
+
+
+
+15:29:29,140 ERROR [org.jboss.as.controller.management-operation] (Controller Boot Thread) WFLYCTL0013: Operation (&quot;parallel-subsystem-boot&quot;) failed - address: ([]) - failure description: &quot;\&quot;WFLYCTL0193: Failed executing subsystem deployment-scanner boot operations\&quot;&quot;
+
+
+
+
+15:29:29,141 FATAL [org.jboss.as.server] (Controller Boot Thread) WFLYSRV0056: Server boot has failed in an unrecoverable manner; exiting. See previous messages for details.
+
+
+
+
+15:29:29,144 INFO  [org.jboss.as.server] (Thread-2) WFLYSRV0220: Server shutdown has been requested.
+
+
+
+
+15:29:29,159 INFO  [org.jboss.as] (MSC service thread 1-8) WFLYSRV0050: JBoss EAP 7.0.0.GA (WildFly Core 2.1.2.Final-redhat-1) stopped in 4ms
+
+
+
+
+
+
+one has to manually modify EAP_HOME/standalone/configuration/standalone.xml removing problematic deployment-scanner part to be able to start server again
+
+It would be great if there is same check to path atribute performed when changing it in existing instance of deployment-scanner as what is performed during the adding a new instance of deployment-scanner.</description>
+			
+			
+			<version>3.0.0.Alpha1</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.WritePathAttributeHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.FileSystemDeploymentService.java</file>
+			
+			
+			<file type="M">org.wildfly.core.test.standalone.mgmt.api.DeploymentScannerTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.FileSystemDeploymentServiceUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.logging.DeploymentScannerLogger.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">4874</link>
+			
+			
+			<link description="is related to" type="Related">1333</link>
+			
+			
+			<link description="is related to" type="Related">6785</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-10-03 18:54:49" id="1479" opendate="2016-04-18 13:45:05" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Jar sub deployment has as first dependency parent ear</summary>
+			
+			
+			<description>Jar file included in ear main directory is resolved as sub deployment with parent ear as first dependency.
+Therefore jar files contained in ear/lib directory have priority before implicit modules when class is created inside jar file.</description>
+			
+			
+			<version>3.0.0.Alpha1</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha10</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.module.SubDeploymentDependencyProcessor.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">6629</link>
+			
+			
+			<link description="is related to" type="Related">4241</link>
+			
+			
+			<link description="is related to" type="Related">5267</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

@@ -1,0 +1,1240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="MATH">
+	<bug fixdate="2008-02-01 12:03:18" id="182" opendate="2008-02-01 11:59:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>converting some double numbers to Fraction can lead to integer overflows</summary>
+			
+			
+			<description>converting 0.75000000001455192 leads to an overflow at the third iteration
+ converting 1.0e10 leads to an overflow before the loop (while computiong a0)</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion>1.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.fraction.Fraction.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.fraction.FractionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.fraction.FractionConversionException.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.MessagesResources_fr.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-02 18:02:08" id="185" opendate="2008-02-02 17:57:05" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>using an empty file to ValueServer in REPLAY_MODE triggers a NULL_POINTER_EXCEPTION</summary>
+			
+			
+			<description>when the URL provided to ValueServer.setValuesFileURL() contains no data,
+subsequent calls to ValueServer.getNext() in replay mode triggers an exception at the
+end of the private method getNextReplay.</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion>1.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.random.ValueServer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.random.ValueServerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.random.EmpiricalDistributionImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-03 22:47:32" id="186" opendate="2008-02-03 22:31:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>test results depend on java version</summary>
+			
+			
+			<description>Running the tests with maven and changing the java version used by changing JAVA_HOME in the ~/.mavenrc file, I get different results.
+With the Eclipse compiler set to 1.3 compatibility and with blackdown jvm (1.4), the tests succed.
+With the Sun jvm (1.6), SummaryStatisticsAbstractTest.testEqualsAndHashCode (which is used both by SummaryStatisticsTest and SynchronizedSummaryStatisticsTest) fails.
+The error is related to geometric mean computation, which lead to slightly different results depending on the order of added elements. One instance returns 2.213363839400643 and the other returns 2.2133638394006434. Both results are consistent with IEEE754 arithmetic (they differ in the last two bits).
+Using Sun 1.6.0_03 jvm, the different values induce a test failure when SummaryStatistics.equals() method is called (it checks for exact equality). If this part of the test is commented out, another failure occurs when the SummaryStatistics.hashcode() method is called.
+Changing the equals method would be possible, but would be a change of semantics and would imply choosing some threshold which would never suit everybody needs. Changing the hashcode method simply does not seem realistic to me. So I would like to keep these methods as they are now. So the main conclusion would be that the test is too sensitive to jvm implementation (which are consistent with IEEE754 arithmetic in this case).
+I don&amp;amp;apos;t know what to do about this issue.</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion>1.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.SummaryStatisticsAbstractTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-23 12:23:59" id="198" opendate="2008-03-18 23:06:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>java.lang.StringIndexOutOfBoundsException in ComplexFormat.parse(String source, ParsePosition pos)</summary>
+			
+			
+			<description>The parse(String source, ParsePosition pos) method in the ComplexFormat class does not check whether the imaginary character is set or not which produces StringIndexOutOfBoundsException in the substring method :
+(line 375 of ComplexFormat)
+...
+        // parse imaginary character
+        int n = getImaginaryCharacter().length();
+        startIndex = pos.getIndex();
+        int endIndex = startIndex + n;
+        if (source.substring(startIndex, endIndex).compareTo(
+            getImaginaryCharacter()) != 0) {
+...
+I encoutered this exception typing in a JTextFied with ComplexFormat set to look up an AbstractFormatter.
+If only the user types the imaginary part of the complex number first, he gets this exception.
+Solution: Before setting to n length of the imaginary character, check if the source contains it. My proposal:
+...
+        int n = 0;
+        if (source.contains(getImaginaryCharacter()))
+        n = getImaginaryCharacter().length();
+...		 
+F.S.</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.complex.ComplexFormat.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.complex.ComplexFormatAbstractTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-23 13:40:12" id="199" opendate="2008-03-20 22:56:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>exception in LevenbergMarquardtEstimator</summary>
+			
+			
+			<description>I get this exception:
+Exception in thread &quot;main&quot; java.lang.ArrayIndexOutOfBoundsException: -1
+       at org.apache.commons.math.estimation.LevenbergMarquardtEstimator.qrDecomposition(LevenbergMarquardtEstimator.java:772)
+       at org.apache.commons.math.estimation.LevenbergMarquardtEstimator.estimate(LevenbergMarquardtEstimator.java:232)
+       at quadraticFitterProblem.QuadraticFitterProblem.&amp;lt;init&amp;gt;(QuadraticFitterProblem.java:27)
+       at quadraticFitterProblem.QuadraticFitterProblem.main(QuadraticFitterProblem.java:40)
+on the code below.
+The exception does not occur all the weights in the quadraticFitter are 0.0;
+---------------------------------------------------------------------------------------------
+package quadraticFitterProblem;
+import org.apache.commons.math.estimation.EstimationException;
+import org.apache.commons.math.estimation.LevenbergMarquardtEstimator;
+//import org.apache.commons.math.estimation.WeightedMeasurement;
+import com.strategicanalytics.dtd.data.smoothers.QuadraticFitter;
+public class QuadraticFitterProblem {
+       private QuadraticFitter quadraticFitter;
+       public QuadraticFitterProblem() {
+         // create the uninitialized fitting problem
+         quadraticFitter = new QuadraticFitter();
+         quadraticFitter.addPoint (0,  -3.182591015485607, 0.0);
+         quadraticFitter.addPoint (1,  -2.5581184967730577, 4.4E-323);
+         quadraticFitter.addPoint (2,  -2.1488478161387325, 1.0);
+         quadraticFitter.addPoint (3,  -1.9122489313410047, 4.4E-323);
+         quadraticFitter.addPoint (4,  1.7785661310051026, 0.0);
+         try 
+{
+           // solve the problem, using a Levenberg-Marquardt algorithm with
+default settings
+           LevenbergMarquardtEstimator estimator = new LevenbergMarquardtEstimator();
+           //WeightedMeasurement[] wm = quadraticFitter.getMeasurements();
+           estimator.estimate(quadraticFitter);
+
+         }
+ catch (EstimationException ee) 
+{
+               System.err.println(ee.getMessage());
+         }
+       }
+       /**
+
+@param args
+        *
+        */
+       public static void main(String[] args) 
+{
+
+                       new QuadraticFitterProblem();
+                       System.out.println (&quot;Done.&quot;);
+       }
+
+}
+----------------------------------------------------------------------------------------------
+import org.apache.commons.math.estimation.EstimatedParameter;
+//import org.apache.commons.math.estimation.EstimationException;
+//import org.apache.commons.math.estimation.LevenbergMarquardtEstimator;
+import org.apache.commons.math.estimation.SimpleEstimationProblem;
+import org.apache.commons.math.estimation.WeightedMeasurement;
+public class QuadraticFitter extends SimpleEstimationProblem {
+       // y = a x&amp;lt;sup&amp;gt;2&amp;lt;/sup&amp;gt; + b x + c
+   private EstimatedParameter a;
+   private EstimatedParameter b;
+   private EstimatedParameter c;
+   /**
+
+constructor
+    *
+    *Fitter for a quadratic model to a sample of 2D points.
+&amp;lt;p&amp;gt;The model is y = a x&amp;lt;sup&amp;gt;2&amp;lt;/sup&amp;gt; + b x + c
+its three parameters of the model are a, b and c.&amp;lt;/p&amp;gt;
+    */
+   public QuadraticFitter() 
+{
+
+       // three parameters of the model
+       a = new EstimatedParameter(&quot;a&quot;, 0.0);
+       b = new EstimatedParameter(&quot;b&quot;, 0.0);
+       c = new EstimatedParameter(&quot;c&quot;, 0.0);
+
+       // provide the parameters to the base class which
+       // implements the getAllParameters and getUnboundParameters methods
+       addParameter(a);
+       addParameter(b);
+       addParameter(c);
+   }
+
+   /**
+
+Add a sample point
+    *
+@param x abscissa
+@param y ordinate
+@param w weight
+    */
+   public void addPoint(double x, double y, double w) 
+{
+       addMeasurement(new LocalMeasurement(x, y, w));
+   }
+
+   /**
+
+Get the value of the quadratic coefficient.
+    *
+@return the value of a for the quadratic model
+y = a x&amp;lt;sup&amp;gt;2&amp;lt;/sup&amp;gt; + b x + c
+    */
+   public double getA() 
+{
+       return a.getEstimate();
+   }
+
+   /**
+
+Get the value of the linear coefficient.
+    *
+@return the value of b for the quadratic model
+y = a x&amp;lt;sup&amp;gt;2&amp;lt;/sup&amp;gt; + b x + c
+    */
+   public double getB() 
+{
+       return b.getEstimate();
+   }
+
+   /**
+
+Get the value of the constant coefficient.
+    *
+@return the value of ac for the quadratic model
+y = a x&amp;lt;sup&amp;gt;2&amp;lt;/sup&amp;gt; + b x + c
+    */
+   public double getC() 
+{
+       return c.getEstimate();
+   }
+
+   /**
+
+Get the theoretical value of the model for some x.
+&amp;lt;p&amp;gt;The theoretical value is the value computed using
+the current state of the problem parameters.&amp;lt;/p&amp;gt;
+    *
+Note the use of Hrner&amp;amp;apos;s method (synthetic division) for
+evaluating polynomials,
+(more efficient)
+    *
+@param x explanatory variable
+@return the theoretical value y = a x&amp;lt;sup&amp;gt;2&amp;lt;/sup&amp;gt; + b x + c
+    */
+   public double theoreticalValue(double x) 
+{
+       //System.out.println (&quot;x = &quot; + x + &quot;  a.getEstimate() = &quot; +
+a.getEstimate() + &quot;  b.getEstimate() = &quot; + b.getEstimate() + &quot;
+c.getEstimate() = &quot; + c.getEstimate());
+       return ( (a.getEstimate() * x + b.getEstimate() ) * x +
+c.getEstimate());
+   }
+
+   /**
+
+Get the partial derivative of the theoretical value
+of the model for some x.
+&amp;lt;p&amp;gt;The derivative is computed using
+the current state of the problem parameters.&amp;lt;/p&amp;gt;
+    *
+@param x explanatory variable
+@param parameter estimated parameter (either a, b, or c)
+@return the partial derivative dy/dp
+    */
+   private double partial(double x, EstimatedParameter parameter) {
+       // since we know the only parameters are a, b and c in this
+       // class we simply use &quot;==&quot; for efficiency
+       if (parameter == a) 
+{
+           return x * x;
+       }
+ else if (parameter == b) 
+{
+           return x;
+       }
+ else 
+{
+           return 1.0;
+       }
+
+   }
+   /** Internal measurements class.
+
+&amp;lt;p&amp;gt;The measurement is the y value for a fixed specified x.&amp;lt;/p&amp;gt;
+    */
+   private class LocalMeasurement extends WeightedMeasurement {
+
+       static final long serialVersionUID = 1;
+       private final double x;
+       // constructor
+       public LocalMeasurement(double x, double y, double w) 
+{
+           super(w, y);
+           this.x = x;
+       }
+
+       public double getTheoreticalValue() 
+{
+           // the value is provided by the model for the local x
+           return theoreticalValue(x);
+       }
+
+       public double getPartial(EstimatedParameter parameter) 
+{
+           // the value is provided by the model for the local x
+           return partial(x, parameter);
+       }
+
+   }
+ }</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.estimation.LevenbergMarquardtEstimator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.estimation.LevenbergMarquardtEstimatorTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-28 20:11:06" id="200" opendate="2008-03-25 22:22:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>AbstractEstimator: getCovariances() and guessParametersErrors() crash when having bound parameters</summary>
+			
+			
+			<description>the two methods getCovariances() and guessParametersErrors() from org.apache.commons.math.estimation.AbstractEstimator crash with ArrayOutOfBounds exception when some of the parameters are bound. The reason is that the Jacobian is calculated only for the unbound parameters. in the code you loop through all parameters.
+line #166: final int cols = problem.getAllParameters().length;
+should be replaced by:  final int cols = problem.getUnboundParameters().length;
+(similar changes could be done in guessParametersErrors())
+the dissadvantage of the above bug fix is that what is returned to the user is an array with smaller size than the number of all parameters. Alternatively, you can have some logic in the code which writes zeros for the elements of the covariance matrix corresponding to the bound parameters</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.estimation.AbstractEstimator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.estimation.GaussNewtonEstimatorTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-06 01:24:56" id="201" opendate="2008-04-04 16:31:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>T-test p-value precision hampered by machine epsilon</summary>
+			
+			
+			<description>The smallest p-value returned by TTestImpl.tTest() is the machine epsilon, which is 2.220446E-16 with IEEE754 64-bit double precision floats.
+We found this bug porting some analysis software from R to java, and noticed that the p-values did not match up.  We believe we&amp;amp;apos;ve identified why this is happening in commons-math-1.2, and a possible solution.
+Please be gentle, as I am not a statistics expert!
+The following method in org.apache.commons.math.stat.inference.TTestImpl currently implements the following method to calculate the p-value for a 2-sided, 2-sample t-test:
+protected double tTest(double m1, double m2, double v1, double v2,  double n1, double n2)
+and it returns:
+        1.0 - distribution.cumulativeProbability(-t, t);
+at line 1034 in version 1.2.
+double cumulativeProbability(double x0, double x1) is implemented by org.apache.commons.math.distribution.AbstractDisstribution, and returns:
+        return cumulativeProbability(x1) - cumulativeProbability(x0);
+So in essence, the p-value returned by TTestImpl.tTest() is:
+1.0 - (cumulativeProbability(t) - cumulativeProbabily(-t))
+For large-ish t-statistics, cumulativeProbabilty(-t) can get quite small, and cumulativeProbabilty(t) can get very close to 1.0.  When cumulativeProbability(-t) is less than the machine epsilon, we get p-values equal to zero because:
+1.0 - 1.0 + 0.0 = 0.0
+An alternative calculation for the p-value of a 2-sided, 2-sample t-test is:
+p = 2.0 * cumulativeProbability(-t)
+This calculation does not suffer from the machine epsilon problem, and we are now getting p-values much smaller than the 2.2E-16 limit we were seeing previously.</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion>2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.inference.TTestImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-05-07 13:37:07" id="204" opendate="2008-05-06 20:33:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BrentSolver throws IllegalArgumentException </summary>
+			
+			
+			<description>I am getting this exception:
+java.lang.IllegalArgumentException: Function values at endpoints do not have different signs.  Endpoints: [-100000.0,1.7976931348623157E308]  Values: [0.0,-101945.04630982173]
+at org.apache.commons.math.analysis.BrentSolver.solve(BrentSolver.java:99)
+at org.apache.commons.math.analysis.BrentSolver.solve(BrentSolver.java:62)
+The exception should not be thrown with values  [0.0,-101945.04630982173] because 0.0 is positive.
+According to Brent Worden, the algorithm should stop and return 0 as the root instead of throwing an exception.
+The problem comes from this method:
+    public double solve(double min, double max) throws MaxIterationsExceededException, 
+        FunctionEvaluationException {
+        clearResult();
+        verifyInterval(min, max);
+        double yMin = f.value(min);
+        double yMax = f.value(max);
+        // Verify bracketing
+        if (yMin * yMax &amp;gt;= 0) 
+{
+            throw new IllegalArgumentException
+            (&quot;Function values at endpoints do not have different signs.&quot; +
+                    &quot;  Endpoints: [&quot; + min + &quot;,&quot; + max + &quot;]&quot; + 
+                    &quot;  Values: [&quot; + yMin + &quot;,&quot; + yMax + &quot;]&quot;);       
+        }
+
+        // solve using only the first endpoint as initial guess
+        return solve(min, yMin, max, yMax, min, yMin);
+    }
+One way to fix it would be to add this code after the assignment of yMin and yMax:
+        if (yMin ==0 || yMax == 0) 
+{
+        	return 0;
+       	}</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion>2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.transform.FastCosineTransformer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.BrentSolver.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.BrentSolverTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-05-15 19:56:46" id="205" opendate="2008-05-14 15:27:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Mathematical error in comment for FastCosineTransformer</summary>
+			
+			
+			<description>The formula in the comments for transform() method of FastCosineTransformer has the form:
+F_n = (1/2) [f_0 + (-1)^n f_N] + \Sum_
+{k=0}
+^
+{N-1} f_k \cos(\pi nk/N)
+
+This is incorrect and should be
+
+F_n = (1/2) [f_0 + (-1)^n f_N] + \Sum_{k=1}^{N-1}
+ f_k \cos(\pi nk/N)</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.transform.FastCosineTransformer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.BrentSolver.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.BrentSolverTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-17 19:10:53" id="209" opendate="2008-06-17 03:02:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RealMatrixImpl#operate gets result vector dimensions wrong</summary>
+			
+			
+			<description>org.apache.commons.math.linear.RealMatrixImpl#operate tries to create a result vector that always has the same length as the input vector. This can result in runtime exceptions if the matrix is non-square and it always yields incorrect results if the matrix is non-square. The correct behaviour would of course be to create a vector with the same length as the row dimension of the matrix.
+Thus line 640 in RealMatrixImpl.java should read
+double[] out = new double[nRows];
+instead of
+double[] out = new double[v.length];</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.linear.RealMatrixImplTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.BigMatrixImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.RealMatrixImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.BigMatrixImplTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-10 12:43:08" id="214" opendate="2008-07-10 12:34:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>fixed step Runge-Kutta integrators slightly change step size</summary>
+			
+			
+			<description>When a fixed step Runge-Kutta integrator is used, it may slightly change the step size for all integration range.
+This is due to a step recomputation feature which ensures the last step ends exactly at the end of the range.
+This feature should be removed, since it is unnatural and does not obey users choices.
+It should be replaced by the same kind of solution already adopted for discrete events: truncating only the last step.</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion>2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.ode.AbstractIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.GillIntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.MidpointIntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.ThreeEighthesIntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.ClassicalRungeKuttaIntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.RungeKuttaIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.EulerIntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.StepInterpolatorAbstractTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-08-29 15:52:38" id="221" opendate="2008-08-29 13:31:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Result of multiplying and equals for complex numbers is wrong</summary>
+			
+			
+			<description>Hi.
+The bug relates on complex numbers.
+The methods &quot;multiply&quot; and &quot;equals&quot; of the class Complex are involved.
+mathematic background:  (0,i) * (-1,0i) = (0,-i).
+little java program + output that shows the bug:
+-----------------------------------------------------------------------
+
+import org.apache.commons.math.complex.*;
+public class TestProg {
+        public static void main(String[] args) {
+
+                ComplexFormat f = new ComplexFormat();
+                Complex c1 = new Complex(0,1);
+                Complex c2 = new Complex(-1,0);
+
+                Complex res = c1.multiply(c2);
+                Complex comp = new Complex(0,-1);
+
+                System.out.println(&quot;res:  &quot;+f.format(res));
+                System.out.println(&quot;comp: &quot;+f.format(comp));
+
+                System.out.println(&quot;res=comp: &quot;+res.equals(comp));
+        }
+}
+
+
+-----------------------------------------------------------------------
+res:  -0 - 1i
+comp: 0 - 1i
+res=comp: false
+-----------------------------------------------------------------------
+I think the &quot;equals&quot; should return &quot;true&quot;.
+The problem could either be the &quot;multiply&quot; method that gives (-0,-1i) instead of (0,-1i),
+or if you think thats right, the equals method has to be modified.
+Good Luck
+Dieter</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.linear.RealMatrixImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.geometry.Vector3D.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.RealVectorImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.complex.Complex.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.complex.ComplexTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-09-16 21:05:59" id="226" opendate="2008-09-16 20:08:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CorrelatedRandomVectorGenerator generates invariant samples</summary>
+			
+			
+			<description>For the following code sample, the output is:
+1.0,3.9432161557722925,16.66859790068678,1.0743673824292688,
+1.0,-1.4103098147521094,-2.670854139636077,1.8368602953644368,
+1.0,0.230029048125738,12.67864233710285,0.1124537698401884,
+Why is the first column of each row fixed at 1.0?
+Here is the code that generated this:
+import org.apache.commons.math.linear.RealMatrix;
+import org.apache.commons.math.linear.RealMatrixImpl;
+import org.apache.commons.math.random.CorrelatedRandomVectorGenerator;
+import org.apache.commons.math.random.GaussianRandomGenerator;
+import org.apache.commons.math.random.JDKRandomGenerator;
+public class TestMath {
+	public static void sampler(double[] mean, double[][] cov, double[][] s) {
+		RealMatrix covRM = new RealMatrixImpl(cov);
+		try {
+			CorrelatedRandomVectorGenerator sg = new CorrelatedRandomVectorGenerator(
+					mean, covRM, 0.00001, new GaussianRandomGenerator(
+							new JDKRandomGenerator()));
+			for (int i = 0; i &amp;lt; s.length; i++) 
+{
+				s[i] = sg.nextVector();
+			}
+		} catch (Exception e) 
+{
+			e.printStackTrace();
+			System.exit(-1);
+		}
+
+	}
+	static void print(double[][] s) {
+		for (int r = 0; r &amp;lt; s.length; r++) 
+{
+			for (int c = 0; c &amp;lt; s[r].length; c++)
+				System.out.print(s[r][c] + &quot;,&quot;);
+			System.out.println();
+
+		}
+
+	}
+	public static void main(String[] args) {
+		double[] mean = 
+{ 1, 1, 10, 1 }
+;
+		double[][] cov = { 
+{ 1, 3, 2, 6 }
+, 
+{ 3, 13, 16, 2 }
+, 
+{ 2, 16, 38, -1 }
+,
+
+{ 6, 2, -1, 197 }
+ };
+		double[][] s = new double[3][4];
+		TestMath.sampler(mean, cov, s);
+		TestMath.print(s);
+	}
+}</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.random.CorrelatedRandomVectorGenerator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.random.CorrelatedRandomVectorGeneratorTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-09-26 03:11:58" id="227" opendate="2008-09-25 08:23:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>denominatorDegreeOfFreedom in FDistribution leads to IllegalArgumentsException in UnivariateRealSolverUtils.bracket</summary>
+			
+			
+			<description>We are using the FDistributionImpl from the commons.math project to do
+some statistical calculations, namely receiving the upper and lower
+boundaries of a confidence interval. Everything is working fine and the
+results are matching our reference calculations.
+However, the FDistribution behaves strange if a
+denominatorDegreeOfFreedom of 2 is used, with an alpha-value of 0.95.
+This results in an IllegalArgumentsException, stating:
+Invalid endpoint parameters:  lowerBound=0.0 initial=Infinity
+upperBound=1.7976931348623157E308
+coming from
+org.apache.commons.math.analysis.UnivariateRealSolverUtils.bracket
+The problem is the &amp;amp;apos;initial&amp;amp;apos; parameter to that function, wich is
+POSITIVE_INFINITY and therefore not within the boundaries. I already
+pinned down the problem to the FDistributions getInitialDomain()-method,
+wich goes like:
+        return getDenominatorDegreesOfFreedom() /
+                    (getDenominatorDegreesOfFreedom() - 2.0);
+Obviously, in case of denominatorDegreesOfFreedom == 2, this must lead
+to a division-by-zero, resulting in POSTIVE_INFINITY. The result of this
+operation is then directly passed into the
+UnivariateRealSolverUtils.bracket() - method as second argument.</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.FDistributionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.FDistributionImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-29 16:52:34" id="252" opendate="2009-03-29 16:50:35" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fraction.comparTo returns 0 for some differente fractions</summary>
+			
+			
+			<description>If two different fractions evaluate to the same double due to limited precision,
+the compareTo methode returns 0 as if they were identical.
+
+
+
+// value is roughly PI - 3.07e-18
+
+Fraction pi1 = new Fraction(1068966896, 340262731);
+
+
+
+// value is roughly PI + 1.936e-17
+
+Fraction pi2 = new Fraction( 411557987, 131002976);
+
+
+
+System.out.println(pi1.doubleValue() - pi2.doubleValue()); // exactly 0.0 due to limited IEEE754 precision
+
+System.out.println(pi1.compareTo(pi2)); // display 0 instead of a negative value
+
+
+</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion>2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.fraction.Fraction.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.fraction.FractionTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-07 09:21:22" id="280" opendate="2009-07-06 21:26:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>bug in inverseCumulativeProbability() for Normal Distribution</summary>
+			
+			
+			<description>
+
+@version $Revision: 617953 $ $Date: 2008-02-02 22:54:00 -0700 (Sat, 02 Feb 2008) $
+ */
+public class NormalDistributionImpl extends AbstractContinuousDistribution 
+
+
+@version $Revision: 506600 $ $Date: 2007-02-12 12:35:59 -0700 (Mon, 12 Feb 2007) $
+ */
+public abstract class AbstractContinuousDistribution
+
+This code:
+        	DistributionFactory factory = app.getDistributionFactory();
+        	NormalDistribution normal = factory.createNormalDistribution(0,1);
+        	double result = normal.inverseCumulativeProbability(0.9772498680518209);
+gives the exception below. It should return (approx) 2.0000...
+normal.inverseCumulativeProbability(0.977249868051820); works fine
+These also give errors:
+0.9986501019683698 (should return 3.0000...)
+0.9999683287581673 (should return 4.0000...)
+org.apache.commons.math.MathException: Number of iterations=1, maximum iterations=2,147,483,647, initial=1, lower bound=0, upper bound=179,769,313,486,231,570,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000,000, final a value=0, final b value=2, f(a)=-0.477, f(b)=0
+	at org.apache.commons.math.distribution.AbstractContinuousDistribution.inverseCumulativeProbability(AbstractContinuousDistribution.java:103)
+	at org.apache.commons.math.distribution.NormalDistributionImpl.inverseCumulativeProbability(NormalDistributionImpl.java:145)
+</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion>2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.solvers.UnivariateRealSolver.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.solvers.UnivariateRealSolverUtilsTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.NormalDistributionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.solvers.UnivariateRealSolverUtils.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.AbstractContinuousDistribution.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-10-12 02:08:12" id="294" opendate="2009-09-11 17:34:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RandomDataImpl.nextPoisson fails for means in range 6.0 - 19.99</summary>
+			
+			
+			<description>math.random.RandomDataImpl.nextPoisson(double mean) fails frequently (but not always) for values of mean between 6.0 and 19.99 inclusive. For values below 6.0 (where I see there is a branch in the logic) and above 20.0 it seems to be okay (though I&amp;amp;apos;ve only randomly sampled the space and run a million trials for the values I&amp;amp;apos;ve tried)
+When it fails, the exception is as follows (this for a mean of 6.0)
+org.apache.commons.math.MathRuntimeException$4: must have n &amp;gt;= 0 for n!, got n = -2
+	at org.apache.commons.math.MathRuntimeException.createIllegalArgumentException(MathRuntimeException.java:282)
+	at org.apache.commons.math.util.MathUtils.factorialLog(MathUtils.java:561)
+	at org.apache.commons.math.random.RandomDataImpl.nextPoisson(RandomDataImpl.java:434) 
+ie MathUtils.factorialLog is being called with a negative input
+To reproduce:
+    JDKRandomGenerator random = new JDKRandomGenerator();
+    random.setSeed(123456);
+    RandomData randomData = new RandomDataImpl(random);
+    for (int i=0; i&amp;lt; 1000000; i++)
+{
+
+        randomData.nextPoisson(6.0);
+
+    }</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.random.RandomDataImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.random.RandomDataTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-02-01 18:58:30" id="505" opendate="2011-02-01 00:28:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestUtils is thread-hostile</summary>
+			
+			
+			<description>TestUtils has several mutable static fields which are not synchronised, or volatile.
+If one of the fields is updated by thread A, there is no guarantee that thread B will see the full update - it may see a partially updated object.
+Furthermore, at least some of the static fields reference a mutable object, which can be changed whilst another thread is using it.
+As far as I can tell, this class must only ever be used by a single thread otherwise the results will be unpredictable.</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="D">org.apache.commons.math.stat.inference.ChiSquareFactoryTest.java</file>
+			
+			
+			<file type="D">org.apache.commons.math.stat.inference.TTestFactoryTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.inference.TestUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-08-20 21:14:57" id="506" opendate="2011-02-01 18:38:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>The static field ChiSquareTestImpl.distribution serves no purpose</summary>
+			
+			
+			<description>The static field ChiSquareTestImpl.distribution serves no purpose.
+There is a setter for it, but in every case where the field is used, it is first overwritten with a new value.
+The field and the setter should be removed, and the methods that create a new instance should create a local variable instead.
+For Math 2.1, the field can be removed and the setter deprecated.</description>
+			
+			
+			<version>1.2</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.inference.ChiSquareTestImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

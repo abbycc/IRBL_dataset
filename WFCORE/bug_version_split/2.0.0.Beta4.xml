@@ -1,0 +1,1546 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="WFCORE">
+	<bug fixdate="2015-08-28 22:36:31" id="921" opendate="2015-08-26 18:52:12" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Remove n2 model node cloning in ServerOperationResolver</summary>
+			
+			
+			<description>ServerOperationResolver gets called for each operation in a composite.
+For each call it clones the configuration model.
+It then calls node.asPropertyList() in various spots, which in turn results in a clone of the value of each Property. In particular it does this over the profiles, which means each profile gets cloned.
+For very large configurations, this is extremely inefficient. One user was experimenting with adding 1000s of data sources and found it would take over an hour to complete the work. I was able to do it in 30 seconds by correcting these problems.
+There are other areas where we may be incurring unneeded expense via calls to node.asPropertyList().</description>
+			
+			
+			<version>2.0.0.Beta4</version>
+			
+			
+			<fixedVersion>2.0.0.Beta5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.coordination.ServerOperationResolver.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.coordination.DomainServerUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is followed up by" type="Sequence">922</link>
+			
+			
+			<link description="is followed up by" type="Sequence">5234</link>
+			
+			
+			<link description="is followed up by" type="Sequence">936</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-08-28 22:36:44" id="922" opendate="2015-08-26 21:07:03" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Remove unneeded cloning of model nodes when persisting the kernel configs</summary>
+			
+			
+			<description>In the kernel part of domain.xml, host.xml and standalone.xml marshaling look to eliminate use of ModelNode.asPropertyList(), at least from spots where the ModelNode may be a large data structure. The asPropertyList() call results in a potentially expensive clone of data.</description>
+			
+			
+			<version>2.0.0.Beta4</version>
+			
+			
+			<fixedVersion>2.0.0.Beta5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.parsing.StandaloneXml_5.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.parsing.HostXml_5.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.parsing.HostXml_4.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.parsing.DomainXml_4.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.management.parsing.ManagementXml_4.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.parsing.StandaloneXml_4.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="follows up on" type="Sequence">921</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-08-28 23:06:54" id="907" opendate="2015-08-25 01:46:11" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CLI&amp;apos;s embed-host-controller command does not work in a non-modular CLI</summary>
+			
+			
+			<description>EmbedHostControllerHandler assumes that ModuleLoader.forClass(getClass()) will return a classloader, but it only will if the CLI process is running in a modular environment. If it isn&amp;amp;apos;t, EmbedHostControllerHandler must take responsibility for setting up the modular classloading environment.</description>
+			
+			
+			<version>2.0.0.Beta4</version>
+			
+			
+			<fixedVersion>2.0.0.Beta5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.wildfly.core.embedded.EmbeddedServerFactory.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.embedded.EmbedHostControllerHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Dependency">901</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-08-28 23:21:41" id="904" opendate="2015-08-23 19:20:51" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Future returned from Bootstrap.startup(...0) and ServerService.getValue() may never complete</summary>
+			
+			
+			<description>A test I&amp;amp;apos;m writing that uses the CLI embed-server command hung forever:
+
+
+
+
+
+
+&quot;main&quot; #1 prio=5 os_prio=31 tid=0x00007fd461007800 nid=0x1303 in Object.wait() [0x0000000102c67000]
+
+
+
+
+   java.lang.Thread.State: WAITING (on object monitor)
+
+
+
+
+	at java.lang.Object.wait(Native Method)
+
+
+
+
+	at java.lang.Object.wait(Object.java:502)
+
+
+
+
+	at org.jboss.threads.AsyncFutureTask.await(AsyncFutureTask.java:192)
+
+
+
+
+	- locked &amp;lt;0x00000007b8d69eb0&amp;gt; (a org.jboss.as.server.FutureServiceContainer)
+
+
+
+
+	at org.jboss.threads.AsyncFutureTask.get(AsyncFutureTask.java:266)
+
+
+
+
+	- locked &amp;lt;0x00000007b8d69eb0&amp;gt; (a org.jboss.as.server.FutureServiceContainer)
+
+
+
+
+	at org.wildfly.core.embedded.EmbeddedStandAloneServerFactory$StandaloneServerImpl.start(EmbeddedStandAloneServerFactory.java:306)
+
+
+
+
+
+
+The boot.log showed boot did not complete:
+
+
+
+
+
+
+
+
+
+
+
+2015-08-23 12:04:37,572 ERROR [org.jboss.as.controller.management-operation] (Controller Boot Thread) WFLYCTL0013: Operation (&quot;internal-model-validation&quot;) failed - address: ([(&quot;subsystem&quot; =&amp;gt; &quot;xts&quot;)]) - failure description: &quot;WFLYCTL0172: host is required&quot;
+
+
+
+
+2015-08-23 12:04:37,573 FATAL [org.jboss.as.server] (Controller Boot Thread) WFLYSRV0056: Server boot has failed in an unrecoverable manner; exiting. See previous messages for details.
+
+
+
+
+
+
+The problem is the failure never results in operationFailed(...) being called on the AsyncFutureTask returned by ServerService.getValue().
+This probably only affects the embedded CLI and WildFly Swarm; other code does not block on this future.
+I would not be surprised if a similar problem exists with the Host Controller and the CLI&amp;amp;apos;s embed-host-controller command.</description>
+			
+			
+			<version>2.0.0.Beta4</version>
+			
+			
+			<fixedVersion>2.0.0.Beta5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.logging.ServerLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.BootstrapListener.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.logging.HostControllerLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.ServerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.DomainModelControllerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.FutureServiceContainer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-09-19 00:29:11" id="939" opendate="2015-08-31 11:54:41" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Embedded host controller should set launch type attribute to EMBEDDED</summary>
+			
+			
+			<description>DomainRootDefinition.java always set launch type to 
+
+
+
+
+
+new LaunchTypeHandler(ServerEnvironment.LaunchType.DOMAIN)
+
+
+
+
+
+ even if the host controller process is embedded. 
+Looking into the LaunchType class, I believe that EMBEDDED value should be used.
+
+
+
+
+
+
+    /** The manner in which a server can be launched */
+
+
+
+
+    public static enum LaunchType {
+
+
+
+
+        /** Launched by a Host Controller in a managed domain */
+
+
+
+
+        DOMAIN(ProcessType.DOMAIN_SERVER),
+
+
+
+
+        /** Launched from the command line */
+
+
+
+
+        STANDALONE(ProcessType.STANDALONE_SERVER),
+
+
+
+
+        /** Launched by another process in which the server is embedded */
+
+
+
+
+        EMBEDDED(ProcessType.EMBEDDED_SERVER),
+
+
+
+
+...
+
+
+
+
+
+
+
+Additional info:
+
+
+
+
+
+
+./standalone.sh
+
+
+
+
+launch-type              STANDALONE
+
+
+
+
+
+
+
+
+
+
+
+
+./domain.sh
+
+
+
+
+launch-type              DOMAIN
+
+
+
+
+
+
+
+
+
+
+
+
+[disconnected /] embed-server 
+
+
+
+
+launch-type              EMBEDDED
+
+
+
+
+
+
+
+
+
+
+
+
+[disconnected /] embed-host-controller
+
+
+
+
+launch-type              DOMAIN
+
+
+
+
+
+</description>
+			
+			
+			<version>2.0.0.Beta4</version>
+			
+			
+			<fixedVersion>2.0.0.CR2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.host.controller.HostControllerBootstrap.java</file>
+			
+			
+			<file type="M">org.wildfly.core.embedded.EmbeddedHostControllerFactory.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.HostControllerEnvironment.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.resources.DomainRootDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.DomainModelControllerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.HostControllerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.Main.java</file>
+			
+			
+			<file type="M">org.wildfly.core.embedded.EmbeddedHostControllerBootstrap.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">950</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-09-21 18:59:47" id="933" opendate="2015-08-28 12:54:19" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Embedded server start commands are lacking argument validation</summary>
+			
+			
+			<description>Commands for starting embedded instances are lacking argument validation.
+
+
+
+
+
+
+[disconnected /] embed-server foo
+
+
+
+
+[standalone@embedded /]
+
+
+
+
+
+
+
+
+
+[disconnected /] embed-server foo -foo
+
+
+
+
+[standalone@embedded /]
+
+
+
+
+
+
+
+
+
+[disconnected /] embed-server foo --foo
+
+
+
+
+[standalone@embedded /]
+
+
+
+
+
+
+
+
+
+[standalone@embedded /] stop-embedded-server foo
+
+
+
+
+The command accepts 0 unnamed argument(s) but received: [foo]
+
+
+
+
+
+
+
+
+
+[standalone@embedded /] stop-embedded-server -foo
+
+
+
+
+Unrecognized arguments: [-foo]
+
+
+
+
+
+
+
+
+
+[standalone@embedded /] stop-embedded-server --foo
+
+
+
+
+Unrecognized arguments: [--foo]
+
+
+
+
+
+
+Same case for embedded host controller.</description>
+			
+			
+			<version>2.0.0.Beta4</version>
+			
+			
+			<fixedVersion>2.0.0.CR2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.embedded.EmbedHostControllerHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.embedded.EmbedServerHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">931</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-09-22 11:59:51" id="940" opendate="2015-08-31 12:20:01" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CLI gets fooled by early connection</summary>
+			
+			
+			<description>CLI in confused by early connection to domain which is booting. CLI acts as I was connected to the standalone instance, some high level commands are not executable.
+
+
+
+
+
+
+[pkremens@dhcp-10-40-5-149 bin]$ ./domain.sh
+
+
+
+
+...
+
+
+
+
+# run while domain is booting
+
+
+
+
+[pkremens@dhcp-10-40-5-149 bin]$ ./jboss-cli.sh -c 
+
+
+
+
+[standalone@localhost:9999 /]
+
+
+
+
+
+
+
+
+
+# domain has fully booted
+
+
+
+
+
+
+
+
+
+[standalone@localhost:9999 /] ls -l
+
+
+
+
+ATTRIBUTE                VALUE                 TYPE   
+
+
+
+
+launch-type              DOMAIN                STRING
+
+
+
+
+...
+
+
+
+
+[standalone@localhost:9999 /] shutdown --host=master
+
+
+
+
+--host is not allowed in the standalone mode.
+
+
+
+
+
+</description>
+			
+			
+			<version>2.0.0.Beta4</version>
+			
+			
+			<fixedVersion>2.0.0.CR4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.impl.CommandContextImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">952</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-09-23 00:44:31" id="931" opendate="2015-08-28 12:00:07" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Embedded host-controller throws NPE on regular shutdown</summary>
+			
+			
+			<description>Invoking the /host=master:shutdown operation on embedded host-controller gives me NPE.
+Standalone
+
+
+
+
+
+
+[standalone@embedded /] shutdown
+
+
+
+
+The command is not available in the current context (e.g. required subsystems or connection to the controller might be unavailable).
+
+
+
+
+[standalone@embedded /] :shutdown
+
+
+
+
+{
+
+
+
+
+    &quot;outcome&quot; =&amp;gt; &quot;failed&quot;,
+
+
+
+
+    &quot;failure-description&quot; =&amp;gt; &quot;WFLYCTL0031: No operation named &amp;amp;apos;shutdown&amp;amp;apos; exists at address []&quot;,
+
+
+
+
+    &quot;rolled-back&quot; =&amp;gt; true
+
+
+
+
+}
+
+
+
+
+
+
+
+Domain
+Using operation style :shutdown throws NPE. Tab completion for this operation works, which could be a little bit misleading in this case.
+
+
+
+
+
+
+[domain@embedded /] shutdown --host=master
+
+
+
+
+The command is not available in the current context (e.g. required subsystems or connection to the controller might be unavailable).
+
+
+
+
+[domain@embedded /] /host=master:shutdown
+
+
+
+
+13:34:57,512 ERROR [org.jboss.as.controller.management-operation] (AeshProcess: 3) WFLYCTL0013: Operation (&quot;shutdown&quot;) failed - address: ([(&quot;host&quot; =&amp;gt; &quot;master&quot;)]): java.lang.NullPointerException
+
+
+
+
+	at org.jboss.as.host.controller.DomainModelControllerService.stopLocalHost(DomainModelControllerService.java:911)
+
+
+
+
+	at org.jboss.as.host.controller.DomainModelControllerService.stopLocalHost(DomainModelControllerService.java:903)
+
+
+
+
+	at org.jboss.as.host.controller.operations.HostShutdownHandler$1.execute(HostShutdownHandler.java:89)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext.executeStep(AbstractOperationContext.java:846)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext.processStages(AbstractOperationContext.java:637)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext.executeOperation(AbstractOperationContext.java:362)
+
+
+
+
+	at org.jboss.as.controller.OperationContextImpl.executeOperation(OperationContextImpl.java:1296)
+
+
+
+
+	at org.jboss.as.controller.ModelControllerImpl.internalExecute(ModelControllerImpl.java:395)
+
+
+
+
+	at org.jboss.as.controller.ModelControllerImpl.execute(ModelControllerImpl.java:212)
+
+
+
+
+	at org.jboss.as.controller.ModelControllerImpl$3.execute(ModelControllerImpl.java:661)
+
+
+
+
+	at org.jboss.as.controller.ModelControllerImpl$3.execute(ModelControllerImpl.java:651)
+
+
+
+
+	at org.jboss.as.controller.client.helpers.DelegatingModelControllerClient.execute(DelegatingModelControllerClient.java:63)
+
+
+
+
+	at org.jboss.as.cli.embedded.ThreadContextsModelControllerClient.execute(ThreadContextsModelControllerClient.java:59)
+
+
+
+
+	at org.jboss.as.cli.handlers.OperationRequestHandler.handle(OperationRequestHandler.java:85)
+
+
+
+
+	at org.jboss.as.cli.impl.CommandContextImpl.handle(CommandContextImpl.java:728)
+
+
+
+
+	at org.jboss.as.cli.impl.CommandContextImpl.handleSafe(CommandContextImpl.java:774)
+
+
+
+
+	at org.jboss.as.cli.impl.CommandContextImpl$2.execute(CommandContextImpl.java:389)
+
+
+
+
+	at org.jboss.aesh.console.AeshProcess.run(AeshProcess.java:53)
+
+
+
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+
+
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+
+
+
+	at java.lang.Thread.run(Thread.java:745)
+
+
+
+
+
+
+
+
+
+{
+
+
+
+
+    &quot;outcome&quot; =&amp;gt; &quot;failed&quot;,
+
+
+
+
+    &quot;failure-description&quot; =&amp;gt; &quot;WFLYCTL0158: Operation handler failed: java.lang.NullPointerException&quot;,
+
+
+
+
+    &quot;rolled-back&quot; =&amp;gt; true
+
+
+
+
+}
+
+
+
+
+[domain@embedded /] :read-resource
+
+
+
+
+Failed to execute operation.: WFLYEMB0023: The embedded server is stopping and invocations on the ModelControllerClient are not available
+
+
+
+
+[domain@embedded /] stop-embedded-host-controller 
+
+
+
+
+13:35:19,252 ERROR [org.jboss.as.protocol] (AeshProcess: 5) WFLYPRT0003: Failed to close resource org.jboss.as.cli.embedded.ThreadContextsModelControllerClient@626966ee: java.lang.IllegalStateException: WFLYEMB0023: The embedded server is stopping and invocations on the ModelControllerClient are not available
+
+
+
+
+	at org.wildfly.core.embedded.EmbeddedHostControllerFactory$HostControllerImpl.getActiveModelControllerClient(EmbeddedHostControllerFactory.java:331)
+
+
+
+
+	at org.wildfly.core.embedded.EmbeddedHostControllerFactory$HostControllerImpl.access$200(EmbeddedHostControllerFactory.java:225)
+
+
+
+
+	at org.wildfly.core.embedded.EmbeddedHostControllerFactory$HostControllerImpl$3.getDelegate(EmbeddedHostControllerFactory.java:309)
+
+
+
+
+	at org.jboss.as.controller.client.helpers.DelegatingModelControllerClient.close(DelegatingModelControllerClient.java:103)
+
+
+
+
+	at org.jboss.as.cli.embedded.ThreadContextsModelControllerClient.close(ThreadContextsModelControllerClient.java:139)
+
+
+
+
+	at org.jboss.as.protocol.StreamUtils.safeClose(StreamUtils.java:66)
+
+
+
+
+	at org.jboss.as.cli.impl.CommandContextImpl.disconnectController(CommandContextImpl.java:1165)
+
+
+
+
+	at org.jboss.as.cli.embedded.StopEmbeddedHostControllerHandler.doHandle(StopEmbeddedHostControllerHandler.java:56)
+
+
+
+
+	at org.jboss.as.cli.handlers.CommandHandlerWithHelp.handle(CommandHandlerWithHelp.java:88)
+
+
+
+
+	at org.jboss.as.cli.impl.CommandContextImpl.handle(CommandContextImpl.java:751)
+
+
+
+
+	at org.jboss.as.cli.impl.CommandContextImpl.handleSafe(CommandContextImpl.java:774)
+
+
+
+
+	at org.jboss.as.cli.impl.CommandContextImpl$2.execute(CommandContextImpl.java:389)
+
+
+
+
+	at org.jboss.aesh.console.AeshProcess.run(AeshProcess.java:53)
+
+
+
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+
+
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+
+
+
+	at java.lang.Thread.run(Thread.java:745)
+
+
+
+
+
+</description>
+			
+			
+			<version>2.0.0.Beta4</version>
+			
+			
+			<fixedVersion>2.0.0.CR4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.host.controller.model.host.HostResourceDefinition.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">926</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-09-24 00:56:07" id="932" opendate="2015-08-28 12:32:09" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>stop-embedded-server stops the embedded host controller and vice versa</summary>
+			
+			
+			<description>We have four new commands for controlling the lifecycle of embedded instances:
+
+embed-server - launch embedded standalone
+stop-embedded-server - stop embedded standalone
+embed-host-controller - launch embedded host
+stop-embedded-host-controller - stop embedded host
+
+
+I am able stop embedded standalone by stop-embedded-host-controller and embedded host controller by stop-embedded-server.
+
+
+
+
+
+
+[disconnected /] embed-server 
+
+
+
+
+[standalone@embedded /] stop-embedded-host-controller 
+
+
+
+
+[disconnected /] embed-host-controller 
+
+
+
+
+14:22:18,781 INFO  [org.jboss.modules] (AeshProcess: 15) JBoss Modules version 1.4.3.Final
+
+
+
+
+[domain@embedded /] stop-embedded-server 
+
+
+
+
+[disconnected /]
+
+
+
+
+
+
+
+A question comes to my mind, do we need two commands for stopping the embedded instance?</description>
+			
+			
+			<version>2.0.0.Beta4</version>
+			
+			
+			<fixedVersion>2.0.0.CR5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.embedded.EmbeddedServerLaunch.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.embedded.StopEmbeddedServerHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.embedded.StopEmbeddedHostControllerHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.handlers.ShutdownHandler.java</file>
+			
+			
+			<file type="M">org.wildfly.core.embedded.EmbeddedServerReference.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">929</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-16 22:39:32" id="950" opendate="2015-09-03 09:05:34" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Embedded server started non-modular use first passed --jboss-home value only</summary>
+			
+			
+			<description>First value passed as --jboss-home to embed server instance (must be an existing directory) is always used for modules lookup and server standard paths setup within single CLI session.
+
+Use wrong directory on first try, use correct directory on second try, embedded instance still tries to boot from wrong directory
+
+
+
+
+
+
+$ pwd
+
+
+
+
+/home/pkremens/workspace/jboss-eap-7.0/bin/client
+
+
+
+
+$ java -jar jboss-cli-client.jar 
+
+
+
+
+
+
+
+
+
+[disconnected /] embed-server --jboss-home=/home/pkremens/workspace/jboss-eap-7.0/bin
+
+
+
+
+Cannot start embedded server: WFLYEMB0014: Cannot load module org.jboss.vfs from: local module loader @500e80c2 (finder: local module finder @75670fc4 (roots: /home/pkremens/workspace/jboss-eap-7.0/bin/modules)): org.jboss.vfs:main
+
+
+
+
+
+
+
+
+
+# server still tries to use /home/pkremens/workspace/jboss-eap-7.0/bin
+
+
+
+
+[disconnected /] embed-server --jboss-home=/home/pkremens/workspace/jboss-eap-7.0    
+
+
+
+
+Cannot start embedded server: WFLYEMB0014: Cannot load module org.jboss.vfs from: local module loader @500e80c2 (finder: local module finder @75670fc4 (roots: /home/pkremens/workspace/jboss-eap-7.0/bin/modules)): org.jboss.vfs:main
+
+
+
+
+
+
+Try to manage multiple EAP distros
+
+
+
+
+
+
+/home/pkremens/workspace2
+
+
+
+
+ eap1
+
+
+
+
+  jboss-eap-7.0
+
+
+
+
+ eap2
+
+
+
+
+     jboss-eap-7.0
+
+
+
+
+
+
+
+
+
+$ java -jar jboss-cli-client.jar 
+
+
+
+
+
+
+
+
+
+[disconnected /] embed-server --jboss-home=/home/pkremens/workspace2/eap1/jboss-eap-7.0 --server-config=eap1.xml --empty-config
+
+
+
+
+[standalone@embedded /] stop-embedded-server 
+
+
+
+
+
+
+
+
+
+[disconnected /] embed-server --jboss-home=/home/pkremens/workspace2/eap2/jboss-eap-7.0 --server-config=eap2.xml --empty-config
+
+
+
+
+
+
+
+
+
+# jboss.server.*.dir point to eap1, but should point to eap2
+
+
+
+
+[standalone@embedded /] /path=*:read-attribute(name=path)
+
+
+
+
+...
+
+
+
+
+            &quot;address&quot; =&amp;gt; [(&quot;path&quot; =&amp;gt; &quot;jboss.server.log.dir&quot;)],
+
+
+
+
+            &quot;result&quot; =&amp;gt; &quot;/home/pkremens/workspace2/eap1/jboss-eap-7.0
+
+
+
+
+
+
+
+
+
+            &quot;address&quot; =&amp;gt; [(&quot;path&quot; =&amp;gt; &quot;jboss.server.data.dir&quot;)],
+
+
+
+
+            &quot;result&quot; =&amp;gt; &quot;/home/pkremens/workspace2/eap1/jboss-eap-7.0/standalone/data&quot;
+
+
+
+
+
+
+
+
+
+            &quot;address&quot; =&amp;gt; [(&quot;path&quot; =&amp;gt; &quot;jboss.server.base.dir&quot;)],
+
+
+
+
+            &quot;result&quot; =&amp;gt; &quot;/home/pkremens/workspace2/eap1/jboss-eap-7.0/standalone&quot;
+
+
+
+
+
+
+
+
+
+            &quot;address&quot; =&amp;gt; [(&quot;path&quot; =&amp;gt; &quot;jboss.server.config.dir&quot;)],
+
+
+
+
+            &quot;result&quot; =&amp;gt; &quot;/home/pkremens/workspace2/eap1/jboss-eap-7.0/standalone/configuration&quot;
+
+
+
+
+
+
+
+
+
+            &quot;address&quot; =&amp;gt; [(&quot;path&quot; =&amp;gt; &quot;jboss.server.temp.dir&quot;)],
+
+
+
+
+            &quot;result&quot; =&amp;gt; &quot;/home/pkremens/workspace2/eap1/jboss-eap-7.0/standalone/tmp&quot;
+
+
+
+
+
+
+
+
+
+            &quot;address&quot; =&amp;gt; [(&quot;path&quot; =&amp;gt; &quot;jboss.controller.temp.dir&quot;)],
+
+
+
+
+            &quot;result&quot; =&amp;gt; &quot;/home/pkremens/workspace2/eap1/jboss-eap-7.0/standalone/tmp&quot;
+
+
+
+
+
+
+
+
+
+            &quot;address&quot; =&amp;gt; [(&quot;path&quot; =&amp;gt; &quot;jboss.home.dir&quot;)],
+
+
+
+
+            &quot;result&quot; =&amp;gt; &quot;/home/pkremens/workspace2/eap2/jboss-eap-7.0&quot;
+
+
+
+
+...
+
+
+
+
+# Both configuration files were created in eap1 directory
+
+
+
+
+$ find /home/pkremens/workspace2 | grep eap[12].xml
+
+
+
+
+/home/pkremens/workspace2/eap1/jboss-eap-7.0/standalone/configuration/eap2.xml
+
+
+
+
+/home/pkremens/workspace2/eap1/jboss-eap-7.0/standalone/configuration/eap1.xml
+
+
+
+
+
+
+
+</description>
+			
+			
+			<version>2.0.0.Beta4</version>
+			
+			
+			<fixedVersion>2.0.5.CR1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.wildfly.core.embedded.EmbeddedStandaloneServerFactory.java</file>
+			
+			
+			<file type="M">org.wildfly.core.embedded.EmbeddedServerFactory.java</file>
+			
+			
+			<file type="M">org.wildfly.core.embedded.EmbeddedHostControllerFactory.java</file>
+			
+			
+			<file type="M">org.wildfly.core.embedded.logging.EmbeddedLogger.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">985</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

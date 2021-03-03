@@ -1,0 +1,626 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="WFCORE">
+	<bug fixdate="2015-01-06 22:17:22" id="492" opendate="2015-01-06 16:46:38" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>fix JMX ObjectNameAddressUtil#toPathAddress</summary>
+			
+			
+			<description>The code in ObjectNameAddressUtil#toPathAddress is wrong: it must look for the childAddress&amp;amp;apos;s submodel, not the address of the registry itself.
+The current code fails with the exception:
+org.jboss.as.controller._private.OperationFailedRuntimeException: WFLYCTL0071: Duplicate path element &amp;amp;apos;subsystem&amp;amp;apos; found [ &quot;WFLYCTL0071: Duplicate path element &amp;amp;apos;subsystem&amp;amp;apos; found&quot; ]</description>
+			
+			
+			<version>1.0.0.Alpha15</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.jmx.model.ObjectNameAddressUtilTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.jmx.model.ObjectNameAddressUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-01-14 17:35:39" id="497" opendate="2015-01-12 16:35:08" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>OperationStepHandlers for audit log handler add ops prematurely validate</summary>
+			
+			
+			<description>SyslogAuditLogHandlerAddHandler and FileAuditLogHandlerAddHandler are doing reference validation directly in populateModel. This should instead be done in a separate step, removing the requirement to have the add op for the formatter occur before the add op for the handler, so long as both ops occur within the set of ops handled by the same OperationContext.
+This will simplify booting from a filesystem tree instead of xml, removing the need to persist ordering information about formatter/handler in the FS.</description>
+			
+			
+			<version>1.0.0.Alpha15</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.domain.management.audit.FileAuditLogHandlerResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.management.audit.SyslogAuditLogHandlerResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.management.audit.HandlerUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-01-16 15:44:58" id="501" opendate="2015-01-13 16:52:12" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ServerGroupAddHandler should add a separate step to validate profile and socket-binding-group refs</summary>
+			
+			
+			<description>Validating references directly will imply specific ordering, in this case profile and socket-binding-group will have to be added before this handler executes. Postponing the validation to the next step will remove such a requirement.</description>
+			
+			
+			<version>1.0.0.Alpha15</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.ServerGroupAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.ServerGroupAffectedResourceServerGroupOperationsTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-01-20 10:16:26" id="507" opendate="2015-01-16 14:01:08" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary> Unit test FileSystemDeploymentServiceUnitTestCase fails on IBM JDK </summary>
+			
+			
+			<description>Always on IBM JDK org.jboss.as.server.deployment.scanner.FileSystemDeploymentServiceUnitTestCase.testNoUndeployment fails with:
+
+java.net.ConnectException: Connection refused
+java.lang.UnsupportedOperationException: cannot get the capability, performing dispose of the retransforming environment
+
+</description>
+			
+			
+			<version>1.0.0.Alpha15</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.patching.tests.PatchModuleInvalidationWithRenamingFailureTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-01-22 01:53:22" id="500" opendate="2015-01-13 13:10:50" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>domain mode: remove a path entry from a server instance fails</summary>
+			
+			
+			<description>Adding a &quot;path&quot; to a &quot;server-config&quot; in domain mode (works fine) and then remove it again results in a NullPointerException</description>
+			
+			
+			<version>1.0.0.Alpha15</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.services.path.PathRemoveHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-01-22 01:55:37" id="504" opendate="2015-01-15 04:59:38" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RBAC does not let server-group scoped roles read all hosts</summary>
+			
+			
+			<description>The RBAC implementation is not allowing a server-group scoped role to read resources in the host=* tree unless one of these is true:
+1) the host only contains a server mapped to the server group
+2) the host doesn&amp;amp;apos;t contain any servers.
+This is consistent with handling of other &quot;mappable&quot; things but is contrary to the docs, which declare
+&quot;In addition to these privileges, users in a server-group scoped role will have non-sensitive read privileges (equivalent to the Monitor role) for resources other than those listed above.&quot;
+but don&amp;amp;apos;t list these host resources.
+It&amp;amp;apos;s also unintuitive, as the s-g-s-r is actually allowed to add a server on the host, but can&amp;amp;apos;t read the other host resources before doing so.
+Also, asking the DC for the list of host names will include the host, but trying to read its root resource will result in a NoSuchResourceException.
+The issue dates back to 8.0, but recent changes to the console have resulted in this breaking console behavior.</description>
+			
+			
+			<version>1.0.0.Alpha15</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.test.integration.domain.rbac.AbstractServerGroupScopedRolesTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.access.constraint.ServerGroupEffectConstraint.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.access.HostEffect.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.HostServerGroupTracker.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-01-23 03:25:45" id="503" opendate="2015-01-15 01:24:47" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Child resources under the deployment=XXX resource should be marked as runtime-only</summary>
+			
+			
+			<description>Underneath a deployment resource there can be a large tree of runtime-only resources. Those resources are not getting the correct value for their isRuntime() property.
+DeploymentModelUtils.getOrCreate() should call Resource.Factory.create(true) instead of just Resource.Factory.create().
+Note this may break the console if it is doing a recursive read of deployment resources and not including the include-runtime=true param.</description>
+			
+			
+			<version>1.0.0.Alpha15</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.subsystem.test.SubsystemTestDelegate.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.registry.ManagementResourceRegistration.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.logging.ControllerLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.registry.AbstractResourceRegistration.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.registry.DelegatingManagementResourceRegistration.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.extension.ExtensionRegistry.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentModelUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-01-23 03:26:42" id="513" opendate="2015-01-21 01:58:02" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ConfigurationFile does invalid reload when special config file names are specified</summary>
+			
+			
+			<description>ConfigurationFile records the value passed by -c or --[server|host|domain]-config and uses it to determine the boot file to use whenever it needs to boot. This is ok during initial boot, but it reuses it during reloads.
+This breaks down when specials values like &quot;initial&quot;, &quot;boot&quot;, &quot;v1&quot; or some snapshot are used. The reload ends up reading from the original file again, not from the latest persisted one, and any changes made are lost.</description>
+			
+			
+			<version>1.0.0.Alpha15</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.persistence.ConfigurationFile.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-01-23 03:27:04" id="514" opendate="2015-01-21 02:04:14" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ConfigurationFile.snapshot() stores the wrong file when config persistence is disabled</summary>
+			
+			
+			<description>ConfigurationFile.snapshot() always uses mainFile as the source of the snapshot, but when --read-only-server-config and the domain equivalents are used, that file isn&amp;amp;apos;t updated as config changes are made. In this case lastFile should be used.</description>
+			
+			
+			<version>1.0.0.Alpha15</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.persistence.ConfigurationFile.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-01-23 22:23:36" id="505" opendate="2015-01-15 08:07:22" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix double redeployment due to .failed file and a artifact with newer timestamp.</summary>
+			
+			
+			<description>Issue found and described in https://bugzilla.redhat.com/show_bug.cgi?id=1169239
+steps to reproduce:
+1. deploy a &quot;Test.war&quot;
+2. Change something in &quot;Test.war&quot; to fail it.
+3. &quot;Test.war.failed&quot; file will be created.
+4. stop JBoss EAP.
+5. Revert the changes done in &quot;Test.war&quot; so that it will deploy successfully. 
+6. Now there are two files (&quot;Test.war.failed&quot; and &quot;Test.war&quot;, due to correction, Test.war must have a newer timestamp than Test.war.failed)in deployment directory. 
+7. Restart JBoss EAP, it will fail with below Error :
+The problem happens as a result of redundant redeployment in next reboot. During servert reboot, it will try to redeploy the application due to found .failed file, it also will try to redeploy same application because Test.war has a newer timestamp to see the problem. This will cause server startup failure as:
+
+
+
+
+
+
+ERROR [org.jboss.as.controller.management-operation] (ServerService Thread Pool -- 18) JBAS014613: Operation (&quot;add&quot;) failed - address: ([(&quot;deployment&quot; =&amp;gt; &quot;Test.war&quot;)]) - failure description: &quot;JBAS014803: Duplicate resource [(\&quot;deployment\&quot; =&amp;gt; \&quot;Test.war\&quot;)]
+
+
+
+
+
+</description>
+			
+			
+			<version>1.0.0.Alpha15</version>
+			
+			
+			<fixedVersion>1.0.0.Beta5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.FileSystemDeploymentService.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-01-23 22:27:07" id="495" opendate="2015-01-12 08:48:29" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>WFLY won&amp;apos;t startup due to &quot;WFLYCTL0212: Duplicate resource [(\&quot;deployment\&quot; =&gt; \&quot;xxx.war\&quot;)]&quot;</summary>
+			
+			
+			<description>WFLY won&amp;amp;apos;t startup due to &quot;WFLYCTL0212: Duplicate resource [(\&quot;deployment\&quot; =&amp;gt; \&quot;xxx.war\&quot;)]&quot;
+If you firstly deploy a .war application by CLI command, then deploy 2nd time same .war application by copying it to /depolyment directory. After server restart, it shows:
+
+
+
+
+
+
+15:26:26,913 INFO  [org.jboss.as] (MSC service thread 1-8) WFLYSRV0049: WildFly Full 9.0.0.Alpha2-SNAPSHOT (WildFly Core 1.0.0.Alpha15) starting
+
+
+
+
+15:26:27,133 ERROR [org.jboss.as.controller.management-operation] (Controller Boot Thread) WFLYCTL0013: Operation (&quot;add&quot;) failed - address: ([(&quot;deployment&quot; =&amp;gt; &quot;xxx.war&quot;)]) - failure description: &quot;WFLYCTL0212: Duplicate resource [(\&quot;deployment\&quot; =&amp;gt; \&quot;xxx.war\&quot;)]&quot;
+
+
+
+
+15:26:27,136 FATAL [org.jboss.as.server] (Controller Boot Thread) WFLYSRV0056: Server boot has failed in an unrecoverable manner; exiting. See previous messages for details.
+
+
+
+
+15:26:27,138 INFO  [org.jboss.as.server] (Thread-2) WFLYSRV0220: Server shutdown has been requested.
+
+
+
+
+15:26:27,153 INFO  [org.jboss.as] (MSC service thread 1-1) WFLYSRV0050: WildFly Full 9.0.0.Alpha2-SNAPSHOT (WildFly Core 1.0.0.Alpha15) stopped in 4ms
+
+
+
+
+
+
+steps to reproduce:
+1. start wildfly and deploy a .war application by CLI.
+2. copy same .war application to /deployment directory
+3. restart wildfly to see the error message. 
+This happens because step 2 does a &quot;full-replace-deployment&quot; operation which does not remove content from standalone/data/content/aa/2d0425dd53572294d591b56efdee2680539eaf/content and deployment info from configuration file(standalone.xml). Therefore, you will have xxx.war in standalone/data/content and configuration file(standalone.xml), also a xxx.war and xxx.war.deployed file inside /standalone/deployments. A second time server restart will cause a duplicate resource error.</description>
+			
+			
+			<version>1.0.0.Alpha15</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentFullReplaceHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="causes" type="Causality">1577</link>
+			
+			
+			<link description="causes" type="Causality">1569</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-02-06 23:21:02" id="499" opendate="2015-01-13 01:54:46" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>System properties are broken in domain mode</summary>
+			
+			
+			<description>There seems to be some weirdness in how system properties are being propagated to domain mode servers, and in many cases they are not being applied. 
+This appears to be an issue with the boot time handling of system properties.
+The only way I could get the property to be applied was to start the server first, then add the property using boot-time=false, although even in this case the property will disappear if the domain is restarted or the server is reloaded. 
+</description>
+			
+			
+			<version>1.0.0.Alpha15</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha17</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.test.integration.domain.suites.CoreResourceManagementTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.operations.SystemPropertyAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.controller.resources.SystemPropertyResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.ManagedServerBootCmdFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="causes" type="Causality">4299</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-04-10 19:48:06" id="489" opendate="2014-12-24 13:42:56" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>The &quot;access-mechanism&quot; field in the active-operation resources is always undefined</summary>
+			
+			
+			<description>The &quot;access-mechanism&quot; field in core-service=management/service=active-operations/active-operation=* is always undefined. The code that sets it is using the wrong var:
+
+
+
+
+
+
+ModelNode accessMechanismNode = model.get(ACCESS_MECHANISM);
+
+
+
+
+if (accessMechanism != null) {
+
+
+
+
+    accessMechanismNode.set(accessMechanismNode.toString());
+
+
+
+
+}
+
+
+
+
+
+
+It should be accessMechanism.toString()</description>
+			
+			
+			<version>1.0.0.Alpha15</version>
+			
+			
+			<fixedVersion>1.0.0.Beta4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.OperationContextImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

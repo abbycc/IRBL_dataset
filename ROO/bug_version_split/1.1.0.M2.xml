@@ -1,0 +1,2273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="ROO">
+	<bug fixdate="2010-06-14 10:32:54" id="930" opendate="2010-06-01 04:48:06" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>@Transient primitive field creates non-compilable DoD</summary>
+			
+			
+			<description>Given the class &quot;Task&quot;, adding @Transient to a simple boolean field causes Roo to generate the following code in TaskDataOnDemand_Roo_DataOnDemand.getNewTransientTask(int index):
+
+
+
+
+
+
+obj.setIsExpired(null);
+
+
+
+
+
+
+This causes a compile error b/c &quot;setIsExpired(boolean expired)&quot; method accepts a primitive and so cannot take NULL as an argument.
+To recreate, run the following script, then add @Transient to the &quot;expired&quot; field:
+
+project --topLevelPackage com.mytest --projectName mytest
+persistence setup --provider HIBERNATE --database HYPERSONIC_IN_MEMORY 
+entity --class ~.domain.Task
+field string --fieldName description
+field boolean --fieldName expired --primitive
+test integration 
+perform eclipse
+</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-06-30 17:20:25" id="1050" opendate="2010-06-30 09:24:43" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SolrSearch: The method message_getId() is undefined</summary>
+			
+			
+			<description>
+
+
+
+
+
+project --topLevelPackage some.solr.test
+
+
+
+
+persistence setup --provider HIBERNATE --database HYPERSONIC_IN_MEMORY
+
+
+
+
+entity --class ~.domain.Message
+
+
+
+
+field string name --notNull
+
+
+
+
+solr setup
+
+
+
+
+solr add --class some.solr.test.domain.Message
+
+
+
+
+perform tests
+
+
+
+
+
+
+fails with: error at sid.addField(&quot;id&quot;, &quot;message_&quot; + message_getId());
+The fix this edit Message_Roo_SolrSearch.aj and change:
+
+
+
+
+
+
+sid.addField(&quot;id&quot;, &quot;message_&quot; + message_getId());
+
+
+
+
+
+
+to
+
+
+
+
+
+
+sid.addField(&quot;id&quot;, &quot;message_&quot; + message.getId());
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.solr.SolrMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-03 09:36:27" id="1056" opendate="2010-07-03 05:22:08" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Command &amp;apos;help&amp;apos; not found</summary>
+			
+			
+			<description>~.dto.SubCategory roo&amp;gt; hint
+At this stage of the project, you have a few options:
+....
+
+Discover all Roo commands by typing &amp;amp;apos;help&amp;amp;apos;
+~.dto.SubCategory roo&amp;gt; help
+Command &amp;amp;apos;help&amp;amp;apos; not found (for assistance press TAB or type &quot;hint&quot; then hit ENTER)
+
+</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.shell.osgi.SimpleParserComponent.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.SimpleParser.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">1049</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-04 12:42:05" id="1059" opendate="2010-07-03 09:38:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>assertion error after pushing method of converter creation in *Controller.java</summary>
+			
+			
+			<description>
+
+
+
+
+
+[FelixDispatchQueue] Method &amp;amp;apos;getCategoryConverter&amp;amp;apos; already defined in target type &amp;amp;apos;xxx.SubCategoryController&amp;amp;apos; (ITD target &amp;amp;apos;xxx.SubCategoryController_Roo_Controller&amp;amp;apos;)
+
+
+
+
+                     java.lang.IllegalArgumentException: Method &amp;amp;apos;getCategoryConverter&amp;amp;apos; already defined in target type &amp;amp;apos;xxx.SubCategoryController&amp;amp;apos; (ITD target &amp;amp;apos;xxx.SubCategory
+
+
+
+
+Controller_Roo_Controller&amp;amp;apos;)
+
+
+
+
+                         at org.springframework.roo.support.util.Assert.isNull(Assert.java:89)
+
+
+
+
+                         at org.springframework.roo.classpath.details.DefaultItdTypeDetailsBuilder.addMethod(DefaultItdTypeDetailsBuilder.java:96)
+
+
+
+
+                         at org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.getRegisterConvertersMethod(WebScaffoldMetadata.java:729)
+
+
+
+
+                         at org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.&amp;lt;init&amp;gt;(WebScaffoldMetadata.java:123)
+
+
+
+
+                         at org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadataProviderImpl.getMetadata(WebScaffoldMetadataProviderImpl.java:77)
+
+
+
+
+                         at org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.get(AbstractItdMetadataProvider.java:261)
+
+
+
+
+                         at org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.notify(AbstractItdMetadataProvider.java:126)
+
+
+
+
+                         at org.springframework.roo.metadata.DefaultMetadataService.notify(DefaultMetadataService.java:170)
+
+
+
+
+                         at org.springframework.roo.metadata.internal.DefaultMetadataDependencyRegistry.notifyDownstream(DefaultMetadataDependencyRegistry.java:262)
+
+
+
+
+                         at org.springframework.roo.classpath.javaparser.JavaParserMetadataProvider.onFileEvent(JavaParserMetadataProvider.java:124)
+
+
+
+
+                         at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.publish(PollingFileMonitorService.java:346)
+
+
+
+
+                         at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.scanAll(PollingFileMonitorService.java:320)
+
+
+
+
+                         at org.springframework.roo.process.manager.internal.DefaultFileManager.notify(DefaultFileManager.java:189)
+
+
+
+
+                         at org.springframework.roo.metadata.internal.DefaultMetadataDependencyRegistry.notifyDownstream(DefaultMetadataDependencyRegistry.java:276)
+
+
+
+
+                         at org.springframework.roo.addon.maven.MavenProjectMetadataProvider.onFileEvent(MavenProjectMetadataProvider.java:509)
+
+
+
+
+                         at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.publish(PollingFileMonitorService.java:346)
+
+
+
+
+                         at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.scanAll(PollingFileMonitorService.java:320)
+
+
+
+
+                         at org.springframework.roo.process.manager.internal.MonitoringRequestCommand.callback(MonitoringRequestCommand.java:36)
+
+
+
+
+                         at org.springframework.roo.process.manager.internal.MonitoringRequestCommand.callback(MonitoringRequestCommand.java:15)
+
+
+
+
+                         at org.springframework.roo.process.manager.internal.DefaultProcessManager.doTransactionally(DefaultProcessManager.java:169)
+
+
+
+
+                         at org.springframework.roo.process.manager.internal.DefaultProcessManager.completeStartup(DefaultProcessManager.java:91)
+
+
+
+
+                         at org.springframework.roo.process.manager.internal.DefaultProcessManager$1.frameworkEvent(DefaultProcessManager.java:62)
+
+
+
+
+                         at org.apache.felix.framework.util.EventDispatcher.invokeFrameworkListenerCallback(EventDispatcher.java:767)
+
+
+
+
+                         at org.apache.felix.framework.util.EventDispatcher.fireEventImmediately(EventDispatcher.java:724)
+
+
+
+
+                         at org.apache.felix.framework.util.EventDispatcher.run(EventDispatcher.java:942)
+
+
+
+
+                         at org.apache.felix.framework.util.EventDispatcher.access$000(EventDispatcher.java:54)
+
+
+
+
+                         at org.apache.felix.framework.util.EventDispatcher$1.run(EventDispatcher.java:106)
+
+
+
+
+                         at java.lang.Thread.run(Thread.java:619)
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-04 13:54:33" id="1049" opendate="2010-06-30 08:08:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Command &amp;apos;help&amp;apos; and &amp;apos;reference guide&amp;apos; not found</summary>
+			
+			
+			<description>Following the last suggestion shown by the hint command 
+roo&amp;gt; hint
+At this stage of the project, you have a few options:
+
+List all hint topics via &amp;amp;apos;hint topics&amp;amp;apos;
+Create more fields with &amp;amp;apos;hint fields&amp;amp;apos;
+Create more entities with &amp;amp;apos;hint entities&amp;amp;apos;
+Create a web controller with &amp;amp;apos;hint controllers&amp;amp;apos;
+Create dynamic finders with &amp;amp;apos;hint finders&amp;amp;apos;
+Setup your logging levels via &amp;amp;apos;hint logging&amp;amp;apos;
+Run tests via Maven (type &amp;amp;apos;perform tests&amp;amp;apos;)
+Build a deployment artifact (type &amp;amp;apos;perform package&amp;amp;apos;)
+Learn about Eclipse integration by typing &amp;amp;apos;hint eclipse&amp;amp;apos;
+Add support for Google Web Toolkit via &amp;amp;apos;hint gwt&amp;amp;apos;
+Discover all Roo commands by typing &amp;amp;apos;help&amp;amp;apos;
+
+One gets the following error message:
+roo&amp;gt; help
+Command &amp;amp;apos;help&amp;amp;apos; not found (for assistance press TAB or type &quot;hint&quot; then hit ENTER) </description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.shell.osgi.SimpleParserComponent.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.SimpleParser.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1056</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1062</link>
+			
+			
+			<link description="is related to" type="Related">986</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-04 14:13:49" id="1037" opendate="2010-06-27 14:15:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Exceptions when Roo ends</summary>
+			
+			
+			<description>I am getting exceptions when a Roo script ends.  Everything generated by Roo seems to work OK, but it is disconcerting.  I have seen two exceptions - one involving Zip, one involving a Timer:
+
+
+
+EXCEPTION 1 **
+
+
+
+... snip&amp;gt; ...
+quit
+// Spring Roo 1.1.0.M2 [rev 2034662] log closed at 2010-06-21 15:48:36
+Milliseconds required: 74451
+Total execution time 82226 ms
+ERROR: JarContent: Unable to read bytes. (java.lang.IllegalStateException: zip file closed)
+java.lang.IllegalStateException: zip file closed
+	at java.util.zip.ZipFile.ensureOpen(ZipFile.java:403)
+	at java.util.zip.ZipFile.getEntry(ZipFile.java:148)
+	at java.util.jar.JarFile.getEntry(JarFile.java:208)
+	at org.apache.felix.framework.util.JarFileX.getEntry(JarFileX.java:61)
+	at org.apache.felix.framework.cache.JarContent.getEntryAsBytes(JarContent.java:120)
+	at org.apache.felix.framework.ModuleImpl$ModuleClassLoader.findClass(ModuleImpl.java:1781)
+	at org.apache.felix.framework.ModuleImpl.findClassOrResourceByDelegation(ModuleImpl.java:758)
+	at org.apache.felix.framework.ModuleImpl.access$100(ModuleImpl.java:61)
+	at org.apache.felix.framework.ModuleImpl$ModuleClassLoader.loadClass(ModuleImpl.java:1733)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:248)
+	at org.springframework.roo.process.manager.internal.DefaultProcessManager.logException(DefaultProcessManager.java:143)
+	at org.springframework.roo.process.manager.internal.DefaultProcessManager.backgroundPoll(DefaultProcessManager.java:117)
+	at org.springframework.roo.process.manager.internal.DefaultProcessManager.timerBasedPoll(DefaultProcessManager.java:225)
+	at org.springframework.roo.process.manager.internal.DefaultProcessManager$2.run(DefaultProcessManager.java:75)
+	at java.util.TimerThread.mainLoop(Timer.java:512)
+	at java.util.TimerThread.run(Timer.java:462)
+Roo exited with code 0
+
+
+
+EXCEPTION 2 **
+
+
+
+quit
+// Spring Roo 1.1.0.M2 [rev 2034662] log closed at 2010-06-21 15:48:36
+Milliseconds required: 79280
+[Timer-1] java.lang.NullPointerException
+	at org.springframework.roo.process.manager.internal.DefaultProcessManager.doTransactionally(DefaultProcessManager.java:192)
+	at org.springframework.roo.process.manager.internal.DefaultProcessManager.backgroundPoll(DefaultProcessManager.java:114)
+	at org.springframework.roo.process.manager.internal.DefaultProcessManager.timerBasedPoll(DefaultProcessManager.java:225)
+	at org.springframework.roo.process.manager.internal.DefaultProcessManager$2.run(DefaultProcessManager.java:75)
+	at java.util.TimerThread.mainLoop(Timer.java:512)
+	at java.util.TimerThread.run(Timer.java:462)
+</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.process.manager.internal.DefaultProcessManager.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Relate">1938</link>
+			
+			
+			<link description="is related to" type="Related">839</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-06 12:04:01" id="1071" opendate="2010-07-06 07:27:52" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Property &amp;apos;id&amp;apos; not found when listing Domain Entities on Web Page</summary>
+			
+			
+			<description>The Property &amp;amp;apos;id&amp;amp;apos; is not being found on Domain Entity when user lists objects on Spring Web-based page.
+TO REPRODUCE:
+1. Execute roo
+2. Copy &amp;amp; paste the following roo commands
+project --type java.lang.Integerproject --topLevelPackage com.acme --projectName Acme
+persistence setup --provider HIBERNATE --database HYPERSONIC_IN_MEMORY
+entity --class ~.server.domain.Client --identifierField cliendID --identifierColumn cliendID --testAutomatically
+field string --fieldName firstName --sizeMax 25
+field string --fieldName lastName --sizeMax 25 --notNull
+field date --type java.util.Date --fieldName dateOfBirth --notNull
+controller all --package com.acme.web
+logging setup --level DEBUG
+3. Quit roo shel and start tomcat--&amp;gt; mvn tomcat:run
+4. Go to http://localhost:8080/Acme
+5. Insert at least one record by using Create new Client Form
+6. List all clients
+As you can see, an internal error appears. This is happening because Client entity was created with --identifierField cliendID --identifierColumn cliendID attributes.
+&quot;entity --class ~.server.domain.Client --identifierField cliendID --identifierColumn cliendID --testAutomatically&quot;
+It looks like the JSP is using the default property &amp;amp;apos;id&amp;amp;apos; to display the information on the web page.
+See stacktrace.txt for more information.</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspViewManager.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspMetadataListener.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">1041</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-10 11:49:40" id="1083" opendate="2010-07-10 03:28:02" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>view-controller command doesn&amp;apos;t work properly</summary>
+			
+			
+			<description>wrong page generation:
+1. name of generated page is &amp;amp;apos;index.jspx&amp;amp;apos; as execution result of command.
+2. title is ignored at generated page. result:
+
+
+
+
+
+
+   	&amp;lt;spring:message var=&quot;app_name&quot; code=&quot;application_name&quot; /&amp;gt;
+
+
+
+
+   	&amp;lt;spring:message var=&quot;title&quot; code=&quot;welcome_titlepane&quot; arguments=&quot;${app_name}&quot; /&amp;gt;
+
+
+
+
+   	&amp;lt;page:page id=&quot;title&quot; title=&quot;${title}&quot;&amp;gt;
+
+
+
+
+  			&amp;lt;h3&amp;gt;Controller Index Page&amp;lt;/h3&amp;gt;
+
+
+
+
+  	&amp;lt;/page:page&amp;gt;
+
+
+
+
+
+ </description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">820</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-11 12:47:55" id="1086" opendate="2010-07-11 05:22:08" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>wrong generation by view-controller command</summary>
+			
+			
+			<description>roo&amp;gt; web mvc install view --path / --viewName about --title About
+1. results (double slash): 
+view.xml: &amp;lt;put-attribute name=&quot;body&quot; value=&quot;/WEB-INF/views//about.jspx&quot;/&amp;gt;
+menu.jspx: &amp;lt;menu:item id=&quot;i_view_about_id&quot; messageCode=&quot;global_menu_new&quot; url=&quot;//about&quot; z=&quot;SYxt/81HP69IsYlNYu4u37Hse1g=&quot;/&amp;gt;
+webmvc-config.xml: &amp;lt;mvc:view-controller path=&quot;//about&quot;/&amp;gt;
+2. application.properties:
+menu_category_view_label=View
+menu_item_view_about_id_label=About
+label_=About   &amp;lt;- bad key
+3. about.jspx: &amp;lt;page:page id=&quot;_title&quot; title=&quot;About&quot;&amp;gt;     &amp;lt;-- please use label key from application.properties for attr &quot;id&quot; insteaf of &quot;_title&quot;. for attr &quot;title&quot; please use value of label key from application.properties
+4. command: web mvc install view --path / --viewName zxc --title &amp;amp;apos;ASD and QWE&amp;amp;apos;
+the second part of title (&quot; and QWE&quot;) has been ignored in the labels generation in application.properties
+ROO-820.</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-18 13:15:05" id="1119" opendate="2010-07-18 10:32:36" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>can&amp;apos;t create a string field with sizeMax=1 and sizeMin=1</summary>
+			
+			
+			<description>When trying to create a string field with sizeMax=1 and sizeMin=1, the field isn&amp;amp;apos;t created. If you use any other size, the field is created correctly (ie field string --fieldName geoHashPrecision2 --sizeMax 2 --sizeMin 2 creates a field with @Size(min = 2, max = 2)).
+Here is the console output:
+
+
+
+
+
+
+roo&amp;gt; field string --fieldName geoHashPrecision1 --sizeMax 1 --sizeMin 1
+
+
+
+
+Managed SRC_MAIN_JAVA/com/ff/model/GeographicPoint.java
+
+
+
+
+Managed SRC_MAIN_JAVA/com/ff/model/GeographicPoint_Roo_JavaBean.aj
+
+
+
+
+Managed SRC_MAIN_JAVA/com/ff/model/GeographicPoint_Roo_ToString.aj
+
+
+
+
+Undo manage SRC_MAIN_JAVA/com/ff/model/GeographicPoint_Roo_ToString.aj
+
+
+
+
+Undo manage SRC_MAIN_JAVA/com/ff/model/GeographicPoint_Roo_JavaBean.aj
+
+
+
+
+Undo manage SRC_MAIN_JAVA/com/ff/model/GeographicPoint.java
+
+
+
+
+String index out of range: -1
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-18 17:31:07" id="1118" opendate="2010-07-18 09:39:03" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>additional parameters on persistance setup cause rollback</summary>
+			
+			
+			<description>When trying to run persistence setup with persistence setup --database MYSQL --provider DATANUCLEUS --databaseName Test --userName root, nothing happens (all changes are rolled back), however if you only use persistence setup --database MYSQL --provider DATANUCLEUS everything is created properly.
+Here is the console output:
+
+
+
+
+
+
+ 
+
+
+
+
+roo&amp;gt; persistence setup --database MYSQL --provider DATANUCLEUS --databaseName Test --userName root
+
+
+
+
+Managed SRC_MAIN_RESOURCES/META-INF/spring/applicationContext.xml
+
+
+
+
+Please enter your database details in src/main/resources/META-INF/persistence.xml.
+
+
+
+
+Created SRC_MAIN_RESOURCES/META-INF/persistence.xml
+
+
+
+
+Managed SRC_MAIN_RESOURCES/log4j.properties
+
+
+
+
+Managed ROOT/pom.xml
+
+
+
+
+Managed ROOT/pom.xml [Added dependency mysql:mysql-connector-java:5.1.13]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency javax.persistence:persistence-api:1.0]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency org.datanucleus:datanucleus-core:${datanucleus.version}]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency org.datanucleus:datanucleus-jpa:1.1.5]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency org.datanucleus:datanucleus-rdbms:${datanucleus.version}]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency org.datanucleus:datanucleus-enhancer:1.1.4]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency javax.jdo:jdo2-api:2.3-eb]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency org.hibernate:hibernate-validator:4.0.2.GA]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency javax.validation:validation-api:1.0.0.GA]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency cglib:cglib-nodep:2.2]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency javax.transaction:jta:1.1]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency org.springframework:spring-jdbc:${spring.version}]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency org.springframework:spring-orm:${spring.version}]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency commons-pool:commons-pool:1.5.4]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency commons-dbcp:commons-dbcp:1.3]
+
+
+
+
+Managed ROOT/pom.xml
+
+
+
+
+Undo manage ROOT/pom.xml
+
+
+
+
+Undo manage SRC_MAIN_RESOURCES/log4j.properties
+
+
+
+
+Undo create SRC_MAIN_RESOURCES/META-INF/persistence.xml
+
+
+
+
+Undo manage SRC_MAIN_RESOURCES/META-INF/spring/applicationContext.xml
+
+
+
+
+Properties file not found
+
+
+
+
+
+
+
+
+
+roo&amp;gt; persistence setup --database MYSQL --provider DATANUCLEUS
+
+
+
+
+Managed SRC_MAIN_RESOURCES/META-INF/spring/applicationContext.xml
+
+
+
+
+Please enter your database details in src/main/resources/META-INF/persistence.xml.
+
+
+
+
+Created SRC_MAIN_RESOURCES/META-INF/persistence.xml
+
+
+
+
+Managed SRC_MAIN_RESOURCES/log4j.properties
+
+
+
+
+Managed ROOT/pom.xml
+
+
+
+
+Managed ROOT/pom.xml [Added dependency mysql:mysql-connector-java:5.1.13]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency javax.persistence:persistence-api:1.0]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency org.datanucleus:datanucleus-core:${datanucleus.version}]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency org.datanucleus:datanucleus-jpa:1.1.5]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency org.datanucleus:datanucleus-rdbms:${datanucleus.version}]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency org.datanucleus:datanucleus-enhancer:1.1.4]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency javax.jdo:jdo2-api:2.3-eb]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency org.hibernate:hibernate-validator:4.0.2.GA]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency javax.validation:validation-api:1.0.0.GA]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency cglib:cglib-nodep:2.2]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency javax.transaction:jta:1.1]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency org.springframework:spring-jdbc:${spring.version}]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency org.springframework:spring-orm:${spring.version}]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency commons-pool:commons-pool:1.5.4]
+
+
+
+
+Managed ROOT/pom.xml [Added dependency commons-dbcp:commons-dbcp:1.3]
+
+
+
+
+Managed ROOT/pom.xml
+
+
+
+
+
+ </description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.jdbc.ConnectionProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.DatabaseModelServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JpaOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JpaCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JpaOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-20 13:33:35" id="1125" opendate="2010-07-20 13:31:20" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FileConverter gives exception if directory name invalid</summary>
+			
+			
+			<description>(Reported by Chris Richardson)
+Roo gives an exception if an invalid directory name is specified and the user hits TAB for completion support. Roo compeiton method calls should try to avoid throwing exceptions and instead simply fail to provide the completion.
+
+
+
+
+
+
+roo&amp;gt; script --file /gbgb/&amp;lt;PRESS TAB&amp;gt;
+
+
+
+
+Exception in thread &quot;JLine Shell&quot; java.lang.IllegalArgumentException: Directory &amp;amp;apos;/gbgb&amp;amp;apos; is not a valid directory name
+
+
+
+
+	at org.springframework.roo.support.util.Assert.isTrue(Assert.java:65)
+
+
+
+
+	at org.springframework.roo.shell.converters.FileConverter.populate(FileConverter.java:43)
+
+
+
+
+	at org.springframework.roo.shell.converters.FileConverter.getAllPossibleValues(FileConverter.java:36)
+
+
+
+
+	at org.springframework.roo.shell.SimpleParser.complete(SimpleParser.java:624)
+
+
+
+
+	at org.springframework.roo.shell.jline.JLineCompletorAdapter.complete(JLineCompletorAdapter.java:31)
+
+
+
+
+	at jline.ConsoleReader.complete(ConsoleReader.java:832)
+
+
+
+
+	at jline.ConsoleReader.readLine(ConsoleReader.java:518)
+
+
+
+
+	at jline.ConsoleReader.readLine(ConsoleReader.java:448)
+
+
+
+
+	at jline.ConsoleReader.readLine(ConsoleReader.java:300)
+
+
+
+
+	at org.springframework.roo.shell.jline.JLineShell.promptLoop(JLineShell.java:318)
+
+
+
+
+	at org.springframework.roo.shell.jline.JLineShell.run(JLineShell.java:119)
+
+
+
+
+	at java.lang.Thread.run(Thread.java:636)
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.shell.converters.FileConverter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-29 14:50:49" id="1112" opendate="2010-07-17 14:49:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Web scaffold: bad handling of self-referencing parent-child entity relationships</summary>
+			
+			
+			<description>When I create an entity with a parent-child relationship that references back to the same entity type, the generated web scaffold will not allow me to edit the relationship.
+Steps to reproduce:
+Execute the following code in Roo:-
+project --topLevelPackage com.example.test 
+persistence setup --provider HIBERNATE --database HYPERSONIC_IN_MEMORY
+entity --class ~.entities.Node
+field string name --sizeMax 30 --notNull
+field reference --fieldName parent --type ~.entities.Node --cardinality ONE_TO_ONE
+field set --fieldName children --element ~.entities.Node --cardinality ONE_TO_MANY --mappedBy parent
+controller all --package ~.web
+[end Roo code]
+Next start up Tomcat with: mvn tomcat:run
+Point a browser at http://localhost:8080/test 
+Create a new &amp;amp;apos;Node&amp;amp;apos;. Now, go to create a second &amp;amp;apos;Node&amp;amp;apos; - in the form it shows:-
+Parent: [create-new button] No Parent found.
+Children:This relationship is managed from the Node side.
+Which isn&amp;amp;apos;t correct.
+Expected behaviour:
+On creating the second entity, there should either be (a) a drop-down list for choosing a &amp;amp;apos;Parent&amp;amp;apos;, where any pre-existing entities should appear / be selectable (as you get when you have a one-to-one relationship between differing entity types)  or (b) there should be a multi-select list for choosing &amp;amp;apos;Children&amp;amp;apos; (as you get when you have a one-to-many relationship between differing entity types).
+I think perhaps option (a) - allowing selection of a parent - is the correct/easiest thing to do in this situation.</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-04 22:32:04" id="1172" opendate="2010-08-04 22:30:10" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Invalid message codes generated in Web MVC scaffolding</summary>
+			
+			
+			<description>JspViewManager produces field.invalid.integer instead of field_invalid_integer</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspViewManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-04 22:58:14" id="1169" opendate="2010-08-04 17:04:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Stack trace appears when starting Roo without connection to network</summary>
+			
+			
+			<description>Without a network connection, a stack trace is generated before the Roo command prompt is shown.
+05/08/2010 8:38:12 AM org.springframework.roo.felix.JdkDelegatingLogListener logNow
+WARNING: [org.apache.felix.bundlerepository [10]] RepositoryAdminImpl: Exception creating repository http://spring-roo-repository.springsource.org/repository.xml.zip. Repository is skipped.
+java.net.UnknownHostException: spring-roo-repository.springsource.org
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:177)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:366)
+	at java.net.Socket.connect(Socket.java:529)
+	at java.net.Socket.connect(Socket.java:478)
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:163)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:394)
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:529)
+	at sun.net.www.http.HttpClient.&amp;lt;init&amp;gt;(HttpClient.java:233)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:306)
+	at sun.net.www.http.HttpClient.New(HttpClient.java:323)
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:860)
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:801)
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:726)
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1049)
+	at org.apache.felix.bundlerepository.RepositoryImpl.parseRepositoryFile(RepositoryImpl.java:206)
+	at org.apache.felix.bundlerepository.RepositoryImpl.access$000(RepositoryImpl.java:44)
+	at org.apache.felix.bundlerepository.RepositoryImpl$1.run(RepositoryImpl.java:75)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.apache.felix.bundlerepository.RepositoryImpl.&amp;lt;init&amp;gt;(RepositoryImpl.java:71)
+	at org.apache.felix.bundlerepository.RepositoryImpl.&amp;lt;init&amp;gt;(RepositoryImpl.java:60)
+	at org.apache.felix.bundlerepository.RepositoryAdminImpl.initialize(RepositoryAdminImpl.java:206)
+	at org.apache.felix.bundlerepository.RepositoryAdminImpl.listRepositories(RepositoryAdminImpl.java:101)
+	at org.springframework.roo.obr.internal.ObrResourceFinderImpl$1.run(ObrResourceFinderImpl.java:32)
+	at java.lang.Thread.run(Thread.java:619)
+</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.obr.internal.ObrResourceFinderImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depends">1171</link>
+			
+			
+			<link description="is related to" type="Related">1155</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-06 00:57:55" id="1148" opendate="2010-07-29 03:32:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&quot;Too many open files&quot; on controller generation</summary>
+			
+			
+			<description>I&amp;amp;apos;ve been trying to model a project which has quite an amount of domain objects and when it comes to the generation of controllers (controller all --package ~.web) I get this error:
+Created SRC_MAIN_WEBAPP/WEB-INF/views/controlpots/create.jspx
+Managed SRC_MAIN_WEBAPP/WEB-INF/i18n/application.properties
+Undo failed SRC_MAIN_WEBAPP/WEB-INF/i18n/application.properties
+/tmp/UpdateFile3949436968960279876tmp (Too many open files)
+Script execution aborted
+[Timer-0] Undo failed SRC_MAIN_WEBAPP/WEB-INF/i18n/application.properties
+[Timer-0] /tmp/UpdateFile4795595304280762163tmp (Too many open files)
+The open file limit on my box had been set to 1024 which should really suffice for a desktop system.  However, I have raised it to 8192 for further tests and am still getting an error a few seconds after the script appeared to have finished.
+logging setup --level DEBUG
+Managed SRC_MAIN_RESOURCES/log4j.properties
+Milliseconds required: 239530
+[Timer-0] Undo failed SRC_MAIN_WEBAPP/WEB-INF/i18n/application.properties
+[Timer-0] /tmp/UpdateFile3371250473870141238tmp (Too many open files)
+Then I have run the same script with 1.0.2 to compare the number of files held open by the roo process.
+1.1.0M2:
+...
+java      5586      arkay 3453r      REG               8,34     33308  6578003 
+/home/arkay/Java/TheGuitarListRoo/TheGuitarList/src/main/webapp/WEB-INF/i18n/application.properties
+java      5586      arkay 3454r      REG               8,34     33308  6578003 
+/home/arkay/Java/TheGuitarListRoo/TheGuitarList/src/main/webapp/WEB-INF/i18n/application.properties
+arkay@gentoodesk ~ $ lsof -p 5586 | grep application.properties | wc -l
+6942
+1.0.2:
+arkay@gentoodesk ~ $ lsof -p 5792 | grep application.properties | wc -l
+66
+Those numbers were obtained after my roo script had finished.  There seems to be a File object leak somewhere, otherwise I can&amp;amp;apos;t explain the 6942 open files held by 1.1.0M2 vs. the 69 the last release version used.</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.startlevel.Activator.java</file>
+			
+			
+			<file type="M">org.springframework.roo.obr.internal.ObrResourceFinderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.felix.pgp.PgpServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebMvcOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.support.util.XmlUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.menu.MenuOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspMetadataListener.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.propfiles.PropFileOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-11 20:13:20" id="1206" opendate="2010-08-11 19:59:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Suppress generation of labels for entity identifier and version fields for Web MVC scaffolding</summary>
+			
+			
+			<description>Suppress generation of labels for entity identifier and version fields for Web MVC scaffolding</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspMetadataListener.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-17 18:32:31" id="1220" opendate="2010-08-16 18:51:04" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Intermittent stacktrace when starting and exiting Roo</summary>
+			
+			
+			<description>Occasionally, Roo will display a stacktrace upon startup. A stacktrace on shutdown will appear also if the startup issue appears. 
+The problem is always connected with the SerializableMetadataProviderImpl (ie have not seen this problem with any other metadata provider or class)
+Startup:
+stewarta@stewarta:~/projects/roo-test/petclinic_orig$ roo.sh
+16/08/2010 11:37:38 AM org.springframework.roo.felix.JdkDelegatingLogListener logNow
+SEVERE: [org.springframework.roo.addon.serializable [35]] [org.springframework.roo.addon.serializable.SerializableMetadataProviderImpl] Cannot create component instance due to failure to bind reference metadataService
+16/08/2010 11:37:38 AM org.springframework.roo.felix.JdkDelegatingLogListener logNow
+SEVERE: [org.springframework.roo.addon.serializable [35]] FrameworkEvent ERROR
+org.apache.felix.log.LogException: org.osgi.framework.ServiceException: Service factory returned null.
+    at org.apache.felix.framework.ServiceRegistrationImpl.getFactoryUnchecked(ServiceRegistrationImpl.java:338)
+    at org.apache.felix.framework.ServiceRegistrationImpl.getService(ServiceRegistrationImpl.java:220)
+    at org.apache.felix.framework.ServiceRegistry.getService(ServiceRegistry.java:322)
+    at org.apache.felix.framework.Felix.getService(Felix.java:2913)
+    at org.apache.felix.framework.BundleContextImpl.getService(BundleContextImpl.java:330)
+    at org.apache.felix.scr.impl.manager.DependencyManager.getService(DependencyManager.java:761)
+    at org.apache.felix.scr.impl.manager.DependencyManager$1.getInstance(DependencyManager.java:1003)
+    at org.apache.felix.scr.impl.helper.BindMethod.getParameters(BindMethod.java:436)
+    at org.apache.felix.scr.impl.helper.BaseMethod.invokeMethod(BaseMethod.java:212)
+    at org.apache.felix.scr.impl.helper.BaseMethod.access$500(BaseMethod.java:38)
+    at org.apache.felix.scr.impl.helper.BaseMethod$Resolved.invoke(BaseMethod.java:542)
+    at org.apache.felix.scr.impl.helper.BaseMethod$NotResolved.invoke(BaseMethod.java:500)
+    at org.apache.felix.scr.impl.helper.BaseMethod.invoke(BaseMethod.java:434)
+    at org.apache.felix.scr.impl.manager.DependencyManager.invokeBindMethod(DependencyManager.java:991)
+    at org.apache.felix.scr.impl.manager.DependencyManager.bind(DependencyManage
+    at org.apache.felix.scr.impl.manager.DependencyManager.open(DependencyManager.java:831)
+    at org.apache.felix.scr.impl.manager.ImmediateComponentManager.createImplementationObject(ImmediateComponentManager.java:200)
+    at org.apache.felix.scr.impl.manager.ImmediateComponentManager.createComponent(ImmediateComponentManager.java:118)
+    at org.apache.felix.scr.impl.manager.DelayedComponentManager.createRealComponent(DelayedComponentManager.java:91)
+    at org.apache.felix.scr.impl.manager.AbstractComponentManager$Registered.getService(AbstractComponentManager.java:1139)
+    at org.apache.felix.scr.impl.manager.DelayedComponentManager.getService(DelayedComponentManager.java:85)
+    at org.apache.felix.framework.ServiceRegistrationImpl.getFactoryUnchecked(ServiceRegistrationImpl.java:306)
+    at org.apache.felix.framework.ServiceRegistrationImpl.getService(ServiceRegistrationImpl.java:220)
+    at org.apache.felix.framework.ServiceRegistry.getService(ServiceRegistry.java:322)
+    at org.apache.felix.framework.Felix.getService(Felix.java:2913)
+    at org.apache.felix.framework.BundleContextImpl.getService(BundleContextImpl.java:330)
+    at org.apache.felix.scr.impl.manager.DependencyManager.getService(DependencyManager.java:761)
+    at org.apache.felix.scr.impl.manager.DependencyManager$1.getInstance(DependencyManager.java:1003)
+    at org.apache.felix.scr.impl.helper.BindMethod.getParameters(BindMethod.java:436)
+    at org.apache.felix.scr.impl.helper.BaseMethod.invokeMethod(BaseMethod.java:212)
+    at org.apache.felix.scr.impl.helper.BaseMethod.access$500(BaseMethod.java:38)
+    at org.apache.felix.scr.impl.helper.BaseMethod$Resolved.invoke(BaseMethod.java:542)
+    at org.apache.felix.scr.impl.helper.BaseMethod$NotResolved.invoke(BaseMethod.java:500)
+    at org.apache.felix.scr.impl.helper.BaseMethod.invoke(BaseMethod.java:434)
+    at org.apache.felix.scr.impl.manager.DependencyManager.invokeBindMethod(DependencyManager.java:991)
+    at org.apache.felix.scr.impl.manager.DependencyManager.bind(DependencyManager.java:907)
+    at org.apache.felix.scr.impl.manager.DependencyManager.open(DependencyManager.java:831)
+    at org.apache.felix.scr.impl.manager.ImmediateComponentManager.createImplementationObject(ImmediateComponentManager.java:200)
+    at org.apache.felix.scr.impl.manager.ImmediateComponentManager.createComponent(ImmediateComponentManager.java:118)
+    at org.apache.felix.scr.impl.manager.AbstractComponentManager$Unsatisfied.activate(AbstractComponentManager.java:991)
+    at org.apache.felix.scr.impl.manager.AbstractComponentManager.activateInternal(AbstractComponentManager.java:298)
+    at org.apache.felix.scr.impl.manager.AbstractComponentManager$3.doRun(AbstractComponentManager.java:505)
+    at org.apache.felix.scr.impl.ComponentActivatorTask.run(ComponentActivatorTask.java:67)
+    at org.apache.felix.scr.impl.ComponentActorThread.run(ComponentActorThread.java:96)
+    at java.lang.Thread.run(Thread.java:619)
+Shutdown:
+roo&amp;gt; q
+[Thread-3] [org.springframework.roo.addon.serializable [35]] 
+FrameworkEvent ERROR
+            org.apache.felix.log.LogException: 
+org.osgi.framework.ServiceException: Service factory returned null.
+                at 
+org.apache.felix.framework.ServiceRegistrationImpl.getFactoryUnchecked(ServiceRegistrationImpl.java:338)
+                at 
+org.apache.felix.framework.ServiceRegistrationImpl.getService(ServiceRegistrationImpl.java:220)
+                at 
+org.apache.felix.framework.ServiceRegistry.getService(ServiceRegistry.java:322)
+                at 
+org.apache.felix.framework.Felix.getService(Felix.java:2913)
+                at 
+org.apache.felix.framework.BundleContextImpl.getService(BundleContextImpl.java:330)
+                at 
+org.apache.felix.scr.impl.manager.DependencyManager.getService(DependencyManager.java:761)
+                at 
+org.apache.felix.scr.impl.manager.DependencyManager$3.getInstance(DependencyManager.java:1105)
+                at 
+org.apache.felix.scr.impl.helper.BindMethod.getParameters(BindMethod.java:436)
+                at 
+org.apache.felix.scr.impl.helper.BaseMethod.invokeMethod(BaseMethod.java:212)
+                at 
+org.apache.felix.scr.impl.helper.BaseMethod.access$500(BaseMethod.java:38)
+                at 
+org.apache.felix.scr.impl.helper.BaseMethod$Resolved.invoke(BaseMethod.java:542)
+                at 
+org.apache.felix.scr.impl.helper.BaseMethod.invoke(BaseMethod.java:434)
+                at 
+org.apache.felix.scr.impl.manager.DependencyManager.invokeUnbindMethod(DependencyManager.java:1094)
+                at 
+org.apache.felix.scr.impl.manager.DependencyManager.serviceRemoved(DependencyManager.java:400)
+                at 
+org.apache.felix.scr.impl.manager.DependencyManager.serviceChanged(DependencyManager.java:251)
+                at 
+org.apache.felix.framework.util.EventDispatcher.invokeServiceListenerCallback(EventDispatcher.java:864)
+                at 
+org.apache.felix.framework.util.EventDispatcher.fireEventImmediately(EventDispatcher.java:732)
+                at 
+org.apache.felix.framework.util.EventDispatcher.fireServiceEvent(EventDispatcher.java:662)
+                at 
+org.apache.felix.framework.Felix.fireServiceEvent(Felix.java:3619)
+                at 
+org.apache.felix.framework.Felix.access$000(Felix.java:39)
+                at 
+org.apache.felix.framework.Felix$2.serviceChanged(Felix.java:667)
+                at 
+org.apache.felix.framework.ServiceRegistry.unregisterService(ServiceRegistry.java:124)
+                at 
+org.apache.felix.framework.ServiceRegistrationImpl.unregister(ServiceRegistrationImpl.java:129)
+                at 
+org.apache.felix.scr.impl.manager.AbstractComponentManager.unregisterComponentService(AbstractComponentManager.java:429)
+                at 
+org.apache.felix.scr.impl.manager.AbstractComponentManager$Satisfied.deactivate(AbstractComponentManager.java:1065)
+                at 
+org.apache.felix.scr.impl.manager.AbstractComponentManager.deactivateInternal(AbstractComponentManager.java:303)
+                at 
+org.apache.felix.scr.impl.manager.DependencyManager.serviceRemoved(DependencyManager.java:343)
+                at 
+org.apache.felix.scr.impl.manager.DependencyManager.serviceChanged(DependencyManager.java:251)
+                at 
+org.apache.felix.framework.util.EventDispatcher.invokeServiceListenerCallback(EventDispatcher.java:864)
+                at 
+org.apache.felix.framework.util.EventDispatcher.fireEventImmediately(EventDispatcher.java:732)
+                at 
+org.apache.felix.framework.util.EventDispatcher.fireServiceEvent(EventDispatcher.java:662)
+                at 
+org.apache.felix.framework.Felix.fireServiceEvent(Felix.java:3619)
+                at 
+org.apache.felix.framework.Felix.access$000(Felix.java:39)
+                at 
+org.apache.felix.framework.Felix$2.serviceChanged(Felix.java:667)
+                at 
+org.apache.felix.framework.ServiceRegistry.unregisterService(ServiceRegistry.java:124)
+                at 
+org.apache.felix.framework.ServiceRegistrationImpl.unregister(ServiceRegistrationImpl.java:129)
+                at 
+org.apache.felix.scr.impl.manager.AbstractComponentManager.unregisterComponentService(AbstractComponentManager.java:429)
+                at 
+org.apache.felix.scr.impl.manager.AbstractComponentManager$Satisfied.deactivate(AbstractComponentManager.java:1065)
+                at 
+org.apache.felix.scr.impl.manager.AbstractComponentManager.disposeInternal(AbstractComponentManager.java:322)
+                at 
+org.apache.felix.scr.impl.manager.AbstractComponentManager.dispose(AbstractComponentManager.java:185)
+                at 
+org.apache.felix.scr.impl.config.ConfiguredComponentHolder.disposeComponents(ConfiguredComponentHolder.java:275)
+                at 
+org.apache.felix.scr.impl.BundleComponentActivator.dispose(BundleComponentActivator.java:319)
+                at 
+org.apache.felix.scr.impl.Activator.disposeComponents(Activator.java:277)
+                at 
+org.apache.felix.scr.impl.Activator.bundleChanged(Activator.java:178)
+                at 
+org.apache.felix.framework.util.EventDispatcher.invokeBundleListenerCallback(EventDispatcher.java:800)
+                at 
+org.apache.felix.framework.util.EventDispatcher.fireEventImmediately(EventDispatcher.java:728)
+                at 
+org.apache.felix.framework.util.EventDispatcher.fireBundleEvent(EventDispatcher.java:610)
+                at 
+org.apache.felix.framework.Felix.fireBundleEvent(Felix.java:3608)
+                at 
+org.apache.felix.framework.Felix.stopBundle(Felix.java:2114)
+                at 
+org.apache.felix.framework.Felix.setActiveStartLevel(Felix.java:1148)
+                at 
+org.apache.felix.framework.StartLevelImpl.run(StartLevelImpl.java:264)
+                at java.lang.Thread.run(Thread.java:619)
+</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.serializable.SerializableMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.solr.SolrMetadataProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">1178</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-17 18:44:45" id="1178" opendate="2010-08-06 01:28:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Intermittent issue loading Roo</summary>
+			
+			
+			<description>When starting Roo, the following stack trace appears:
+SEVERE: [org.springframework.roo.addon.serializable [34]] [org.springframework.roo.addon.serializable.SerializableMetadataProviderImpl] Cannot create component instance due to failure to bind reference metadataService
+06/08/2010 5:26:45 PM org.springframework.roo.felix.JdkDelegatingLogListener logNow
+SEVERE: [org.springframework.roo.addon.serializable [34]] FrameworkEvent ERROR
+org.apache.felix.log.LogException: org.osgi.framework.ServiceException: Service factory returned null.
+	at org.apache.felix.framework.ServiceRegistrationImpl.getFactoryUnchecked(ServiceRegistrationImpl.java:338)
+	at org.apache.felix.framework.ServiceRegistrationImpl.getService(ServiceRegistrationImpl.java:220)
+	at org.apache.felix.framework.ServiceRegistry.getService(ServiceRegistry.java:322)
+	at org.apache.felix.framework.Felix.getService(Felix.java:2913)
+	at org.apache.felix.framework.BundleContextImpl.getService(BundleContextImpl.java:330)
+	at org.apache.felix.scr.impl.manager.DependencyManager.getService(DependencyManager.java:761)
+	at org.apache.felix.scr.impl.manager.DependencyManager$1.getInstance(DependencyManager.java:1003)
+	at org.apache.felix.scr.impl.helper.BindMethod.getParameters(BindMethod.java:436)
+	at org.apache.felix.scr.impl.helper.BaseMethod.invokeMethod(BaseMethod.java:212)
+	at org.apache.felix.scr.impl.helper.BaseMethod.access$500(BaseMethod.java:38)
+	at org.apache.felix.scr.impl.helper.BaseMethod$Resolved.invoke(BaseMethod.java:542)    
+	at org.apache.felix.scr.impl.helper.BaseMethod$NotResolved.invoke(BaseMethod.java:500)
+	at org.apache.felix.scr.impl.helper.BaseMethod.invoke(BaseMethod.java:434)
+	at org.apache.felix.scr.impl.manager.DependencyManager.invokeBindMethod(DependencyManager.java:991)
+	at org.apache.felix.scr.impl.manager.DependencyManager.bind(DependencyManager.java:895)
+	at org.apache.felix.scr.impl.manager.DependencyManager.open(DependencyManager.java:831)
+	at org.apache.felix.scr.impl.manager.ImmediateComponentManager.createImplementationObject(ImmediateComponentManager.java:200)
+	at org.apache.felix.scr.impl.manager.ImmediateComponentManager.createComponent(ImmediateComponentManager.java:118)
+	at org.apache.felix.scr.impl.manager.DelayedComponentManager.createRealComponent(DelayedComponentManager.java:91)
+	at org.apache.felix.scr.impl.manager.AbstractComponentManager$Registered.getService(AbstractComponentManager.java:1139)
+	at org.apache.felix.scr.impl.manager.DelayedComponentManager.getService(DelayedComponentManager.java:85)
+	at org.apache.felix.framework.ServiceRegistrationImpl.getFactoryUnchecked(ServiceRegistrationImpl.java:306)
+	at org.apache.felix.framework.Felix.getService(Felix.java:2913)
+	at org.apache.felix.framework.BundleContextImpl.getService(BundleContextImpl.java:330)
+	at org.apache.felix.scr.impl.manager.DependencyManager.getService(DependencyManager.java:761)
+	at org.apache.felix.scr.impl.manager.DependencyManager$1.getInstance(DependencyManager.java:1003)
+	at org.apache.felix.scr.impl.helper.BindMethod.getParameters(BindMethod.java:436)
+	at org.apache.felix.scr.impl.helper.BaseMethod.invokeMethod(BaseMethod.java:212)
+	at org.apache.felix.scr.impl.helper.BaseMethod.access$500(BaseMethod.java:38)
+	at org.apache.felix.scr.impl.helper.BaseMethod$Resolved.invoke(BaseMethod.java:542)
+	at org.apache.felix.scr.impl.helper.BaseMethod$NotResolved.invoke(BaseMethod.java:500)
+	at org.apache.felix.scr.impl.helper.BaseMethod.invoke(BaseMethod.java:434)
+	at org.apache.felix.scr.impl.manager.DependencyManager.invokeBindMethod(DependencyManager.java:991)
+	at org.apache.felix.scr.impl.manager.DependencyManager.bind(DependencyManager.java:907)
+	at org.apache.felix.scr.impl.manager.DependencyManager.open(DependencyManager.java:831)
+	at org.apache.felix.scr.impl.manager.ImmediateComponentManager.createImplementationObject(ImmediateComponentManager.java:200)
+	at org.apache.felix.scr.impl.manager.ImmediateComponentManager.createComponent(ImmediateComponentManager.java:118)
+	at org.apache.felix.scr.impl.manager.AbstractComponentManager$Unsatisfied.activate(AbstractComponentManager.java:991)
+	at org.apache.felix.scr.impl.manager.AbstractComponentManager.activateInternal(AbstractComponentManager.java:298)
+	at org.apache.felix.scr.impl.manager.AbstractComponentManager$3.doRun(AbstractComponentManager.java:505)
+	at org.apache.felix.scr.impl.ComponentActivatorTask.run(ComponentActivatorTask.java:67)
+	at org.apache.felix.scr.impl.ComponentActorThread.run(ComponentActorThread.java:96)
+	at java.lang.Thread.run(Thread.java:619)
+</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.serializable.SerializableMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.solr.SolrMetadataProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1220</link>
+			
+			
+			<link description="is related to" type="Related">1547</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-19 19:29:35" id="1242" opendate="2010-08-19 17:34:58" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Compile error in aspectj compile phase occurs when a perfom eclipse is run after upgrade to Spring 3.0.4</summary>
+			
+			
+			<description>After upgrading to Spring 3.0.4 the following errors occur when executing &amp;amp;apos;perform eclipse&amp;amp;apos; after running the expenses.roo script:
+[Thread-6] [ERROR] The import flexjson cannot be resolved
+[Thread-6] [ERROR] JSONSerializer cannot be resolved to a type
+[Thread-6] [ERROR] JSONDeserializer cannot be resolved to a type
+[Thread-6] [ERROR] JSONSerializer cannot be resolved to a type
+[Thread-6] [ERROR] JSONDeserializer cannot be resolved to a type
+[Thread-6] [ERROR] The import flexjson cannot be resolved
+[Thread-6] [ERROR] JSONSerializer cannot be resolved to a type
+[Thread-6] [ERROR] JSONDeserializer cannot be resolved to a type
+[Thread-6] [ERROR] JSONSerializer cannot be resolved to a type
+[Thread-6] [ERROR] JSONDeserializer cannot be resolved to a type
+[Thread-6] [ERROR] The import flexjson cannot be resolved
+[Thread-6] [ERROR] JSONSerializer cannot be resolved to a type
+[Thread-6] [ERROR] JSONDeserializer cannot be resolved to a type
+[Thread-6] [ERROR] JSONSerializer cannot be resolved to a type
+[Thread-6] [ERROR] JSONDeserializer cannot be resolved to a type
+[Thread-6] [WARNING] advice defined in org.springframework.orm.jpa.aspectj.JpaExceptionTranslatorAspect has not been applied [Xlint:adviceDidNotMatch]
+[Thread-6] [WARNING] advice defined in org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl has not been applied [Xlint:adviceDidNotMatch]
+[Thread-6] [WARNING] advice defined in org.springframework.mock.staticmock.AbstractMethodMockingControl has not been applied [Xlint:adviceDidNotMatch]
+[Thread-6] [INFO] ------------------------------------------------------------------------
+[Thread-6] [ERROR] BUILD ERROR
+[Thread-6] [INFO] ------------------------------------------------------------------------
+[Thread-6] [INFO] Compiler errors : 
+[Thread-6] error at import flexjson.JSONDeserializer;
+[Thread-6]        ^^^^^^^oo&amp;gt; 
+[Thread-6] /home/stewarta/projects/roo-test/expenses/src/main/java/com/springsource/extrack/server/domain/Employee_Roo_Json.aj:4:0::0 The import flexjson cannot be resolved
+[Thread-6] error at import flexjson.JSONSerializer;
+[</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.json.JsonCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.json.JsonOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.json.JsonOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">1239</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-22 21:14:53" id="1210" opendate="2010-08-13 05:09:12" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Import statements missing package name.</summary>
+			
+			
+			<description>I have a class SignCommand annotated with @RooJavaBean and with this property:
+somepackage.SomeClass.Enum sslRef;
+For this roo generates this getter:
+    public Enum SignCommand.getSslRef() 
+{
+        return this.sslRef;
+    }
+
+which is fine, but it imports SomeClass.Enum without package name, so the import can&amp;amp;apos;t be resolved.</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-24 17:17:06" id="1258" opendate="2010-08-24 05:15:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>When adding dependency via &amp;apos;dependency add&amp;apos; command ROO resets the topLevelPackage to the groupId of added dependency</summary>
+			
+			
+			<description>Here is the script:
+
+
+
+
+
+
+roo&amp;gt; project --topLevelPackage sample.travel.demo --projectName sample-travel-demo
+
+
+
+
+. . . .
+
+
+
+
+sample.travel.demo roo&amp;gt; dependency add --groupId legacy-travel --artifactId legacy-travel-transformer --version 1.1
+
+
+
+
+Managed ROOT/pom.xml [Added dependency legacy-travel:legacy-travel-transformer:1.1]
+
+
+
+
+legacy-travel roo&amp;gt; interface --class HelloGateway
+
+
+
+
+Created SRC_MAIN_JAVA/legacy-travel
+
+
+
+
+Created SRC_MAIN_JAVA/legacy-travel/HelloGateway.java
+
+
+
+
+legacy-travel.HelloGateway roo&amp;gt;
+
+
+
+
+
+
+This is actually a major issue, since it requires someone to create classes/interfaces before they add a dependency</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.converters.JavaPackageConverter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.maven.MavenCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.creator.CreatorCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.ControllerCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-09-07 12:35:11" id="1307" opendate="2010-08-28 12:00:59" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Generated code in gwt interface records does not compile</summary>
+			
+			
+			<description>Wrong imports and code using an entity with integers and double. 
+Steps:
+project --topLevelPackage com.test.roo --projectName TestRoo --java 6
+persistence setup --database GOOGLE_APP_ENGINE --provider DATANUCLEUS 
+entity --class ~.datos.Pedido --testAutomatically --identifierColumn id
+field string --fieldName descripcion --sizeMin 5
+field date --fieldName fecha --type java.util.Date
+gwt setup
+entity --class ~.datos.LineaPedido --testAutomatically --identifierColumn id
+Added manually 2 fields with type integer and double:
+@Entity
+@RooJavaBean
+@RooToString
+@RooEntity(identifierColumn = &quot;id&quot;)
+public class Pedido {
+    @Size(min = 5)
+    private String descripcion;
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(style = &quot;S-&quot;)
+    private Date fecha;
+    private int numeroLineas; // added manually
+    private double precio;   // added manually
+}
+The generated class PedidoRecord has compile errors:
+import com.test.roo.gwt.request.IntegerRecord; // does not exist
+import com.test.roo.gwt.request.DoubleRecord;   // does not exist
+@RooGwtMirroredFrom(Pedido.class)
+@DataTransferObject(Pedido.class)
+public interface PedidoRecord extends Record {
+    public String TOKEN = &quot;PedidoRecord&quot;;
+    Property&amp;lt;com.test.roo.gwt.request.IntegerRecord&amp;gt; numeroLineas = new com.google.gwt.valuestore.shared.Property&amp;lt;com.test.roo.gwt.request.IntegerRecord&amp;gt;(&quot;numeroLineas&quot;, &quot;Numero Lineas&quot;, com.test.roo.gwt.request.IntegerRecord.class);
+    Property&amp;lt;com.test.roo.gwt.request.DoubleRecord&amp;gt; precio = new com.google.gwt.valuestore.shared.Property&amp;lt;com.test.roo.gwt.request.DoubleRecord&amp;gt;(&quot;precio&quot;, &quot;Precio&quot;, com.test.roo.gwt.request.DoubleRecord.class);
+</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-06 14:24:30" id="1041" opendate="2010-06-28 10:54:36" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Roo Spring MVC scaffolding support for JPA custom primary keys</summary>
+			
+			
+			<description>Controller scaffolding from this Entity with a primary key of type string currently results in a
+
+
+
+
+
+
+javax.el.PropertyNotFoundException: Property &amp;amp;apos;id&amp;amp;apos; not found on type dk.prispiraten.domain.TSecurityquestion
+
+
+
+
+	at javax.el.BeanELResolver$BeanProperties.get(BeanELResolver.java:193)
+
+
+
+
+	at javax.el.BeanELResolver$BeanProperties.access$400(BeanELResolver.java:170)
+
+
+
+
+	at javax.el.BeanELResolver.property(BeanELResolver.java:279)
+
+
+
+
+	at javax.el.BeanELResolver.getValue(BeanELResolver.java:60)
+
+
+
+
+	at javax.el.CompositeELResolver.getValue(CompositeELResolver.java:54)
+
+
+
+
+	at org.apache.el.parser.AstValue.getValue(AstValue.java:123)
+
+
+
+
+	at org.apache.el.parser.AstDynamicExpression.getValue(AstDynamicExpression.java:42)
+
+
+
+
+	at org.apache.el.parser.AstCompositeExpression.getValue(AstCompositeExpression.java:47)
+
+
+
+
+	at org.apache.el.ValueExpressionImpl.getValue(ValueExpressionImpl.java:186)
+
+
+
+
+	at org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate(PageContextImpl.java:935)
+
+
+
+
+	at org.apache.jsp.tag.web.form.fields.table_tagx._jspx_meth_spring_005furl_005f0(table_tagx.java:811)
+
+
+
+
+
+
+where the actual property should be &amp;amp;apos;securityquestionId&amp;amp;apos; for the entity listing page</description>
+			
+			
+			<version>1.1.0.M2</version>
+			
+			
+			<fixedVersion>1.1.1.RELEASE</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspViewManager.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspMetadataListener.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1071</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

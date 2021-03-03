@@ -1,0 +1,2542 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="ROO">
+	<bug fixdate="2010-01-12 10:31:52" id="512" opendate="2010-01-03 10:51:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ROO managed applications are susceptible to XSS attacks</summary>
+			
+			
+			<description>Generate an application using the following commands:
+project --topLevelPackage com.bloudraak.sample.xss
+persistence setup --provider HIBERNATE --database MYSQL 
+entity --class ~.models.Item --table items
+field string --fieldName title 
+field string --fieldName body --sizeMax 4096
+controller all --package ~.controllers
+exit
+Start the application by executing &quot;mvn tomcat:run&quot;.  Create a new &quot;Item&quot; and enter &quot;&amp;lt;script&amp;gt;alert(&amp;amp;apos;Hello Dude&amp;amp;apos;)&amp;lt;/script&amp;gt;&quot; in the description field and save.  Notice a dialog appearing that says &quot;Hello Dude&quot;.  Also note that when listing all items, the website is &quot;broken&quot;. 
+Also note that I can &quot;break&quot; the application by entering an HTML comment, such as &quot;&amp;lt;!--&quot;. 
+You can find a few things to check for using this cheat sheet   I would strongly suggest that ROO generates tests to cover these cases so that a developer knows when he breaks the security.  
+</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-13 20:39:25" id="534" opendate="2010-01-13 08:20:57" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>database URL being truncated</summary>
+			
+			
+			<description>When creating a project using the following:
+persistence setup --provider HIBERNATE --database MYSQL
+database properties set --key database.url --value jdbc:mysql://localhost:3306/mydatabase
+database properties set --key database.username --value myuser
+database properties set --key database.password --value mypassword
+The database.properties file shows:
+#Updated at Thu Jan 14 11:05:58 NZDT 2010
+#Thu Jan 14 11:05:58 NZDT 2010
+database.password=mypassword
+database.url=jdbc\:mysql\         &amp;lt;&amp;lt; THIS IS GETTING TRUNCATED 
+database.username=myuser
+database.driverClassName=com.mysql.jdbc.Driver
+It is easily fixed my manually updating the database.url to &amp;amp;apos;database.url=jdbc\:mysql\://localhost\:3306/mydatabase&amp;amp;apos;.</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.shell.internal.AbstractShell.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">517</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-14 13:28:45" id="533" opendate="2010-01-12 21:03:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NullPointerException when setting versionField=&quot;&quot; on @RooEntity</summary>
+			
+			
+			<description>I got this message:
+
+
+
+
+
+
+    ____  ____  ____  
+
+
+
+
+   / __ \/ __ \/ __ \ 
+
+
+
+
+  / /_/ / / / / / / / 
+
+
+
+
+ / _, _/ /_/ / /_/ /  
+
+
+
+
+/_/ |_|\____/\____/    1.0.0.RELEASE [rev 564]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Welcome to Spring Roo. For assistance press TAB or type &quot;hint&quot; then hit ENTER.
+
+
+
+
+Managed SRC_MAIN_JAVA/es/gva/cit/testjpa2/domain/Entidad1_Roo_ToString.aj
+
+
+
+
+Undo manage SRC_MAIN_JAVA/es/gva/cit/testjpa2/domain/Entidad1_Roo_ToString.aj
+
+
+
+
+NullPointerException at org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.getUpdateDocument(JspDocumentHelper.java:392)
+
+
+
+
+roo&amp;gt; 
+
+
+
+
+
+
+
+
+
+
+
+This has happened when I set @RooEntity(versionfield=&quot;&quot;.
+I&amp;amp;apos;ve looked at source and this can be a possible patch:
+
+
+
+
+
+Eclipse Workspace Patch 1.0
+#P org.springframework.roo.addon.web.mvc.jsp
+Index: src/main/java/org/springframework/roo/addon/mvc/jsp/JspDocumentHelper.java
+===================================================================
+
+
+src/main/java/org/springframework/roo/addon/mvc/jsp/JspDocumentHelper.java	(revision 570)
++++ src/main/java/org/springframework/roo/addon/mvc/jsp/JspDocumentHelper.java	(working copy)
+@@ -389,7 +389,6 @@
+ 		Document document = builder.newDocument();		
+
+
+
+
+
+ 		String idFieldName = Introspector.decapitalize(StringUtils.capitalize(entityMetadata.getIdentifierField().getFieldName().getSymbolName()));
+
+String versionFieldName = Introspector.decapitalize(StringUtils.capitalize(entityMetadata.getVersionField().getFieldName().getSymbolName()));
+
+ 		//add document namespaces
+ 		Element div = new XmlElementBuilder(&quot;div&quot;, document)
+@@ -442,6 +441,7 @@
+ 		formHiddenId.setAttribute(&quot;id&quot;, &quot;_&quot; + idFieldName + &quot;_id&quot;);
+ 		formElement.appendChild(formHiddenId);
+ 		if (null != entityMetadata.getVersionField()) {
++			String versionFieldName = Introspector.decapitalize(StringUtils.capitalize(entityMetadata.getVersionField().getFieldName().getSymbolName()));
+ 			Element formHiddenVersion = document.createElement(&quot;form:hidden&quot;);
+ 			formHiddenVersion.setAttribute(&quot;path&quot;, versionFieldName);
+ 			formHiddenVersion.setAttribute(&quot;id&quot;, &quot;_&quot; + versionFieldName + &quot;_id&quot;);</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-14 13:59:45" id="526" opendate="2010-01-08 08:07:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Pluralization seems to not work for Enum types</summary>
+			
+			
+			<description>I am getting a &quot;Could not determine the plural name&quot; error in the final line of the following script.
+// start of script
+project --topLevelPackage com.myco.testapp --projectName testapp
+persistence setup --provider HIBERNATE --database HYPERSONIC_PERSISTENT
+enum type --class ~.reference.AuditEventType
+enum constant --name SomeEventType
+enum constant --name AnotherEventType
+entity --class ~.base.AuditEvent
+field date --fieldName ts --notNull --class ~.base.AuditEvent --type java.util.Date
+field ref --fieldName eventType --notNull --type ~.reference.AuditEventType
+field string --fieldName description --notNull
+controller all --package ~.web
+// end of script
+The exact error is
+Could not determine the plural name for the &amp;amp;apos;eventType&amp;amp;apos; field in AuditEvent
+So, I added added a @RooPlural(&quot;eventTypes&quot;) above the eventType field in the AuditEvent class, but continue to get the same message.</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.FieldCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-19 01:41:58" id="541" opendate="2010-01-18 21:32:14" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Roo running jdk 1.6 update 18 can&amp;apos;t display messages of green color.</summary>
+			
+			
+			<description>Roo running jdk 1.6 update 18 can&amp;amp;apos;t display messages of green color.</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.email.MailOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.process.manager.internal.DefaultProcessManager.java</file>
+			
+			
+			<file type="M">org.springframework.roo.file.undo.internal.DeleteDirectory.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.flow.WebFlowOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JpaOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.FinderOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.maven.MavenCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jms.JmsOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.selenium.SeleniumOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.ControllerOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.backup.BackupOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.maven.MavenOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserClassMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.bootstrap.Bootstrap.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.ControllerCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.SimpleParser.java</file>
+			
+			
+			<file type="M">org.springframework.roo.file.monitor.event.LoggingFileEventListener.java</file>
+			
+			
+			<file type="M">org.springframework.roo.file.undo.internal.UpdateFile.java</file>
+			
+			
+			<file type="M">org.springframework.roo.bootstrap.AddOnOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.support.logging.HandlerUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.file.monitor.polling.PollingFileMonitorService.java</file>
+			
+			
+			<file type="M">org.springframework.roo.file.undo.internal.CreateFile.java</file>
+			
+			
+			<file type="M">org.springframework.roo.file.undo.internal.CreateDirectory.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.internal.AbstractShell.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.security.SecurityOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.metadata.internal.DefaultMetadataDependencyRegistry.java</file>
+			
+			
+			<file type="M">org.springframework.roo.file.undo.internal.DeleteFile.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">539</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-19 09:44:09" id="535" opendate="2010-01-13 20:11:05" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Compiler error on _Roo_Entity.aj  when identifierType is a primitive</summary>
+			
+			
+			<description>I&amp;amp;apos;ve tried to use a primitive type like identifier. This is an example:
+
+
+
+
+
+
+E1.java
+
+
+
+
+
+
+@Entity
+
+
+
+
+@RooJavaBean
+
+
+
+
+@RooToString
+
+
+
+
+@RooEntity(identifierType=int.class)
+
+
+
+
+public class E1{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Size(max = 30)
+
+
+
+
+    private String nombre;
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+Roo generates the &quot;.aj&quot; files with no problems. But when I&amp;amp;apos;ve tried to compile with a &amp;amp;apos;perform package&amp;amp;apos; command Maven says:
+
+
+
+
+
+
+
+
+
+
+
+[INFO] [aspectj:compile {execution: default}]
+
+
+
+
+[ERROR] The operator == is undefined for the argument type(s) int, null
+
+
+
+
+[WARNING] advice defined in org.springframework.orm.jpa.aspectj.JpaExceptionTranslatorAspect has not been applied [Xlint:adviceDidNotMatch]
+
+
+
+
+[WARNING] advice defined in org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl has not been applied [Xlint:adviceDidNotMatch]
+
+
+
+
+[WARNING] advice defined in org.springframework.mock.staticmock.AbstractMethodMockingControl has not been applied [Xlint:adviceDidNotMatch]
+
+
+
+
+[INFO] ------------------------------------------------------------------------
+
+
+
+
+[ERROR] BUILD ERROR
+
+
+
+
+[INFO] ------------------------------------------------------------------------
+
+
+
+
+[INFO] Compiler errors : 
+
+
+
+
+error at if (id == null) throw new IllegalArgumentException(&quot;An identifier is required to retrieve an instance of E1&quot;);        
+
+
+
+
+    ^
+
+
+
+
+/home/jmvivo/projects/test-roo/test_jpa3/src/main/java/es/gva/cit/testjpa3/domain/E1_Roo_Entity.aj:75:0::0 The operator == is undefined for the argument type(s) int, null
+
+
+
+
+
+
+
+
+
+
+</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">472</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-21 02:48:14" id="548" opendate="2010-01-20 14:37:43" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Plugins in pom.xml that are missing a groupId result in an error message</summary>
+			
+			
+			<description>I added this to my pom in order to encode my sources with UTF-8:
+&amp;lt;plugin&amp;gt;
+   &amp;lt;artifactId&amp;gt;maven-resources-plugin&amp;lt;/artifactId&amp;gt;
+   &amp;lt;version&amp;gt;2.2&amp;lt;/version&amp;gt;
+   &amp;lt;configuration&amp;gt;
+      &amp;lt;encoding&amp;gt;UTF-8&amp;lt;/encoding&amp;gt;
+   &amp;lt;/configuration&amp;gt;
+&amp;lt;/plugin&amp;gt;
+When I start up Roo, it gives me this error:
+Depenency XML format not supported or is missing a mandatory node (&amp;amp;apos;[plugin: null]&amp;amp;apos;)</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.project.Dependency.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-21 05:53:12" id="553" opendate="2010-01-21 04:32:40" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>create.jspx and update.jspx voilates DRY</summary>
+			
+			
+			<description>I&amp;amp;apos;ve compared the generated files create.jspx and update.jspx for the input mask of an entity. They are nearly identical and this voilates for my understanding the principle of DRY. In particular the tags for the input fields are all the same. So I suggest to use a common file form.jspx and include this in both files like this: &amp;lt;jsp:include page=&quot;form.jspx&quot; /&amp;gt;</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.ControllerOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldAnnotationValues.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspMetadataListener.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspViewManager.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.selenium.SeleniumOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.support.util.XmlUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.flow.WebFlowOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.menu.MenuOperations.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.mvc.jsp.JspRoundTripper.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.mvc.jsp.DojoUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.mvc.jsp.JspUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.security.SecurityOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.TilesOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebMvcOperations.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.mvc.jsp.JspMenuHelper.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">8</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-22 12:45:29" id="539" opendate="2010-01-16 16:48:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Console does not produce output on jdk 1.6.0_18</summary>
+			
+			
+			<description>Console does not produce output when running on Sun JDK 1.6.0_18.
+I had to re-install Sun JDK 1.6.0_17 in order to get it working.
+Note that a similar problem was reported in http://forum.springsource.org/showthread.php?t=80983 , except I was using Sun JDK.</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.email.MailOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.process.manager.internal.DefaultProcessManager.java</file>
+			
+			
+			<file type="M">org.springframework.roo.file.undo.internal.DeleteDirectory.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.flow.WebFlowOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JpaOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.FinderOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.maven.MavenCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jms.JmsOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.selenium.SeleniumOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.ControllerOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.backup.BackupOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.maven.MavenOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserClassMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.bootstrap.Bootstrap.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.ControllerCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.SimpleParser.java</file>
+			
+			
+			<file type="M">org.springframework.roo.file.monitor.event.LoggingFileEventListener.java</file>
+			
+			
+			<file type="M">org.springframework.roo.file.undo.internal.UpdateFile.java</file>
+			
+			
+			<file type="M">org.springframework.roo.bootstrap.AddOnOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.support.logging.HandlerUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.file.monitor.polling.PollingFileMonitorService.java</file>
+			
+			
+			<file type="M">org.springframework.roo.file.undo.internal.CreateFile.java</file>
+			
+			
+			<file type="M">org.springframework.roo.file.undo.internal.CreateDirectory.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.internal.AbstractShell.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.security.SecurityOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.metadata.internal.DefaultMetadataDependencyRegistry.java</file>
+			
+			
+			<file type="M">org.springframework.roo.file.undo.internal.DeleteFile.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">541</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-22 13:31:50" id="536" opendate="2010-01-13 23:04:42" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Generated entity unit tests don&amp;apos;t work correctly with numerical data types smaller than int</summary>
+			
+			
+			<description>In generated unit test *DataOnDemand_Roo_DataOnDemand aspect and its method DataOnDemand.getNewTransientVideoPart(int index) the object&amp;amp;apos;s field is not set properly if it is of a numerical data type smaller than int. Than the project does not compile.
+Example:
+My entity:
+
+@Entity
+@RooJavaBean
+@RooToString
+@RooEntity
+public class VideoPart {
+    private short partId;
+}
+and generated test for it:
+
+public VideoPart VideoPartDataOnDemand.getNewTransientVideoPart(int index) {    
+        com.moteve.domain.VideoPart obj = new com.moteve.domain.VideoPart();        
+        obj.setCaptureTime(new java.util.Date());        
+        obj.setPartId(1); 
+. . .
+here 1 (int) can&amp;amp;apos;t be converted to a short without casting it explicitly.
+For B/byte it&amp;amp;apos;s also similar.</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">1176</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-22 14:04:00" id="508" opendate="2010-01-02 05:31:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Creating an entity called &amp;apos;Entity&amp;apos; results in compile error</summary>
+			
+			
+			<description>Creating an entity called Entity in some package results in a Java file that can&amp;amp;apos;t be compiled b/o the import of the javax.persistence.Entity annotation. Roo should either not allow this class name for entities, or it should fully qualify the @Entity annotation in this case instead of using an import.
+Compile error:
+
+
+
+
+
+
+[INFO] [aspectj:compile {execution: default}]
+
+
+
+
+[ERROR] The import javax.persistence.Entity conflicts with a type defined in the same file
+
+
+
+
+[ERROR] Type mismatch: cannot convert from Entity to Annotation
+
+
+
+
+[WARNING] advice defined in org.springframework.orm.jpa.aspectj.JpaExceptionTranslatorAspect has not been applied [Xlint:adviceDidNotMatch]
+
+
+
+
+[WARNING] advice defined in org.springframework.mock.staticmock.AnnotationDrivenStaticEntityMockingControl has not been applied [Xlint:adviceDidNotMatch]
+
+
+
+
+[WARNING] advice defined in org.springframework.mock.staticmock.AbstractMethodMockingControl has not been applied [Xlint:adviceDidNotMatch]
+
+
+
+
+[WARNING] advice defined in org.springframework.mock.staticmock.AbstractMethodMockingControl has not been applied [Xlint:adviceDidNotMatch]
+
+
+
+
+[INFO] ------------------------------------------------------------------------
+
+
+
+
+[ERROR] BUILD ERROR
+
+
+
+
+[INFO] ------------------------------------------------------------------------
+
+
+
+
+[INFO] Compiler errors :
+
+
+
+
+error at import javax.persistence.Entity;
+
+
+
+
+       ^^^^^^^^^^^^^^^^^^^^^^^
+
+
+
+
+C:\java\roo-projects\GA\src\main\java\com\springsource\rootest\Entity.java:3:0::0 The import javax.persistence.Entity conflicts with a type defined in the same file
+
+
+
+
+error at @Entity
+
+
+
+
+ ^^^^^
+
+
+
+
+C:\java\roo-projects\GA\src\main\java\com\springsource\rootest\Entity.java:9:0::0 Type mismatch: cannot convert from Entity to Annotation
+
+
+
+
+
+</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserFieldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserMutableClassOrInterfaceTypeDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserMethodMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserAnnotationMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">576</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-22 14:09:59" id="517" opendate="2010-01-05 03:44:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Shell treatment of // as an inline comment marker is too aggressive, breaking valid options like &amp;apos;http://abcd&amp;apos;</summary>
+			
+			
+			<description>It seems like in 1.0.0.RELEASE the roo shell ignores any string input after //.
+For example, when we try to install a new roo addon
+addon install --url http://www.xyz.com/aaa.zip
+We get following error message
+Add-ons URLs must end with .zip
+If we try something like
+addon install --url http:aaa.zip//www.xyz.com/aaa.zip
+We will get following error message
+Downloading http:aaa.zip
+NullPointerException at sun.net.www.ParseUtil.toURI(Unknown Source).
+It happens on both Windows box and Linux box.</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.shell.internal.AbstractShell.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">501</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">534</link>
+			
+			
+			<link description="is related to" type="Related">1116</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-27 09:06:22" id="559" opendate="2010-01-27 08:41:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Doco error: incorrect explanation of sizeMax and sizeMin options for &quot;field set&quot; command</summary>
+			
+			
+			<description>The reference docs for the &quot;field set&quot; command (http://static.springsource.org/spring-roo/reference/html/command-index.html#command-index-field-set) contain these argument descriptions:
+--sizeMin The minimum string length; no default value
+--sizeMax The maximum string length; no default value 
+As agreed by Stefan in the forum and as documented here for the @Size annotation:
+http://java.sun.com/javaee/6/docs/api/index.html?javax/validation/constraints/Size.html
+... these arguments actually relate to the minimum and maximum size of the set (i.e. the number of elements it contains), not the length of any strings.</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.FieldCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-27 12:37:18" id="562" opendate="2010-01-27 11:59:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DataOnDemand doesn&amp;apos;t work with non-null self-references</summary>
+			
+			
+			<description>When I run this script:
+
+
+
+
+
+
+project --topLevelPackage foo
+
+
+
+
+persistence setup --provider HIBERNATE --database HYPERSONIC_IN_MEMORY
+
+
+
+
+entity --class ~.Person --testAutomatically
+
+
+
+
+field reference --fieldName lastChangedBy --type ~.Person --notNull
+
+
+
+
+
+I get this error:
+
+
+
+
+
+
+project --topLevelPackage foo
+
+
+
+
+Created G:\workspace-sts\asset-manager\pom.xml
+
+
+
+
+Created SRC_MAIN_JAVA
+
+
+
+
+Created SRC_MAIN_RESOURCES
+
+
+
+
+Created SRC_TEST_JAVA
+
+
+
+
+Created SRC_TEST_RESOURCES
+
+
+
+
+Created SRC_MAIN_WEBAPP
+
+
+
+
+Created SRC_MAIN_RESOURCES\META-INF\spring
+
+
+
+
+Created SRC_MAIN_RESOURCES\META-INF\spring\applicationContext.xml
+
+
+
+
+Created SRC_MAIN_RESOURCES\META-INF\spring\log4j.properties
+
+
+
+
+persistence setup --provider HIBERNATE --database HYPERSONIC_IN_MEMORY
+
+
+
+
+Created SRC_MAIN_RESOURCES\META-INF\persistence.xml
+
+
+
+
+Created SRC_MAIN_RESOURCES\META-INF\spring\database.properties
+
+
+
+
+Managed SRC_MAIN_RESOURCES\META-INF\spring\applicationContext.xml
+
+
+
+
+Managed ROOT\pom.xml
+
+
+
+
+entity --class ~.Person --testAutomatically
+
+
+
+
+Created SRC_MAIN_JAVA\foo
+
+
+
+
+Created SRC_MAIN_JAVA\foo\Person.java
+
+
+
+
+Created SRC_TEST_JAVA\foo
+
+
+
+
+Created SRC_TEST_JAVA\foo\PersonDataOnDemand.java
+
+
+
+
+Created SRC_TEST_JAVA\foo\PersonIntegrationTest.java
+
+
+
+
+Created SRC_MAIN_JAVA\foo\Person_Roo_Entity.aj
+
+
+
+
+Created SRC_MAIN_JAVA\foo\Person_Roo_ToString.aj
+
+
+
+
+Created SRC_MAIN_JAVA\foo\Person_Roo_Configurable.aj
+
+
+
+
+Created SRC_TEST_JAVA\foo\PersonDataOnDemand_Roo_Configurable.aj
+
+
+
+
+Created SRC_TEST_JAVA\foo\PersonDataOnDemand_Roo_DataOnDemand.aj
+
+
+
+
+Created SRC_TEST_JAVA\foo\PersonIntegrationTest_Roo_Configurable.aj
+
+
+
+
+Created SRC_TEST_JAVA\foo\PersonIntegrationTest_Roo_IntegrationTest.aj
+
+
+
+
+field reference --fieldName lastChangedBy --type ~.Person --notNull
+
+
+
+
+Managed SRC_MAIN_JAVA\foo\Person.java
+
+
+
+
+Created SRC_MAIN_JAVA\foo\Person_Roo_JavaBean.aj
+
+
+
+
+Managed SRC_MAIN_JAVA\foo\Person_Roo_ToString.aj
+
+
+
+
+Undo manage SRC_MAIN_JAVA\foo\Person_Roo_ToString.aj
+
+
+
+
+Undo create SRC_MAIN_JAVA\foo\Person_Roo_JavaBean.aj
+
+
+
+
+Undo manage SRC_MAIN_JAVA\foo\Person.java
+
+
+
+
+Upstream dependency cannot be the same as the downstream dependency (&amp;amp;apos;MID:org.springframework.roo.addon.dod.DataOnDemandMetadata#SRC_TEST_JAVA?foo.PersonDataOnDemand&amp;amp;apos;)
+
+
+
+
+Script execution aborted
+
+
+
+
+
+
+If I remove either the --testAutomatically or the --notNull, the script works fine.</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-27 14:21:00" id="540" opendate="2010-01-18 17:48:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>create.jspx and update.jspx missing fields from entity</summary>
+			
+			
+			<description>When creating an entity with a ManyToOne relationship, the create.jspx and update.jspx for the entity at the One end of the relationship does not include a UI component for the Many end. This is fine, but sometimes when an entity includes this type of relationship then other fields (for example, of type string) are not generated.
+There appears to be a bug in:
+https://anonsvn.springframework.org/svn/spring-roo/release-1.0.0.RELEASE/addon-web-mvc-jsp/src/main/java/org/springframework/roo/addon/mvc/jsp/JspDocumentHelper.java
+In the createFieldsForCreateAndUpdate() method. See line 674. There is a return statement which would stop the generation of any subsequent fields.</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-27 15:05:14" id="543" opendate="2010-01-19 07:18:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Multiselect not getting fully selected on update</summary>
+			
+			
+			<description>I have a Researcher object that has many Interests and Skills. When I edit a researcher the skills and interests multiselect boxes do not get correctly bound, so if I just submit they will be almost all erased (all but the first interest). 
+The weird thing is that if you view source the correct skills and interests option tags are marked as selected=&quot;selected&quot;, although they are not highlighted for me as a user and they are not considered selected when I submit the form (because if I submit they are wiped out).
+Is there something wrong with dojo MultiSelect widgit? 
+You might be able to reproduce the problem with this partial script:
+..all of the project and persistence setup
+entity --class ~.domain.Interest 
+field string --fieldName name
+entity --class ~.domain.Skill 
+field string --fieldName name
+entity --class ~.domain.Researcher 
+field set --fieldName interests --element ~.domain.Interest 
+field set --fieldName skills --element ~.domain.Skill 
+controller scaffold all
+If you create a few skills and interests and then create a researcher you should see the problem.</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-28 07:45:19" id="563" opendate="2010-01-28 06:25:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&quot;finder list&quot; only listing &quot;NOT&quot; option for boolean field</summary>
+			
+			
+			<description>Exactly as I wrote in the forum.
+Hi guys!
+I&amp;amp;apos;ve got an entity that has a boolean field.
+When I type the command &quot;finder list&quot; in Roo Shell, it only lists the corresponding finder with the NOT modifier. For example:
+Let&amp;amp;apos;s suppose an entity named &quot;Foo&quot; with a boolean field named &quot;enabled&quot;, if I type the command &quot;finder list&quot;, Roo will show:
+.....
+findFoosByEnabledNot(Boolean enabled)
+...
+And not the option
+...
+findFoosByEnabled(Boolean enabled)
+...
+Nevertheless Roo only doesn&amp;amp;apos;t list it, because if I type:
+...
+finder add --finderName findFoosByEnabled
+Roo effectively generates the corresponding code.
+What I&amp;amp;apos;m pointing in this post is that this situation is a bit confusing and sometimes funny, in my case i used the findFoosByEnabledNot option and of course it was listing the opposite option I was looking for!!!!
+I&amp;amp;apos;m submitting the corresponding JIRA later </description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.DynamicFinderServicesImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-04 15:05:20" id="574" opendate="2010-01-31 10:04:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Flawed persistence when using Hypersonic</summary>
+			
+			
+			<description>When using a persistent Hypersonic database (via persistence setup --provider HIBERNATE --database HYPERSONIC_PERSISTENT), two artifacts should be generated differently:
+(1) META-INF/spring/database.properties: the connection string should contain the parameter ;shutdown=true, so that HSQLDB correctly writes any changes to disk when you stop Tomcat
+(2) persistence.xml: the default setting for hibernate.hbm2ddl.auto should be update
+Everything else will lead to side-effects which a user will not expect from a persistent setup.
+Apart from that ... keep up the great work! I&amp;amp;apos;m excited to see where Roo will go.</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.2.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JdbcDatabase.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-15 16:12:42" id="568" opendate="2010-01-28 18:08:58" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DataOnDemand for OneToOne relationships should be more robust</summary>
+			
+			
+			<description>This bug is closely related to the linked issues about @OneToOne (cyclic toString() bug and &quot;field reference&quot; imrpovement).
+Generated tests for &quot;reference&quot; relationships pick random target entity when feeding the reference.
+This is fine for @ManyToOne relationships, but wrong for @OneToOne : randomisation will return several time same target entity.
+So DataOnDemand should pick random target entity out of remaining ones when relationship is @OneToOne.
+Here is a minimal script to reproduce, along with a little manual editing :
+project --topLevelPackage fr.free.hd.ch4mp.onetoone
+persistence setup --provider HIBERNATE --database HYPERSONIC_IN_MEMORY
+entity --class ~.domain.Person --testAutomatically
+entity --class ~.domain.DrivingLicense --testAutomatically
+field string firstName --notNull --class ~.domain.Person
+field string lastName --notNull --class ~.domain.Person
+field number --fieldName points --type java.lang.Integer --notNull --min 0 --max 12 --class ~.domain.DrivingLicense
+controller all --package ~.web
+DrivingLicense.java editing :
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+...
+    @NotNull
+    @OneToOne(targetEntity = Person.class)
+    @JoinColumn
+    private Person owner;
+Person.java editing :
+import javax.persistence.CascadeType;
+import javax.persistence.OneToOne;
+...
+    @OneToOne(targetEntity = DrivingLicense.class, cascade = CascadeType.ALL, mappedBy = &quot;owner&quot;)
+    private DrivingLicense drivingLicense;
+perform test should fail.
+Editing DrivingLicenseDataOnDemand_Roo_DataOnDemand.aj and changing personDataOnDemand.getRandomPerson() call to Person.findPerson(new Long(index)) would be sufficient for tests to pass.</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.2.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">325</link>
+			
+			
+			<link description="is related to" type="Related">569</link>
+			
+			
+			<link description="is related to" type="Related">569</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-03 18:42:59" id="644" opendate="2010-02-21 06:57:21" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NullPointerException from Roo shell upon trying to manage existing (non-Roo-generated) Maven pom.xml</summary>
+			
+			
+			<description>Offending pom.xml is attached.
+
+
+
+
+
+
+cbeams@anakata:~/Desktop/Engagements/Redacted/eiws-courseware/enterprise-integration-1.0.4.RELEASE/spring-integration-intro-solution&amp;gt;$ roo.sh     ____  ____  ____  
+
+
+
+
+   / __ \/ __ \/ __ \ 
+
+
+
+
+  / /_/ / / / / / / / 
+
+
+
+
+ / _, _/ /_/ / /_/ /  
+
+
+
+
+/_/ |_|\____/\____/    1.0.0.RELEASE [rev 564]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Welcome to Spring Roo. For assistance press TAB or type &quot;hint&quot; then hit ENTER.
+
+
+
+
+java.lang.NullPointerException
+
+
+
+
+    at org.springframework.roo.addon.maven.MavenProjectMetadataProvider.get(MavenProjectMetadataProvider.java:100)
+
+
+
+
+    at org.springframework.roo.metadata.internal.DefaultMetadataService.get(DefaultMetadataService.java:106)
+
+
+
+
+    at org.springframework.roo.metadata.internal.DefaultMetadataService.get(DefaultMetadataService.java:124)
+
+
+
+
+    at org.springframework.roo.process.manager.internal.DefaultFileManager.notify(DefaultFileManager.java:147)
+
+
+
+
+    at org.springframework.roo.metadata.internal.DefaultMetadataDependencyRegistry.notifyDownstream(DefaultMetadataDependencyRegistry.java:269)
+
+
+
+
+    at org.springframework.roo.addon.maven.MavenProjectMetadataProvider.onFileEvent(MavenProjectMetadataProvider.java:299)
+
+
+
+
+    at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.publish(PollingFileMonitorService.java:324)
+
+
+
+
+    at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.scanAll(PollingFileMonitorService.java:306)
+
+
+
+
+    at org.springframework.roo.process.manager.internal.MonitoringRequestCommand.callback(MonitoringRequestCommand.java:36)
+
+
+
+
+    at org.springframework.roo.process.manager.internal.MonitoringRequestCommand.callback(MonitoringRequestCommand.java:15)
+
+
+
+
+    at org.springframework.roo.process.manager.internal.DefaultProcessManager.doTransactionally(DefaultProcessManager.java:131)
+
+
+
+
+    at org.springframework.roo.process.manager.internal.DefaultProcessManager.completeStartup(DefaultProcessManager.java:53)
+
+
+
+
+    at org.springframework.roo.bootstrap.ProcessManagerPostConstructBeanPostProcessor.onApplicationEvent(ProcessManagerPostConstructBeanPostProcessor.java:32)
+
+
+
+
+    at org.springframework.roo.bootstrap.ProcessManagerPostConstructBeanPostProcessor.onApplicationEvent(ProcessManagerPostConstructBeanPostProcessor.java:20)
+
+
+
+
+    at org.springframework.context.event.SimpleApplicationEventMulticaster.multicastEvent(SimpleApplicationEventMulticaster.java:97)
+
+
+
+
+    at org.springframework.context.support.AbstractApplicationContext.publishEvent(AbstractApplicationContext.java:294)
+
+
+
+
+    at org.springframework.context.support.AbstractApplicationContext.finishRefresh(AbstractApplicationContext.java:858)
+
+
+
+
+    at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:419)
+
+
+
+
+    at org.springframework.context.support.ClassPathXmlApplicationContext.&amp;lt;init&amp;gt;(ClassPathXmlApplicationContext.java:139)
+
+
+
+
+    at org.springframework.context.support.ClassPathXmlApplicationContext.&amp;lt;init&amp;gt;(ClassPathXmlApplicationContext.java:83)
+
+
+
+
+    at org.springframework.roo.bootstrap.Bootstrap.&amp;lt;init&amp;gt;(Bootstrap.java:68)
+
+
+
+
+    at org.springframework.roo.bootstrap.Bootstrap.main(Bootstrap.java:52)
+
+
+
+
+roo&amp;gt; 
+
+
+
+
+
+</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.maven.MavenProjectMetadataProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-03 19:02:14" id="558" opendate="2010-01-24 20:13:15" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Need support for @IdClass</summary>
+			
+			
+			<description>We need @RooEntity to support @IdClass annotation for we have existing project to migrate.
+for ROO 1.0.0.RELEASE, following code will not work correct:
+@Entity
+@RooJavaBean
+@RooToString
+@RooEntity
+@IdClass(AbcPK.class)
+public class Abc {
+	@Id
+	@Column
+	private String pk1;
+	@Id
+	@Column
+	private String pk2;
+	@Column
+	private String name;
+	@Column
+	private Integer count;
+}</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.IdentifierMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserMutableClassOrInterfaceTypeDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.IdentifierMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.RooIdentifier.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.ClasspathCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.project.ProjectMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.MemberFindingUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.serializable.SerializableMetadataProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.classpath.operations.RooIdentifierStrategy.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.ClasspathOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.ClasspathOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.RooEntity.java</file>
+			
+			
+			<file type="M">org.springframework.roo.model.JavaSymbolName.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.annotations.populator.AutoPopulationUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JpaCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.annotations.EnumAttributeValue.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.converters.EnumConverter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">505</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-30 13:00:23" id="872" opendate="2010-05-23 11:00:33" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Support &quot;field lob&quot; for entities</summary>
+			
+			
+			<description>It would be nice to have the ability to create @Lob annotated fields from within the Roo shell.
+Command:
+field lob -fieldName myField
+Creates: 
+@Lob
+private String myField;</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M2</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspViewManager.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">513</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-23 00:18:54" id="505" opendate="2009-12-31 12:30:00" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Need support for @EmbeddedId - a way to specify this in @RooEntity </summary>
+			
+			
+			<description>I want to use @EmbeddedId in order to use composite primary key. e.g. I want to use the following 
+[CODE]
+package com.synconx.entities;
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+/**
+
+@Author Chiradip Mandal
+@Copyright  Chiradip Mandal 2009
+@License Apache License v2.0 http://www.apache.org/licenses/LICENSE-2.0
+ *
+ */
+@Embeddable
+public class EdgeId implements Serializable {
+        private static final long serialVersionUID = 7709843884574764331L;
+        @Column( name = &quot;SOURCENODEID&quot; )
+        private long sourceNodeID;
+        @Column( name = &quot;TARGETNODEID&quot; )
+        private long targetNodeID;
+
+        public EdgeId() {
+        }
+        public EdgeId( long sourceNodeID, long targetNodeID ) 
+{
+                this.sourceNodeID = sourceNodeID;
+                this.targetNodeID = targetNodeID;
+        }
+
+        public long getSourceNodeID() 
+{
+                return sourceNodeID;
+        }
+
+        public void setSourceNodeID( long sourceNodeID ) 
+{
+                this.sourceNodeID = sourceNodeID;
+        }
+
+        public long getTargetNodeID() 
+{
+                return targetNodeID;
+        }
+
+        public void setTargetNodeID( long targetNodeID ) 
+{
+                this.targetNodeID = targetNodeID;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+                if ( o instanceof EdgeId ) 
+{
+                        EdgeId that = ( EdgeId ) o;
+                        return ( this.sourceNodeID == that.sourceNodeID ) &amp;amp;&amp;amp; ( this.targetNodeID == that.targetNodeID );
+                }
+                return false;
+        }
+        @Override
+        public int hashCode() 
+{
+                return new Long( sourceNodeID ).hashCode() + new Long( targetNodeID ).hashCode();
+        }
+}
+[/CODE]
+No I want to have roo managed entity Edge that looks like the following now 
+[CODE]
+@Entity
+@Table( name = &quot;EDGE&quot; )
+public class Edge implements Serializable {
+        private static final long serialVersionUID = 6090794895049089364L;
+        @Column( name = &quot;EDGETYPE&quot; )
+        private EdgeType edgeType;
+        public EdgeType getEdgeType() 
+{
+                return edgeType;
+        }
+
+        public void setEdgeType( EdgeType edgeType ) 
+{
+                this.edgeType = edgeType;
+        }
+
+        @EmbeddedId
+        private EdgeId edgeId;
+        public EdgeId getId() 
+{
+                return edgeId;
+        }
+
+
+        public void setId( EdgeId id ) 
+{
+                this.edgeId = id;
+        }
+
+
+        public EdgeId getEdgeId() 
+{
+        	return edgeId;
+        }
+
+        public void setEdgeId( EdgeId id ) 
+{
+        	this.edgeId = id;
+        }
+}
+[/CODE]
+I want it in the following way
+[CODE]
+@RooEntity(identifierType = EdgeId.class, embeddedIdentifier = true)
+@Entity
+@Table( name = &quot;EDGE&quot; )
+public class Edge implements Serializable {
+        private static final long serialVersionUID = 6090794895049089364L;
+        @Column( name = &quot;EDGETYPE&quot; )
+        private EdgeType edgeType;
+}
+[CODE]
+In the @RooEntity - it is great to have something called embeddedIdentifier with true and false options, false being the default option. </description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.IdentifierMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserMutableClassOrInterfaceTypeDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.IdentifierMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.RooIdentifier.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.ClasspathCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.project.ProjectMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.MemberFindingUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.serializable.SerializableMetadataProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.classpath.operations.RooIdentifierStrategy.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.ClasspathOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.ClasspathOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.RooEntity.java</file>
+			
+			
+			<file type="M">org.springframework.roo.model.JavaSymbolName.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.annotations.populator.AutoPopulationUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JpaCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.annotations.EnumAttributeValue.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.converters.EnumConverter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">558</link>
+			
+			
+			<link description="is related to" type="Related">636</link>
+			
+			
+			<link description="is related to" type="Related">384</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-24 18:39:17" id="513" opendate="2010-01-03 16:44:30" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Generate TEXTAREA for @Lob fields</summary>
+			
+			
+			<description>Consider the following entity
+
+
+
+
+
+
+Weblog.java
+
+
+
+
+
+
+@Entity
+
+
+
+
+@RooJavaBean
+
+
+
+
+@RooToString
+
+
+
+
+@RooEntity
+
+
+
+
+@Table(name = &quot;weblogs&quot;)
+
+
+
+
+public class Weblog {
+
+
+
+
+
+
+
+
+
+  @NotNull
+
+
+
+
+  @Column(name = &quot;title&quot;)
+
+
+
+
+  @Size(min = 1, max = 30)
+
+
+
+
+  private String title;
+
+
+
+
+
+
+
+
+
+  @Lob
+
+
+
+
+  @Column(name = &quot;description&quot;)
+
+
+
+
+  private String description;
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+When the annotation is encountered, generate a TEXTAREA tag in the update and create pages for the description field rather than an INPUT tag.</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M3</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspViewManager.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">872</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-12-13 18:17:31" id="546" opendate="2010-01-20 06:36:30" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Comments on field types specified with &amp;apos;--comment&amp;apos; are not utilizied</summary>
+			
+			
+			<description>When adding comments on fields, the &quot;--comment&quot; attribute is accepted but not used. From the help command, e.g. &quot;help field string&quot;, it makes it sound like it should be inserting the comment into the javadoc above the field declaration in the entity class. However, nothing is being placed there nor in the aspect j files.</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.2.4.RELEASE</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.jsr303.FieldDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.antlrjavaparser.details.JavaParserFieldMetadataBuilder.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.antlrjavaparser.UpdateCompilationUnitUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.comments.CommentStructure.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.FieldCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.FieldMetadataBuilder.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depends">635</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">3358</link>
+			
+			
+			<link description="is related to" type="Related">635</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-12-13 18:18:29" id="3358" opendate="2013-02-21 10:58:57" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Javadoc</summary>
+			
+			
+			<description>The ROO generated methods and attributes should have Javadoc, once it&amp;amp;apos;s not recommended to developer change the ROO files.</description>
+			
+			
+			<version>1.0.0.RELEASE</version>
+			
+			
+			<fixedVersion>1.2.4.RELEASE</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.jsr303.FieldDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.antlrjavaparser.details.JavaParserFieldMetadataBuilder.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.antlrjavaparser.UpdateCompilationUnitUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.comments.CommentStructure.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.FieldCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.FieldMetadataBuilder.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">546</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

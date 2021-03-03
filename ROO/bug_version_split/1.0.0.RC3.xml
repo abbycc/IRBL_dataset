@@ -1,0 +1,1641 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="ROO">
+	<bug fixdate="2009-11-10 16:17:19" id="364" opendate="2009-11-10 10:34:10" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Problem with custom controller path</summary>
+			
+			
+			<description>Using revision 401 (which is RC3)
+
+
+
+
+
+
+ 
+
+
+
+
+roo&amp;gt; controller scaffold --name ~.web.MyEntityController --entity ~.domain.Ent1 --path admin/ent1
+
+
+
+
+Created SRC_MAIN_JAVA/com/test/web/MyEntityController.java
+
+
+
+
+Managed SRC_MAIN_WEBAPP/WEB-INF/web.xml
+
+
+
+
+Managed ROOT/pom.xml
+
+
+
+
+Created SRC_MAIN_JAVA/com/test/web/MyEntityController_Roo_Controller.aj
+
+
+
+
+Created SRC_MAIN_WEBAPP/WEB-INF/views/admin/ent1
+
+
+
+
+Created SRC_MAIN_WEBAPP/WEB-INF/views/admin/ent1/list.jspx
+
+
+
+
+Created SRC_MAIN_WEBAPP/WEB-INF/views/admin/ent1/show.jspx
+
+
+
+
+Created SRC_MAIN_WEBAPP/WEB-INF/views/admin/ent1/create.jspx
+
+
+
+
+Undo create SRC_MAIN_WEBAPP/WEB-INF/views/admin/ent1/create.jspx
+
+
+
+
+Undo create SRC_MAIN_WEBAPP/WEB-INF/views/admin/ent1/show.jspx
+
+
+
+
+Undo create SRC_MAIN_WEBAPP/WEB-INF/views/admin/ent1/list.jspx
+
+
+
+
+Undo create SRC_MAIN_WEBAPP/WEB-INF/views/admin/ent1
+
+
+
+
+Undo create SRC_MAIN_JAVA/com/test/web/MyEntityController_Roo_Controller.aj
+
+
+
+
+Undo manage ROOT/pom.xml
+
+
+
+
+Undo manage SRC_MAIN_WEBAPP/WEB-INF/web.xml
+
+
+
+
+Undo create SRC_MAIN_JAVA/com/test/web/MyEntityController.java
+
+
+
+
+Illegal name &amp;amp;apos;admin/ent1&amp;amp;apos; (illegal character)
+
+
+
+
+
+
+This used to work before, I am currently using revision 362 and have controllers with admin/... path.  Upgrading to RC3 breaks my project with the same error (I am also using automaticallyMaintainView=true)</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.flow.WebFlowOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspMetadataListener.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.menu.MenuOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is depended on by" type="Depends">375</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-10 17:22:13" id="367" opendate="2009-11-10 14:24:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>@NotNull enum field causes drop down boxes to be rendered twice.</summary>
+			
+			
+			<description>Will attach sample project and screenshot.</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.DojoUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-11 07:55:34" id="374" opendate="2009-11-10 23:35:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Typo in doc section A.4.2</summary>
+			
+			
+			<description>--entity The entity which /will/ this data on demand class will create and modify as required</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.ClasspathCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-11 14:25:25" id="377" opendate="2009-11-11 14:04:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Roo generated finder has a sql syntax error in it</summary>
+			
+			
+			<description>Copying over from STS-626:
+I am using PSQL and hibernate for persistence.
+I generated a finder to find Researchers by Interests. The Roo generated finder has a SQL error in it (look for WHERE AND). Here is the generated method:
+
+
+
+
+
+
+public static Query Researcher.findResearchersByInterests(Set&amp;lt;Interest&amp;gt; interests) {
+
+
+
+
+   if (interests == null) throw new IllegalArgumentException(&quot;The interests argument is required&quot;);
+
+
+
+
+   EntityManager em = Researcher.entityManager();
+
+
+
+
+   StringBuilder queryBuilder = new StringBuilder(&quot;SELECT Researcher FROM Researcher AS researcher WHERE AND&quot;);
+
+
+
+
+   for (int i = 0; i &amp;lt; interests.size(); i++) { 
+
+
+
+
+      if (i &amp;gt; 0) queryBuilder.append(&quot; AND&quot;); 
+
+
+
+
+      queryBuilder.append(&quot; :interests_item&quot;).append(i).append(&quot; MEMBER OF researcher.interests&quot;); 
+
+
+
+
+   }
+
+
+
+
+   Query q = em.createQuery(queryBuilder.toString());
+
+
+
+
+   int i = 0;
+
+
+
+
+   for (Interest interest: interests) { 
+
+
+
+
+      q.setParameter(&quot;interests_item&quot; + i++, interest); 
+
+
+
+
+   }
+
+
+
+
+   return q;
+
+
+
+
+}
+
+
+
+
+
+
+When I try to use this finder in my app i get a org.hibernate.hql.ast.QuerySyntaxException: unexpected token: AND near line 1, column 81 [SELECT Researcher FROM edu.drexel.goodwin.domain.Researcher AS researcher WHERE AND :interests_item0 MEMBER OF researcher.interests]
+That word AND shouldn&amp;amp;apos;t be right after the WHERE.</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.FinderMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.DynamicFinderServicesImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-12 20:29:02" id="379" opendate="2009-11-12 20:26:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Shell tab completion irregularity when default options are used</summary>
+			
+			
+			<description>(Logged by Ben on behalf of Paul)
+If I run Roo RC3:
+roo&amp;gt; project --[TAB]
+project --java           project --projectName    project --template
+roo&amp;gt; project --t[TAB]
+project --template           project --topLevelPackage
+Why don&amp;amp;apos;t I get ----topLevelPackage appear in the first list, only in the second?  Is this a bug or expected behaviour?</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.shell.ParserUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-12 22:19:02" id="378" opendate="2009-11-12 04:15:58" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Tests are failing when @OneToOne relationship is present</summary>
+			
+			
+			<description>Here are the steps to reproduce:
+
+
+
+
+
+
+ 
+
+
+
+
+roo&amp;gt; project --topLevelPackage com.test --projectName Test --template STANDARD_PROJECT
+
+
+
+
+roo&amp;gt; persistence setup --provider HIBERNATE --database HYPERSONIC_IN_MEMORY
+
+
+
+
+roo&amp;gt; entity --name Region --testAutomatically
+
+
+
+
+roo&amp;gt; field string --fieldName name
+
+
+
+
+roo&amp;gt; entity --name Survey --testAutomatically
+
+
+
+
+roo&amp;gt; field string --fieldName name
+
+
+
+
+roo&amp;gt; perform tests
+
+
+
+
+
+
+Everything works as expected.
+In my case you can only have one survey per region.  And you can create a region without creating a survey.
+So I manually (because I don&amp;amp;apos;t see a Roo command to add one-to-one relationship) add the following:
+in Survey.java
+
+
+
+
+
+
+ 
+
+
+
+
+    @NotNull
+
+
+
+
+    @OneToOne(cascade = CascadeType.ALL, optional=false)
+
+
+
+
+    @JoinColumn(name = &quot;region_id&quot;)
+
+
+
+
+    private Region region;
+
+
+
+
+
+
+in Region.java
+
+
+
+
+
+
+ 
+
+
+
+
+    @OneToOne(mappedBy=&quot;region&quot;, optional=true)
+
+
+
+
+    private Survey survey;
+
+
+
+
+
+
+I now run the tests again:  
+
+
+
+
+
+
+ 
+
+
+
+
+roo&amp;gt; perform tests
+
+
+
+
+-------------------------------------------------------
+
+
+
+
+ T E S T S
+
+
+
+
+-------------------------------------------------------
+
+
+
+
+Running com.test.RegionIntegrationTest
+
+
+
+
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.755 sec
+
+
+
+
+Running com.test.SurveyIntegrationTest
+
+
+
+
+Tests run: 9, Failures: 0, Errors: 8, Skipped: 0, Time elapsed: 0.094 sec &amp;lt;&amp;lt;&amp;lt; FAILURE!
+
+
+
+
+
+
+
+
+
+Results :
+
+
+
+
+
+
+
+
+
+Tests in error: 
+
+
+
+
+  testFlush(com.test.SurveyIntegrationTest)
+
+
+
+
+  testMerge(com.test.SurveyIntegrationTest)
+
+
+
+
+  testPersist(com.test.SurveyIntegrationTest)
+
+
+
+
+  testRemove(com.test.SurveyIntegrationTest)
+
+
+
+
+  testCountSurveys(com.test.SurveyIntegrationTest)
+
+
+
+
+  testFindSurvey(com.test.SurveyIntegrationTest)
+
+
+
+
+  testFindAllSurveys(com.test.SurveyIntegrationTest)
+
+
+
+
+  testFindSurveyEntries(com.test.SurveyIntegrationTest)
+
+
+
+
+
+
+
+
+
+Tests run: 18, Failures: 0, Errors: 8, Skipped: 0
+
+
+
+
+
+
+Looking at the Survey&amp;amp;apos;s integration test report:
+javax.persistence.PersistenceException: org.hibernate.PropertyValueException: not-null property references a null or transient value: com.test.Survey.region
+I believe the problem is in the Survey&amp;amp;apos;s data on demand (region is being set to null):
+
+
+
+
+
+
+     
+
+
+
+
+public Survey SurveyDataOnDemand.getNewTransientSurvey(int index) {    
+
+
+
+
+    com.test.Survey obj = new com.test.Survey();        
+
+
+
+
+    obj.setName(&quot;name_&quot; + index);        
+
+
+
+
+    obj.setRegion(null);        
+
+
+
+
+    return obj;        
+
+
+
+
+}    
+
+
+
+
+
+ </description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadataProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-15 00:57:20" id="363" opendate="2009-11-10 07:07:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Perform commands do not work in RC3</summary>
+			
+			
+			<description>Just dowloaded RC3. 
+Perform commands seem not to work at all. Same behavior in sts and in standalone roo shell.
+Just looks like this:
+roo&amp;gt; perform package
+roo&amp;gt;
+I have Maven 2.10 in my path. 
+In previous version (RC2) it did work  (besides the known issue in STS ...)</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.maven.MavenCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">392</link>
+			
+			
+			<link description="is related to" type="Related">327</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-16 09:05:39" id="387" opendate="2009-11-16 00:22:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>The database settings (url / username / password) do not get saved if you specify them when installing JPA</summary>
+			
+			
+			<description>You need to edit the props file or change the properties from the command line because it ignores them if you pass them as parameters when installing JPA</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JpaCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-16 12:58:52" id="388" opendate="2009-11-16 00:34:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Error when setting versionField=&quot;&quot; on @RooEntity</summary>
+			
+			
+			<description>There is this exception:
+[timerFactory] NullPointerException at org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.getUpdateDocument(JspDocumentHelper.java:425)
+whenever  I try to rule out the version field (according to the docs it should not be used anymore if set to empty string)</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-17 15:37:56" id="390" opendate="2009-11-16 23:19:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RooIntegrationTest.findAllMaximum attribute is ignored</summary>
+			
+			
+			<description>I have some 500 - 1000 rows in a few tables, findAll test fails as the default for findAllMaximum is 250 but setting it to 1000 with @RooIntegrationTest(entity = Lab.class, findAllMaximum=1000) has no effect, the test still fails</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.test.IntegrationTestMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-19 01:19:11" id="404" opendate="2009-11-19 01:17:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&amp;apos;addon install&amp;apos; should clean up after itself</summary>
+			
+			
+			<description>Roo RC3 leaves addon zips in the temp dir after installing them: they should be removed if possible.</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.bootstrap.AddOnOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-19 12:56:55" id="392" opendate="2009-11-17 14:15:49" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>perform command not working on Win 7</summary>
+			
+			
+			<description>I was following the Roo documentation, specifically section 1.4, and when running the 3 perform commands I get no output.  I was assuming the &quot;perform tests&quot; command would generate something similiar to the output I get when running tests from Maven.
+Here is the output:
+roo&amp;gt; version
+    ____  ____  ____
+   / __ \/ __ \/ __ \
+  / /_/ / / / / / / /
+ / , _/ // / /_/ /
+// ||___/___/    1.0.0.RC3 [rev 401]
+roo&amp;gt; per
+perform assembly    perform clean       perform command     perform eclipse
+perform package     perform tests       persistence setup
+roo&amp;gt; perform tests
+roo&amp;gt; perform package
+roo&amp;gt; perform eclipse
+roo&amp;gt;</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.maven.MavenCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">363</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-22 09:42:24" id="419" opendate="2009-11-22 09:40:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Controller ITDs do not adjust when a referenced type changes plural</summary>
+			
+			
+			<description>Currently when an entity&amp;amp;apos;s plural name is changed the relevant controller ITD is updated correctly, however, the controller ITD also needs to be updated when a type referenced by that entity changes.</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-22 09:43:33" id="375" opendate="2009-11-11 08:17:53" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Custom path controller on the existing project (Reference bug ROO-364)</summary>
+			
+			
+			<description>Bug ROO-364 has been fixed per my request as of build 415.  However the fix only worked for a brand new project.  I have an existing project with custom path controllers(data/...), and when I ran the latest roo build (419) on it, I get the error message:
+[timerFactory] Illegal name &amp;amp;apos;data/site&amp;amp;apos; (illegal character)</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.flow.WebFlowOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspMetadataListener.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depends">364</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">396</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">422</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-22 09:44:25" id="396" opendate="2009-11-18 03:45:46" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Controller path doesn&amp;apos;t work</summary>
+			
+			
+			<description>I&amp;amp;apos;m trying to create a controller scalfold into path: &quot;admin/client&quot; but I&amp;amp;apos;m receiving a error:
+controller scaffold --name ~.model.ClientController --entity ~.model.Client --path  admin/client
+error: Illegal name &amp;amp;apos;admin/client&amp;amp;apos; (illegal character)</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.flow.WebFlowOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspMetadataListener.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">375</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-22 19:20:18" id="420" opendate="2009-11-22 11:07:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Roo fails to start on windows with an installed addon</summary>
+			
+			
+			<description>After a plugin is deployed Roo-Dev fails to start with the following error:
+    java.lang.NoClassDefFoundError: org/springframework/roo/shell/CommandMarker
+This is a problem with a classpath which is caused by the use of &quot;-Djava.ext.dirs&quot; system property in the roo-dev.bat to load addons. 
+A way to fix this issue is to load addons on the classpath using Java 6 classpath wildwards:
+  rem Append addons and jre\lib\ext to the classpath, (Java 6+ is required)
+  set EXT_DIRS=%USERPROFILE%\roo-dev\work*;%JAVA_HOME%\jre\lib\ext*
+  set ROO_CP=%ROO_CP%;%EXT_DIRS%
+Then just remove the use of &quot;-Djava.ext.dirs&quot;
+  java -Djline.nobell=true -DdevelopmentMode=true %ROO_OPTS% -Droo.home=&quot;%USERPROFILE%\roo-dev&quot; -cp %ROO_CP% org.springframework.roo.bootstrap.Bootstrap &quot;classpath:/roo-bootstrap.xml&quot; %*
+The only downside to this solution is Java 6+ dependency as it utilizes classpath wildcards.</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.bootstrap.AddOnCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.ExitShellRequest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is depended on by" type="Depends">357</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-22 19:24:22" id="357" opendate="2009-11-08 08:28:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>workdir jars not removed on addon uninstall on Windows</summary>
+			
+			
+			<description>Addon jars remain in the work dir after an addon uninstall on Windows. AddOnOperations.cleanUp() uses File.deleteOnExit() for the deletion: my guess is that these files are still locked when the JVM tries to remove them because these jars are listed in java.ext.dirs, and Windows supports locking files that are in use. 
+The only solution I can come up with is that Roo should create a simple text file containing the files to delete and would leave it up to the roo.bat script to delete these files before starting the JVM (could even be done by another Java program started by the script instead of a &amp;amp;apos;del&amp;amp;apos; command, as long as that JVM command doesn&amp;amp;apos;t list the work dir in the java.ext.dirs). 
+Every Java-based solution running just in the Roo JVM will suffer from the fact that the jars are locked already by the same JVM that tries to remove them, so this takes more than a simple code patch; a 2-step process in the .bat file seems like the best bet to me.</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.bootstrap.AddOnCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.ExitShellRequest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depends">420</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-24 10:55:10" id="422" opendate="2009-11-24 09:33:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>scaffold does not allow &quot;/&quot; in &quot;path&quot; option</summary>
+			
+			
+			<description>For a project contains hundreds of pages, it&amp;amp;apos;ll be better if ROO allow more than one level for path of views.
+e.g. I want to put all reference data maintenance pages under /reference/[resource_name]/[pages]
+It works in RC2, though I notice there&amp;amp;apos;s a minor bug in generated menu.jspx which uses &quot;/&quot; in element id.</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.flow.WebFlowOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspMetadataListener.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">375</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-24 11:44:59" id="397" opendate="2009-11-18 07:02:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Tiles not set up and javax.validation not added to pom when just adding simple controller</summary>
+			
+			
+			<description>When I create a new project with roo and then do something like this:
+controller class --name ~web.WelcomeController
+I get the Spring-MVC infrastructure set up, but the webmvc-config.xml now refers to the non-existing Tiles configuration (/WEB-INF/layouts/layouts.xml): that layouts directory is not created. BTW, it looks like the pom is properly updated to contain all the Tiles jars. 
+This means the application will fail when accessed. 
+Also, while trying to reproduce this I encountered another runtime error when running an app built like this:
+Caused by: org.springframework.beans.factory.CannotLoadBeanClassException: Error loading class [org.springframework.validation.beanvalidation.LocalValidatorFactoryBean] for bean with name &amp;amp;apos;validator&amp;amp;apos; defined in ServletContext resource [/WEB-INF/config/webmvc-config.xml]: problem with class file or dependent class; nested exception is java.lang.NoClassDefFoundError: javax/validation/ValidatorFactory
+That should&amp;amp;apos;ve been added to the pom when adding the controller, but apparently wasn&amp;amp;apos;t.</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.ControllerOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.ControllerCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.TilesOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspMetadataListener.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.menu.MenuOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depends">385</link>
+			
+			
+			<link description="is related to" type="Related">269</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-27 20:14:37" id="406" opendate="2009-11-19 04:15:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Little bug with message.properties with scaffold</summary>
+			
+			
+			<description>If a have a entity B that has a @manyToOne to entity A and generate a scaffold to B and A and after that I change the plural of A, roo doens&amp;amp;apos;t update all jsp references. So, to resolve this bug I need to have 2 entries in my message.properties:
+
+&quot;label.old_name_of_A= ...&quot; and &quot;label.new_name_of_A=...&quot;
+
+I know, it is a very small bug.</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.menu.MenuOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-12-01 11:26:05" id="447" opendate="2009-12-01 11:23:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Form for finders with enum type are not generated correctly</summary>
+			
+			
+			<description>Form for finders with enum types are not generated correctly</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-12-04 16:18:06" id="446" opendate="2009-12-01 10:55:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Uppercase domain properties are not used correctly in views</summary>
+			
+			
+			<description>I have a domain object called country_master with the fields defined as (excluding ID field etc.): 
+    @NotNull
+    @Column(name = &quot;COUNTRY_NAME&quot;)
+    private String name;
+    @NotNull
+    @Column(name = &quot;COUNTRY_ISO_CODE&quot;)
+    private String ISOCODE;
+When I generate the view using ROO scaffolding, the generated view viz. show.jspx has the ISOCODE field generated as: 
+&amp;lt;div class=&quot;box&quot; id=&quot;_iSOCODE&quot;&amp;gt;$
+{country.iSOCODE}
+&amp;lt;/div&amp;gt; 
+instead of 
+&amp;lt;div class=&quot;box&quot; id=&quot;_iSOCODE&quot;&amp;gt;$
+{country.ISOCODE}
+&amp;lt;/div&amp;gt;
+This field&amp;amp;apos;s usage was incorrectly generated in all the view related JSPs such as create.jspx, list.jspx etc.</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.DojoUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depends">6491</link>
+			
+			
+			<link description="is related to" type="Related">303</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-12-09 12:47:29" id="455" opendate="2009-12-09 12:46:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JavaParserMutableClassOrInterfaceTypeDetails.createType(..) fails to create types with correct &quot;implements&quot; references</summary>
+			
+			
+			<description>The JavaParserMutableClassOrInterfaceTypeDetails.createType(..) can be used to create new types. The arguments passed to the method include the list of types the new type should extend, and the list of types the new type should implement. Line 406 of JavaParserMutableClassOrInterfaceTypeDetails appears to be incorrectly handling the types to be implemented.</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserMutableClassOrInterfaceTypeDetails.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-12-14 07:53:41" id="459" opendate="2009-12-14 02:40:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hibernate syntaxt exception on finder method for boolean field</summary>
+			
+			
+			<description>I get a hibernate exception when searching for a boolean value.
+org.hibernate.hql.ast.QuerySyntaxException: unexpected token: : near line 1, column 102 [SELECT Contact FROM ...domain.Contact AS contact WHERE contact.callback NOT :callback]
+the field definition is:
+
+
+
+
+
+
+    @NotNull
+
+
+
+
+    private Boolean callback;
+
+
+
+
+
+
+the generated finder is:
+
+
+
+
+
+
+    public static Query Contact.findContactsByCallbackNot(Boolean callback) {    
+
+
+
+
+        if (callback == null) throw new IllegalArgumentException(&quot;The callback argument is required&quot;);        
+
+
+
+
+        EntityManager em = Contact.entityManager();        
+
+
+
+
+        Query q = em.createQuery(&quot;SELECT Contact FROM Contact AS contact WHERE contact.callback NOT :callback&quot;);        
+
+
+
+
+        q.setParameter(&quot;callback&quot;, callback);        
+
+
+
+
+        return q;        
+
+
+
+
+    }    
+
+
+
+
+
+
+As there is nothing special in my class I think this affects every Boolean fields so I ommited the complete script as this should be reproducable.</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.DynamicFinderServicesImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-12 10:29:25" id="501" opendate="2009-12-30 23:45:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CLONE -Persistence setup options not taking effect</summary>
+			
+			
+			<description>seems these options do not have the correct effect.
+When I do:
+persistence setup --provider HIBERNATE --database MYSQL --databaseName roofeed --userName root
+Managed SRC_MAIN_RESOURCES/META-INF/persistence.xml
+Managed SRC_MAIN_RESOURCES/META-INF/spring/database.properties
+please enter your database details in src/main/resources/database.properties
+Managed SRC_MAIN_RESOURCES/META-INF/spring/applicationContext.xml
+I end up with this database.properties:
+#Updated at Thu Dec 10 17:16:33 CET 2009
+#Thu Dec 10 17:16:33 CET 2009
+database.password=
+database.url=jdbc\:mysql\://localhost\:3306
+database.username=
+database.driverClassName=com.mysql.jdbc.Driver</description>
+			
+			
+			<version>1.0.0.RC3</version>
+			
+			
+			<fixedVersion>1.0.1.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.shell.internal.AbstractShell.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">517</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

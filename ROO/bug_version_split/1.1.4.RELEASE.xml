@@ -1,0 +1,4747 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="ROO">
+	<bug fixdate="2009-11-19 12:51:59" id="394" opendate="2009-11-17 20:24:13" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Roo should facilitate creation of Repository interface and classes as per DDD concepts for domain objects </summary>
+			
+			
+			<description>Roo should facilitate creation of Repository interface and classes as per DDD concepts for domain objects and all the finder methods should be visible as part of that Repository interface. E.g. If product is a domain object created with Roo, then there should be another interface and its implementation created with name IProductRepository and ProductRepositoryImpl etc. This would make Roo in compliance to basic DDD concepts. Also, Roo should introduce Annotations for AggregateRoot, Entity etc. to be used more effectively for DDD based development</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.0.0.RC4</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceLayerProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtFileManagerImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceLayerProviderTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.jpa.RepositoryJpaLayerProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.jpa.RepositoryJpaLayerProviderTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserTypeParsingService.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceClassMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.details.WebMetadataServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jsf.JsfManagedBeanMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityLayerProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.layers.LayerProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.entity.EntityLayerProviderTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.layers.LayerServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.layers.LayerService.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.jpa.RepositoryJpaAnnotationValuesTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.converter.ConversionServiceMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.jpa.RepositoryLayerMethodTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.test.IntegrationTestMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.email.MailOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.jline.osgi.JLineShellComponent.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.itd.AbstractItdTypeDetailsProvidingMetadataItem.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.converter.ConversionServiceMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.persistence.PersistenceMemberLocatorImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.test.IntegrationTestMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceInterfaceMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaLayerProviderTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.mvc.WebScaffoldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.details.JavaTypePersistenceMetadataDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.ClassOrInterfaceTypeDetailsBuilder.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.property.editor.EditorMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.solr.SolrJspMetadataListener.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.persistence.PersistenceMemberLocator.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.layers.MemberTypeAdditions.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.finder.WebFinderMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceClassMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaLayerProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.json.WebJsonMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.property.editor.EditorMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.mvc.WebScaffoldMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.FinderOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.selenium.SeleniumOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.solr.SolrMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceInterfaceLocatorImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaLocatorImpl.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerCustomDataKeys.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.details.WebMetadataService.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.MemberTypeAdditions.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaLayerMethod.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerTypeMatcher.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerService.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.json.WebJsonMetadataProviderImpl.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.Priority.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerType.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.CoreLayerProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerAdapter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceLayerMethod.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceLayerMethodTest.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.MemberTypeAdditionsTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.TypeLocationServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.Identifier.java</file>
+			
+			
+			<file type="D">org.springframework.roo.classpath.persistence.PersistenceIdentifierLocatorImpl.java</file>
+			
+			
+			<file type="D">org.springframework.roo.classpath.persistence.PersistenceIdentifierLocator.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityLayerMethod.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityLayerMethodTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.serializable.SerializableMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryLayerMethodTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceAnnotationValues.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceInterfaceMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.RooService.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.repository.RepositoryLayerMethod.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityAnnotationValues.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaAnnotationValues.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RooRepositoryJpa.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.model.JavaSymbolName.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.solr.SolrMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserConstructorMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.annotations.ArrayAttributeValue.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.plural.PluralMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserFieldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.model.JavaType.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserMethodMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserClassOrInterfaceTypeDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.PhysicalTypeDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.PhysicalTypeIdentifier.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.PhysicalTypeIdentifierNamingUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.annotations.DefaultAnnotationMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserAnnotationMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.annotations.AnnotationAttributeValue.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.annotations.AnnotationMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.support.util.Pair.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaCommands.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.PersistenceMethod.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerServiceImplTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.MemberHoldingTypeDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.DefaultItdTypeDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.DefaultClassOrInterfaceTypeDetails.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.Crud.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.CrudKey.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.dao.DaoJpaLayerProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.dao.RooDaoJpa.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.dao.DaoJpaMetadataProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.dao.DaoJpaMetadata.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.dao.DaoJpaAnnotationValues.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.itd.ItdSourceFileComposer.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.LayerService.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.Crud.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.LayerProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.CrudKey.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.LayerServiceImpl.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.LayerUtils.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.MemberTypeAdditions.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.LayerAdapter.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.Priority.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.LayerType.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.service.ServiceMetadataProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.service.ServiceMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.annotations.populator.AutoPopulationUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaOperationsImpl.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.dao.DaoJpaMetadata.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.repository.RepositoryJpaLayerProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.dao.RooDaoJpa.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.dao.DaoJpaAnnotationValues.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.dao.DaoJpaLayerProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.repository.RepositoryJpaMetadataProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.repository.RepositoryJpaMetadata.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.repository.RepositoryJpaAnnotationValues.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.repository.RooRepositoryJpa.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.dao.DaoJpaMetadataProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">301</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-09 19:20:34" id="2409" opendate="2011-05-09 10:08:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ConverterNotFoundException with a ONE_TO_MANY relationship</summary>
+			
+			
+			<description>The attached script sets up my initial attempt at the Composite pattern, with a basic class(component) which is extended by two sub classes (Leaf and Composite). Upon executing the controllers under Tomcat, and adding a Composite, a ConverterNotFound exception is raised upon executing the show.jspx jsp. It seems that the Spring Expression evaluator is complaining about not being able to convert a Set. 
+One workaround I have found is to not render the field:display tag in the show.jspx file (render=&quot;false&quot;).  </description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.4.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspViewManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-10 04:33:17" id="2411" opendate="2011-05-09 11:12:51" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&amp;apos;finder list&amp;apos; command throws OutOfMemoryError with a very restrictive --filter option</summary>
+			
+			
+			<description>Finder generation with a lot of properties requires --filter option to avoid all memory consumption.
+However, with a very restrictive --filter option crash too.
+Execute &amp;amp;apos;log.roo&amp;amp;apos; script to reproduce error.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.4.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.DynamicFinderServices.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.FinderCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.FinderOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.FinderOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.DynamicFinderServicesImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-10 17:29:19" id="2415" opendate="2011-05-10 08:15:09" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DBRE not include &amp;apos;schema&amp;apos; attribute on &amp;apos;Table&amp;apos; annotation</summary>
+			
+			
+			<description>Next command:
+
+
+
+
+
+
+database reverse engineer --schema myschema --package ~.domain
+
+
+
+
+
+
+Generate entity classes with @Table without schema definition:
+
+
+
+
+
+
+MyEntity_Roo_Entity.aj
+
+
+
+
+
+
+...
+
+
+
+
+declare @type: Sentencias: @Table(name = &quot;MyEntity&quot;);
+
+
+
+
+...    
+
+
+
+
+
+
+Application can&amp;amp;apos;t find tables because are placed in a non default schema.
+Schema attribute is required:
+
+
+
+
+
+
+MyEntity_Roo_Entity.aj
+
+
+
+
+
+
+...
+
+
+
+
+declare @type: Sentencias: @Table(schema=&quot;myschema&quot;, name = &quot;MyEntity&quot;);
+
+
+
+
+...    
+
+
+
+
+
+
+By default, this is the desired behavior.
+However, in some cases it&amp;amp;apos;s preferable not define the schema attribute at Table annotation and set a schema search path in the database. In this case, the application is not schema dependent.
+Then, i propose a new database reverse engineer option:
+--includeSchemaReference: Include a reference to database schema on Entitys (boolean, optional, and true by default).</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.4.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.converter.SchemaConverter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.DatabaseContentHandler.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.DbreModelServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreDatabaseListenerImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.DbreModelService.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-14 06:43:13" id="2425" opendate="2011-05-12 08:20:40" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ConstraintViolationException creating an entity generated with DBRE</summary>
+			
+			
+			<description>Database properties:
+
+User: test2
+Password: test2
+Database: test2DB
+
+Attached database.sql script with structure creation.
+Execute attached log.roo script:
+
+
+
+
+
+
+project --topLevelPackage org.gvnix.test.dbre.acuses
+
+
+
+
+persistence setup --provider HIBERNATE --database POSTGRES --hostName localhost --password test2 --userName test2 --databaseName test2DB
+
+
+
+
+osgi obr url add --url http://spring-roo-repository.springsource.org/repository.xml
+
+
+
+
+osgi obr start --bundleSymbolicName org.springframework.roo.wrapping.postgresql-jdbc3
+
+
+
+
+osgi obr url remove --url http://spring-roo-repository.springsource.org/repository.xml
+
+
+
+
+database reverse engineer --schema public --package ~.domain
+
+
+
+
+controller all --package ~.web
+
+
+
+
+
+
+When you create an entity of type Table2 next exception is raised:
+
+
+
+
+
+
+org.hibernate.exception.ConstraintViolationException: Could not execute JDBC batch update; nested exception is javax.persistence.PersistenceException: org.hibernate.exception.ConstraintViolationException: Could not execute JDBC batch update
+
+
+
+
+
+
+Attached stack trace.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.4.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-14 16:16:09" id="2416" opendate="2011-05-10 09:05:21" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DBRE JoinColumn of same JoinColumns must have same insertable and updatable values</summary>
+			
+			
+			<description>When &amp;amp;apos;database reverse engineer&amp;amp;apos; command generates multiple JoinColumn in a property, the insertable and updatable attributes must have the same value on each JoinColumn.
+
+
+
+
+
+
+@ManyToOne
+
+
+
+
+@JoinColumns({ @JoinColumn(name = &quot;aplicacion&quot;, referencedColumnName = &quot;aplicacion&quot;, nullable = false, insertable = false, updatable = false), @JoinColumn(name = &quot;rolusuar&quot;, referencedColumnName = &quot;usuario&quot;, nullable = false) })
+
+
+
+
+private TcomAplusu TcomAplusu.tcomAplusu;
+
+
+
+
+
+
+Previous configuration crash with &quot;Mixing insertable and non insertable columns in a property is not allowed: org.gvnix.test.dbre.acuses.TcomAplusu.tcomAplusu&quot;
+Error can be resolved with:
+
+
+
+
+
+
+@ManyToOne
+
+
+
+
+@JoinColumns({ @JoinColumn(name = &quot;aplicacion&quot;, referencedColumnName = &quot;aplicacion&quot;, nullable = false, insertable = false, updatable = false), @JoinColumn(name = &quot;rolusuar&quot;, referencedColumnName = &quot;usuario&quot;, nullable = false, insertable = false, updatable = false) })
+
+
+
+
+private TcomAplusu TcomAplusu.tcomAplusu;
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.4.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.Database.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.ForeignKey.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.Reference.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-15 02:43:17" id="2433" opendate="2011-05-15 02:07:20" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DBCP connection pool is not aware when a database connection is unavailable</summary>
+			
+			
+			<description>You can reproduce the issue restarting the database server while application running.
+See problem explanation and possible resolution:
+
+http://sacharya.com/grails-dbcp-stale-connections/
+
+DBCP configuration properties:
+
+http://commons.apache.org/dbcp/configuration.html
+
+Configuration properties summary that solves the problem:
+
+
+
+
+
+
+        &amp;lt;property name=&quot;validationQuery&quot; value=&quot;SELECT 1&quot;/&amp;gt;
+
+
+
+
+        &amp;lt;property name=&quot;testOnBorrow&quot; value=&quot;true&quot;/&amp;gt;
+
+
+
+
+        &amp;lt;property name=&quot;testOnReturn&quot; value=&quot;true&quot;/&amp;gt;
+
+
+
+
+        &amp;lt;property name=&quot;testWhileIdle&quot; value=&quot;true&quot;/&amp;gt;
+
+
+
+
+        &amp;lt;property name=&quot;timeBetweenEvictionRunsMillis&quot; value=&quot;1800000&quot;/&amp;gt;
+
+
+
+
+        &amp;lt;property name=&quot;numTestsPerEvictionRun&quot; value=&quot;3&quot;/&amp;gt;
+
+
+
+
+        &amp;lt;property name=&quot;minEvictableIdleTimeMillis&quot; value=&quot;1800000&quot;/&amp;gt;
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.4.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JpaOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Relate">1047</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-19 21:54:25" id="2449" opendate="2011-05-18 19:21:03" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Add --scope to maven dependency command</summary>
+			
+			
+			<description>Add --scope to the options for the dependency add command for installing pom.xml dependencies, so you can install things like the Selenium Java Driver into the test scope only.  Should be optional, could have scopes of test, runtime, provided, compile (the default if none picked).</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.project.AbstractProjectOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.project.ProjectOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.project.MavenCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">1756</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-20 17:58:06" id="2454" opendate="2011-05-20 17:56:47" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Roo allows duplicate enum constants in an enumerated type</summary>
+			
+			
+			<description>Duplicate enum constants cause a compile error and should not be allowed to proceed to be created in the Roo shell</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserClassOrInterfaceTypeDetails.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-21 17:18:00" id="2456" opendate="2011-05-21 17:09:07" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Finders not created for DBRE fields when any field exists in the governor</summary>
+			
+			
+			<description>Similar to the issue in ROO-2417, finder methods are not being created for dbre created fields if any field exists in the governor </description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.FinderMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.FinderMetadataProviderImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is depended on by" type="Depend">2525</link>
+			
+			
+			<link description="relates to" type="Relate">2417</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-24 06:15:57" id="2445" opendate="2011-05-17 23:35:27" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>GWT module&amp;apos;s gwt.xml file not found; cannot continue</summary>
+			
+			
+			<description>The script
+project --topLevelPackage foo --projectName foo
+persistence setup --provider DATANUCLEUS --database GOOGLE_APP_ENGINE 
+entity --class ~.server.domain.Foo
+field string foo
+gwt setup
+ends with the message:
+GWT module&amp;amp;apos;s gwt.xml file not found; cannot continue
+I have tried spring-roo-1.1.4.RELEASE and spring-roo-1.1.4.BUILD-SNAPSHOT_20110517.005036-d4d95d4.
+With spring-roo-1.1.3.RELEASE, it still worked.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtPath.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.project.ProjectMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtType.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.process.manager.internal.DefaultFileManager.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtTypeService.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtTypeServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.support.util.TemplateUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is depended on by" type="Depend">2459</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-24 06:17:07" id="2459" opendate="2011-05-22 08:46:11" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>GWT Addon does not support multiple modules</summary>
+			
+			
+			<description>If a project has more than one GWT module file (i.e. ApplicationScaffold.gwt.xml and HelloWorld.gwt.xml), Roo fails to parse any of them.  Any entities created afterwards are ignored by the GWT Addon.  In Roo 1.1.4.RELEASE, the shell gives the message ...
+&quot;GWT module&amp;amp;apos;s gwt.xml file not found; cannot continue&quot;
+In 1.1.4.SNAPSHOT, the shell currently fails to give any failure message.
+This is unacceptable for many typical uses of Roo.  For instance, during development I create my own GWT Module for my application, but leave the ApplicationScaffold module around to help out with debugging during development.  I never deploy it to production, but it is certainly nice to have around!
+See comments for a proposed patch.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtTypeServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtTypeService.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtMetadataProviderImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depend">2445</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-25 21:38:44" id="2465" opendate="2011-05-24 23:50:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DBRE only generates welcome page</summary>
+			
+			
+			<description>I have an existing Oracle DB and try the DBRE with Roo Version 1.1.3. It works!
+With version 1.1.4 the command &amp;amp;apos;database reverse engineer --schema ... --includeNonPortableAttributes&amp;amp;apos; creates the domain model but the command
+&amp;amp;apos;controller all --package ~.web&amp;amp;apos; only creates the welcome page. The menu.jspx and the Web UI for the entities are missing.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspMetadataListener.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.converter.ConversionServiceMetadataProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-29 16:39:22" id="2473" opendate="2011-05-26 17:59:21" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fields marked with --sizeMin don&amp;apos;t always have &quot;required&quot; in prompt  </summary>
+			
+			
+			<description>To replicate:
+
+Run clinic.roo
+Go to the &quot;Create new Owner&quot; page
+Click into the &quot;Email&quot; field; note that the prompt says &quot;Enter Email&quot;
+Submit the form; the email field displays the error &quot;size must be between 6 and 30&quot;
+
+If the form won&amp;amp;apos;t submit without an email addresses entered, then the prompt for that field should say &quot;Enter Email (required)&quot;.
+The workaround is to add a JPA @NotNull annotation to the relevant entity field; the MVC addon will then update the relevant JSPX files by adding required=&quot;true&quot; to that field. However @NotNull is a persistence-related annotation, not a validation/UI annotation. The presence of the JSR-303 @SizeMin annotation should be enough for the MVC addon to mark the field as required.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspViewManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-01 00:29:34" id="2480" opendate="2011-05-31 06:58:07" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Dynamic Finders - ITDs, controllers, views do not get generated when a table has a version column</summary>
+			
+			
+			<description>1.  Create a table that has a version column, ID, and at least one additional column
+2.  Setup persistence
+3.  Use database reverse engineer to generate the entity
+4.  Use controller all --package ~.web to generate the controllers
+5.  Use focus --class ~domain.TestRoo
+6.  finder list
+7.  finder add --finderName findTestRooByIntTxnDescEquals
+Results from the above:  For steps 1- 4, Roo will generate the TestRoo.java, ITD, and controllers.  In step 7, Roo will modify only TestRoo.java by adding the finder name.
+Now delete the version table and issue: database reverse engineer and issue step 7 again.  Roo will now modify TestRoo.java, generate the ITD, and modify the controllers as expected.
+Below is the sql to generate the table:
+CREATE
+    TABLE TEST_ROO    (
+        ID BIGINT NOT NULL,
+        VERSION INTEGER,
+        INTERNAL_TXN_CODE SMALLINT NOT NULL,
+        INT_TXN_DESC VARCHAR(255),
+        EFFECTIVE_DATE DATE NOT NULL,
+        PRIMARY KEY (ID),
+        UNIQUE (INTERNAL_TXN_CODE)
+    )</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.mvc.WebScaffoldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.finder.WebFinderMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.json.WebJsonMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.test.IntegrationTestMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.details.WebMetadataServiceImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-01 02:08:59" id="2481" opendate="2011-05-31 23:21:57" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Two unrelated classes synchronise on same Boolean constant</summary>
+			
+			
+			<description>These two classes use the same instance of the Boolean class (i.e. Boolean.TRUE) as their &quot;lock&quot; synchronisation field:
+
+org.springframework.roo.classpath.scanner.MemberDetailsScannerImpl
+org.springframework.roo.file.monitor.polling.PollingFileMonitorService
+
+This inadvertent coupling of two unrelated classes could lead to unresponsiveness and possible deadlock.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.file.monitor.polling.PollingFileMonitorService.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.scanner.MemberDetailsScannerImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-01 02:40:32" id="2483" opendate="2011-06-01 02:25:14" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SolrUtils returns incorrect suffix for java.util.Calendar fields</summary>
+			
+			
+			<description>The intent of the following line in SolrUtils is clearly to return &quot;_dt&quot; for Calendar fields:
+
+
+
+
+
+
+} else if (type.equals(new JavaType(&quot;java.util.Date&quot;)) || type.equals(&quot;java.util.Calendar&quot;)) {
+
+
+
+
+	return &quot;_dt&quot;;
+
+
+
+
+} else {
+
+
+
+
+	return &quot;_t&quot;;
+
+
+
+
+}
+
+
+
+
+
+
+However because comparing the type (an instance of JavaType) to the literal String &quot;java.util.Calendar&quot; will never return true, any Calendar fields will fall through to the else clause and return &quot;_t&quot; instead of &quot;_dt&quot;.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.solr.SolrUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-06 23:52:23" id="2488" opendate="2011-06-06 23:32:48" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NPE in thread &quot;Spring Roo RooBot Add-In Index Eager Download&quot;</summary>
+			
+			
+			<description>To re-create:
+
+Create a script app.roo like so:
+
+
+
+
+
+
+project --topLevelPackage com.foo
+
+
+
+
+persistence setup --provider HIBERNATE --database HYPERSONIC_IN_MEMORY
+
+
+
+
+entity --class ~.Foo --testAutomatically
+
+
+
+
+field string --fieldName name
+
+
+
+
+
+
+From the bash prompt, run &quot;roo.sh script app.roo&quot;
+
+Roo emits the following output:
+
+
+
+
+
+
+    ____  ____  ____  
+
+
+
+
+   / __ \/ __ \/ __ \ 
+
+
+
+
+  / /_/ / / / / / / / 
+
+
+
+
+ / _, _/ /_/ / /_/ /  
+
+
+
+
+/_/ |_|\____/\____/    1.1.4.RELEASE [rev f787ce7]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Welcome to Spring Roo. For assistance press TAB or type &quot;hint&quot; then hit ENTER.
+
+
+
+
+project --topLevelPackage com.foo
+
+
+
+
+Created ROOT/pom.xml
+
+
+
+
+Created SRC_MAIN_JAVA                                                                                                                                                        Please wait - still loading
+
+
+
+
+Created SRC_MAIN_RESOURCES
+
+
+
+
+Created SRC_TEST_JAVA                                                                                                                                                        Please wait - still loading
+
+
+
+
+Created SRC_TEST_RESOURCES
+
+
+
+
+Created SRC_MAIN_WEBAPP
+
+
+
+
+Created SRC_MAIN_RESOURCES/META-INF/spring
+
+
+
+
+Created SRC_MAIN_RESOURCES/log4j.properties
+
+
+
+
+Created SRC_MAIN_RESOURCES/META-INF/spring/applicationContext.xml
+
+
+
+
+persistence setup --provider HIBERNATE --database HYPERSONIC_IN_MEMORY                                                                                                       Please wait - still loading
+
+
+
+
+Created SRC_MAIN_RESOURCES/META-INF/spring/database.properties
+
+
+
+
+Updated ROOT/pom.xml [added dependencies org.hsqldb:hsqldb:1.8.0.10, org.hibernate:hibernate-core:3.6.3.Final, org.hibernate:hibernate-entitymanager:3.6.3.Final, org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.0.Final, org.hibernate:hibernate-validator:4.1.0.Final, javax.validation:validation-api:1.0.0.GA, cglib:cglib-nodep:2.2, javax.transaction:jta:1.1, o    Please wait - still loading${spring.version}, org.springframework:spring-orm:${spring.version}, commons-pool:commons-pool:1.5.4, commons-dbcp:commons-dbcp:1.3; added repository https://repository.ories/releases]                                                                                                                                                          Downloaded 0% of roobot.xml.zip
+
+
+
+
+Updated SRC_MAIN_RESOURCES/META-INF/spring/applicationContext.xml
+
+
+
+
+Created SRC_MAIN_RESOURCES/META-INF/persistence.xml
+
+
+
+
+entity --class ~.Foo --testAutomatically
+
+
+
+
+Created SRC_MAIN_JAVA/com/foo
+
+
+
+
+Created SRC_MAIN_JAVA/com/foo/Foo.java
+
+
+
+
+Created SRC_TEST_JAVA/com/foo
+
+
+
+
+Created SRC_TEST_JAVA/com/foo/FooDataOnDemand.java                                                                                                                       Downloaded 0% of roobot.xml.zip
+
+
+
+
+Created SRC_TEST_JAVA/com/foo/FooIntegrationTest.java
+
+
+
+
+Created SRC_MAIN_JAVA/com/foo/Foo_Roo_Configurable.aj
+
+
+
+
+Created SRC_MAIN_JAVA/com/foo/Foo_Roo_Entity.aj
+
+
+
+
+Created SRC_MAIN_JAVA/com/foo/Foo_Roo_ToString.aj
+
+
+
+
+Created SRC_TEST_JAVA/com/foo/FooDataOnDemand_Roo_Configurable.aj
+
+
+
+
+Created SRC_TEST_JAVA/com/foo/FooDataOnDemand_Roo_DataOnDemand.aj
+
+
+
+
+Created SRC_TEST_JAVA/com/foo/FooIntegrationTest_Roo_Configurable.aj
+
+
+
+
+Created SRC_TEST_JAVA/com/foo/FooIntegrationTest_Roo_IntegrationTest.aj                                                                                                  Downloaded 0% of roobot.xml.zip
+
+
+
+
+field string --fieldName name
+
+
+
+
+Updated SRC_MAIN_JAVA/com/foo/Foo.java
+
+
+
+
+Created SRC_MAIN_JAVA/com/foo/Foo_Roo_JavaBean.aj
+
+
+
+
+Updated SRC_TEST_JAVA/com/foo/FooDataOnDemand_Roo_DataOnDemand.aj
+
+
+
+
+Updated SRC_MAIN_JAVA/com/foo/Foo_Roo_ToString.aj
+
+
+
+
+Script required 2 second(s) to execute
+
+
+
+
+Exception in thread &quot;Spring Roo RooBot Add-In Index Eager Download&quot; java.lang.NullPointerException
+
+
+
+
+	at org.apache.felix.scr.impl.manager.ComponentContextImpl.getBundleContext(ComponentContextImpl.java:89)
+
+
+
+
+	at org.springframework.roo.addon.roobot.client.AddOnRooBotOperationsImpl.getUpgradableBundles(AddOnRooBotOperationsImpl.java:784)
+
+
+
+
+	at org.springframework.roo.addon.roobot.client.AddOnRooBotOperationsImpl.printAddonStats(AddOnRooBotOperationsImpl.java:675)                                     Downloaded 0% of roobot.xml.zip
+
+
+
+
+	at org.springframework.roo.addon.roobot.client.AddOnRooBotOperationsImpl.populateBundleCache(AddOnRooBotOperationsImpl.java:667)
+
+
+
+
+	at org.springframework.roo.addon.roobot.client.AddOnRooBotOperationsImpl.access$100(AddOnRooBotOperationsImpl.java:59)
+
+
+
+
+	at org.springframework.roo.addon.roobot.client.AddOnRooBotOperationsImpl$1.run(AddOnRooBotOperationsImpl.java:110)
+
+
+
+
+	at java.lang.Thread.run(Thread.java:680)
+
+
+
+
+
+
+After clearing out the project directory and running that command again, the problem failed to recur.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.roobot.client.AddOnRooBotOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2535</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-07 18:38:48" id="2490" opendate="2011-06-07 18:26:17" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NPE in integration test addon when changing name of flush method</summary>
+			
+			
+			<description>Upon changing the name of an entity&amp;amp;apos;s flush method via the &quot;flushMethod&quot; attribute of its @RooEntity annotation, the Roo shell can display this message:
+
+
+
+
+
+
+NullPointerException at org.springframework.roo.addon.test.IntegrationTestMetadata.getPersistMethodTest(IntegrationTestMetadata.java:449)
+
+
+
+
+
+
+This happens because the getPersistMethodTest() method doesn&amp;amp;apos;t check whether the flush method is null before using it. It might be null because of a timing error whereby the annotation specifies a new flush method name but the entity&amp;amp;apos;s Xxx_Roo_Entity.aj ITD hasn&amp;amp;apos;t been rebuilt yet and therefore still introduces that method using its previous name.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.test.IntegrationTestMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-08 18:16:19" id="2450" opendate="2011-05-18 19:32:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>tilesViewResolver bean missing in web flow creation</summary>
+			
+			
+			<description>After creating a new roo project and running &amp;amp;apos;web flow&amp;amp;apos;, I tried to deploy to tomcat but I receive the following Error:
+Error creating bean with name &amp;amp;apos;mvcViewFactoryCreator&amp;amp;apos; defined in ServletContext resource [/WEB-INF/spring/webflow-config.xml]: Cannot resolve reference to bean &amp;amp;apos;tilesViewResolver&amp;amp;apos; while setting bean property &amp;amp;apos;viewResolvers&amp;amp;apos;; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No bean named &amp;amp;apos;tilesViewResolver&amp;amp;apos; is defined</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.flow.WebFlowOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-09 01:38:37" id="2494" opendate="2011-06-09 01:35:35" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Conversion service ITD not updated when a previously deleted controller is created again</summary>
+			
+			
+			<description>After the @RooWebScaffold annotation is added back to a controller class again, the conversion service ITD is not updated until the Roo shell is restarted.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.converter.ConversionServiceMetadataProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-09 15:24:16" id="2496" opendate="2011-06-09 02:54:06" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Do not allow creation of DataOnDemand class for abstract entities</summary>
+			
+			
+			<description>Related to https://jira.springsource.org/browse/ROO-321, you can define a DataOnDemand class that is based on an abstract entity.  This should not be allowed as it won&amp;amp;apos;t compile.
+Example:
+
+
+
+
+
+
+entity --class ~.model.Foo
+
+
+
+
+dod --entity ~.model.Foo
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-12 04:48:14" id="2498" opendate="2011-06-09 09:40:18" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Cannot remove fields. Missing flush() in org.springframework.roo.classpath.javaparser.JavaParserMutableClassOrInterfaceTypeDetails.removeField  ?</summary>
+			
+			
+			<description>I tried to remove a field from a class by calling removeField on MutableClassOrInterfaceTypeDetails.
+But the field does not get deleted at all.
+Maybe the reason is a missing call to flush() in  JavaParserMutableClassOrInterfaceTypeDetails.removeField   ?</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserMutableClassOrInterfaceTypeDetails.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-14 19:32:21" id="2506" opendate="2011-06-13 20:33:53" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ItdTypeDetailsBuilder requires abstract methods to have a body</summary>
+			
+			
+			<description>o.s.r.classpath.details.ItdTypeDetailsBuilder.onAddMethod(MethodMetadataBuilder) requires the passed-in method builder to specify a method body, which is incorrect for abstract methods (e.g. those being introduced into an interface).
+This bug only affects developers of addons that generate an ITD that introduces an abstract method.
+The workaround is to add a dummy body as follows:
+
+
+
+
+
+
+MethodMetadataBuilder methodBuilder = ... // obtain or create as normal (for an abstract method)
+
+
+
+
+methodBuilder.getBodyBuilder().appendFormalLine(&quot;anything&quot;); // this line will not appear in the generated ITD, as the method is abstract
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceInterfaceMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.MethodMetadataBuilder.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.MemberFindingUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtTypeServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.AbstractMemberHoldingTypeDetailsBuilder.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.ItdTypeDetailsBuilder.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-14 22:04:16" id="2505" opendate="2011-06-13 01:01:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>when use &quot;json add&quot;,json controller have wrong inner variable name in for loop</summary>
+			
+			
+			<description>when user json add,web controller aj generated thatlook at the color red content. object name the same as the Class name.
+@RequestMapping(value = &quot;/jsonArray&quot;, method = RequestMethod.PUT, headers = &quot;Accept=application/json&quot;)
+    public ResponseEntity&amp;lt;String&amp;gt; TAdController.updateFromJsonArray(@RequestBody String json) {
+        HttpHeaders headers= new HttpHeaders();
+        headers.add(&quot;Content-Type&quot;, &quot;application/text&quot;);
+        for ( TAd TAd : TAd.fromJsonArrayToTAds(json)) {
+            if (TAd.merge() == null) 
+{
+                return new ResponseEntity&amp;lt;String&amp;gt;(headers, HttpStatus.NOT_FOUND);
+            }
+        }
+        return new ResponseEntity&amp;lt;String&amp;gt;(headers, HttpStatus.OK);
+    }</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.mvc.WebScaffoldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.json.WebJsonMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-25 18:18:55" id="2523" opendate="2011-06-25 17:43:10" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Integration tests fail when column is unique and field length is greater than column length</summary>
+			
+			
+			<description>When a field, for example, is called &quot;registration&quot;  size restriction and unique constraints are placed on field, as like here:
+
+
+
+
+
+
+    @NotNull
+
+
+
+
+    @Column(unique = true)
+
+
+
+
+    @Size(min = 8, max = 8)
+
+
+
+
+    private String registration;
+
+
+
+
+
+
+unit tests will fail as the field initializer is truncated, but is not unique in all cases</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-28 16:44:04" id="2535" opendate="2011-06-28 14:13:47" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>exception on shutdown</summary>
+			
+			
+			<description>While debugging a problem in Roo I noticed this exception on the console: 
+Exception in thread &quot;Spring Roo RooBot Add-In Index Eager Download&quot; java.lang.NullPointerException
+	at org.apache.felix.scr.impl.manager.ComponentContextImpl.getBundleContext(ComponentContextImpl.java:89)
+	at org.springframework.roo.addon.roobot.client.AddOnRooBotOperationsImpl.getUpgradableBundles(AddOnRooBotOperationsImpl.java:799)
+	at org.springframework.roo.addon.roobot.client.AddOnRooBotOperationsImpl.printAddonStats(AddOnRooBotOperationsImpl.java:687)
+	at org.springframework.roo.addon.roobot.client.AddOnRooBotOperationsImpl.populateBundleCache(AddOnRooBotOperationsImpl.java:679)
+	at org.springframework.roo.addon.roobot.client.AddOnRooBotOperationsImpl.access$100(AddOnRooBotOperationsImpl.java:59)
+	at org.springframework.roo.addon.roobot.client.AddOnRooBotOperationsImpl$1.run(AddOnRooBotOperationsImpl.java:110)
+	at java.lang.Thread.run(Thread.java:595)
+It happens rarely when exiting the shell shortly after starting Roo and is difficult to reproduce.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.roobot.client.AddOnRooBotOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2488</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-28 18:35:13" id="2528" opendate="2011-06-27 02:06:00" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Two controllers over an entity error because same request mapping</summary>
+			
+			
+			<description>Creating more than one controller over the same entity causes startup errors because they are created with the same base request mapping name:
+ @RequestMapping(&quot;/owners&quot;)
+To reproduce, execute next command after clinic.roo script:
+ web mvc scaffold --class ~.web.OtherOwnerController --backingType ~.domain.Owner
+On startup:
+
+
+
+
+
+
+2011-06-27 11:03:09,850 [main] ERROR org.springframework.web.servlet.DispatcherServlet - Context initialization failed
+
+
+
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;amp;apos;org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping#0&amp;amp;apos;: Initialization of bean failed; nested exception is java.lang.IllegalStateException: Cannot map handler &amp;amp;apos;ownerController&amp;amp;apos; to URL path [/owners/{id}]: There is already handler of type [class com.springsource.petclinic.web.OtherOwnerController] mapped.
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.ControllerOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-28 19:13:39" id="2534" opendate="2011-06-28 06:18:38" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>The default @DateTimeFormat with  &quot;S-&quot; has MM/dd/yy pattern leading to a bug like Y2K</summary>
+			
+			
+			<description>as stated from java docs the &quot;S-&quot; patter corresponds to something like MM/dd/yy for I think all locales.
+this combined with the generated widget constructed with the same pattern lead to a Y2K like bug.
+inserting 01/01/1911 will be displayed correctly on the widget but posted as 01/01/11 and translated as 01/01/2011 on the server.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.FieldCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.IdentifierMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.details.WebMetadataServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Relate">3393</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-28 23:42:38" id="2539" opendate="2011-06-28 22:43:11" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DataOnDemand attempts to create identifier class by creating non-existent mutator methods instead of using parmeterized constructor</summary>
+			
+			
+			<description>It appears the composite key support offered in DoD does not correctly create the identifier class instance. The identifier class does not (and should not) provide public mutators for its fields however DoD is creating code that calls these (non-existent) methods. It should call the constructor instead.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-30 15:19:47" id="2541" opendate="2011-06-29 22:36:20" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Validation constraints not considered for fields of @Embeddable classes in DataOnDemand</summary>
+			
+			
+			<description>Only fields of the entity have their validation constraint annotations considered in DoD. Fields of embeddable classes also require their validation constraints to be honoured as well.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.EmbeddedHolder.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadataProviderImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-02 07:01:10" id="2487" opendate="2011-06-06 23:12:51" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Existing ITDs not always deleted when metadata providers return null</summary>
+			
+			
+			<description>One instance of this bug is as follows:
+
+Create a project like so:
+
+
+
+
+
+
+project --topLevelPackage com.foo
+
+
+
+
+persistence setup --provider HIBERNATE --database HYPERSONIC_IN_MEMORY
+
+
+
+
+entity --class ~.Foo --testAutomatically
+
+
+
+
+field string --fieldName name
+
+
+
+
+
+
+The following files should (correctly) exist in src/test/java/com/foo:
+	
+FooDataOnDemand.java
+FooDataOnDemand_Roo_DataOnDemand.aj (the ITD)
+
+
+Modify the Foo entity&amp;amp;apos;s @RooEntity annotation with findEntriesMethod=&quot;&quot;; Roo should delete the above ITD (because it will no longer compile), however it does not.
+
+The workaround is to delete the ITD manually.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.test.IntegrationTestMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.mvc.WebScaffoldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.finder.WebFinderMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.json.WebJsonMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.metadata.AbstractHashCodeTrackingMetadataNotifier.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreDatabaseListenerImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Relate">2549</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-03 20:45:23" id="2533" opendate="2011-06-28 04:52:49" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Problems with Cloud Foundry Addon in 1.1.4</summary>
+			
+			
+			<description>There are several problems with the Cloud Foundry Addon in Spring Roo 1.1.4
+Install with 
+ addon install bundle --bundleSymbolicName org.springframework.roo.addon.cloud.foundry
+fails and results in:
+NullPointerException at org.springframework.roo.addon.roobot.client.AddOnR ooBotOperationsImpl.installOrUpgradeAddOn(AddOnRoo BotOperation)
+After advice I used this command:
+addon install bundle --bundleSymbolicName org.springframework.roo.addon.cloud.foundry;1.1.4.RELEASE
+This works for installing the addon but fails then on deploy command:
+roo&amp;gt; cloud foundry deploy --appName wedding1234 --path CREATE
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Building wedding
+[INFO] task-segment: [clean, package]
+[INFO] ------------------------------------------------------------------------
+...
+[INFO] Webapp assembled in [1130 msecs]
+[INFO] Building war: D:\jens\transport\workspace-roo\wedding\target\wedding-0.1.
+0.BUILD-SNAPSHOT.war
+[WARNING] Warning: selected war files include a WEB-INF/web.xml which will be ig
+nored
+(webxml attribute is missing from war task, or ignoreWebxml attribute is specifi
+ed as &amp;amp;apos;true&amp;amp;apos;)
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESSFUL
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 12 seconds
+[INFO] Finished at: Mon Jun 27 15:42:28 CEST 2011
+[INFO] Final Memory: 58M/509M
+[INFO] ------------------------------------------------------------------------
+NullPointerException at org.springframework.roo.addon.cloud.foundry.CloudF oundry
+Commands.push(CloudFoundryCommands.java:114)
+Alternatively I tried:
+roo&amp;gt; cloud foundry deploy --appName wedding1234 --path target/wedding-0.1.0.BUIL
+D-SNAPSHOT.war
+NullPointerException at java.io.File.&amp;lt;init&amp;gt;(File.java:222)
+(The file target/wedding-0.1.0.BUILD-SNAPSHOT.war exists and it also happens with other samples from 1.1.4)
+Please see also the discussion thread here:
+http://forum.springsource.org/showthread.php?111154-cannot-install-cloud-foundry-addon&amp;amp;s=bd01dbd11f8149f7f4fd054152d15fb3
+Creating a JIRA as suggested.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.CloudFoundrySessionImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.converter.CloudDeployableFileConverter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.CloudFoundryOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.converter.ServiceConfigurationConverter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.converter.CloudServiceConverter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.converter.CloudControllerUrlConverter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.CloudFoundryCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.converter.CloudFileConverter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.UaaAwareAppCloudClient.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.converter.CloudLoginEmailConverter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.converter.ConverterUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.converter.CloudAppConverter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.converter.CloudUriConverter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.converter.CloudAppMemoryOptionConverter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.CloudFoundryOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.cloud.foundry.CloudFoundrySession.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-04 16:46:36" id="2550" opendate="2011-07-04 05:35:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>@mvc controller with custom mapping</summary>
+			
+			
+			<description>Hi,
+Basically, the issue is that an extra / is shown in the documentation for web mvc controller.
+Roo documentation for web mvc controller shows: optional --preferredMapping: Indicates a specific request mapping path for this controller (eg /foo/); no default value
+When creating a custom controller web mvc controller --class ~.admin.LoginController --preferredMapping /admin/login/ (notice the mapping ends with a slash, just as in the documentation), Roo generates double slashes in various places, such as in the controller, *.tagx and views.xml files. Example:
+
+
+
+
+
+
+    @RequestMapping
+
+
+
+
+    public String index() {
+
+
+
+
+        return &quot;admin/login//index&quot;;
+
+
+
+
+    }
+
+
+
+
+}}
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-04 17:04:29" id="2549" opendate="2011-07-04 05:32:12" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DoD doesn&amp;apos;t fail gracefully or resolve properly once metadata has stabilized </summary>
+			
+			
+			<description>When declaring the id field in the governor the following exception is thrown:
+
+
+
+
+
+
+[Spring Roo Process Manager Background Polling Thread] java.lang.IllegalArgumentException: Identifier accessor method required
+
+
+
+
+java.lang.IllegalStateException: java.lang.IllegalArgumentException: Identifier accessor method required
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.getInternal(DefaultMetadataService.java:178)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.get(DefaultMetadataService.java:81)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.get(DefaultMetadataService.java:216)
+
+
+
+
+   at org.springframework.roo.addon.test.IntegrationTestMetadataProviderImpl.getMetadata(IntegrationTestMetadataProviderImpl.java:69)
+
+
+
+
+   at org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.get(AbstractItdMetadataProvider.java:269)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.getInternal(DefaultMetadataService.java:147)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.get(DefaultMetadataService.java:81)
+
+
+
+
+   at org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.notify(AbstractItdMetadataProvider.java:147)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.notify(DefaultMetadataService.java:236)
+
+
+
+
+   at org.springframework.roo.metadata.internal.DefaultMetadataDependencyRegistry.notifyDownstream(DefaultMetadataDependencyRegistry.java:191)
+
+
+
+
+   at org.springframework.roo.classpath.javaparser.JavaParserMetadataProvider.onFileEvent(JavaParserMetadataProvider.java:131)
+
+
+
+
+   at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.publish(PollingFileMonitorService.java:330)
+
+
+
+
+   at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.scanAll(PollingFileMonitorService.java:304)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager.doTransactionally(DefaultProcessManager.java:178)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager.backgroundPoll(DefaultProcessManager.java:125)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager.timerBasedPoll(DefaultProcessManager.java:240)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager$2.run(DefaultProcessManager.java:68)
+
+
+
+
+   at java.lang.Thread.run(Thread.java:680)
+
+
+
+
+Caused by: java.lang.IllegalArgumentException: Identifier accessor method required
+
+
+
+
+   at org.springframework.roo.support.util.Assert.notNull(Assert.java:112)
+
+
+
+
+   at org.springframework.roo.addon.dod.DataOnDemandMetadata.&amp;lt;init&amp;gt;(DataOnDemandMetadata.java:77)
+
+
+
+
+   at org.springframework.roo.addon.dod.DataOnDemandMetadataProviderImpl.getMetadata(DataOnDemandMetadataProviderImpl.java:127)
+
+
+
+
+   at org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.get(AbstractItdMetadataProvider.java:269)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.getInternal(DefaultMetadataService.java:147)
+
+
+
+
+   ... 17 more
+
+
+
+
+
+
+The issue can be replicated by running the expenses script and pushing in the id field using the code below, closing the shell, launching the shell again, and commenting out the pushed in id field.
+
+
+
+
+
+
+@javax.persistence.Id
+
+
+
+
+@GeneratedValue(strategy = GenerationType.AUTO)
+
+
+
+
+@Column(name = &quot;id&quot;)
+
+
+
+
+private Long id;
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.test.IntegrationTestMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.test.IntegrationTestMetadataProviderImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Relate">2487</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-05 18:05:17" id="2553" opendate="2011-07-05 17:42:14" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Switching persistence providers from a GAE-based app to a normal JPA app does not clean up special provisions in JavaBean artifacts</summary>
+			
+			
+			<description>Switching persistence providers from a GAE-based app to a normal JPA app does not clean up special provisions in JavaBean artifacts.
+To replicate, create a simple app with GAE/DN persistence and an entity then invoke the peristence setup command and use EclipseLink/HSQL and attempt to compile the app.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.javabean.JavaBeanMetadataProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-05 20:18:58" id="2554" opendate="2011-07-05 20:12:12" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Unnecessary rewriting of DoD ITD on member push in</summary>
+			
+			
+			<description>When pushing in a member of a watched entity the corresponding DoD ITD is rewritten despite there being no material change.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.NaturalOrderComparator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-05 20:20:12" id="2555" opendate="2011-07-05 20:17:12" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Pushing in a member into an entity which is monitored by DoD causes an exception</summary>
+			
+			
+			<description>For example pushing in setUsername in the stock expenses project causes the following:
+
+
+
+
+
+
+java.lang.IllegalArgumentException: Method &amp;amp;apos;setUserName&amp;amp;apos; already defined in ITD (ITD target &amp;amp;apos;org.springsource.roo.extrack.server.domain.EmployeeDataOnDemand_Roo_DataOnDemand&amp;amp;apos;
+
+
+
+
+java.lang.IllegalStateException: java.lang.IllegalArgumentException: Method &amp;amp;apos;setUserName&amp;amp;apos; already defined in ITD (ITD target &amp;amp;apos;org.springsource.roo.extrack.server.domain.EmployeeDataOnDemand_Roo_DataOnDemand&amp;amp;apos;
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.getInternal(DefaultMetadataService.java:178)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.get(DefaultMetadataService.java:81)                                                       
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.get(DefaultMetadataService.java:216)
+
+
+
+
+   at org.springframework.roo.addon.test.IntegrationTestMetadataProviderImpl.getMetadata(IntegrationTestMetadataProviderImpl.java:69)
+
+
+
+
+   at org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.get(AbstractItdMetadataProvider.java:269)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.getInternal(DefaultMetadataService.java:147)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.get(DefaultMetadataService.java:81)
+
+
+
+
+   at org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.notify(AbstractItdMetadataProvider.java:147)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.notify(DefaultMetadataService.java:236)
+
+
+
+
+   at org.springframework.roo.metadata.internal.DefaultMetadataDependencyRegistry.notifyDownstream(DefaultMetadataDependencyRegistry.java:191)
+
+
+
+
+   at org.springframework.roo.classpath.javaparser.JavaParserMetadataProvider.onFileEvent(JavaParserMetadataProvider.java:131)
+
+
+
+
+   at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.publish(PollingFileMonitorService.java:330)
+
+
+
+
+   at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.scanAll(PollingFileMonitorService.java:304)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager.doTransactionally(DefaultProcessManager.java:178)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager.backgroundPoll(DefaultProcessManager.java:125)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager.timerBasedPoll(DefaultProcessManager.java:240)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager$2.run(DefaultProcessManager.java:68)
+
+
+
+
+   at java.lang.Thread.run(Thread.java:680)
+
+
+
+
+Caused by: java.lang.IllegalArgumentException: Method &amp;amp;apos;setUserName&amp;amp;apos; already defined in ITD (ITD target &amp;amp;apos;org.springsource.roo.extrack.server.domain.EmployeeDataOnDemand_Roo_DataOnDemand&amp;amp;apos;
+
+
+
+
+   at org.springframework.roo.support.util.Assert.isNull(Assert.java:89)
+
+
+
+
+   at org.springframework.roo.classpath.details.ItdTypeDetailsBuilder.onAddMethod(ItdTypeDetailsBuilder.java:100)
+
+
+
+
+   at org.springframework.roo.classpath.details.AbstractMemberHoldingTypeDetailsBuilder.addMethod(AbstractMemberHoldingTypeDetailsBuilder.java:183)
+
+
+
+
+   at org.springframework.roo.classpath.details.AbstractMemberHoldingTypeDetailsBuilder.addMethod(AbstractMemberHoldingTypeDetailsBuilder.java:207)
+
+
+
+
+   at org.springframework.roo.addon.dod.DataOnDemandMetadata.addFieldMutatorMethodsToBuilder(DataOnDemandMetadata.java:426)
+
+
+
+
+   at org.springframework.roo.addon.dod.DataOnDemandMetadata.&amp;lt;init&amp;gt;(DataOnDemandMetadata.java:120)
+
+
+
+
+   at org.springframework.roo.addon.dod.DataOnDemandMetadataProviderImpl.getMetadata(DataOnDemandMetadataProviderImpl.java:130)
+
+
+
+
+   at org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.get(AbstractItdMetadataProvider.java:269)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.getInternal(DefaultMetadataService.java:147)
+
+
+
+
+   ... 17 more
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.NaturalOrderComparator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-05 22:41:36" id="2556" opendate="2011-07-05 22:25:15" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Calendar fields need to use java.util.Date for Solr indexing</summary>
+			
+			
+			<description>For indexing purposes the .getTime() method should be called on Calendar field types.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.solr.SolrMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-06 18:14:38" id="2560" opendate="2011-07-06 09:01:48" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[DataNucleus] Introduced findXxx(id) method throws EmptyResultDataAccessException instead of returning null when no data is found</summary>
+			
+			
+			<description>The following script:
+
+
+
+
+
+
+domain.roo
+
+
+
+
+
+
+persistence setup --provider DATANUCLEUS --database GOOGLE_APP_ENGINE --applicationId myapp
+
+
+
+
+entity --class ~.server.domain.DomainObject --testAutomatically
+
+
+
+
+field string --fieldName displayName --notNull
+
+
+
+
+web gwt setup
+
+
+
+
+
+
+will generate this &quot;find by ID&quot; method:
+
+
+
+
+
+
+DomainObject_Roo_Entity.aj
+
+
+
+
+
+
+@Transactional
+
+
+
+
+public static DomainObject DomainObject.findDomainObject(Long id) {
+
+
+
+
+    if (id == null) return null;
+
+
+
+
+    try {
+
+
+
+
+        return (DomainObject) entityManager().createQuery(&quot;SELECT o FROM DomainObject o WHERE o.id = :id&quot;).setParameter(&quot;id&quot;, id).getSingleResult();
+
+
+
+
+    } catch (javax.persistence.NoResultException e) {
+
+
+
+
+        return null;
+
+
+
+
+    } 
+
+
+
+
+}
+
+
+
+
+
+
+If no row exists with that ID, JpaExceptionTranslatorAspect kicks in and translates the resulting javax.persistence.NoResultException into an org.springframework.dao.EmptyResultDataAccessException before it can be caught in the catch block, meaning that the finder throws the latter exception instead of returning null in that scenario.
+As evidence of this bug, the generated DomainObjectIntegrationTest.testRemove() method fails with an org.springframework.dao.EmptyResultDataAccessException (thrown from the final assert statement).</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-06 23:49:55" id="2563" opendate="2011-07-06 23:40:00" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Integration test ITD does not get updated when switching between GAE and relational DBs</summary>
+			
+			
+			<description>If the persistence is changed from a relational store to GAE for GWT projects, the integration test ITD is not refreshed, and vice versa</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.embedded.EmbeddedCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.embedded.provider.FinanceEmbeddedProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.test.IntegrationTestMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadataProviderImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-07 19:20:56" id="2562" opendate="2011-07-06 22:26:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Stock ticker chart doesn&amp;apos;t appear</summary>
+			
+			
+			<description>If you run this script:
+
+
+
+
+
+
+script clinic.roo
+
+
+
+
+web mvc embed finances --stockSymbol VMW
+
+
+
+
+
+
+... then the URL http://localhost:8080/petclinic/embed/finances displays an empty collapsible pane where the VMware stock price chart (shown here in non-embedded form) should be.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.embedded.provider.FinanceEmbeddedProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-07 19:28:31" id="2570" opendate="2011-07-07 19:26:52" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>recursiveAntMatch recurses on non-files not on directories</summary>
+			
+			
+			<description>The issues was discovered when running the expenses script fro a directory in the root of a Windows drive e.g. &quot;C:\expenses-test&quot;. Execution of the script failed due to &quot;C:\log.roo&quot; not being able to be found despite it not being in the project&amp;amp;apos;s root directory.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.file.monitor.polling.PollingFileMonitorService.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-11 16:08:22" id="2580" opendate="2011-07-11 13:56:01" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Member holding type details required</summary>
+			
+			
+			<description>I&amp;amp;apos;m working with spring roo 1.1.4 but I have a problem when I generate the model who is compound of several schemas. The spring roo console shows this:
+Foreign key table for foreign key &amp;amp;apos;update_by_table_in_another_schema__users&amp;amp;apos; in table &amp;amp;apos;users&amp;amp;apos; must not be null in determining a one-to-one relationship
+I have a user schema who has the table user, roles, roles_user and another business schema. In a table of my business schema I have a foreign key to table user of the users schema.
+I tested the &quot;database reverse enginner&quot; with only one schema and this created the model classes without problems.
+what Can I do? I have to work with only a schema
+Thanks</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.converter.SchemaConverter.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.dbre.model.TableBean.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.Table.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.Schema.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreTypeUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreDatabaseListenerImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.Database.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.DatabaseXmlUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.ForeignKey.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.DatabaseContentHandler.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.DbreModelServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.DbreModelService.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.model.DatabaseIntrospector.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">1408</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-25 18:37:38" id="2588" opendate="2011-07-14 00:09:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TypeLocationService does not detect types with annotations in project due to eager caching</summary>
+			
+			
+			<description>TypeLocationService.processTypesWithAnnotation() uses caching based on !fileMonitorService.isDirty(); (line 140 &amp;amp; 162). This leads to skipping of newly written types with the given annotation. I think this is because the file monitor service scans the file system once every 1000ms and if a Roo service invokes MemberFindingUtils.getAnnotationOfType(..) within that timespan it will not see the type because the fileMonitorService is not marked as dirty yet. Assigning to Alan to verify.
+</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.2.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.TypeLocationServiceImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-29 23:04:08" id="2585" opendate="2011-07-13 05:20:21" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&amp;apos;web mvc all&amp;apos; seems to have broken availability check</summary>
+			
+			
+			<description>I just noticed when doing a &amp;amp;apos;help&amp;amp;apos; that &amp;amp;apos;controller all&amp;amp;apos; has been deprecated in favor of &amp;amp;apos;web mvc all&amp;amp;apos;. However, when trying that command on a project that has persistency set up and an entity defined I&amp;amp;apos;m getting an error message stating that the command is not currently available. &amp;amp;apos;controller all&amp;amp;apos; works though, so it seems like there&amp;amp;apos;s a broken availability check for the new spring mvc version of the command. </description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.2.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.HintConverter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.HintCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.HintOperations.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.ControllerCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-31 18:13:03" id="2517" opendate="2011-06-20 17:53:18" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>GWT and test addons don&amp;apos;t support &quot;id&quot; domain suffix (i.e. Indonesia)</summary>
+			
+			
+			<description>If you create a project as follows:
+
+
+
+
+
+
+project --topLevelPackage id.foo
+
+
+
+
+persistence setup --database HYPERSONIC_IN_MEMORY --provider HIBERNATE
+
+
+
+
+entity --class ~.domain.Pizza
+
+
+
+
+field string --fieldName name
+
+
+
+
+gwt setup
+
+
+
+
+
+
+... the following Java file is generated:
+
+
+
+
+
+
+src/main/java/id/foo/client/managed/ui/PizzaDetailsView_Roo_Gwt.java
+
+
+
+
+
+
+// WARNING: DO NOT EDIT THIS FILE. THIS FILE IS MANAGED BY SPRING ROO.
+
+
+
+
+
+
+
+
+
+package id.co.foo.client.managed.ui;
+
+
+
+
+
+
+
+
+
+import com.google.gwt.core.client.GWT;
+
+
+
+
+import com.google.gwt.dom.client.SpanElement;
+
+
+
+
+import com.google.gwt.event.dom.client.ClickEvent;
+
+
+
+
+import com.google.gwt.event.dom.client.HasClickHandlers;
+
+
+
+
+import com.google.gwt.i18n.client.DateTimeFormat;
+
+
+
+
+import com.google.gwt.i18n.client.NumberFormat;
+
+
+
+
+import com.google.gwt.uibinder.client.UiBinder;
+
+
+
+
+import com.google.gwt.uibinder.client.UiField;
+
+
+
+
+import com.google.gwt.uibinder.client.UiHandler;
+
+
+
+
+import com.google.gwt.user.client.Window;
+
+
+
+
+import com.google.gwt.user.client.ui.Composite;
+
+
+
+
+import com.google.gwt.user.client.ui.HTMLPanel;
+
+
+
+
+import com.google.gwt.user.client.ui.Widget;
+
+
+
+
+import id.co.foo.client.managed.request.PizzaProxy;
+
+
+
+
+import id.co.foo.client.scaffold.place.ProxyDetailsView;
+
+
+
+
+import id.co.foo.client.scaffold.place.ProxyListView;
+
+
+
+
+
+
+
+
+
+public abstract class PizzaDetailsView_Roo_Gwt extends Composite implements ProxyDetailsView&amp;lt;PizzaProxy&amp;gt; {
+
+
+
+
+
+
+
+
+
+    @UiField
+
+
+
+
+    SpanElement id;
+
+
+
+
+
+
+
+
+
+    @UiField
+
+
+
+
+    SpanElement version;
+
+
+
+
+
+
+
+
+
+    @UiField
+
+
+
+
+    SpanElement name;
+
+
+
+
+
+
+
+
+
+    PizzaProxy proxy;
+
+
+
+
+
+
+
+
+
+    @UiField
+
+
+
+
+    SpanElement displayRenderer;
+
+
+
+
+
+
+
+
+
+    public void setValue(PizzaProxy proxy) {
+
+
+
+
+        this.proxy = proxy;
+
+
+
+
+        id.setInnerText(proxy.getId() == null ? &quot;&quot; : String.valueOf(proxy.getId()));
+
+
+
+
+        version.setInnerText(proxy.getVersion() == null ? &quot;&quot; : String.valueOf(proxy.getVersion()));
+
+
+
+
+        name.setInnerText(proxy.getName() == null ? &quot;&quot; : String.valueOf(proxy.getName()));
+
+
+
+
+        displayRenderer.setInnerText(id.co.foo.client.managed.ui.PizzaProxyRenderer.instance().render(proxy));
+
+
+
+
+    }
+
+
+
+
+}
+
+
+
+
+
+
+... in which the following line doesn&amp;amp;apos;t compile, because the &quot;id&quot; root package clashes with the ITD&amp;amp;apos;s &quot;id&quot; SpanElement field:
+
+
+
+
+
+
+displayRenderer.setInnerText(id.co.foo.client.managed.ui.PizzaProxyRenderer.instance().render(proxy));
+
+
+
+
+
+
+The workaround is to cut-and-paste the setValue method into the target Java class (in this example, PizzaDetailsView.java) and remove the package name as follows:
+
+
+
+
+
+
+PizzaDetailsView.java
+
+
+
+
+
+
+displayRenderer.setInnerText(PizzaProxyRenderer.instance().render(proxy));
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.5.RELEASE, 1.2.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.test.IntegrationTestMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtTemplateServiceImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-09-03 03:00:47" id="301" opendate="2009-10-18 21:34:28" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Choose between data access patterns</summary>
+			
+			
+			<description>At this time, the Aspect J generated aspects and entity classes follow the Active Record pattern. 
+It would be nice if we could choose between this pattern and Data Access Object, with or without Spring DaoSupport. The way to configure would be &quot;persistence setup ... --databaseAccessPattern ActiveRecord|DAO&quot;.</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.2.0.M1</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceLayerProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtFileManagerImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceLayerProviderTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.jpa.RepositoryJpaLayerProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.jpa.RepositoryJpaLayerProviderTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserTypeParsingService.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceClassMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.details.WebMetadataServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jsf.JsfManagedBeanMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityLayerProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.layers.LayerProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.entity.EntityLayerProviderTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.layers.LayerServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.layers.LayerService.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.jpa.RepositoryJpaAnnotationValuesTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.converter.ConversionServiceMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.jpa.RepositoryLayerMethodTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.test.IntegrationTestMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.email.MailOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.jline.osgi.JLineShellComponent.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.itd.AbstractItdTypeDetailsProvidingMetadataItem.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.converter.ConversionServiceMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.persistence.PersistenceMemberLocatorImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.test.IntegrationTestMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceInterfaceMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaLayerProviderTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.mvc.WebScaffoldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.details.JavaTypePersistenceMetadataDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.ClassOrInterfaceTypeDetailsBuilder.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.property.editor.EditorMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.solr.SolrJspMetadataListener.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.persistence.PersistenceMemberLocator.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.layers.MemberTypeAdditions.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.finder.WebFinderMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceClassMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaLayerProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.json.WebJsonMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.property.editor.EditorMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.mvc.WebScaffoldMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.finder.FinderOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.selenium.SeleniumOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.solr.SolrMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceInterfaceLocatorImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaLocatorImpl.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerCustomDataKeys.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.details.WebMetadataService.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.MemberTypeAdditions.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaLayerMethod.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerTypeMatcher.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerService.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.json.WebJsonMetadataProviderImpl.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.Priority.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerType.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.CoreLayerProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerAdapter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceLayerMethod.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceLayerMethodTest.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.MemberTypeAdditionsTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.TypeLocationServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.Identifier.java</file>
+			
+			
+			<file type="D">org.springframework.roo.classpath.persistence.PersistenceIdentifierLocatorImpl.java</file>
+			
+			
+			<file type="D">org.springframework.roo.classpath.persistence.PersistenceIdentifierLocator.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityLayerMethod.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityLayerMethodTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.serializable.SerializableMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryLayerMethodTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceAnnotationValues.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceInterfaceMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.RooService.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.repository.RepositoryLayerMethod.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityAnnotationValues.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaAnnotationValues.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RooRepositoryJpa.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.model.JavaSymbolName.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.solr.SolrMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserConstructorMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.annotations.ArrayAttributeValue.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.plural.PluralMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserFieldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.model.JavaType.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserMethodMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserClassOrInterfaceTypeDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.PhysicalTypeDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.PhysicalTypeIdentifier.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.PhysicalTypeIdentifierNamingUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.annotations.DefaultAnnotationMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserAnnotationMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.annotations.AnnotationAttributeValue.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.annotations.AnnotationMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.support.util.Pair.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaCommands.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.PersistenceMethod.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.LayerServiceImplTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.MemberHoldingTypeDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.DefaultItdTypeDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.DefaultClassOrInterfaceTypeDetails.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.Crud.java</file>
+			
+			
+			<file type="D">org.springframework.roo.project.layers.CrudKey.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.dao.DaoJpaLayerProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.dao.RooDaoJpa.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.dao.DaoJpaMetadataProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.dao.DaoJpaMetadata.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.dao.DaoJpaAnnotationValues.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.itd.ItdSourceFileComposer.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.LayerService.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.Crud.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.LayerProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.CrudKey.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.LayerServiceImpl.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.LayerUtils.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.MemberTypeAdditions.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.LayerAdapter.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.Priority.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.LayerType.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.service.ServiceMetadataProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.layers.service.ServiceMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.annotations.populator.AutoPopulationUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.RepositoryJpaOperationsImpl.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.dao.DaoJpaMetadata.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.repository.RepositoryJpaLayerProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.dao.RooDaoJpa.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.dao.DaoJpaAnnotationValues.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.dao.DaoJpaLayerProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.repository.RepositoryJpaMetadataProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.repository.RepositoryJpaMetadata.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.repository.RepositoryJpaAnnotationValues.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.repository.RooRepositoryJpa.java</file>
+			
+			
+			<file type="D">org.springframework.roo.layers.external.dao.DaoJpaMetadataProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depend">2197</link>
+			
+			
+			<link description="depends on" type="Depends">1372</link>
+			
+			
+			<link description="is depended on by" type="Depends">270</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">394</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">339</link>
+			
+			
+			<link description="relates to" type="Relate">2693</link>
+			
+			
+			<link description="is related to" type="Related">340</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-09-11 08:54:22" id="2597" opendate="2011-07-25 09:40:39" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Roo doesn&amp;apos;t hande @Id types different than long</summary>
+			
+			
+			<description>My example contains 3 very simple classes:
+//eu.oneview.core.server.domain.PersonProperty
+@RooJavaBean
+@RooToString
+@RooEntity
+@MappedSuperclass
+public abstract class PersonProperty {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Key						id;
+	@ManyToOne
+	private Person				person;
+	private String				strValue;
+	private Date					creationDate;
+//...
+}
+//eu.oneview.core.server.domain.Phone
+@RooJavaBean
+@RooToString
+@RooEntity
+public class Phone extends PersonProperty {
+}
+//eu.oneview.core.server.domain.Person
+@RooJavaBean
+@RooToString
+@RooEntity
+public class Person {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Key									key;
+	@OneToMany(cascade = CascadeType.ALL)
+	private Set&amp;lt;Phone&amp;gt;					phones		= new HashSet&amp;lt;Phone&amp;gt;();
+//...
+}
+the problematic code generated by Roo is on all phone methods, for example:
+//eu.oneview.core.server.domain.Person_Roo_JavaBean.aj
+// private Set&amp;lt;Key&amp;gt; Person.phonesKeys = new HashSet&amp;lt;Key&amp;gt;(); (is declared as an instance variable)
+    public void Person.setPhones(Set&amp;lt;Phone&amp;gt; phones) {
+        Set&amp;lt;eu.oneview.core.server.domain.Phone&amp;gt; localPhones = new HashSet&amp;lt;eu.oneview.core.server.domain.Phone&amp;gt;();
+        List&amp;lt;Long&amp;gt; longIds = new ArrayList&amp;lt;Long&amp;gt;();
+        for (Key key : phonesKeys) {
+            if (!longIds.contains(key.getId())) 
+{
+                longIds.add(key.getId());
+            }
+        }
+        for (Phone entity : phones) {
+            if (!longIds.contains(entity.getId())) 
+{
+                longIds.add(entity.getId());
+                phonesKeys.add(KeyFactory.createKey(Phone.class.getName(), entity.getId()));
+            }
+            localPhones.add(entity);
+        }
+        this.phones = localPhones;
+    }
+The problem resides in the assumption that ids are of type long:
+List&amp;lt;Long&amp;gt; longIds = new ArrayList&amp;lt;Long&amp;gt;();
+Whereas eu.oneview.core.server.domain.Phone_Roo_Entity.aj is generated correctly
+    @Transactional
+    public static Phone Phone.findPhone(Key id) {
+        if (id == null) return null;
+        try 
+{
+            return (Phone) entityManager().createQuery(&quot;SELECT o FROM Phone o WHERE o.id = :id&quot;).setParameter(&quot;id&quot;, id).getSingleResult();
+        }
+ catch (org.springframework.dao.EmptyResultDataAccessException e) 
+{
+            return null;
+        } catch (javax.persistence.NoResultException e) {            return null;        }
+    }
+the call in eu.oneview.core.server.domain.Person_Roo_JavaBean.aj is:
+Phone entity = Phone.findPhone(key.getId()); 
+instead of Phone entity = Phone.findPhone(key);
+And similar errors are all along the code. 
+When doing a &amp;amp;apos;gwt setup&amp;amp;apos;, proxies dont contain the method getId() at all because it&amp;amp;apos;s not in the supported types, this leads to generated code errors:
+The method getId() is undefined for the type PhoneProxy	PhoneListEditor.java	/1VuRoo/src/main/java/eu/oneview/core/client/managed/ui	line 85	Java Problem
+//eu.oneview.core.client.managed.ui.PhoneListEditor
+    @UiHandler(&quot;add&quot;)
+    public void addClicked(ClickEvent e) {
+        if (picker.getValue() == null) 
+{
+            return;
+        }
+        for (PhoneProxy proxy : displayedList) {
+            if (proxy.getId().equals(picker.getValue().getId())) 
+{
+                return;
+            }
+        }
+        displayedList.add(picker.getValue());
+        viewLabel.setText(makeFlatList(displayedList));
+    }
+I think the easiest way would be to integrate the GAE types to the supported types list (or at least the com.google.appengine.api.datastore.Key type)
+Best Regards,
+Zied Hamdi</description>
+			
+			
+			<version>1.1.4.RELEASE</version>
+			
+			
+			<fixedVersion>1.2.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.request.GwtRequestMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.locator.GwtLocatorMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtPath.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtTemplateServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.project.ProjectMetadata.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.gwt.GwtProxyMetadata.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.gwt.GwtProxyMetadataProviderImpl.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.gwt.GwtRequestMetadataProviderImpl.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.gwt.GwtScaffoldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.TemplateResourceLoader.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtTypeServiceImpl.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.gwt.GwtRequestMetadataProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.gwt.GwtRequestMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.model.JavaType.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.RooGwtRequest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtTypeService.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.RooGwtProxy.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtType.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtProxyProperty.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.gwt.GwtScaffoldMetadataProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.gwt.GwtProxyMetadataProvider.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.gwt.GwtScaffoldMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.RooGwtMirroredFrom.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtFileManager.java</file>
+			
+			
+			<file type="M">org.springframework.roo.model.RooJavaType.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

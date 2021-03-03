@@ -1,0 +1,2373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="MATH">
+	<bug fixdate="2009-01-16 23:07:17" id="238" opendate="2009-01-16 22:24:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MathUtils.gcd(u, v) fails when u and v both contain a high power of 2</summary>
+			
+			
+			<description>The test at the beginning of MathUtils.gcd(u, v) for arguments equal to zero fails when u and v contain high enough powers of 2 so that their product overflows to zero.
+        assertEquals(3 * (1&amp;lt;&amp;lt;15), MathUtils.gcd(3 * (1&amp;lt;&amp;lt;20), 9 * (1&amp;lt;&amp;lt;15)));
+Fix: Replace the test at the start of MathUtils.gcd()
+        if (u * v == 0) {
+by
+        if (u == 0 || v == 0) {</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.MathUtilsTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.util.MathUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-01-19 19:43:52" id="240" opendate="2009-01-16 22:43:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MathUtils.factorial(n) fails for n &gt;= 17</summary>
+			
+			
+			<description>The result of MathUtils.factorial( n ) for n = 17, 18, 19 is wrong, probably because of rounding errors in the double calculations.
+Replace the first line of MathUtilsTest.testFactorial() by
+        for (int i = 1; i &amp;lt;= 20; i++) {
+to check all valid arguments for the long result and see the failure.
+I suggest implementing a simple loop to multiply the long result - or even using a precomputed long[] - instead of adding logarithms.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.MathUtilsTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.util.MathUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-01-19 23:53:48" id="241" opendate="2009-01-16 23:34:23" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MathUtils.binomialCoefficient(n,k) fails for large results</summary>
+			
+			
+			<description>Probably due to rounding errors, MathUtils.binomialCoefficient(n,k) fails for results near Long.MAX_VALUE.
+The existence of failures can be demonstrated by testing the recursive property:
+
+         assertEquals(MathUtils.binomialCoefficient(65,32) + MathUtils.binomialCoefficient(65,33),
+                 MathUtils.binomialCoefficient(66,33));
+
+
+Or by directly using the (externally calculated and hopefully correct) expected value:
+
+         assertEquals(7219428434016265740L, MathUtils.binomialCoefficient(66,33));
+
+
+I suggest a nonrecursive test implementation along the lines of
+MathUtilsTest.java
+    /**
+     * Exact implementation using BigInteger and the explicit formula
+     * (n, k) == ((k-1)*...*n) / (1*...*(n-k))
+     */
+	public static long binomialCoefficient(int n, int k) {
+		if (k == 0 || k == n)
+			return 1;
+		BigInteger result = BigInteger.ONE;
+		for (int i = k + 1; i &amp;lt;= n; i++) {
+			result = result.multiply(BigInteger.valueOf(i));
+		}
+		for (int i = 1; i &amp;lt;= n - k; i++) {
+			result = result.divide(BigInteger.valueOf(i));
+		}
+		if (result.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) &amp;gt; 0) {
+			throw new ArithmeticException(
+                                &quot;Binomial coefficient overflow: &quot; + n + &quot;, &quot; + k);
+		}
+		return result.longValue();
+	}
+
+
+Which would allow you to test the expected values directly:
+
+         assertEquals(binomialCoefficient(66,33), MathUtils.binomialCoefficient(66,33));
+
+</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.MathUtilsTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.util.MathUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-02 19:38:46" id="272" opendate="2009-05-30 01:01:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Simplex Solver arrives at incorrect solution</summary>
+			
+			
+			<description>I have reduced the problem reported to me down to a minimal test case which I will attach.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.linear.SimplexSolverTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.linear.SimplexTableau.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-03 09:07:06" id="273" opendate="2009-06-03 05:11:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Basic variable is not found correctly in simplex tableau</summary>
+			
+			
+			<description>The last patch to SimplexTableau caused an automated test suite I&amp;amp;apos;m running at work to go down a new code path and uncover what is hopefully the last bug remaining in the Simplex code.
+SimplexTableau was assuming an entry in the tableau had to be nonzero to indicate a basic variable, which is incorrect - the entry should have a value equal to 1.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.linear.SimplexSolverTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.linear.SimplexTableau.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-04 20:11:26" id="274" opendate="2009-06-04 19:24:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>testing for symmetric positive definite matrix in CholeskyDecomposition</summary>
+			
+			
+			<description>I used this matrix:
+        double[][] cv = {
+
+{0.40434286, 0.09376327, 0.30328980, 0.04909388}
+,
+
+{0.09376327, 0.10400408, 0.07137959, 0.04762857}
+,
+
+{0.30328980, 0.07137959, 0.30458776, 0.04882449},
+            {0.04909388, 0.04762857, 0.04882449, 0.07543265}
+        };
+
+And it works fine, because it is symmetric positive definite
+
+I tried this matrix:
+
+        double[][] cv = {
+            {0.40434286, -0.09376327, 0.30328980, 0.04909388},
+            {-0.09376327, 0.10400408, 0.07137959, 0.04762857},
+            {0.30328980, 0.07137959, 0.30458776, 0.04882449}
+,
+            {0.04909388, 0.04762857, 0.04882449, 0.07543265}
+        };
+And it should throw an exception but it does not.  I tested the matrix in R and R&amp;amp;apos;s cholesky decomposition method returns that the matrix is not symmetric positive definite.
+Obviously your code is not catching this appropriately.
+By the way (in my opinion) the use of exceptions to check these conditions is not the best design or use for exceptions.  If you are going to force the use to try and catch these exceptions at least provide methods  to test the conditions prior to the possibility of the exception.  
+</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.linear.CholeskyDecompositionImplTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.CholeskyDecompositionImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-30 00:44:50" id="207" opendate="2008-05-21 21:50:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Implementation of GeneticAlgorithm.nextGeneration() is wrong</summary>
+			
+			
+			<description>The implementation of GeneticAlgorithm.nextGeneration() is wrong, since the only way how a Chromosome can get into the new generation is by mutation. 
+Enclosed, I am sending a patch for this.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.GeneticAlgorithm.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.SelectionPolicy.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.Fitness.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.ChromosomePair.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.Population.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.CrossoverPolicy.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.StoppingCondition.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.MutationPolicy.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.Chromosome.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-05 13:31:29" id="279" opendate="2009-06-20 07:13:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MultipleLinearRegression - test for minimum number of samples</summary>
+			
+			
+			<description>It&amp;amp;apos;s currently possible to pass in so few rows (samples) that there isn&amp;amp;apos;t a row for each column (predictor).  Does this look like the right thing to do?
+
+
+
+Index: AbstractMultipleLinearRegression.java
+
+===================================================================
+
+--- AbstractMultipleLinearRegression.java       (revision 786758)
+
++++ AbstractMultipleLinearRegression.java       (working copy)
+
+@@ -91,6 +91,9 @@
+
+                   &quot;dimension mismatch {0} != {1}&quot;,
+
+                   (x == null) ? 0 : x.length,
+
+                   (y == null) ? 0 : y.length);
+
++        } else if (x[0].length &amp;gt; x.length){
+
++            throw MathRuntimeException.createIllegalArgumentException(
+
++                    &quot;not enough data (&quot; + x.length + &quot; rows) for this many predictors (&quot; + x[0].length + &quot; predictors)&quot;);
+
+         }
+
+     }
+
+ 
+
+</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.GLSMultipleLinearRegressionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.AbstractMultipleLinearRegression.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.MessagesResources_fr.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-08-14 19:25:15" id="283" opendate="2009-08-12 14:51:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MultiDirectional optimzation loops forver if started at the correct solution</summary>
+			
+			
+			<description>MultiDirectional.iterateSimplex loops forever if the starting point is the correct solution.
+see the attached test case (testMultiDirectionalCorrectStart) as an example.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.direct.MultiDirectional.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.direct.MultiDirectionalTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-08-27 08:08:17" id="290" opendate="2009-08-25 10:53:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NullPointerException in SimplexTableau.initialize</summary>
+			
+			
+			<description>SimplexTableau throws a NullPointerException when no solution can be found instead of a NoFeasibleSolutionException
+Here is the code that causes the NullPointerException:
+LinearObjectiveFunction f = new LinearObjectiveFunction(new double[] 
+{ 1, 5 }
+, 0 );
+Collection&amp;lt;LinearConstraint&amp;gt; constraints = new ArrayList&amp;lt;LinearConstraint&amp;gt;();
+constraints.add(new LinearConstraint(new double[] 
+{ 2, 0 }
+, Relationship.GEQ, -1.0));
+RealPointValuePair solution = new SimplexSolver().optimize(f, constraints, GoalType.MINIMIZE, true);
+Note: Tested both with Apache Commons Math 2.0 release and SVN trunk</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.linear.SimplexSolverTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.linear.SimplexTableau.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-09-09 10:12:01" id="292" opendate="2009-09-06 22:04:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestUtils.assertRelativelyEquals() generates misleading error on failure</summary>
+			
+			
+			<description>TestUtils.assertRelativelyEquals() generates misleading error on failure.
+For example:
+TestUtils.assertRelativelyEquals(1.0, 0.10427661385154971, 1.0e-9)
+generates the error message:
+junit.framework.AssertionFailedError: expected:&amp;lt;0.0&amp;gt; but was:&amp;lt;0.8957233861484503&amp;gt;
+which is not very helpful.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.TestUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-09-10 08:22:11" id="286" opendate="2009-08-20 15:04:09" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SimplexSolver not working as expected?</summary>
+			
+			
+			<description>I guess (but I could be wrong) that SimplexSolver does not always return the optimal solution, nor satisfies all the constraints...
+Consider this LP:
+max: 0.8 x0 + 0.2 x1 + 0.7 x2 + 0.3 x3 + 0.6 x4 + 0.4 x5;
+r1: x0 + x2 + x4 = 23.0;
+r2: x1 + x3 + x5 = 23.0;
+r3: x0 &amp;gt;= 10.0;
+r4: x2 &amp;gt;= 8.0;
+r5: x4 &amp;gt;= 5.0;
+LPSolve returns 25.8, with x0 = 10.0, x1 = 0.0, x2 = 8.0, x3 = 0.0, x4 = 5.0, x5 = 23.0;
+The same LP expressed in Apache commons math is:
+LinearObjectiveFunction f = new LinearObjectiveFunction(new double[] 
+{ 0.8, 0.2, 0.7, 0.3, 0.6, 0.4 }
+, 0 );
+Collection&amp;lt;LinearConstraint&amp;gt; constraints = new ArrayList&amp;lt;LinearConstraint&amp;gt;();
+constraints.add(new LinearConstraint(new double[] 
+{ 1, 0, 1, 0, 1, 0 }
+, Relationship.EQ, 23.0));
+constraints.add(new LinearConstraint(new double[] 
+{ 0, 1, 0, 1, 0, 1 }
+, Relationship.EQ, 23.0));
+constraints.add(new LinearConstraint(new double[] 
+{ 1, 0, 0, 0, 0, 0 }
+, Relationship.GEQ, 10.0));
+constraints.add(new LinearConstraint(new double[] 
+{ 0, 0, 1, 0, 0, 0 }
+, Relationship.GEQ, 8.0));
+constraints.add(new LinearConstraint(new double[] 
+{ 0, 0, 0, 0, 1, 0 }
+, Relationship.GEQ, 5.0));
+RealPointValuePair solution = new SimplexSolver().optimize(f, constraints, GoalType.MAXIMIZE, true);
+that returns 22.20, with x0 = 15.0, x1 = 23.0, x2 = 8.0, x3 = 0.0, x4 = 0.0, x5 = 0.0;
+Is it possible SimplexSolver is buggy that way? The returned value is 22.20 instead of 25.8, and the last constraint (x4 &amp;gt;= 5.0) is not satisfied...
+Am I using the interface wrongly?</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.linear.SimplexSolverTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.linear.SimplexTableauTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.linear.SimplexTableau.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.linear.SimplexSolver.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-09-10 08:23:11" id="293" opendate="2009-09-09 14:07:53" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Matrix&amp;apos;s &quot;OutOfBoundException&quot; in SimplexSolver</summary>
+			
+			
+			<description>Hi all,
+This bug is somehow related to incident MATH-286, but not necessarily...
+Let&amp;amp;apos;s say I have an LP and I solve it using SimplexSolver. Then I create a second LP similar to the first one, but with &quot;stronger&quot; constraints. The second LP has the following properties:
+
+the only point in the feasible region for the second LP is the solution returned for the first LP
+the solution returned for the first LP is also the (only possible) solution to the second LP
+
+This shows the problem:
+
+
+
+LinearObjectiveFunction f = new LinearObjectiveFunction(new double[] { 0.8, 0.2, 0.7, 0.3, 0.4, 0.6}, 0 );
+
+Collection&amp;lt;LinearConstraint&amp;gt; constraints = new ArrayList&amp;lt;LinearConstraint&amp;gt;();
+
+constraints.add(new LinearConstraint(new double[] { 1, 0, 1, 0, 1, 0 }, Relationship.EQ, 30.0));
+
+constraints.add(new LinearConstraint(new double[] { 0, 1, 0, 1, 0, 1 }, Relationship.EQ, 30.0));
+
+constraints.add(new LinearConstraint(new double[] { 0.8, 0.2, 0.0, 0.0, 0.0, 0.0 }, Relationship.GEQ, 10.0));
+
+constraints.add(new LinearConstraint(new double[] { 0.0, 0.0, 0.7, 0.3, 0.0, 0.0 }, Relationship.GEQ, 10.0));
+
+constraints.add(new LinearConstraint(new double[] { 0.0, 0.0, 0.0, 0.0, 0.4, 0.6 }, Relationship.GEQ, 10.0));
+
+
+
+RealPointValuePair solution = new SimplexSolver().optimize(f, constraints, GoalType.MAXIMIZE, true);
+
+
+
+double valA = 0.8 * solution.getPoint()[0] + 0.2 * solution.getPoint()[1];
+
+double valB = 0.7 * solution.getPoint()[2] + 0.3 * solution.getPoint()[3];
+
+double valC = 0.4 * solution.getPoint()[4] + 0.6 * solution.getPoint()[5];
+
+
+
+f = new LinearObjectiveFunction(new double[] { 0.8, 0.2, 0.7, 0.3, 0.4, 0.6}, 0 );
+
+constraints = new ArrayList&amp;lt;LinearConstraint&amp;gt;();
+
+constraints.add(new LinearConstraint(new double[] { 1, 0, 1, 0, 1, 0 }, Relationship.EQ, 30.0));
+
+constraints.add(new LinearConstraint(new double[] { 0, 1, 0, 1, 0, 1 }, Relationship.EQ, 30.0));
+
+constraints.add(new LinearConstraint(new double[] { 0.8, 0.2, 0.0, 0.0, 0.0, 0.0 }, Relationship.GEQ, valA));
+
+constraints.add(new LinearConstraint(new double[] { 0.0, 0.0, 0.7, 0.3, 0.0, 0.0 }, Relationship.GEQ, valB));
+
+constraints.add(new LinearConstraint(new double[] { 0.0, 0.0, 0.0, 0.0, 0.4, 0.6 }, Relationship.GEQ, valC));
+
+
+
+solution = new SimplexSolver().optimize(f, constraints, GoalType.MAXIMIZE, true);
+
+
+
+Instead of returning the solution, SimplexSolver throws an Exception:
+
+ Exception in thread &quot;main&quot; org.apache.commons.math.linear.MatrixIndexException: no entry at indices (0, 7) in a 6x7 matrix
+
+	at org.apache.commons.math.linear.Array2DRowRealMatrix.getEntry(Array2DRowRealMatrix.java:356)
+
+	at org.apache.commons.math.optimization.linear.SimplexTableau.getEntry(SimplexTableau.java:408)
+
+	at org.apache.commons.math.optimization.linear.SimplexTableau.getBasicRow(SimplexTableau.java:258)
+
+	at org.apache.commons.math.optimization.linear.SimplexTableau.getSolution(SimplexTableau.java:336)
+
+	at org.apache.commons.math.optimization.linear.SimplexSolver.doOptimize(SimplexSolver.java:182)
+
+	at org.apache.commons.math.optimization.linear.AbstractLinearOptimizer.optimize(AbstractLinearOptimizer.java:106)
+
+I was too optimistic with the bug MATH-286 </description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.linear.SimplexSolverTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.linear.SimplexTableau.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-03 22:19:04" id="308" opendate="2009-10-25 22:25:23" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ArrayIndexOutOfBoundException in EigenDecompositionImpl</summary>
+			
+			
+			<description>The following test triggers an ArrayIndexOutOfBoundException:
+
+
+
+    public void testMath308() {
+
+
+
+        double[] mainTridiagonal = {
+
+            22.330154644539597, 46.65485522478641, 17.393672330044705, 54.46687435351116, 80.17800767709437
+
+        };
+
+        double[] secondaryTridiagonal = {
+
+            13.04450406501361, -5.977590941539671, 2.9040909856707517, 7.1570352792841225
+
+        };
+
+
+
+        // the reference values have been computed using routine DSTEMR
+
+        // from the fortran library LAPACK version 3.2.1
+
+        double[] refEigenValues = {
+
+            14.138204224043099, 18.847969733754262, 52.536278520113882, 53.456697699894512, 82.044413207204002
+
+        };
+
+        RealVector[] refEigenVectors = {
+
+            new ArrayRealVector(new double[] {  0.584677060845929, -0.367177264979103, -0.721453187784497,  0.052971054621812, -0.005740715188257 }),
+
+            new ArrayRealVector(new double[] {  0.713933751051495, -0.190582113553930,  0.671410443368332, -0.056056055955050,  0.006541576993581 }),
+
+            new ArrayRealVector(new double[] {  0.222368839324646,  0.514921891363332, -0.021377019336614,  0.801196801016305, -0.207446991247740 }),
+
+            new ArrayRealVector(new double[] {  0.314647769490148,  0.750806415553905, -0.167700312025760, -0.537092972407375,  0.143854968127780 }),
+
+            new ArrayRealVector(new double[] { -0.000462690386766, -0.002118073109055,  0.011530080757413,  0.252322434584915,  0.967572088232592 })
+
+        };
+
+
+
+        // the following line triggers the exception
+
+        EigenDecomposition decomposition =
+
+            new EigenDecompositionImpl(mainTridiagonal, secondaryTridiagonal, MathUtils.SAFE_MIN);
+
+
+
+        double[] eigenValues = decomposition.getRealEigenvalues();
+
+        for (int i = 0; i &amp;lt; refEigenValues.length; ++i) {
+
+            assertEquals(refEigenValues[i], eigenValues[i], 1.0e-6);
+
+            if (refEigenVectors[i].dotProduct(decomposition.getEigenvector(i)) &amp;lt; 0) {
+
+                assertEquals(0, refEigenVectors[i].add(decomposition.getEigenvector(i)).getNorm(), 1.0e-6);
+
+            } else {
+
+                assertEquals(0, refEigenVectors[i].subtract(decomposition.getEigenvector(i)).getNorm(), 1.0e-6);
+
+            }
+
+        }
+
+
+
+    }
+
+
+
+Running the previous method as a Junit test triggers the exception when the EigenDecompositionImpl instance is built. The first few lines of the stack trace are:
+
+java.lang.ArrayIndexOutOfBoundsException: -1
+
+	at org.apache.commons.math.linear.EigenDecompositionImpl.computeShiftIncrement(EigenDecompositionImpl.java:1545)
+
+	at org.apache.commons.math.linear.EigenDecompositionImpl.goodStep(EigenDecompositionImpl.java:1072)
+
+	at org.apache.commons.math.linear.EigenDecompositionImpl.processGeneralBlock(EigenDecompositionImpl.java:894)
+
+	at org.apache.commons.math.linear.EigenDecompositionImpl.findEigenvalues(EigenDecompositionImpl.java:658)
+
+	at org.apache.commons.math.linear.EigenDecompositionImpl.decompose(EigenDecompositionImpl.java:246)
+
+	at org.apache.commons.math.linear.EigenDecompositionImpl.&amp;lt;init&amp;gt;(EigenDecompositionImpl.java:205)
+
+	at org.apache.commons.math.linear.EigenDecompositionImplTest.testMath308(EigenDecompositionImplTest.java:136)
+
+
+
+I&amp;amp;apos;m currently investigating this bug. It is not a simple index translation error between the original fortran (Lapack) and commons-math implementation.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.linear.EigenDecompositionImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.EigenDecompositionImplTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-06 15:12:47" id="318" opendate="2009-11-06 15:09:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>wrong result in eigen decomposition</summary>
+			
+			
+			<description>Some results computed by EigenDecompositionImpl are wrong. The following case computed by Fortran Lapack fails with version 2.0
+
+
+
+    public void testMathpbx02() {
+
+
+
+        double[] mainTridiagonal = {
+
+        	  7484.860960227216, 18405.28129035345, 13855.225609560746,
+
+        	 10016.708722343366, 559.8117399576674, 6750.190788301587, 
+
+        	    71.21428769782159
+
+        };
+
+        double[] secondaryTridiagonal = {
+
+        	 -4175.088570476366,1975.7955858241994,5193.178422374075, 
+
+        	  1995.286659169179,75.34535882933804,-234.0808002076056
+
+        };
+
+
+
+        // the reference values have been computed using routine DSTEMR
+
+        // from the fortran library LAPACK version 3.2.1
+
+        double[] refEigenValues = {
+
+        		20654.744890306974412,16828.208208485466457,
+
+        		6893.155912634994820,6757.083016675340332,
+
+        		5887.799885688558788,64.309089923240379,
+
+        		57.992628792736340
+
+        };
+
+        RealVector[] refEigenVectors = {
+
+        		new ArrayRealVector(new double[] {-0.270356342026904, 0.852811091326997, 0.399639490702077, 0.198794657813990, 0.019739323307666, 0.000106983022327, -0.000001216636321}),
+
+        		new ArrayRealVector(new double[] {0.179995273578326,-0.402807848153042,0.701870993525734,0.555058211014888,0.068079148898236,0.000509139115227,-0.000007112235617}),
+
+        		new ArrayRealVector(new double[] {-0.399582721284727,-0.056629954519333,-0.514406488522827,0.711168164518580,0.225548081276367,0.125943999652923,-0.004321507456014}),
+
+        		new ArrayRealVector(new double[] {0.058515721572821,0.010200130057739,0.063516274916536,-0.090696087449378,-0.017148420432597,0.991318870265707,-0.034707338554096}),
+
+        		new ArrayRealVector(new double[] {0.855205995537564,0.327134656629775,-0.265382397060548,0.282690729026706,0.105736068025572,-0.009138126622039,0.000367751821196}),
+
+        		new ArrayRealVector(new double[] {-0.002913069901144,-0.005177515777101,0.041906334478672,-0.109315918416258,0.436192305456741,0.026307315639535,0.891797507436344}),
+
+        		new ArrayRealVector(new double[] {-0.005738311176435,-0.010207611670378,0.082662420517928,-0.215733886094368,0.861606487840411,-0.025478530652759,-0.451080697503958})
+
+        };
+
+
+
+        // the following line triggers the exception
+
+        EigenDecomposition decomposition =
+
+            new EigenDecompositionImpl(mainTridiagonal, secondaryTridiagonal, MathUtils.SAFE_MIN);
+
+
+
+        double[] eigenValues = decomposition.getRealEigenvalues();
+
+        for (int i = 0; i &amp;lt; refEigenValues.length; ++i) {
+
+            assertEquals(refEigenValues[i], eigenValues[i], 1.0e-3);
+
+            if (refEigenVectors[i].dotProduct(decomposition.getEigenvector(i)) &amp;lt; 0) {
+
+                assertEquals(0, refEigenVectors[i].add(decomposition.getEigenvector(i)).getNorm(), 1.0e-5);
+
+            } else {
+
+                assertEquals(0, refEigenVectors[i].subtract(decomposition.getEigenvector(i)).getNorm(), 1.0e-5);
+
+            }
+
+        }
+
+
+
+    }
+
+
+</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.linear.EigenDecompositionImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.EigenDecompositionImplTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-27 21:46:44" id="305" opendate="2009-10-22 06:35:08" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NPE in  KMeansPlusPlusClusterer unittest</summary>
+			
+			
+			<description>When running this unittest, I am facing this NPE:
+java.lang.NullPointerException
+	at org.apache.commons.math.stat.clustering.KMeansPlusPlusClusterer.assignPointsToClusters(KMeansPlusPlusClusterer.java:91)
+This is the unittest:
+package org.fao.fisheries.chronicles.calcuation.cluster;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import org.apache.commons.math.stat.clustering.Cluster;
+import org.apache.commons.math.stat.clustering.EuclideanIntegerPoint;
+import org.apache.commons.math.stat.clustering.KMeansPlusPlusClusterer;
+import org.fao.fisheries.chronicles.input.CsvImportProcess;
+import org.fao.fisheries.chronicles.input.Top200Csv;
+import org.junit.Test;
+public class ClusterAnalysisTest {
+	@Test
+	public void testPerformClusterAnalysis2() {
+		KMeansPlusPlusClusterer&amp;lt;EuclideanIntegerPoint&amp;gt; transformer = new KMeansPlusPlusClusterer&amp;lt;EuclideanIntegerPoint&amp;gt;(
+				new Random(1746432956321l));
+		EuclideanIntegerPoint[] points = new EuclideanIntegerPoint[] {
+				new EuclideanIntegerPoint(new int[] 
+{ 1959, 325100 }
+),
+				new EuclideanIntegerPoint(new int[] 
+{ 1960, 373200 }
+), };
+		List&amp;lt;Cluster&amp;lt;EuclideanIntegerPoint&amp;gt;&amp;gt; clusters = transformer.cluster(Arrays.asList(points), 1, 1);
+		assertEquals(1, clusters.size());
+	}
+}</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.clustering.KMeansPlusPlusClustererTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.util.MathUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-12-06 23:06:04" id="322" opendate="2009-12-06 23:01:35" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>during ODE integration, the last event in a pair of very close event may not be detected</summary>
+			
+			
+			<description>When an events follows a previous one very closely, it may be ignored. The occurrence of the bug depends on the side of the bracketing interval that was selected. For example consider a switching function that is increasing around first event around t = 90, reaches its maximum and is decreasing around the second event around t = 135. If an integration step spans from 67.5 and 112.5, the switching function values at start and end of step will  have opposite signs, so the first event will be detected. The solver will find the event really occurs at 90.0 and will therefore truncate the step at 90.0. The next step will start from where the first step ends, i.e. it will start at 90.0. Let&amp;amp;apos;s say this step spans from 90.0 to 153.0. The switching function switches once again in this step.
+If the solver for the first event converged to a value slightly before 90.0 (say 89.9999999), then the switch will not be detected because g(89.9999999) and g(153.0) are both negative.
+This bug was introduced as of r781157 (2009-06-02) when special handling of events very close to step start was added.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.ode.events.EventState.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-12-29 12:26:59" id="326" opendate="2009-12-29 00:09:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>getLInfNorm() uses wrong formula in both ArrayRealVector and OpenMapRealVector (in different ways)</summary>
+			
+			
+			<description>the L_infinity norm of a finite dimensional vector is just the max of the absolute value of its entries.
+The current implementation in ArrayRealVector has a typo:
+
+
+
+    public double getLInfNorm() {
+
+        double max = 0;
+
+        for (double a : data) {
+
+            max += Math.max(max, Math.abs(a));
+
+        }
+
+        return max;
+
+    }
+
+
+
+the += should just be an =.
+There is sadly a unit test assuring us that this is the correct behavior (effectively a regression-only test, not a test for correctness).
+Worse, the implementation in OpenMapRealVector is not even positive semi-definite:
+
+   
+
+    public double getLInfNorm() {
+
+        double max = 0;
+
+        Iterator iter = entries.iterator();
+
+        while (iter.hasNext()) {
+
+            iter.advance();
+
+            max += iter.value();
+
+        }
+
+        return max;
+
+    }
+
+
+
+I would suggest that this method be moved up to the AbstractRealVector superclass and implemented using the sparseIterator():
+
+
+
+  public double getLInfNorm() {
+
+    double norm = 0;
+
+    Iterator&amp;lt;Entry&amp;gt; it = sparseIterator();
+
+    Entry e;
+
+    while(it.hasNext() &amp;amp;&amp;amp; (e = it.next()) != null) {
+
+      norm = Math.max(norm, Math.abs(e.getValue()));
+
+    }
+
+    return norm;
+
+  }
+
+
+
+Unit tests with negative valued vectors would be helpful to check for this kind of thing in the future.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.linear.ArrayRealVectorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.SparseRealVectorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.AbstractRealVector.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.OpenMapRealVector.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.ArrayRealVector.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-12-30 20:12:52" id="260" opendate="2009-04-14 13:38:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Inconsistent API in Frequency</summary>
+			
+			
+			<description>The overloaded Frequency methods are not consistent in the parameter types that they handle.
+addValue() has an Integer version which converts the parameter to a Long, and then calls addValue(Object).
+The various getxxx() methods all handle Integer parameters as an Object.
+Seems to me that it would be better to treat Integer consistently.
+But perhaps there is a good reason for having an addValue(Integer) method but no getxxx(Integer) methods?
+If so, then it would be helpful to document this.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.Frequency.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-12-31 17:55:04" id="320" opendate="2009-11-10 15:42:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NaN singular value from SVD</summary>
+			
+			
+			<description>The following jython code
+Start code
+from org.apache.commons.math.linear import *
+Alist = [[1.0, 2.0, 3.0],[2.0,3.0,4.0],[3.0,5.0,7.0]]
+A = Array2DRowRealMatrix(Alist)
+decomp = SingularValueDecompositionImpl(A)
+print decomp.getSingularValues()
+End code
+prints
+array(&amp;amp;apos;d&amp;amp;apos;, [11.218599757513008, 0.3781791648535976, nan])
+The last singular value should be something very close to 0 since the matrix
+is rank deficient.  When i use the result from getSolver() to solve a system, i end 
+up with a bunch of NaNs in the solution.  I assumed i would get back a least squares solution.
+Does this SVD implementation require that the matrix be full rank?  If so, then i would expect
+an exception to be thrown from the constructor or one of the methods.
+</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.linear.SingularValueSolverTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.SingularValueDecompositionImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.SingularValueDecomposition.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-24 10:35:39" id="307" opendate="2009-10-24 14:36:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BigReal/Fieldelement divide without setting a proper scale -&gt; exception: no exact representable decimal result</summary>
+			
+			
+			<description>BigReal implements the methode divide of Fieldelement. The problem is that there is no scale defined for the BigDecimal so the class will throw an error when the outcome is not a representable decimal result. 
+(Exception: no exact representable decimal result)
+The workaround for me was to copy the BigReal and set the scale and roundingMode the same as version 1.2.
+Maybe is it possible to set the scale in FieldMatrix and implements it also a divide(BigReal b, int scale, int roundMode) ?? 
+</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.BigReal.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-25 17:58:04" id="297" opendate="2009-09-20 14:33:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Eigenvector computation incorrectly returning vectors of NaNs</summary>
+			
+			
+			<description>As reported by Axel Kramer on commons-dev, the following test case succeeds, but should fail:
+
+
+
+public void testEigenDecomposition() {
+
+    double[][] m = { { 0.0, 1.0, -1.0 }, { 1.0, 1.0, 0.0 }, { -1.0,0.0, 1.0 } };
+
+    RealMatrix rm = new Array2DRowRealMatrix(m);
+
+    assertEquals(rm.toString(),
+
+        &quot;Array2DRowRealMatrix{{0.0,1.0,-1.0},{1.0,1.0,0.0},{-1.0,0.0,1.0}}&quot;);
+
+    EigenDecompositionImpl ed = new EigenDecompositionImpl(rm,
+
+        MathUtils.SAFE_MIN);
+
+    RealVector rv0 = ed.getEigenvector(0);
+
+    assertEquals(rv0.toString(), &quot;{(NaN); (NaN); (NaN)}&quot;);
+
+  }
+
+
+
+ed.getRealEigenvalues() returns the correct eigenvalues (2, 1, -1), but all three eigenvectors contain only NaNs.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.linear.EigenDecompositionImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-26 21:54:45" id="296" opendate="2009-09-16 21:14:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>LoessInterpolator.smooth() not working correctly</summary>
+			
+			
+			<description>I have been comparing LoessInterpolator.smooth output with the loessFit output from R (R-project.org, probably the most widely used loess implementation) and have had strangely different numbers. I have created a small set to test the difference and something seems to be wrong with the smooth method but I do no know what and I do not understand the code.
+Example 1
+
+
+x-input: 
+1.5
+ 3.0
+ 6
+ 8
+ 12
+13
+ 22
+ 24
+28
+31
+
+
+y-input: 
+3.1
+6.1
+3.1
+2.1
+1.4
+5.1
+5.1
+6.1
+7.1
+7.2
+
+
+Output LoessInterpolator.smooth():
+NaN
+NaN
+NaN
+NaN
+NaN
+NaN
+NaN
+NaN
+NaN
+NaN
+
+
+Output from loessFit() from R: 
+3.191178027520974
+3.0407201231474037
+2.7089538903778636
+2.7450823274490297
+4.388011000549519
+4.60078952381848
+5.2988217587114805
+5.867536388457898
+6.7797794777879705
+7.444888598397342
+
+
+Example 2 (same x-values, y-values just floored)
+
+
+x-input: 
+1.5
+ 3.0
+ 6
+ 8
+ 12
+13
+ 22
+ 24
+28
+31
+
+
+y-input: 
+3
+6
+3
+2
+1
+5
+5
+6
+7
+7
+
+
+Output LoessInterpolator.smooth(): 
+3
+6
+3
+2
+0.9999999999999005
+5.0000000000001705
+5
+5.999999999999972
+7
+6.999999999999967
+
+
+Output from loessFit() from R: 
+3.091423927353068
+2.9411521572524237
+2.60967950675505
+2.7421759322272248
+4.382996912300442
+4.646774316632562
+5.225153658563424
+5.768301917477015
+6.637079139313073
+7.270482144410326
+
+
+As you see the output is practically the replicated y-input.
+At this point this funtionality is critical for us but I could not find any other suitable java-implementation. Help. Maybe this strange behaviour gives someone a clue?
+</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.interpolation.LoessInterpolator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.interpolation.LoessInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.MessagesResources_fr.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-28 15:17:46" id="338" opendate="2010-01-28 10:59:13" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Wrong parameter for first step size guess for Embedded Runge Kutta methods</summary>
+			
+			
+			<description>In a space application using DOP853 i detected what seems to be a bad parameter in the call to the method  initializeStep of class AdaptiveStepsizeIntegrator.
+Here, DormandPrince853Integrator is a subclass for EmbeddedRungeKuttaIntegrator which perform the call to initializeStep at the beginning of its method integrate(...)
+The problem comes from the array &quot;scale&quot; that is used as a parameter in the call off initializeStep(..)
+Following the theory described by Hairer in his book &quot;Solving Ordinary Differential Equations 1 : Nonstiff Problems&quot;, the scaling should be :
+sci = Atol i + |y0i| * Rtoli
+Whereas EmbeddedRungeKuttaIntegrator uses :  sci = Atoli
+Note that the Gragg-Bulirsch-Stoer integrator uses the good implementation &quot;sci = Atol i + |y0i| * Rtoli  &quot; when he performs the call to the same method initializeStep(..)
+In the method initializeStep, the error leads to a wrong step size h used to perform an  Euler step. Most of the time it is unvisible for the user.
+But in my space application the Euler step with this wrong step size h (much bigger than it should be)  makes an exception occur (my satellite hits the ground...)
+To fix the bug, one should use the same algorithm as in the rescale method in GraggBulirschStoerIntegrator
+For exemple :
+ final double[] scale= new double[y0.length];;
+          if (vecAbsoluteTolerance == null) {
+              for (int i = 0; i &amp;lt; scale.length; ++i) 
+{
+
+                final double yi = Math.max(Math.abs(y0[i]), Math.abs(y0[i]));
+
+                scale[i] = scalAbsoluteTolerance + scalRelativeTolerance * yi;
+
+              }
+            } else {
+              for (int i = 0; i &amp;lt; scale.length; ++i) 
+{
+
+                final double yi = Math.max(Math.abs(y0[i]), Math.abs(y0[i]));
+
+                scale[i] = vecAbsoluteTolerance[i] + vecRelativeTolerance[i] * yi;
+
+              }
+            }
+          hNew = initializeStep(equations, forward, getOrder(), scale,
+                           stepStart, y, yDotK[0], yTmp, yDotK[1]);
+Sorry for the length of this message, looking forward to hearing from you soon
+Vincent Morand
+</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.EmbeddedRungeKuttaIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.HighamHall54IntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.AdamsMoultonIntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.HighamHall54StepInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.DormandPrince853IntegratorTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-09 20:08:51" id="341" opendate="2010-02-05 20:32:59" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Test for firsst Derivative in PolynomialFunction ERROR</summary>
+			
+			
+			<description>I have written the attached test using our data for generating a curve function
+However the first derivative test fails see: testfirstDerivativeComparisonFullPower
+Either my test is in error or there is a bug in PolynomialFunction class.
+Roger Ball
+Creoss Business Solutions </description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.polynomials.PolynomialFunctionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.polynomials.PolynomialFunctionLagrangeForm.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-23 21:02:31" id="343" opendate="2010-02-23 20:21:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Brent solver doesn&amp;apos;t throw IllegalArgumentException when initial guess has the wrong sign</summary>
+			
+			
+			<description>Javadoc for &quot;public double solve(final UnivariateRealFunction f, final double min, final double max, final double initial)&quot; claims that &quot;if the values of the function at the three points have the same sign&quot; an IllegalArgumentException is thrown. This case isn&amp;amp;apos;t even checked.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.solvers.BrentSolver.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.solvers.BrentSolverTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-23 21:10:00" id="344" opendate="2010-02-23 20:23:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Brent solver returns the wrong value if either bracket endpoint is root</summary>
+			
+			
+			<description>The solve(final UnivariateRealFunction f, final double min, final double max, final double initial) function returns yMin or yMax if min or max are deemed to be roots, respectively, instead of min or max.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.solvers.BrentSolverTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.solvers.BrentSolver.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-01 19:39:28" id="347" opendate="2010-02-25 14:33:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Brent solver shouldn&amp;apos;t need strict ordering of min, max and initial</summary>
+			
+			
+			<description>The &quot;solve(final UnivariateRealFunction f, final double min, final double max, final double initial)&quot; function calls verifySequence() which enforces a strict ordering of min, max and initial parameters. I can&amp;amp;apos;t see why that is necessary - the rest of solve() seems to be able to handle &quot;initial == min&quot; and &quot;initial == min&quot; cases just fine. In fact, the JavaDoc suggests setting initial to min when not known but that is not possible at the moment.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.solvers.BrentSolver.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-24 22:13:19" id="358" opendate="2010-03-24 17:25:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ODE integrator goes past specified end of integration range</summary>
+			
+			
+			<description>End of integration range in ODE solving is handled as an event.
+In some cases, numerical accuracy in events detection leads to error in events location.
+The following test case shows the end event is not handled properly and an integration that should cover a 60s range in fact covers a 160s range, more than twice the specified range.
+
+
+
+  public void testMissedEvent() throws IntegratorException, DerivativeException {
+
+          final double t0 = 1878250320.0000029;
+
+          final double t =  1878250379.9999986;
+
+          FirstOrderDifferentialEquations ode = new FirstOrderDifferentialEquations() {
+
+            
+
+            public int getDimension() {
+
+                return 1;
+
+            }
+
+            
+
+            public void computeDerivatives(double t, double[] y, double[] yDot)
+
+                throws DerivativeException {
+
+                yDot[0] = y[0] * 1.0e-6;
+
+            }
+
+        };
+
+
+
+        DormandPrince853Integrator integrator = new DormandPrince853Integrator(0.0, 100.0,
+
+                                                                               1.0e-10, 1.0e-10);
+
+
+
+        double[] y = { 1.0 };
+
+        integrator.setInitialStepSize(60.0);
+
+        double finalT = integrator.integrate(ode, t0, y, t, y);
+
+        Assert.assertEquals(t, finalT, 1.0e-6);
+
+    }
+
+
+
+
+</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.ClassicalRungeKuttaIntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.DormandPrince853IntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.EmbeddedRungeKuttaIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.AdamsMoultonIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.AdamsBashforthIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.RungeKuttaIntegrator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-16 23:49:08" id="371" opendate="2010-05-13 19:48:46" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>PearsonsCorrelation.getCorrelationPValues() precision limited by machine epsilon</summary>
+			
+			
+			<description>Similar to the issue described in MATH-201, using PearsonsCorrelation.getCorrelationPValues() with many treatments results in p-values that are continuous down to 2.2e-16 but that drop to 0 after that.
+In MATH-201, the problem was described as such:
+&amp;gt; So in essence, the p-value returned by TTestImpl.tTest() is:
+&amp;gt; 
+&amp;gt; 1.0 - (cumulativeProbability(t) - cumulativeProbabily(-t))
+&amp;gt; 
+&amp;gt; For large-ish t-statistics, cumulativeProbabilty(-t) can get quite small, and cumulativeProbabilty(t) can get very close to 1.0. When 
+&amp;gt; cumulativeProbability(-t) is less than the machine epsilon, we get p-values equal to zero because:
+&amp;gt; 
+&amp;gt; 1.0 - 1.0 + 0.0 = 0.0
+The solution in MATH-201 was to modify the p-value calculation to this:
+&amp;gt; p = 2.0 * cumulativeProbability(-t)
+Here, the problem is similar.  From PearsonsCorrelation.getCorrelationPValues():
+  p = 2 * (1 - tDistribution.cumulativeProbability(t));
+Directly calculating the p-value using identical code as PearsonsCorrelation.getCorrelationPValues(), but with the following change seems to solve the problem:
+  p = 2 * (tDistribution.cumulativeProbability(-t));
+</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.correlation.PearsonsCorrelation.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.correlation.PearsonsCorrelationTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-29 18:16:50" id="362" opendate="2010-04-06 11:38:46" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>LevenbergMarquardtOptimizer ignores the VectorialConvergenceChecker parameter passed to it</summary>
+			
+			
+			<description>LevenbergMarquardtOptimizer ignores the VectorialConvergenceChecker parameter passed to it. This makes it hard to specify custom stopping criteria for the optimizer.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.LevenbergMarquardtOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.LevenbergMarquardtOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.MinpackTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">404</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-06-06 14:04:42" id="352" opendate="2010-03-10 03:58:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Jacobian rank determination in LevenbergMarquardtOptimizer is not numerically robust</summary>
+			
+			
+			<description>LevenbergMarquardtOptimizer is designed to handle singular jacobians,  i.e. situations when some of the fitted parameters depend on each other. The check for that condition is in LevenbergMarquardtOptimizer.qrDecomposition uses precise comparison to 0.
+    if (ak2 == 0 ) 
+{
+
+                rank = k;
+
+                return;
+
+        }
+
+A correct check would be comparison with a small epsilon. Hard coded 2.2204e-16 is used elsewhere in the same file for similar purpose.
+
+final double QR_RANK_EPS = Math.ulp(1d); //2.220446049250313E-16
+....
+    if (ak2  &amp;lt; QR_RANK_EPS) {
+                rank = k;
+                return;
+        }
+
+Current exact equality check is not tolerant of the real world poorly conditioned situations. For example I am trying to fit a cylinder into sample 3d points. Although theoretically cylinder has only 5 independent variables, derivatives for optimizing function (signed distance) for such minimal parametrization are complicated and it  it much easier to work with a 7 variable parametrization (3 for axis direction, 3 for axis origin and 1 for radius). This naturally results in rank-deficient jacobian, but because of the numeric errors the actual ak2 values for the dependent rows ( I am seeing values of 1e-18 and less), rank handling code does not kick in.
+Keeping these tiny values around then leads to huge corrections for the corresponding very slowly changing parameters, and consequently to numeric errors and instabilities. I have noticed the problem because tiny shift in the initial guess (on the order of 1e-12 in the axis component and origins) resulted in significantly different finally converged answers (origins and radii differing by as much as 0.02) which I tracked to loss of precision due to numeric error with root cause described above.
+Providing a cutoff as suggested fixes the issue. After the fix, small perturbations in the initial guess had practically no effect to the converged result - as expected from a robust algorithm.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.LevenbergMarquardtOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.LevenbergMarquardtOptimizerTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-09-13 02:02:43" id="409" opendate="2010-08-24 09:55:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Multiple Regression API should allow specification of whether or not to estimate intercept term</summary>
+			
+			
+			<description>The OLS and GLS regression APIs should support estimating models including intercepts using design matrices including only variable data.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.OLSMultipleLinearRegression.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.AbstractMultipleLinearRegression.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.OLSMultipleLinearRegressionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.MultipleLinearRegressionAbstractTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">411</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-09-13 02:04:01" id="411" opendate="2010-08-28 22:14:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Multiple Regression newSampleData methods inconsistently create / omit intercepts</summary>
+			
+			
+			<description>The newSampleData(double[], nrows, ncols) method used in the unit tests adds a unitary column to the design matrix, resulting in an intercept term being estimated among the regression parameters.  The other newSampleData methods do not do this, forcing users to add the column of &quot;1&quot;s to estimate models with intercept.  Behavior should be consistent and users should not have to add the column.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.MultipleLinearRegressionAbstractTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.OLSMultipleLinearRegressionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.OLSMultipleLinearRegression.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.GLSMultipleLinearRegressionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.exception.util.LocalizedFormats.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.AbstractMultipleLinearRegression.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is blocked by" type="Blocker">409</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-12-12 21:49:44" id="408" opendate="2010-08-23 03:11:23" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>GLSMultipleLinearRegression has no nontrivial validation tests</summary>
+			
+			
+			<description>There are no non-trivial tests verifying the computations for GLSMultipleLinearRegression.  Tests verifying computations against analytically determined models, R or some other reference package / datasets should be added to ensure that the statistics reported by this class are valid.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.GLSMultipleLinearRegressionTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-04-04 04:53:13" id="555" opendate="2011-04-04 04:13:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MathUtils round method should propagate rather than wrap Runitme exceptions</summary>
+			
+			
+			<description>MathUtils.round(double, int, int) can generate IllegalArgumentException or ArithmeticException.  Instead of wrapping these exceptions in MathRuntimeException, the conditions under which these exceptions can be thrown should be documented and the exceptions should be propagated directly to the caller.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.util.MathUtilsTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.util.MathUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-11 21:59:41" id="723" opendate="2011-12-11 21:03:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BitStreamGenerators (MersenneTwister, Well generators) do not clear normal deviate cache on setSeed</summary>
+			
+			
+			<description>The BitStream generators generate normal deviates (for nextGaussian) in pairs, caching the last value generated. When reseeded, the cache should be cleared; otherwise seeding two generators with the same value is not guaranteed to generate the same sequence.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.random.ISAACTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.random.ISAACRandom.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-02-02 11:12:52" id="575" opendate="2011-05-14 16:40:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Exceptions in genetics package or not consistent with the rest of [math]</summary>
+			
+			
+			<description>InvalidRepresentationException is checked and non-localized.  This exception should be placed in the [math] hierarchy.  The AbstractListChromosome constructor also throws a non-localised IAE, which should be replaced by an appropriate [math] exception.</description>
+			
+			
+			<version>2.0</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.RandomKey.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.GeneticAlgorithm.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.OnePointCrossover.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.exception.util.LocalizedFormats.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.ElitisticListPopulation.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.FixedGenerationCount.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.BinaryChromosome.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.RandomKeyMutation.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.PermutationChromosome.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.ListPopulation.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.BinaryMutation.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.TournamentSelection.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.InvalidRepresentationException.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.Chromosome.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.AbstractListChromosome.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.RandomKeyTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.genetics.BinaryChromosomeTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

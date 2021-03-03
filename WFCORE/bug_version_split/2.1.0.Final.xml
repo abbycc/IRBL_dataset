@@ -1,0 +1,1379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="WFCORE">
+	<bug fixdate="2016-03-30 14:44:25" id="1452" opendate="2016-03-28 21:29:48" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Socket binding resources do not register a requirement for their interface</summary>
+			
+			
+			<description>BindingAddHandler doesn&amp;amp;apos;t pass it&amp;amp;apos;s attributes into the superclass constructor, so the capability references don&amp;amp;apos;t get registered by the default AbstractAddStepHandler.recordCapabilitiesAndRequirements. And BindingAddHandler also doesn&amp;amp;apos;t override recordCapabilitiesAndRequirements to do the registration itself.</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.services.net.SocketBindingAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.services.net.BindingAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.services.net.BindingInterfaceHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-30 17:30:02" id="1448" opendate="2016-03-23 09:47:01" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>AttributeParser for ObjectListAttributeDefinitions doesn&amp;apos;t differentiate between empty and absent object lists</summary>
+			
+			
+			<description>Attributes of type ObjectList are left undefined when their enclosing element is empty, which makes it impossible to differentiate an empty object list from an unspecified one.
+The ability to distinguish the two scenarios is important in the security manager subsystem. Consider this configuration:
+
+
+
+
+
+
+&amp;lt;subsystem xmlns=&quot;urn:jboss:domain:security-manager:1.0&quot;&amp;gt;
+
+
+
+
+    &amp;lt;deployment-permissions&amp;gt;
+
+
+
+
+        &amp;lt;mininum-set&amp;gt;
+
+
+
+
+             ....
+
+
+
+
+        &amp;lt;/minimum-set&amp;gt;
+
+
+
+
+    &amp;lt;/deployment-permissions&amp;gt;
+
+
+
+
+&amp;lt;/subsystem&amp;gt;
+
+
+
+
+
+
+The maximum-set is absent and this case we want to use a default set with AllPermission. Now consider another configuration:
+
+
+
+
+
+
+&amp;lt;subsystem xmlns=&quot;urn:jboss:domain:security-manager:1.0&quot;&amp;gt;
+
+
+
+
+    &amp;lt;deployment-permissions&amp;gt;
+
+
+
+
+        &amp;lt;mininum-set/&amp;gt;
+
+
+
+
+        &amp;lt;maximum-set/&amp;gt;
+
+
+
+
+    &amp;lt;/deployment-permissions&amp;gt;
+
+
+
+
+&amp;lt;/subsystem&amp;gt;
+
+
+
+
+
+
+In this case, maximum-set has been specified but it is empty, which means the admin/user deliberately wants to use an emtpy set, possibly to enforce that no deployments with special permissions requirements get deployed.
+The problem is that both scenarios result in an undefined attribute for the maximum-set, which means that the default AllPermission set ends up being used in both cases. The parser doesn&amp;amp;apos;t initialize the attribute with an empty list when the enclosing element is present but is empty. So in the end, both approaches result in an undefined attribute.</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.AttributeParsers.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.AttributeMarshaller.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.PersistentResourceXMLDescription.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.AttributeMarshallers.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.AttributeParser.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.ExpressionResolverImpl.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.persistence.PersistentResourceXMLParserTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.ObjectListAttributeDefinition.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">3924</link>
+			
+			
+			<link description="blocks" type="Dependency">408</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-30 21:08:34" id="1450" opendate="2016-03-23 17:31:36" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ResourceBuilderRoot drops data when integrating an externally created child ResourceDefinition</summary>
+			
+			
+			<description>ResourceDefinitionRoot&amp;amp;apos;s impl of pushChild(ResourceDefinition child) is doing an incomplete integration of the data from &amp;amp;apos;child&amp;amp;apos;. It drops everything except attributes, operations and children, losing capabilities and other misc data.
+I found this will developing tests for WFCORE-1106.</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.ResourceBuilderRoot.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Dependency">1106</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-31 15:57:24" id="1453" opendate="2016-03-29 20:21:07" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>module patched in a one-off not included in the next cp is not port-forwarded from the prev cp</summary>
+			
+			
+			<description>If CP1 patches module M, a one-off patch later patches the same module M and the following CP2 does not include M at all, module M will not be port-forwarded from CP1. M will be loaded from the original base instead.</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.patching.runner.PatchingTasks.java</file>
+			
+			
+			<file type="M">org.jboss.as.patching.runner.PatchMergeUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.patching.runner.PatchingTask.java</file>
+			
+			
+			<file type="M">org.jboss.as.patching.runner.PatchingTaskDescription.java</file>
+			
+			
+			<file type="M">org.jboss.as.patching.runner.IdentityPatchRunner.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.patching.CPRollingbackOneOffTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.patching.metadata.ModuleItem.java</file>
+			
+			
+			<file type="M">org.jboss.as.patching.runner.IdentityPatchContext.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-05 20:52:05" id="1464" opendate="2016-04-05 16:34:51" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>LogContexts are not removed for ear subdeployments</summary>
+			
+			
+			<description>If an ear does not have its own LogContext created, but a subdeployment in it does, the subdeployment never has its LogContext cleaned up upon undeploy, leading to PermGen leaks.</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.logging.deployments.AbstractLoggingDeploymentProcessor.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned to" type="Cloners">4101</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-18 20:15:03" id="1456" opendate="2016-03-31 01:21:50" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>org.jboss.as.cli.scriptsupport.CLI prevents use of embed-server and embed-host-controller</summary>
+			
+			
+			<description>The org.jboss.as.cli.scriptsupport.CLI will throw an exception if the user invokes the cmd method before invoking one of the connect methods. But the connect/disconnect methods are oriented toward remote connections. The result is you can&amp;amp;apos;t really use this class with the offline CLI.
+I&amp;amp;apos;m not sure what the best fix is here. Perhaps new method(s) analogous to connect/disconnect that establish a CommandContext but don&amp;amp;apos;t call connectController(). Or perhaps the checkNotConnected() call in the cmd method should just be dropped, and an unconnected command context created. But then the existing connect/disconnect methods would need to be reworked to deal with the fact that an unconnected command context may be present.</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.completion.mock.MockCommandContext.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.impl.CommandContextImpl.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.scriptsupport.CLI.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.CommandContext.java</file>
+			
+			
+			<file type="D">org.jboss.as.test.integration.management.cli.CLITestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-21 01:39:32" id="1486" opendate="2016-04-20 11:24:49" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>PersistanceResourceTestCase fails on some windows machines</summary>
+			
+			
+			<description>Description of problem:
+PersistanceResourceTestCase from wildfly-core fails on some windows machines.
+Steps to Reproduce:
+
+cd controller
+mvn test -Dtest=PersistanceResourceTestCase
+
+Actual results:
+
+
+
+
+
+
+java.lang.AssertionError: DEV99\hudson:READ_DATA/WRITE_DATA/APPEND_DATA/READ_NAMED_ATTRS/WRITE_NAMED_ATTRS/EXECUTE/DELETE_CHILD/READ_ATTRIBUTES/WRITE_ATTRIBUTES/READ_ACL/SYNCHRONIZE:ALLOW
+
+
+
+
+Expected: a collection containing &amp;lt;WRITE_OWNER&amp;gt;
+
+
+
+
+     but: was &amp;lt;WRITE_ATTRIBUTES&amp;gt;, was &amp;lt;APPEND_DATA&amp;gt;, was &amp;lt;READ_ACL&amp;gt;, was &amp;lt;SYNCHRONIZE&amp;gt;, was &amp;lt;DELETE_CHILD&amp;gt;, was &amp;lt;READ_ATTRIBUTES&amp;gt;, was &amp;lt;WRITE_DATA&amp;gt;, was &amp;lt;WRITE_NAMED_ATTRS&amp;gt;, was &amp;lt;READ_DATA&amp;gt;, was &amp;lt;READ_NAMED_ATTRS&amp;gt;, was &amp;lt;EXECUTE&amp;gt;
+
+
+
+
+	at org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:20)
+
+
+
+
+	at org.junit.Assert.assertThat(Assert.java:865)
+
+
+
+
+	at org.jboss.as.controller.persistence.PersistanceResourceTestCase.testAclFilePermissions(PersistanceResourceTestCase.java:701)
+
+
+
+
+
+
+Expected results:
+No errors on output</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.persistence.PersistanceResourceTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">2335</link>
+			
+			
+			<link description="is related to" type="Related">1522</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-22 21:10:29" id="1470" opendate="2016-04-13 12:01:36" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>There are unknown project codes in wildfly core</summary>
+			
+			
+			<description> we see unknown project codes in wildfly-core:
+
+
+
+
+
+
+        &amp;amp;apos;&amp;lt;&amp;lt;none&amp;gt;&amp;gt;&amp;amp;apos; - &amp;amp;apos;version/src/main/java/org/jboss/as/version/UsageMessages.java&amp;amp;apos;
+
+
+
+
+        &amp;amp;apos;N/A&amp;amp;apos; - &amp;amp;apos;core-security/implementation/src/main/java/org/jboss/as/core/security/CoreSecurityMessages.java&amp;amp;apos;
+
+
+
+
+
+
+They should be changed to empty string.
+https://issues.jboss.org/browse/EAP7-44?focusedCommentId=13170957&amp;amp;page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-13170957</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.version.UsageMessages.java</file>
+			
+			
+			<file type="M">org.jboss.as.core.security.CoreSecurityMessages.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">4198</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-26 02:13:09" id="1501" opendate="2016-04-23 11:42:10" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Failure to create timestamped config file history fails boot</summary>
+			
+			
+			<description>Something like the following shouldn&amp;amp;apos;t be allowed to fail a boot; if it happens an ERROR should be logged but no exception thrown:
+
+
+
+
+
+
+
+
+
+
+
+2016-04-22 22:10:21,247 ERROR [org.jboss.as.server] (Controller Boot Thread) WFLYSRV0055: Caught exception during boot: java.lang.IllegalStateException: WFLYCTL0056: Could not rename C:\BuildAgent\work\38e1ea00f932992d\full\testsuite\integration\basic\target\jbossas\standalone\configuration\standalone_xml_history\current to C:\BuildAgent\work\38e1ea00f932992d\full\testsuite\integration\basic\target\jbossas\standalone\configuration\standalone_xml_history\20160422-221021244
+
+
+
+
+	at org.jboss.as.controller.persistence.ConfigurationFile.createHistoryDirectory(ConfigurationFile.java:668)
+
+
+
+
+	at org.jboss.as.controller.persistence.ConfigurationFile.successfulBoot(ConfigurationFile.java:500)
+
+
+
+
+	at org.jboss.as.controller.persistence.BackupXmlConfigurationPersister.successfulBoot(BackupXmlConfigurationPersister.java:94)
+
+
+
+
+	at org.jboss.as.controller.AbstractControllerService.finishBoot(AbstractControllerService.java:452)
+
+
+
+
+	at org.jboss.as.server.ServerService.boot(ServerService.java:367)
+
+
+
+
+	at org.jboss.as.controller.AbstractControllerService$1.run(AbstractControllerService.java:299)
+
+
+
+
+	at java.lang.Thread.run(Thread.java:745)
+
+
+
+
+
+
+That stack trace indicates file standalone\configuration\standalone_xml_history\20160422-221021144 must already exist but the 2nd attempt renameTo standalone\configuration\standalone_xml_history\20160422-221021244 has failed. It would be good to sort out what happened, but regardless it should not fail boot.</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.logging.ControllerLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.persistence.FilePersistenceUtils.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.persistence.ConfigurationFile.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">1078</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-05-17 00:00:05" id="1525" opendate="2016-04-28 21:41:39" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary> ageout-history does not report failures</summary>
+			
+			
+			<description>When ageout-history cannot delete the old CP files, it silently fails and returns &quot;success&quot;.
+LocalAgeoutHistoryHandler#recursiveDelete does keep track of whether the
+delete failed or succeeded, but the return value from this method is ignored
+in execute(...).
+If recursiveDelete returns false, it should report a failure.</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.patching.logging.PatchLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.patching.management.LocalAgeoutHistoryHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned to" type="Cloners">4542</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-05-18 13:47:45" id="1490" opendate="2016-04-20 15:54:12" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JDK9 removes support for sun.boot.class.path</summary>
+			
+			
+			<description>Cite from: http://openjdk.java.net/jeps/261
+_Removed: Bootstrap class-path options
+In earlier releases the -Xbootclasspath option allows the default bootstrap class path to be overridden, and the -Xbootclasspath/p option allows a sequence of files and directories to be prepended to the default path. The computed value of this path is reported via the JDK-specific system property sun.boot.class.path.
+With the module system in place there is no longer a bootstrap class path as such, so the javac compiler only supports the -Xbootclasspath option in legacy mode, the java launcher no longer supports either option, and the system property sun.boot.class.path will be removed._</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.test.integration.management.interfaces.JmxManagementInterface.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">1374</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-05-20 03:11:37" id="1491" opendate="2016-04-20 16:06:37" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>WildFly-Core and its build process cannot rely on default JDK JAXP providers</summary>
+			
+			
+			<description>In order to ensure consistent WildFly-Core build and runtime behavior on all JDKs it is necessary to explicitly specify which JAXP providers should be used instead of default ones
+provided by JDK.</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.test.patching.CumulativePatchingScenariosTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">1374</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-05-20 03:11:49" id="1493" opendate="2016-04-20 20:05:27" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>org.jboss.as.host.controller.Main.getHostSystemProperties() doesn&amp;apos;t propagate -Djdk.launcher.addexports.%d=%s value properly</summary>
+			
+			
+			<description>JDK9 provides -XaddExports launch option to workaround potential migration problems to modularized JDK.
+When modularized JDK forks new process all -XaddExports values are translated into
+-Djdk.launcher.addexports.%d=%s JVM options.
+But method org.jboss.as.host.controller.Main.getHostSystemProperties()
+has problems with its values.
+The format of -XaddExports (and thus for -Djdk.launcher.addexports.%d=%s too) is:
+
+
+
+
+
+
+-XaddExports:&amp;lt;source-module&amp;gt;/&amp;lt;package&amp;gt;=&amp;lt;target-module&amp;gt;(,&amp;lt;target-module&amp;gt;)*
+
+
+
+
+
+
+See http://openjdk.java.net/jeps/261 for more information.</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.host.controller.Main.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">1374</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-24 15:28:01" id="1474" opendate="2016-04-15 15:19:39" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CLI version command should not use JBoss AS in its output field names</summary>
+			
+			
+			<description>An example output of the current version command
+[standalone@localhost:9990 /] version 
+JBoss Admin Command-line Interface
+JBOSS_HOME: /xxx/wildfly-core-3.0.0.Alpha1-SNAPSHOT
+JBoss AS release: 3.0.0.Alpha1-SNAPSHOT &quot;Kenny&quot;
+JBoss AS product: &amp;lt;product name&amp;gt;
+JAVA_HOME: /yyy/java
+java.version: 1.8.0_60
+java.vm.vendor: Oracle Corporation
+java.vm.version: 25.60-b23
+os.name: Linux
+os.version: 4.4.6-300.fc23.x86_64
+&amp;amp;apos;JBoss AS&amp;amp;apos; should not appear in the field names.</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.handlers.VersionHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.integration.management.cli.CliArgumentsTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">1476</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-24 21:13:12" id="1528" opendate="2016-05-05 17:21:10" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>EAP 7 with secured management become unavailable after ~8 days</summary>
+			
+			
+			<description>Appears there may be an EAP 7.0.0.CR01 2-way ssl issue in domain mode.  
+Issue discovered by JON QE after testing for 8 days with SSL.
+JON QE did not see the same issue when running identical test against EAP 6. 
+Restarting the remote client(JON Agent) did not repair/fix the issue, and only was repaired after EAP instance restarted.
+See BZ https://bugzilla.redhat.com/show_bug.cgi?id=1330180#c0 for more details.
+JON team would like some evaluation done to determine:
+i)if this is EAP 7 issue or
+ii)somehow just a JON issue
+iii)suggestions on what to do when we try to reproduce properly or ways to shorten reproduce cycle.
+This issue could affect GA release schedules.</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>2.2.0.CR2, 3.0.0.Alpha3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.ExternalManagementRequestExecutor.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.operations.HttpManagementAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.HostControllerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.operations.HttpManagementAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.ServerService.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is caused by" type="Causality">1418</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-08 18:24:41" id="1523" opendate="2016-02-01 06:17:23" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RestartParentResourceRemoveHandler should fail when removing non-existing resources</summary>
+			
+			
+			<description>In case when non-existent policy-module is removed through Management CLI, operation should finish with failure. However it finishes with outcome success and nothing is changed. It can be confusing since wrong command seems same as correct command.</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>2.2.0.CR6, 3.0.0.Alpha4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.domain.management.security.SecurityRealmChildRemoveHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.RestartParentResourceRemoveHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">3112</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1607</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6083</link>
+			
+			
+			<link description="incorporates" type="Superset">6102</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-26 02:42:04" id="1481" opendate="2016-04-18 14:48:59" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>list-add operation doesn&amp;apos;t work on login-modules attribute</summary>
+			
+			
+			<description>Executing list-add operation on login-modules results in the modules being replaced instead of appending new module.</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.operations.global.WriteAttributeHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.AbstractWriteAttributeHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.operations.global.AbstractCollectionHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.operations.global.ReadAttributeHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.operation.global.EnhancedSyntaxTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.operation.global.CollectionOperationsTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned to" type="Cloners">4245</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-27 16:05:05" id="1563" opendate="2016-05-20 15:07:06" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Failed CLI batch command with &quot;deploy --force&quot; for replace deployment</summary>
+			
+			
+			<description>Using &amp;amp;apos;deploy --force&amp;amp;apos; command on CLI batch mode fails and returns an error message: &quot;Request is missing the address part.&quot;
+
+
+
+
+
+
+Command
+
+
+
+
+
+
+ jboss-cli.sh --connect --controller=127.0.0.1:9999 --user=admin --password=xxx --file=&quot;deploy.cli&quot;
+
+
+
+
+
+
+
+
+
+
+
+
+deploy.cli
+
+
+
+
+
+
+batch
+
+
+
+
+deploy --force ./jboss-ejb-in-ear.ear
+
+
+
+
+run-batch
+
+
+
+
+
+
+Full Error message
+Failed to handle &amp;amp;apos;run-batch&amp;amp;apos;: org.jboss.as.cli.CommandFormatException: Request is missing the address part.: Request is missing the address part.
+or
+The batch failed with the following error (you are remaining in the batch editing mode to have a chance to correct the error): Request is missing the address part.
+
+Expected message
+The batch executed successfully
+
+However, it&amp;amp;apos;s working in &quot;WildFly 10 CLI interactive mode&quot; and &quot;JBoss AS 7 CLI batch&quot; without error.
+There is no adding &quot;address&quot; key in buildDeploymentReplace() of DeployHandler like below.
+Even though on CLI batch mode it validates existence of &quot;address&quot; key in request with Util.validateRequest(), when &amp;amp;apos;run-batch&amp;amp;apos; command execute in org.jboss.as.cli.handlers.batch.BatchRunHandler.doHandle()
+-------------------------------------------------------------------------------------------
+
+First deploy: add by org.jboss.as.cli.handlers.DeployHandler.buildDeploymentAdd()
+
+
+
+
+
+
+{
+
+
+
+
+    &quot;operation&quot; =&amp;gt; &quot;add&quot;,
+
+
+
+
+    &quot;address&quot; =&amp;gt; {&quot;deployment&quot; =&amp;gt; &quot;jboss-ejb-in-ear.ear&quot;},
+
+
+
+
+    &quot;content&quot; =&amp;gt; [{&quot;bytes&quot; =&amp;gt; bytes {
+
+
+
+
+    ...
+
+
+
+
+    }}]
+
+
+
+
+}
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------
+After deploy: replace by org.jboss.as.cli.handlers.DeployHandler.buildDeploymentReplace()
+
+
+
+
+
+
+{
+
+
+
+
+    &quot;operation&quot; =&amp;gt; &quot;full-replace-deployment&quot;,
+
+
+
+
+    &quot;name&quot; =&amp;gt; &quot;jboss-ejb-in-ear.ear&quot;,
+
+
+
+
+    &quot;enabled&quot; =&amp;gt; true,
+
+
+
+
+    &quot;content&quot; =&amp;gt; [{&quot;bytes&quot; =&amp;gt; bytes {
+
+
+
+
+    ...
+
+
+
+
+    }}]
+
+
+
+
+}
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------
+Expected by org.jboss.as.cli.handlers.DeployHandler.buildDeploymentReplace()
+
+
+
+
+
+
+{
+
+
+
+
+    &quot;operation&quot; =&amp;gt; &quot;full-replace-deployment&quot;,
+
+
+
+
+    &quot;name&quot; =&amp;gt; &quot;jboss-ejb-in-ear.ear&quot;,
+
+
+
+
+    &quot;address&quot; =&amp;gt; [],
+
+
+
+
+    &quot;enabled&quot; =&amp;gt; true,
+
+
+
+
+    &quot;content&quot; =&amp;gt; [{&quot;bytes&quot; =&amp;gt; bytes {
+
+
+
+
+    ...
+
+
+
+
+    }}]
+
+
+
+
+}
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------
+
+</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.handlers.DeployHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned to" type="Cloners">4651</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-28 16:56:23" id="1592" opendate="2016-06-13 18:50:58" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>PropertiesFileLoader persists entries after deletion</summary>
+			
+			
+			<description>There is a bug in PropertiesFileLoader#persistProperties, specifically here. Because of the write call in the else block, properties are persisted to the file even after they have been deleted in memory.
+Here is a fixed implementation of persistProperties that we are using as a workaround.</description>
+			
+			
+			<version>2.1.0.Final</version>
+			
+			
+			<fixedVersion>2.2.0.Final, 3.0.0.Alpha4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.domain.management.security.PropertiesFileLoader.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.management.security.PropertiesPatternMatchingTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

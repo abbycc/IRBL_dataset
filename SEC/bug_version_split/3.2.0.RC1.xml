@@ -1,0 +1,2042 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="SEC">
+	<bug fixdate="2013-08-24 21:31:25" id="2280" opendate="2013-08-24 21:24:59" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix SessionFixationConfigurer#changeSessionId Javadoc</summary>
+			
+			
+			<description>The Javadoc for SessionFixationConfigurer#changeSessionId() was copied and pasted from SessionFixationConfigurer#none() and never updated. It is incorrect. This commit fixes that. It also adds a newline at the end of the file, which the file was missing, causing Git to complain.
+Pull request https://github.com/SpringSource/spring-security/pull/42</description>
+			
+			
+			<version>3.2.0.RC1</version>
+			
+			
+			<fixedVersion>3.2.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-08-24 21:32:23" id="2276" opendate="2013-08-22 06:47:55" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Delay storing the CsrfToken until the CsrfToken is accessed</summary>
+			
+			
+			<description>Rather than adding the CsrfToken to the HttpSession immediately, we can delay adding the CsrfToken until the token is accessed on the servlet request. This ensures that only a request that is just prior to CSRF will create the session.</description>
+			
+			
+			<version>3.2.0.RC1</version>
+			
+			
+			<fixedVersion>3.2.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessorTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.csrf.CsrfToken.java</file>
+			
+			
+			<file type="D">org.springframework.security.web.csrf.CsrfTokenTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.csrf.CsrfTokenRepository.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.csrf.CsrfFilterTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurerServlet31Tests.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.csrf.HttpSessionCsrfTokenRepositoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.csrf.CsrfFilter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2376</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-08-27 14:47:18" id="2272" opendate="2013-08-21 05:10:58" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CsrfRequestDataValueProcessor should support Spring 4.2.0M2+</summary>
+			
+			
+			<description>RequestDataValueProcessor was changed non-passively in Spring 4.0.0.M2 so we should make changes to CsrfRequestDataValueProcessor to support both versions. See https://jira.springsource.org/browse/SPR-10041</description>
+			
+			
+			<version>3.2.0.RC1</version>
+			
+			
+			<fixedVersion>3.2.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.http.CsrfBeanDefinitionParser.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.web.configuration.CsrfWebMvcConfiguration.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessorTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessor.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Relate">10041</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-08-31 10:06:39" id="2296" opendate="2013-08-30 08:56:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HttpServletRequest.login should throw ServletException if already authenticated</summary>
+			
+			
+			<description>http://docs.oracle.com/javaee/6/api/javax/servlet/http/HttpServletRequest.html#login%28java.lang.String,%20java.lang.String%29</description>
+			
+			
+			<version>3.2.0.RC1</version>
+			
+			
+			<fixedVersion>3.2.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.web.servletapi.HttpServlet3RequestFactory.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilterTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-20 14:06:07" id="2301" opendate="2013-09-03 06:30:17" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>GlobalMethodSecurityConfiguration&amp;apos;s DefaultWebSecurityExpressionHandler has null BeanResolver</summary>
+			
+			
+			<description>
+this blog post got me started with java config, and everything worked fine until i tried to use @PreAuthorize annotation that uses my custom authentication service (via @myCustomService) expression. I get an error that
+No bean resolver registered in the context to resolve access to bean myCustomService
+Looking at M2 and RC1 source code, it seems that when WebSecurity is created in WebSecurityConfiguration and the default DefaultWebSecurityExpressionHandler is used and it has no BeanResolver set (from AbstractSecurityExpressionHandler).
+Might this be a bug in the java based configuration?</description>
+			
+			
+			<version>3.2.0.RC1</version>
+			
+			
+			<fixedVersion>3.2.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Relate">2303</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-20 14:06:08" id="2304" opendate="2013-09-03 07:55:08" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>GlobalMethodSecurityConfiguration has two methods for the Expression Handler</summary>
+			
+			
+			<description/>
+			
+			
+			<version>3.2.0.RC1</version>
+			
+			
+			<fixedVersion>3.2.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-24 09:37:27" id="2328" opendate="2013-09-15 14:22:07" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Java configuration missing hasAnyRole</summary>
+			
+			
+			<description>Java configuration for restricting access to a URI has methods hasAuthority, hasAnyAuthority, and hasRole. It is missing hasAnyRole. This is not a big deal since you can work around it with hasAnyAuthority, but it&amp;amp;apos;s still not consistent with using string expressions in access or annotations.</description>
+			
+			
+			<version>3.2.0.RC1</version>
+			
+			
+			<fixedVersion>3.2.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-25 15:32:34" id="2302" opendate="2013-09-03 06:46:16" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Allow filters to register in front of SpringSecurityFilterChain</summary>
+			
+			
+			<description>With an AbstractSecurityWebApplicationInitializer in place its imposible to register an other filter in front of SpringSecurityFilterChain.</description>
+			
+			
+			<version>3.2.0.RC1</version>
+			
+			
+			<fixedVersion>3.2.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-26 07:08:30" id="2336" opendate="2013-09-19 22:54:04" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>WebSecurityConfigurerAdapter#registerAuthentication incorrectly states exposed Beans</summary>
+			
+			
+			<description>Updated
+I was fooled by this java doc in WebSecurityConfigurerAdapter#registerAuthentication:
+&quot;The resulting
+{@link AuthenticationManager}
+will be exposed as a Bean as will the last populated 
+{@link UserDetailsService}
+that is created with the
+{@link AuthenticationManagerBuilder}
+
+Original
+This issue links to SEC-2205, I have simple @Configuration like this:
+
+
+
+
+
+
+SecurityConfig.java
+
+
+
+
+
+
+
+
+
+
+
+@Configuration
+
+
+
+
+@EnableWebSecurity
+
+
+
+
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+
+
+
+
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+
+
+
+
+
+
+
+
+    @Override
+
+
+
+
+    public void configure(WebSecurity web) throws Exception {
+
+
+
+
+        web
+
+
+
+
+                .ignoring()
+
+
+
+
+                .antMatchers(&quot;/resources/**&quot;, &quot;/favicon.ico&quot;);
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+    @Override
+
+
+
+
+    protected void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+
+
+
+
+        auth
+
+
+
+
+                .inMemoryAuthentication()
+
+
+
+
+                .withUser(&quot;user&quot;).password(&quot;password&quot;).roles(&quot;USER&quot;).and()
+
+
+
+
+                .withUser(&quot;admin&quot;).password(&quot;password&quot;).roles(&quot;USER&quot;, &quot;ADMIN&quot;);
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+    @Bean
+
+
+
+
+    @Override
+
+
+
+
+    public AuthenticationManager authenticationManagerBean()
+
+
+
+
+            throws Exception {
+
+
+
+
+        return super.authenticationManagerBean();
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+    @Override
+
+
+
+
+    protected void configure(HttpSecurity http) throws Exception {
+
+
+
+
+        http
+
+
+
+
+                .authorizeRequests()
+
+
+
+
+                .antMatchers(&quot;/admin**&quot;).hasRole(&quot;ADMIN&quot;)
+
+
+
+
+                .anyRequest().authenticated()
+
+
+
+
+                .and()
+
+
+
+
+                .formLogin()
+
+
+
+
+                .loginPage(&quot;/signin&quot;)
+
+
+
+
+                .permitAll()
+
+
+
+
+                .and()
+
+
+
+
+                .logout()
+
+
+
+
+                .logoutUrl(&quot;/signout&quot;);
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+And then simple Junit test, which actually uses SecurityRequestPostProcessors approach from (SEC-2015), but here for demonstration puroposes I have only autowired UserDetailsService:
+
+
+
+
+
+
+SecurityFilterTest.java
+
+
+
+
+
+
+@RunWith(SpringJUnit4ClassRunner.class)
+
+
+
+
+@WebAppConfiguration
+
+
+
+
+@ContextConfiguration(classes = SecurityConfig.class)
+
+
+
+
+public class SecurityFilterTest {
+
+
+
+
+
+
+
+
+
+    @Autowired
+
+
+
+
+    private FilterChainProxy springSecurityFilterChain;
+
+
+
+
+
+
+
+
+
+    @Autowired
+
+
+
+
+    private WebApplicationContext wac;
+
+
+
+
+
+
+
+
+
+    private MockMvc mockMvc;
+
+
+
+
+
+
+
+
+
+    @Autowired
+
+
+
+
+    private UserDetailsService userDetailsService;
+
+
+
+
+
+
+
+
+
+    @Before
+
+
+
+
+    public void setup() {
+
+
+
+
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac)
+
+
+
+
+                .addFilters(this.springSecurityFilterChain).build();
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+    @Test
+
+
+
+
+    public void requiresAuthentication() throws Exception {
+
+
+
+
+        mockMvc.perform(get(&quot;/hello&quot;))
+
+
+
+
+                .andExpect(status().isMovedTemporarily())
+
+
+
+
+                .andExpect(redirectedUrl(&quot;http://localhost/signin&quot;));
+
+
+
+
+    }
+
+
+
+
+}
+
+
+
+
+
+
+This results:
+
+
+
+
+
+
+stacktrace
+
+
+
+
+
+
+Caused by: org.springframework.beans.factory.BeanCreationException: Could not autowire field: private org.springframework.security.core.userdetails.UserDetailsService
+
+
+
+
+....
+
+
+
+
+SecurityFilterTest.userDetailsService; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type [org.springframework.security.core.userdetails.UserDetailsService] found for dependency: expected at least 1 bean which qualifies as autowire candidate for this dependency. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+
+
+
+
+
+
+</description>
+			
+			
+			<version>3.2.0.RC1</version>
+			
+			
+			<fixedVersion>3.2.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-10-06 15:35:06" id="2303" opendate="2013-09-03 07:53:51" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>WebSecurity&amp;apos;s default expression handler does not have the bean resolver set</summary>
+			
+			
+			<description>Similar to SEC-2301</description>
+			
+			
+			<version>3.2.0.RC1</version>
+			
+			
+			<fixedVersion>3.2.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.web.builders.WebSecurity.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Relate">2301</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-10-24 10:51:19" id="2376" opendate="2013-10-23 16:47:58" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Document/Fix CSRF behavior with pre-auth</summary>
+			
+			
+			<description>3.2.0.RC1 with &amp;lt;http auto-config=&quot;true&quot;&amp;gt;  with &amp;lt;csrf/&amp;gt; and a preauth filter
+When a user first accesses a pre-authed site
+1. the CSRF token is added to the session.
+2. The pre-auth filter creates the Authentication and related security context
+3. The SessionManagementFilter then runs, and since its a new auth and session it calls &amp;amp;apos;CsrfAuthenticationStrategy&amp;amp;apos; which removes the CSRF token from the session.
+4. The return view now has an invalid CSRF token in any forms.
+A 2nd GET creates a new CSRF token, and then everything works normally.
+--------------------------------
+I posted my workaround in the forum, but it would nice to:
+1. Document the behavior/workaround in
+http://docs.spring.io/spring-security/site/docs/3.2.x-SNAPSHOT/reference/html/csrf.html
+so that others don&amp;amp;apos;t have the same issue.
+2. Offer a better way (or workaround) to remove the CsrfAuthenticationStrategy from the session management.
+Is defining my own custom CSRF filter and repository a &quot;cleaner&quot; workaround to defining my own session management filter?
+Or is updating the xsd, and doing something like &amp;lt;csrf auth-strategy=&quot;disable&quot;/&amp;gt; a possibility?
+</description>
+			
+			
+			<version>3.2.0.RC1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessorTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.csrf.CsrfToken.java</file>
+			
+			
+			<file type="D">org.springframework.security.web.csrf.CsrfTokenTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.csrf.CsrfTokenRepository.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.csrf.CsrfFilterTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurerServlet31Tests.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.csrf.HttpSessionCsrfTokenRepositoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.csrf.CsrfFilter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2276</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-10-30 10:12:31" id="2382" opendate="2013-10-30 09:16:58" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>AutowireBeanFactoryObjectPostProcessor does not work with BeanNameAutoProxyCreator</summary>
+			
+			
+			<description>When using Spring Security with BeanNameAutoProxyCreator the following error is produced because the beanName passed in by AutowireBeanFactoryObjectPostProcessor is null.
+
+
+
+
+
+
+SEVERE: Exception sending context initialized event to listener instance of class org.springframework.web.context.ContextLoaderListener
+
+
+
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;amp;apos;springSecurityFilterChain&amp;amp;apos; defined in class org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration: Instantiation of bean failed; nested exception is org.springframework.beans.factory.BeanDefinitionStoreException: Factory method [public javax.servlet.Filter org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration.springSecurityFilterChain() throws java.lang.Exception] threw exception; nested exception is java.lang.IllegalArgumentException: &amp;amp;apos;name&amp;amp;apos; must not be null
+
+
+
+
+    at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:581)
+
+
+
+
+    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1025)
+
+
+
+
+    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:921)
+
+
+
+
+    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:487)
+
+
+
+
+    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:458)
+
+
+
+
+    at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:295)
+
+
+
+
+    at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:223)
+
+
+
+
+    at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:292)
+
+
+
+
+    at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:194)
+
+
+
+
+    at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:628)
+
+
+
+
+    at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:932)
+
+
+
+
+    at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:479)
+
+
+
+
+    at org.springframework.web.context.ContextLoader.configureAndRefreshWebApplicationContext(ContextLoader.java:389)
+
+
+
+
+    at org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:294)
+
+
+
+
+    at org.springframework.web.context.ContextLoaderListener.contextInitialized(ContextLoaderListener.java:112)
+
+
+
+
+    at org.apache.catalina.core.StandardContext.listenerStart(StandardContext.java:4887)
+
+
+
+
+    at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:5381)
+
+
+
+
+    at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:150)
+
+
+
+
+    at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1559)
+
+
+
+
+    at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1549)
+
+
+
+
+    at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+
+
+
+
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+
+
+
+
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+
+
+
+
+    at java.lang.Thread.run(Thread.java:744)
+
+
+
+
+Caused by: org.springframework.beans.factory.BeanDefinitionStoreException: Factory method [public javax.servlet.Filter org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration.springSecurityFilterChain() throws java.lang.Exception] threw exception; nested exception is java.lang.IllegalArgumentException: &amp;amp;apos;name&amp;amp;apos; must not be null
+
+
+
+
+    at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:181)
+
+
+
+
+    at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:570)
+
+
+
+
+    ... 23 more
+
+
+
+
+Caused by: java.lang.IllegalArgumentException: &amp;amp;apos;name&amp;amp;apos; must not be null
+
+
+
+
+    at org.springframework.util.Assert.notNull(Assert.java:112)
+
+
+
+
+    at org.springframework.beans.factory.BeanFactoryUtils.transformedBeanName(BeanFactoryUtils.java:72)
+
+
+
+
+    at org.springframework.beans.factory.support.AbstractBeanFactory.transformedBeanName(AbstractBeanFactory.java:1018)
+
+
+
+
+    at org.springframework.beans.factory.support.AbstractBeanFactory.getAliases(AbstractBeanFactory.java:602)
+
+
+
+
+    at org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator.getAdvicesAndAdvisorsForBean(BeanNameAutoProxyCreator.java:90)
+
+
+
+
+    at org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator.wrapIfNecessary(AbstractAutoProxyCreator.java:359)
+
+
+
+
+    at org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator.postProcessAfterInitialization(AbstractAutoProxyCreator.java:322)
+
+
+
+
+    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsAfterInitialization(AbstractAutowireCapableBeanFactory.java:409)
+
+
+
+
+    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1488)
+
+
+
+
+    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:388)
+
+
+
+
+    at org.springframework.security.config.annotation.configuration.AutowireBeanFactoryObjectPostProcessor.postProcess(AutowireBeanFactoryObjectPostProcessor.java:56)
+
+
+
+
+    at org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter.getHttp(WebSecurityConfigurerAdapter.java:141)
+
+
+
+
+    at org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter.init(WebSecurityConfigurerAdapter.java:247)
+
+
+
+
+    at org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter.init(WebSecurityConfigurerAdapter.java:49)
+
+
+
+
+    at intouchapp.config.SecurityConfig$$EnhancerByCGLIB$$7c2e17f3.init(&amp;lt;generated&amp;gt;)
+
+
+
+
+    at org.springframework.security.config.annotation.AbstractConfiguredSecurityBuilder.init(AbstractConfiguredSecurityBuilder.java:352)
+
+
+
+
+    at org.springframework.security.config.annotation.AbstractConfiguredSecurityBuilder.doBuild(AbstractConfiguredSecurityBuilder.java:305)
+
+
+
+
+    at org.springframework.security.config.annotation.AbstractSecurityBuilder.build(AbstractSecurityBuilder.java:40)
+
+
+
+
+    at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration.springSecurityFilterChain(WebSecurityConfiguration.java:85)
+
+
+
+
+    at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$$EnhancerByCGLIB$$4da93da.CGLIB$springSecurityFilterChain$0(&amp;lt;generated&amp;gt;)
+
+
+
+
+    at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$$EnhancerByCGLIB$$4da93da$$FastClassByCGLIB$$841a1210.invoke(&amp;lt;generated&amp;gt;)
+
+
+
+
+    at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:228)
+
+
+
+
+    at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:286)
+
+
+
+
+    at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$$EnhancerByCGLIB$$4da93da.springSecurityFilterChain(&amp;lt;generated&amp;gt;)
+
+
+
+
+    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+
+
+
+    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+
+
+
+
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+
+
+
+    at java.lang.reflect.Method.invoke(Method.java:606)
+
+
+
+
+    at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:160)
+
+
+
+
+    ... 24 more
+
+
+
+
+
+</description>
+			
+			
+			<version>3.2.0.RC1</version>
+			
+			
+			<fixedVersion>3.2.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.annotation.configuration.AutowireBeanFactoryObjectPostProcessor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-11-15 11:44:03" id="2350" opendate="2013-10-04 10:23:43" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Warning when using 3.2.0.RC2 with Spring Framework 4.0</summary>
+			
+			
+			<description>When starting an application running Spring Framework 4.0 and Spring Security 3.2.0.RC2, the following message is logged:
+12:19:08.129 [localhost-startStop-1]   WARN  org.springframework.security.core.SpringSecurityCoreVersion org.springframework.security.core.SpringSecurityCoreVersion.performVersionChecks(SpringSecurityCoreVersion.java:53): *** Spring Major version &amp;amp;apos;3&amp;amp;apos; expected, but you are running with version: 4.0.0.BUILD-SNAPSHOT. Please check your classpath for unwanted jar files.
+Spring Security should certainly warn if Spring Framework is older than supported, but it should not warn if Spring Framework is newer that expected. At the very least, 3.2.0 should support Spring Framework 4.</description>
+			
+			
+			<version>3.2.0.RC1</version>
+			
+			
+			<fixedVersion>3.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.core.SpringSecurityCoreVersionTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.core.SpringSecurityCoreVersion.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-12-04 14:19:52" id="2367" opendate="2013-10-17 09:50:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ProviderManager doesn&amp;apos;t report InternalAuthenticationServiceExceptions</summary>
+			
+			
+			<description>If the ProviderManager has multiple AuthenticationProviders and one of the earlier providers throws an InternalAuthenticationServiceException then it will not be reported if a later provider throws any kind of AuthenticationException.
+I experienced this when the errors that were occurring from a misconfigured LDAP provider were masked by the UsernameNotFoundException from the subsequent dao provider.
+Given the javadocs for InternalAuthenticationServiceException it sounds like these errors should be logged even if a subsequent authentication provider succeeds (or fails).  Perhaps ProviderManager.authenticate() should have a special case for handling IASEs like it does for {{AccountStatusException}}s.</description>
+			
+			
+			<version>3.2.0.RC1</version>
+			
+			
+			<fixedVersion>3.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.authentication.ProviderManager.java</file>
+			
+			
+			<file type="M">org.springframework.security.authentication.ProviderManagerTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-29 16:31:03" id="2190" opendate="2013-07-02 05:02:45" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Support WebApplicationContext in any ServletContext attribute</summary>
+			
+			
+			<description>When using the new way of configuring the DispatcherServlet in the web.xml without the ContextLoaderListener (3.2.0 core), the AbstractAuthorizeTag cannot find the configured WebContext because it is not associated with the default contextAttribute WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE.
+The SpringSecurityFilterChain solved this problem by adding a contextAttribute init-param.
+web.xml :
+
+
+
+
+
+
+  &amp;lt;filter&amp;gt;
+
+
+
+
+    &amp;lt;filter-name&amp;gt;springSecurityFilterChain&amp;lt;/filter-name&amp;gt;
+
+
+
+
+    &amp;lt;filter-class&amp;gt;org.springframework.web.filter.DelegatingFilterProxy&amp;lt;/filter-class&amp;gt;
+
+
+
+
+    &amp;lt;init-param&amp;gt;
+
+
+
+
+      &amp;lt;param-name&amp;gt;contextAttribute&amp;lt;/param-name&amp;gt;
+
+
+
+
+      &amp;lt;param-value&amp;gt;org.springframework.web.servlet.FrameworkServlet.CONTEXT.springapp&amp;lt;/param-value&amp;gt;
+
+
+
+
+    &amp;lt;/init-param&amp;gt;
+
+
+
+
+  &amp;lt;/filter&amp;gt;
+
+
+
+
+
+
+
+
+
+  &amp;lt;servlet&amp;gt;
+
+
+
+
+    &amp;lt;servlet-name&amp;gt;springapp&amp;lt;/servlet-name&amp;gt;
+
+
+
+
+    &amp;lt;servlet-class&amp;gt;org.springframework.web.servlet.DispatcherServlet&amp;lt;/servlet-class&amp;gt;
+
+
+
+
+    &amp;lt;init-param&amp;gt;
+
+
+
+
+      &amp;lt;param-name&amp;gt;contextConfigLocation&amp;lt;/param-name&amp;gt;
+
+
+
+
+      &amp;lt;param-value&amp;gt;
+
+
+
+
+        /WEB-INF/springapp-security-config.xml
+
+
+
+
+        /WEB-INF/springapp-servlet-config.xml
+
+
+
+
+      &amp;lt;/param-value&amp;gt;
+
+
+
+
+    &amp;lt;/init-param&amp;gt;
+
+
+
+
+    &amp;lt;load-on-startup&amp;gt;1&amp;lt;/load-on-startup&amp;gt;
+
+
+
+
+  &amp;lt;/servlet&amp;gt;
+
+
+
+
+  &amp;lt;servlet-mapping&amp;gt;
+
+
+
+
+    &amp;lt;servlet-name&amp;gt;springapp&amp;lt;/servlet-name&amp;gt;
+
+
+
+
+    &amp;lt;url-pattern&amp;gt;/&amp;lt;/url-pattern&amp;gt;
+
+
+
+
+  &amp;lt;/servlet-mapping&amp;gt;
+
+
+
+
+
+
+Error on a jsp acces :
+
+
+
+
+
+
+javax.servlet.jsp.JspException: java.lang.IllegalStateException: No WebApplicationContext found: no ContextLoaderListener registered?] with root cause
+
+
+
+
+java.lang.IllegalStateException: No WebApplicationContext found: no ContextLoaderListener registered?
+
+
+
+
+	at org.springframework.web.context.support.WebApplicationContextUtils.getRequiredWebApplicationContext(WebApplicationContextUtils.java:90)
+
+
+
+
+	at org.springframework.security.taglibs.authz.AbstractAuthorizeTag.getExpressionHandler(AbstractAuthorizeTag.java:315)
+
+
+
+
+	at org.springframework.security.taglibs.authz.AbstractAuthorizeTag.authorizeUsingAccessExpression(AbstractAuthorizeTag.java:172)
+
+
+
+
+	at org.springframework.security.taglibs.authz.AbstractAuthorizeTag.authorize(AbstractAuthorizeTag.java:105)
+
+
+
+
+	at org.springframework.security.taglibs.authz.JspAuthorizeTag.doStartTag(JspAuthorizeTag.java:54)
+
+
+
+
+	at org.apache.jsp.WEB_002dINF.jsp.home.home_jsp._jspx_meth_sec_005fauthorize_005f0(home_jsp.java:187)
+
+
+
+
+	at org.apache.jsp.WEB_002dINF.jsp.home.home_jsp.access$3(home_jsp.java:177)
+
+
+
+
+	at org.apache.jsp.WEB_002dINF.jsp.home.home_jsp$Helper.invoke0(home_jsp.java:254)
+
+
+
+
+	at org.apache.jsp.WEB_002dINF.jsp.home.home_jsp$Helper.invoke(home_jsp.java:278)
+
+
+
+
+	at org.apache.jsp.tag.webtemplate.default_tag.doTag(default_tag.java:206)
+
+
+
+
+	at org.apache.jsp.WEB_002dINF.jsp.home.home_jsp._jspx_meth_template_005fdefault_005f0(home_jsp.java:115)
+
+
+
+
+	at org.apache.jsp.WEB_002dINF.jsp.home.home_jsp._jspService(home_jsp.java:86)
+
+
+
+
+	at org.apache.jasper.runtime.HttpJspBase.service(HttpJspBase.java:70)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:728)
+
+
+
+
+	at org.apache.jasper.servlet.JspServletWrapper.service(JspServletWrapper.java:432)
+
+
+
+
+	at org.apache.jasper.servlet.JspServlet.serviceJspFile(JspServlet.java:390)
+
+
+
+
+	at org.apache.jasper.servlet.JspServlet.service(JspServlet.java:334)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:728)
+
+
+
+
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:305)
+
+
+
+
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+
+
+
+
+	at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:749)
+
+
+
+
+	at org.apache.catalina.core.ApplicationDispatcher.processRequest(ApplicationDispatcher.java:487)
+
+
+
+
+	at org.apache.catalina.core.ApplicationDispatcher.doForward(ApplicationDispatcher.java:412)
+
+
+
+
+	at org.apache.catalina.core.ApplicationDispatcher.forward(ApplicationDispatcher.java:339)
+
+
+
+
+	at org.springframework.web.servlet.view.InternalResourceView.renderMergedOutputModel(InternalResourceView.java:238)
+
+
+
+
+	at org.springframework.web.servlet.view.AbstractView.render(AbstractView.java:264)
+
+
+
+
+	at org.springframework.web.servlet.DispatcherServlet.render(DispatcherServlet.java:1208)
+
+
+
+
+	at org.springframework.web.servlet.DispatcherServlet.processDispatchResult(DispatcherServlet.java:992)
+
+
+
+
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:939)
+
+
+
+
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:856)
+
+
+
+
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:936)
+
+
+
+
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:827)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:621)
+
+
+
+
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:812)
+
+
+
+
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:728)
+
+
+
+
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:305)
+
+
+
+
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+
+
+
+
+	at com.somesofts.bookmyevent.web.common.filter.SessionDebugFilter.doFilter(SessionDebugFilter.java:108)
+
+
+
+
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:243)
+
+
+
+
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:330)
+
+
+
+
+	at org.springframework.security.web.access.intercept.FilterSecurityInterceptor.invoke(FilterSecurityInterceptor.java:118)
+
+
+
+
+	at org.springframework.security.web.access.intercept.FilterSecurityInterceptor.doFilter(FilterSecurityInterceptor.java:84)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342)
+
+
+
+
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:113)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342)
+
+
+
+
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:103)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342)
+
+
+
+
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:113)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342)
+
+
+
+
+	at org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter.doFilter(RememberMeAuthenticationFilter.java:139)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342)
+
+
+
+
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:150)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342)
+
+
+
+
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:45)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342)
+
+
+
+
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:184)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342)
+
+
+
+
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:105)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342)
+
+
+
+
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:50)
+
+
+
+
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342)
+
+
+
+
+	at org.springframework.security.web.session.ConcurrentSessionFilter.doFilter(ConcurrentSessionFilter.java:125)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342)
+
+
+
+
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:87)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342)
+
+
+
+
+	at org.springframework.security.web.access.channel.ChannelProcessingFilter.doFilter(ChannelProcessingFilter.java:144)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:192)
+
+
+
+
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:160)
+
+
+
+
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:346)
+
+
+
+
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:259)
+
+
+
+
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:243)
+
+
+
+
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+
+
+
+
+	at com.somesofts.bookmyevent.web.common.filter.CacheDebugFilter.doFilter(CacheDebugFilter.java:54)
+
+
+
+
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:243)
+
+
+
+
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+
+
+
+
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:222)
+
+
+
+
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:123)
+
+
+
+
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:472)
+
+
+
+
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:171)
+
+
+
+
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:99)
+
+
+
+
+	at org.apache.catalina.valves.AccessLogValve.invoke(AccessLogValve.java:936)
+
+
+
+
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:118)
+
+
+
+
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:407)
+
+
+
+
+	at org.apache.coyote.http11.AbstractHttp11Processor.process(AbstractHttp11Processor.java:1004)
+
+
+
+
+	at org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:589)
+
+
+
+
+	at org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:312)
+
+
+
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+
+
+
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+
+
+
+
+	at java.lang.Thread.run(Thread.java:722)
+
+
+
+
+
+</description>
+			
+			
+			<version>3.2.0.RC1</version>
+			
+			
+			<fixedVersion>3.2.9, 4.0.3, 4.1.0 M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.web.context.support.SecurityWebApplicationContextUtils.java</file>
+			
+			
+			<file type="M">org.springframework.security.taglibs.authz.AbstractAuthorizeTagTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.session.HttpSessionEventPublisher.java</file>
+			
+			
+			<file type="M">org.springframework.security.web.session.HttpSessionEventPublisherTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.taglibs.authz.AccessControlListTagTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.taglibs.authz.AccessControlListTag.java</file>
+			
+			
+			<file type="M">org.springframework.security.taglibs.authz.AbstractAuthorizeTag.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

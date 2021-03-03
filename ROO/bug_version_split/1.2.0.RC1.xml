@@ -1,0 +1,2956 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="ROO">
+	<bug fixdate="2011-02-16 20:02:50" id="2123" opendate="2011-02-16 05:40:18" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NullPointerException at org.springframework.roo.addon.web.mvc.controller.converter.ConversionServiceMetadataProvider.isMethodOfInterest</summary>
+			
+			
+			<description>[FelixDispatchQueue] NullPointerException at org.springframework.roo.addon.web.mvc.controller.converter.ConversionServiceMetadataProvider.isMethodOfInterest(ConversionServiceMetadataProvider.java:145)
+I have no log.roo to replicate the issue yet.</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.1.2.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.converter.ConversionServiceMetadataProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-09-23 22:37:51" id="2773" opendate="2011-09-21 02:28:34" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>o.s.r.project.MavenProjectMetadataProviderTest fails on Windows</summary>
+			
+			
+			<description>Spring sources cannot be built on win7 platform (builds fine on unix).
+Please look after &amp;amp; resolve this issue ASAP.
+Attached the actual failing test&amp;amp;apos;s report.
+Build process (mvn install) produces the following output:
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 23.028s
+[INFO] Finished at: Wed Sep 21 11:20:05 CEST 2011
+[INFO] Final Memory: 32M/157M
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.8:test (default-test) on project org.springf
+ramework.roo.project: There are test failures.
+[ERROR]
+[ERROR] Please refer to C:\Java\spring-roo\project\target\surefire-reports for the individual test results.
+[ERROR] -&amp;gt; [Help 1]
+org.apache.maven.lifecycle.LifecycleExecutionException: Failed to execute goal org.apache.maven.plugins:maven-surefire-plugi
+n:2.8:test (default-test) on project org.springframework.roo.project: There are test failures.
+Please refer to C:\Java\spring-roo\project\target\surefire-reports for the individual test results.
+        at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:213)
+        at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:153)
+        at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:145)
+        at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:84)
+        at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:59)
+        at org.apache.maven.lifecycle.internal.LifecycleStarter.singleThreadedBuild(LifecycleStarter.java:183)
+        at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:161)
+        at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:319)
+        at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:156)
+        at org.apache.maven.cli.MavenCli.execute(MavenCli.java:537)
+        at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:196)
+        at org.apache.maven.cli.MavenCli.main(MavenCli.java:141)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:597)
+        at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:290)
+        at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:230)
+        at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:409)
+        at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:352)
+Caused by: org.apache.maven.plugin.MojoFailureException: There are test failures.
+Please refer to C:\Java\spring-roo\project\target\surefire-reports for the individual test results.
+        at org.apache.maven.plugin.surefire.SurefireHelper.reportExecution(SurefireHelper.java:74)
+        at org.apache.maven.plugin.surefire.SurefirePlugin.writeSummary(SurefirePlugin.java:644)
+        at org.apache.maven.plugin.surefire.SurefirePlugin.executeAfterPreconditionsChecked(SurefirePlugin.java:640)
+        at org.apache.maven.plugin.surefire.AbstractSurefireMojo.execute(AbstractSurefireMojo.java:103)
+        at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:101)
+        at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:209)
+        ... 19 more
+[ERROR]
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[ERROR]
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn &amp;lt;goals&amp;gt; -rf :org.springframework.roo.project</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.project.MavenProjectMetadataProviderTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-10-26 03:28:30" id="2850" opendate="2011-10-24 19:53:16" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Tab completion ignores some available commands</summary>
+			
+			
+			<description>If two or more commands have the same first word(s), then only one of them will be offered by the shell when you type those word(s) and press TAB. For example, these commands should be available all the time:
+
+metadata for id
+metadata for type
+metadata status
+metadata trace
+
+If you type &quot;metadata&quot; and press TAB, the shell responds with &quot;metadata trace&quot;, when it should offer you at least the above choices. Likewise if you type &quot;metadata for&quot; and press TAB, you get &quot;metadata for id&quot; instead of a choice between that and &quot;metadata for type&quot;.
+The workaround is to backspace over the unwanted completion and enter the first few letters of the desired completion, e.g. &quot;metadata for t&quot; will correctly give you &quot;metadata for type&quot;. However this approach is only practical if you already know what command you want, which largely defeats the purpose of tab completion.</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.shell.MethodTarget.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.SimpleParser.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.CommandMarker.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-10-30 22:56:34" id="2856" opendate="2011-10-30 22:37:46" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Vote application broken since multi-module maven changes</summary>
+			
+			
+			<description>Since the ROO-120 code was added, the Roo vote application has stopped workking</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.security.SecurityOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-11-13 16:59:38" id="2895" opendate="2011-11-13 16:58:39" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MVC forms should not display serialVersionUID field for composite primary key classes</summary>
+			
+			
+			<description>Appears to be a regression bug from M1 - the serialVersionUID field is available for input on the create and edit forms of a composite primary key class. This field should not be displayed.</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.serializable.SerializableMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.customdata.CustomDataKeys.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.details.WebMetadataServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.persistence.PersistenceMemberLocatorImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.converter.ConversionServiceMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspViewManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-11-13 22:05:23" id="2893" opendate="2011-11-13 03:09:43" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>web mvc setup creates two mvc servlets in trunk</summary>
+			
+			
+			<description>This is with build c2393bf.  When Roo generates / updates the web.xml file - it puts two copies of the mvc context in the system, and maps both to &amp;amp;apos;/&amp;amp;apos;:
+in web.xml:
+
+
+
+
+
+
+
+
+
+
+
+    &amp;lt;!-- Handles Spring requests --&amp;gt;
+
+
+
+
+    &amp;lt;servlet&amp;gt;
+
+
+
+
+        &amp;lt;servlet-name&amp;gt;app&amp;lt;/servlet-name&amp;gt;
+
+
+
+
+        &amp;lt;servlet-class&amp;gt;org.springframework.web.servlet.DispatcherServlet&amp;lt;/servlet-class&amp;gt;
+
+
+
+
+        &amp;lt;init-param&amp;gt;
+
+
+
+
+            &amp;lt;param-name&amp;gt;contextConfigLocation&amp;lt;/param-name&amp;gt;
+
+
+
+
+            &amp;lt;param-value&amp;gt;/WEB-INF/spring/webmvc-config.xml&amp;lt;/param-value&amp;gt;
+
+
+
+
+        &amp;lt;/init-param&amp;gt;
+
+
+
+
+        &amp;lt;load-on-startup&amp;gt;1&amp;lt;/load-on-startup&amp;gt;
+
+
+
+
+    &amp;lt;/servlet&amp;gt;
+
+
+
+
+    
+
+
+
+
+    
+
+
+
+
+    
+
+
+
+
+    &amp;lt;servlet&amp;gt;
+
+
+
+
+        &amp;lt;servlet-name&amp;gt;pizzashop&amp;lt;/servlet-name&amp;gt;
+
+
+
+
+        &amp;lt;servlet-class&amp;gt;org.springframework.web.servlet.DispatcherServlet&amp;lt;/servlet-class&amp;gt;
+
+
+
+
+        &amp;lt;init-param&amp;gt;
+
+
+
+
+            &amp;lt;param-name&amp;gt;contextConfigLocation&amp;lt;/param-name&amp;gt;
+
+
+
+
+            &amp;lt;param-value&amp;gt;WEB-INF/spring/webmvc-config.xml&amp;lt;/param-value&amp;gt;
+
+
+
+
+        &amp;lt;/init-param&amp;gt;
+
+
+
+
+        &amp;lt;load-on-startup&amp;gt;1&amp;lt;/load-on-startup&amp;gt;
+
+
+
+
+    &amp;lt;/servlet&amp;gt;
+
+
+
+
+    
+
+
+
+
+    &amp;lt;servlet-mapping&amp;gt;
+
+
+
+
+        &amp;lt;servlet-name&amp;gt;pizzashop&amp;lt;/servlet-name&amp;gt;
+
+
+
+
+        &amp;lt;url-pattern&amp;gt;/&amp;lt;/url-pattern&amp;gt;
+
+
+
+
+    &amp;lt;/servlet-mapping&amp;gt;
+
+
+
+
+    &amp;lt;servlet-mapping&amp;gt;
+
+
+
+
+        &amp;lt;servlet-name&amp;gt;app&amp;lt;/servlet-name&amp;gt;
+
+
+
+
+        &amp;lt;url-pattern&amp;gt;/&amp;lt;/url-pattern&amp;gt;
+
+
+
+
+    &amp;lt;/servlet-mapping&amp;gt;
+
+
+
+
+
+
+I found this running the pizzashop example and noticed it when doing a jetty:run and getting the two web contexts.</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.json.WebJsonOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.model.SpringJavaType.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebMvcOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.support.util.WebXmlUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-11-15 07:03:09" id="2886" opendate="2011-11-10 01:54:26" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>String index out of range: Exception when executing scaffolding process in Roo GWT for a &quot;set&quot; field</summary>
+			
+			
+			<description>
+
+
+
+
+
+java.lang.StringIndexOutOfBoundsException: String index out of range: -1
+
+
+
+
+   at java.lang.String.substring(String.java:1937)
+
+
+
+
+   at org.springframework.roo.addon.gwt.GwtTemplateServiceImpl.buildMirrorDataDictionary(GwtTemplateServiceImpl.java:576)
+
+
+
+
+   at org.springframework.roo.addon.gwt.GwtTemplateServiceImpl.getMirrorTemplateTypeDetails(GwtTemplateServiceImpl.java:111)
+
+
+
+
+   at org.springframework.roo.addon.gwt.scaffold.GwtScaffoldMetadataProviderImpl.get(GwtScaffoldMetadataProviderImpl.java:139)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.getInternal(DefaultMetadataService.java:150)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.evictAndGet(DefaultMetadataService.java:285)
+
+
+
+
+   at org.springframework.roo.addon.gwt.scaffold.GwtScaffoldMetadataProviderImpl.notify(GwtScaffoldMetadataProviderImpl.java:236)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.notify(DefaultMetadataService.java:240)
+
+
+
+
+   at org.springframework.roo.metadata.internal.DefaultMetadataDependencyRegistry.notifyDownstream(DefaultMetadataDependencyRegistry.java:214)
+
+
+
+
+   at org.springframework.roo.classpath.DefaultPhysicalTypeMetadataProvider.onFileEvent(DefaultPhysicalTypeMetadataProvider.java:97)
+
+
+
+
+   at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.publish(PollingFileMonitorService.java:352)
+
+
+
+
+   at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.scanAll(PollingFileMonitorService.java:325)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager.doTransactionally(DefaultProcessManager.java:181)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager.backgroundPoll(DefaultProcessManager.java:128)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager.timerBasedPoll(DefaultProcessManager.java:243)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager$2.run(DefaultProcessManager.java:71)
+
+
+
+
+   at java.lang.Thread.run(Thread.java:680)
+
+
+
+
+
+
+The following script reproduces the bug:
+
+
+
+
+
+
+project --topLevelPackage com.foo.roo2881
+
+
+
+
+jpa setup --provider ECLIPSELINK --database H2_IN_MEMORY
+
+
+
+
+
+
+
+
+
+entity jpa --class ~.domain.foo1 --testAutomatically
+
+
+
+
+
+
+
+
+
+entity jpa --class ~.domain.foo2 --testAutomatically
+
+
+
+
+field set --fieldName bar --type foo1
+
+
+
+
+
+
+
+
+
+web gwt setup
+
+
+
+
+web gwt all --proxyPackage ~.client.proxy --requestPackage ~.client.request
+
+
+
+
+
+</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtProxyProperty.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-11-16 16:34:41" id="2900" opendate="2011-11-15 02:33:17" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>In XxxBean_Roo_ManagedBean.aj, the completeYyy(java.lang.String query) method calls EntityManager#toString</summary>
+			
+			
+			<description>To replicate, run this script:
+
+
+
+
+
+
+project --topLevelPackage com.example
+
+
+
+
+jpa setup --database HYPERSONIC_IN_MEMORY --provider HIBERNATE 
+
+
+
+
+entity jpa --class ~.domain.Thing
+
+
+
+
+field string name
+
+
+
+
+web jsf setup 
+
+
+
+
+web jsf all --package ~.web
+
+
+
+
+entity jpa --class ~.domain.Owner
+
+
+
+
+focus --class ~.domain.Thing
+
+
+
+
+field reference --fieldName owner --type ~.domain.Owner
+
+
+
+
+
+
+The ITD ThingBean_Roo_ManagedBean.aj contains this method:
+
+
+
+
+
+
+public List&amp;lt;Owner&amp;gt; ThingBean.completeOwner(java.lang.String query) {
+
+
+
+
+        List&amp;lt;Owner&amp;gt; suggestions = new ArrayList&amp;lt;Owner&amp;gt;();
+
+
+
+
+        for (Owner owner : Owner.findAllOwners()) {
+
+
+
+
+            String ownerStr = owner.getEntityManager() +  &quot; &quot;  + owner.getId() +  &quot; &quot;  + owner.getVersion();
+
+
+
+
+            if (ownerStr.toLowerCase().startsWith(query.toLowerCase())) {
+
+
+
+
+                suggestions.add(owner);
+
+
+
+
+            }
+
+
+
+
+        }
+
+
+
+
+        return suggestions;
+
+
+
+
+}
+
+
+
+
+
+
+It seems wrong to be referencing the EntityManager at all here, let alone calling toString() on it. I&amp;amp;apos;ve logged this as a bug because my multimodule JSF/MVC project fails to compile (in Maven) at this line.</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.jsf.managedbean.JsfManagedBeanMetadataProviderImpl.java</file>
+			
+			
+			<file type="D">org.springframework.roo.addon.jsf.model.JsfFieldHolder.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jsf.managedbean.JsfManagedBeanMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jsf.converter.JsfConverterMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-11-18 08:55:31" id="2909" opendate="2011-11-18 01:41:43" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Creating a wrapper addon causes exception in Roo shell</summary>
+			
+			
+			<description>Create a wrapper addon, e.g. as follows:
+
+
+
+
+
+
+addon create wrapper --groupId commons-lang --artifactId commons-lang --version 2.5 --topLevelPackage org.apache --vendorName Apache --licenseUrl http://www.apache.org
+
+
+
+
+
+
+The Roo shell throws this error:
+
+
+
+
+
+
+Invalid artifactId &amp;amp;apos;${project.groupId}.${pkgArtifactId}&amp;amp;apos;
+
+
+
+
+java.lang.IllegalArgumentException: Invalid artifactId &amp;amp;apos;${project.groupId}.${pkgArtifactId}&amp;amp;apos;
+
+
+
+
+    at org.springframework.roo.support.util.Assert.isTrue(Assert.java:65)
+
+
+
+
+    at org.springframework.roo.project.GAV.&amp;lt;init&amp;gt;(GAV.java:46)
+
+
+
+
+    at org.springframework.roo.project.maven.Pom.&amp;lt;init&amp;gt;(Pom.java:88)
+
+
+
+
+    at org.springframework.roo.project.maven.PomFactoryImpl.getInstance(PomFactoryImpl.java:75)
+
+
+
+
+    at org.springframework.roo.project.PomManagementServiceImpl.parseUnparsedPoms(PomManagementServiceImpl.java:166)
+
+
+
+
+    at org.springframework.roo.project.PomManagementServiceImpl.updatePomCache(PomManagementServiceImpl.java:140)
+
+
+
+
+    at org.springframework.roo.project.PomManagementServiceImpl.getFocusedModule(PomManagementServiceImpl.java:111)
+
+
+
+
+    at org.springframework.roo.project.PomManagementServiceImpl.getFocusedModuleName(PomManagementServiceImpl.java:119)
+
+
+
+
+    at org.springframework.roo.project.AbstractProjectOperations.getFocusedModuleName(AbstractProjectOperations.java:149)
+
+
+
+
+    at org.springframework.roo.project.AbstractProjectOperations.isFocusedProjectAvailable(AbstractProjectOperations.java:129)
+
+
+
+
+    at org.springframework.roo.addon.dbre.model.DbreModelServiceImpl.getDbreXmlPath(DbreModelServiceImpl.java:119)
+
+
+
+
+    at org.springframework.roo.addon.dbre.DbreDatabaseListenerImpl.onFileEvent(DbreDatabaseListenerImpl.java:89)
+
+
+
+
+    at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.publish(PollingFileMonitorService.java:352)
+
+
+
+
+    at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.publishRequestedFileEvents(PollingFileMonitorService.java:175)
+
+
+
+
+    at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.scanNotified(PollingFileMonitorService.java:150)
+
+
+
+
+    at org.springframework.roo.process.manager.internal.DefaultProcessManager.doTransactionally(DefaultProcessManager.java:192)
+
+
+
+
+    at org.springframework.roo.process.manager.internal.DefaultProcessManager.execute(DefaultProcessManager.java:146)
+
+
+
+
+    at org.springframework.roo.process.manager.ProcessManagerHostedExecutionStrategy.execute(ProcessManagerHostedExecutionStrategy.java:47)
+
+
+
+
+    at org.springframework.roo.shell.AbstractShell.executeCommand(AbstractShell.java:204)
+
+
+
+
+    at org.springframework.roo.shell.jline.JLineShell.promptLoop(JLineShell.java:403)
+
+
+
+
+    at org.springframework.roo.shell.jline.JLineShell.run(JLineShell.java:158)
+
+
+
+
+
+
+Note that the generated addon project is valid and can be built by Maven, but with warnings:
+
+
+
+
+
+
+aswan: addon &amp;gt; mvn clean install
+
+
+
+
+[INFO] Scanning for projects...
+
+
+
+
+[WARNING] 
+
+
+
+
+[WARNING] Some problems were encountered while building the effective model for org.apache:org.apache.commons-lang:bundle:2.5.0001
+
+
+
+
+[WARNING] &amp;amp;apos;artifactId&amp;amp;apos; contains an expression but should be a constant. @ org.apache:${project.groupId}.${pkgArtifactId}:${osgiVersion}, /Users/aswan/projects/addon/pom.xml, line 5, column 17
+
+
+
+
+[WARNING] &amp;amp;apos;version&amp;amp;apos; contains an expression but should be a constant. @ org.apache:${project.groupId}.${pkgArtifactId}:${osgiVersion}, /Users/aswan/projects/addon/pom.xml, line 7, column 14
+
+
+
+
+[WARNING] 
+
+
+
+
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+
+
+
+
+[WARNING] 
+
+
+
+
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+
+
+
+
+
+
+The solution to both the Roo shell error and the Maven warning is to change the generated POM not to use expressions in either the &quot;artifactId&quot; or &quot;version&quot; elements.</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.creator.CreatorOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-11-19 21:35:44" id="2913" opendate="2011-11-19 12:55:32" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JSF Scaffold against multi-module roo project switches module focus to project with entity</summary>
+			
+			
+			<description>Using this script, which creates a web and services project, and installs JSF into the web module, the focus changes to the services module when finished scaffolding the web bean.
+I think this may be a regression.  This is reproducible on my machine from scratch.  I will try Spring MVC setup as well and append to this JIRA if it is also doing this same thing now.
+
+
+
+
+
+
+
+
+
+
+
+// Spring Roo 1.2.0.BUILD-SNAPSHOT [rev 64c3bb1] log opened at 2011-11-19 15:47:40
+
+
+
+
+project --topLevelPackage org.foo.bar --projectName baz
+
+
+
+
+module create --moduleName web --topLevelPackage ~.web
+
+
+
+
+module focus --moduleName ~
+
+
+
+
+module create --moduleName services --topLevelPackage ~.services
+
+
+
+
+module focus --moduleName web
+
+
+
+
+web jsf setup
+
+
+
+
+module focus --moduleName services
+
+
+
+
+jpa setup --database HYPERSONIC_PERSISTENT --provider HIBERNATE 
+
+
+
+
+entity jpa --class ~.db.Course --activeRecord false --testAutomatically --equals true 
+
+
+
+
+field string --fieldName name
+
+
+
+
+field number --fieldName cost --type java.math.BigDecimal --decimalMin 0.0
+
+
+
+
+field number --type short --fieldName duration
+
+
+
+
+repository jpa --interface ~.persistence.CourseRepository --entity ~.db.Course
+
+
+
+
+service --interface ~.service.CourseService --entity ~.db.Course 
+
+
+
+
+module focus --moduleName web
+
+
+
+
+web jsf scaffold --class ~.CourseBean --beanName courseBean --entity services|~.db.Course --includeOnMenu true --createConverter true 
+
+
+
+
+
+</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.jsf.JsfCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jsf.JsfOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Relate">2914</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-11-21 16:27:28" id="2904" opendate="2011-11-15 16:47:20" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Roo nightly builds have broken auto-complete with STS console</summary>
+			
+			
+			<description>Affected version post 1.2.0M1
+It appears that with the recent builds of the Roo Shell, Parser#complete now takes a list of Completions instead of a list of Strings, and this is breaking compatibility with existing implementations of the STS console integration. Would it be possible to make this change in a binary backwards compatible manner? Instead of changing the signature of the existing method, perhaps introduce a new method and keep the older one functional?
+Thanks,
+Leo Dos Santos
+SpringSource Tool Suite Committer</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.shell.jline.JLineCompletorAdapter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.SimpleParser.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.converters.JavaTypeConverter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.Parser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-11-22 12:20:46" id="2902" opendate="2011-11-15 07:50:24" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Spurious text in GWT UI when entity has only a Set field</summary>
+			
+			
+			<description>Create a simple GWT app as follows:
+
+
+
+
+
+
+project --topLevelPackage com.example
+
+
+
+
+jpa setup --provider ECLIPSELINK --database H2_IN_MEMORY
+
+
+
+
+
+
+
+
+
+entity jpa --class ~.domain.Thing
+
+
+
+
+field string --fieldName name
+
+
+
+
+
+
+
+
+
+entity jpa --class ~.domain.Owner
+
+
+
+
+field set --fieldName things --type ~.domain.Thing
+
+
+
+
+
+
+
+
+
+web gwt setup
+
+
+
+
+web gwt all --proxyPackage ~.client.proxy --requestPackage ~.client.request
+
+
+
+
+
+
+
+Start the app using &quot;mvn gwt:run&quot;.
+Create a Thing.
+Create an Owner in which the set contains the Thing you created above.
+When you click &quot;Save&quot;, the following text appears in the UI:
+
+
+
+
+
+
+
+[com.example.client.proxy.ThingProxyAutoBean_com_google_web_bindery_requestfactory_shared_impl_EntityProxyCategory_com_google_web_bindery_requestfactory_shared_impl_ValueProxyCategory_com_google_web_bindery_requestfactory_shared_impl_BaseProxyCategory$2@1] ([com.example.client.proxy.ThingProxyAutoBean_com_google_web_bindery_requestfactory_shared_impl_EntityProxyCategory_com_google_web_bindery_requestfactory_shared_impl_ValueProxyCategory_com_google_web_bindery_requestfactory_shared_impl_BaseProxyCategory$2@1])
+
+
+
+
+
+</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtTypeService.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtTypeServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.proxy.GwtProxyMetadataProviderImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-11-26 16:04:24" id="2935" opendate="2011-11-26 10:31:12" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Resource Not Found single entity jpa</summary>
+			
+			
+			<description>Built simple single, 2 string field entity with JPA &amp;amp; no active record. Built application, getting Resource Not Found when navigating to the create entity page.
+See Attached Script: buildme.roo
+See Attached Log Results: logresults.txt</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.converter.ConversionServiceMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-11-29 15:25:58" id="2940" opendate="2011-11-29 01:59:21" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>jsf managed bean generation fails (using 2 many-to-many fields)</summary>
+			
+			
+			<description>When running the attached script which generates 1 object which holds 2 sets referencing (many_to_many) a second object, it fails to generate some method/variable names correctly in the xxxBean_Roo_ManagedBean.aj file.
+E.g. xxx.getStreets() instead of xxx.getFirstStreetSet() 
+also xxx.selectedFirstStreetSet and xxx.selectedSecondStreetSet vars get referenced by 2 &quot;selectedStreets&quot; references
+note: I couldn&amp;amp;apos;t issue &quot;entity jsf&quot; commands via STS due to another bug, it worked from the command line though</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.jsf.managedbean.JsfManagedBeanMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-02 14:35:21" id="2932" opendate="2011-11-24 05:05:27" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Id cannot be resolved or is not a field</summary>
+			
+			
+			<description>[ERROR] Failed to execute goal org.codehaus.mojo:aspectj-maven-plugin:1.2:compile (default) on project test: Compiler errors :
+[ERROR] error at Entity attached = Entity.findEntity(this.id);
+[ERROR] 
+[ERROR] /tmp/test/src/main/java/org/gvnix/test/domain/Entity_Roo_Jpa_ActiveRecord.aj:29:0::0 id cannot be resolved or is not a field
+[ERROR] error at private java.lang.Long Entity.id;
+[ERROR] 
+[ERROR] /tmp/test/src/main/java/org/gvnix/test/domain/Entity_Roo_Jpa_Entity.aj:20:0::0 can&amp;amp;apos;t make inter-type field declarations on annotation types.
+[ERROR] error at private java.lang.Integer Entity.version;
+[ERROR] ^^
+[ERROR] /tmp/test/src/main/java/org/gvnix/test/domain/Entity_Roo_Jpa_Entity.aj:24:0::0 can&amp;amp;apos;t make inter-type field declarations on annotation types.
+[ERROR] error at public java.lang.Long Entity.getId() {
+[ERROR] ^^
+[ERROR] /tmp/test/src/main/java/org/gvnix/test/domain/Entity_Roo_Jpa_Entity.aj:26:0::0 can&amp;amp;apos;t make inter-type method declarations on annotation types.
+[ERROR] error at public void Entity.setId(java.lang.Long id) {
+[ERROR] ^^^^^^^^^^^^^^^^^^^
+[ERROR] /tmp/test/src/main/java/org/gvnix/test/domain/Entity_Roo_Jpa_Entity.aj:30:0::0 can&amp;amp;apos;t make inter-type method declarations on annotation types.
+[ERROR] error at public java.lang.Integer Entity.getVersion() {
+[ERROR] ^^^^^^^
+[ERROR] /tmp/test/src/main/java/org/gvnix/test/domain/Entity_Roo_Jpa_Entity.aj:34:0::0 can&amp;amp;apos;t make inter-type method declarations on annotation types.
+[ERROR] error at public void Entity.setVersion(java.lang.Integer version) {
+[ERROR] ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[ERROR] /tmp/test/src/main/java/org/gvnix/test/domain/Entity_Roo_Jpa_Entity.aj:38:0::0 can&amp;amp;apos;t make inter-type method declarations on annotation types.
+[ERROR] -&amp;gt; [Help 1]</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.AnnotationMetadataUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.itd.AbstractItdTypeDetailsProvidingMetadataItem.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.model.JavaType.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.itd.ItdSourceFileComposer.java</file>
+			
+			
+			<file type="M">org.springframework.roo.model.ImportRegistrationResolverImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dbre.DbreDatabaseListenerImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.model.JdkJavaType.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.DefaultItdTypeDetailsTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-02 18:21:35" id="2941" opendate="2011-11-29 16:00:09" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>web mvc scaffold disallowedOperations create does not remove all create tags</summary>
+			
+			
+			<description>When creating our mvc scaffold we include the &quot;--disallowedOperations delete, create&quot; option.  This successfully removed the create link from the default project page. We instead have finders in the menu.  After selecting a finder and searching our objects, a JspTagException is given as the tag&amp;amp;apos;menu_item_xxx_new_label&amp;amp;apos; does not exist.  We added this tag to applications.properties which then allowed us to receive a page back from the finder.  The object list does not include the delete operation, but after the object list, a create operation still exists.  I&amp;amp;apos;m having difficulty finding exactly where this tag is built and placed in the page, but without the create operation it should not exist.</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspMetadataListener.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-06 14:43:40" id="2931" opendate="2011-11-24 04:10:10" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>GWT compilation errors when proxies or requests are in non-default package</summary>
+			
+			
+			<description>I&amp;amp;apos;m having some problems getting GWT working properly - I am using the latest 1.2.0.RC1, downloaded this morning.
+I am trying to create a simple GWT version of the pizza shop sample, executing the following commands:
+
+
+
+
+
+
+// Spring Roo 1.2.0.RC1 [rev dcaa483] log opened at 2011-11-24 09:50:14
+
+
+
+
+project --topLevelPackage com.springsource.roo.pizzashopRC1
+
+
+
+
+persistence setup --provider HIBERNATE --database HYPERSONIC_PERSISTENT
+
+
+
+
+entity jpa --class ~.domain.Topping --testAutomatically
+
+
+
+
+field string --fieldName name --notNull --sizeMin 2
+
+
+
+
+entity jpa --class ~.domain.Base --testAutomatically
+
+
+
+
+field string --fieldName name --notNull --sizeMin 2
+
+
+
+
+entity jpa --class ~.domain.Pizza --testAutomatically
+
+
+
+
+field string --fieldName name --notNull --sizeMin 2
+
+
+
+
+field number --fieldName price --type java.lang.Float
+
+
+
+
+field set --fieldName toppings --type ~.domain.Topping
+
+
+
+
+field reference --fieldName base --type ~.domain.Base
+
+
+
+
+entity jpa --class ~.domain.PizzaOrder --testAutomatically
+
+
+
+
+field string --fieldName name --notNull --sizeMin 2
+
+
+
+
+field string --fieldName address --sizeMax 30
+
+
+
+
+field number --fieldName total --type java.lang.Float
+
+
+
+
+field date --fieldName deliveryDate --type java.util.Date
+
+
+
+
+field set --fieldName pizzas --type ~.domain.Pizza
+
+
+
+
+// script pizzaEntities.roo
+
+
+
+
+web gwt setup
+
+
+
+
+web gwt all --proxyPackage ~.gwt.proxy --requestPackage ~.gwt.request
+
+
+
+
+perform eclipse
+
+
+
+
+
+
+So far, so good. But when I import the project into Eclipse, I get the following build error:
+
+
+
+
+
+
+The project &amp;amp;apos;pizzashoprc1&amp;amp;apos; does not have any GWT SDKs on its build path
+
+
+
+
+
+
+I can fix this by manually adding the GWT SDKs into the build path (I&amp;amp;apos;m using GWT 2.4). However, when I try to start the app from Eclipse, using the Run As &amp;gt; Web Application, I get the error:
+
+
+
+
+
+
+Could not find any host pages in project pizzashoprc1.
+
+
+
+
+
+
+I can launch the app from the command line using mvn gwt:run, but then I get the following error when I go to the URL in a browser:
+
+
+
+
+
+
+onModuleLoad() threw an exception
+
+
+
+
+
+
+
+
+
+Exception while loading module com.springsource.roo.pizzashoprc1.client.scaffold.Scaffold. See Development Mode for details.
+
+
+
+
+java.lang.reflect.InvocationTargetException at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+
+
+
+ at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+
+
+
+
+ at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+
+
+
+
+ at java.lang.reflect.Method.invoke(Method.java:597)
+
+
+
+
+ at com.google.gwt.dev.shell.ModuleSpace.onLoad(ModuleSpace.java:396)
+
+
+
+
+ at com.google.gwt.dev.shell.OophmSessionHandler.loadModule(OophmSessionHandler.java:200)
+
+
+
+
+ at com.google.gwt.dev.shell.BrowserChannelServer.processConnection(BrowserChannelServer.java:525)
+
+
+
+
+ at com.google.gwt.dev.shell.BrowserChannelServer.run(BrowserChannelServer.java:363)
+
+
+
+
+ at java.lang.Thread.run(Thread.java:619)
+
+
+
+
+Caused by: java.lang.RuntimeException: Deferred binding failed for &amp;amp;apos;com.springsource.roo.pizzashoprc1.client.scaffold.ioc.DesktopInjector&amp;amp;apos; (did you forget to inherit a required module?)
+
+
+
+
+ at com.google.gwt.dev.shell.GWTBridgeImpl.create(GWTBridgeImpl.java:53)
+
+
+
+
+ at com.google.gwt.core.client.GWT.create(GWT.java:97)
+
+
+
+
+ at com.springsource.roo.pizzashoprc1.client.scaffold.ioc.DesktopInjectorWrapper.getInjector(DesktopInjectorWrapper.java:8)
+
+
+
+
+ at com.springsource.roo.pizzashoprc1.client.scaffold.Scaffold.onModuleLoad(Scaffold.java:16)
+
+
+
+
+ ... 9 more 
+
+
+
+
+Caused by: com.google.gwt.core.ext.UnableToCompleteException: (see previous log entries)
+
+
+
+
+ at com.google.gwt.dev.shell.ModuleSpace.rebind(ModuleSpace.java:595)
+
+
+
+
+ at com.google.gwt.dev.shell.ModuleSpace.rebindAndCreate(ModuleSpace.java:455)
+
+
+
+
+ at com.google.gwt.dev.shell.GWTBridgeImpl.create(GWTBridgeImpl.java:49)
+
+
+
+
+ ... 12 more
+
+
+
+
+
+
+I&amp;amp;apos;ve also attached a screenshot of the error in the GWT Dev Mode console.</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtTypeServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-06 16:25:18" id="2948" opendate="2011-12-05 00:04:40" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>repository jpa shell command hangs roo</summary>
+			
+			
+			<description>roo&amp;gt; jpa setup --provider HIBERNATE --database MSSQL 
+roo&amp;gt; database reverse engineer --schema roo_crm --activeRecord false --package ~.model
+roo&amp;gt; repository jpa --interface ~.repository.CartOrder --entity ~.domain.CartOrder
+DBRE works fine - all java and ITD files created correctly. 
+repository jpa cmd prints nothing in output window - not even a roo&amp;gt; prompt, and no actions are taken.</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.shell.jline.JLineShell.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.AbstractShell.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-06 22:26:53" id="2953" opendate="2011-12-06 18:42:45" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Shell prompt does not show entity in focus after &amp;apos;entity jpa&amp;apos; command is run using a fully-qualified name such as com.foo.bar.Bar</summary>
+			
+			
+			<description>When the &amp;amp;apos;entity jpa&amp;amp;apos; command is run, the Roo prompt does not have the name of the entity in focus if it was created using 
+
+
+
+
+
+
+entity jpa --class com.foo.bar.Bar
+
+
+
+
+
+
+Output is as follows:
+
+
+
+
+
+
+roo&amp;gt; entity jpa --class com.foo.bar.Bar
+
+
+
+
+Created SRC_MAIN_JAVA/com/foo/bar
+
+
+
+
+8832648 Created SRC_MAIN_JAVA/com/foo/bar/Bar.java
+
+
+
+
+12a9c80 Created SRC_MAIN_JAVA/com/foo/bar/Bar_Roo_Configurable.aj
+
+
+
+
+7ef5378 Created SRC_MAIN_JAVA/com/foo/bar/Bar_Roo_Jpa_ActiveRecord.aj
+
+
+
+
+74c1860 Created SRC_MAIN_JAVA/com/foo/bar/Bar_Roo_ToString.aj
+
+
+
+
+7bcd4a1 Created SRC_MAIN_JAVA/com/foo/bar/Bar_Roo_Jpa_Entity.aj
+
+
+
+
+roo&amp;gt; 
+
+
+
+
+
+
+However if the command is run using a tilde, the correct output is shown:
+
+
+
+
+
+
+roo&amp;gt; entity jpa --class ~.Foo
+
+
+
+
+5b5e723 Created SRC_MAIN_JAVA/com/foo/bar/Foo.java
+
+
+
+
+9bc166a Created SRC_MAIN_JAVA/com/foo/bar/Foo_Roo_Configurable.aj
+
+
+
+
+2320419 Created SRC_MAIN_JAVA/com/foo/bar/Foo_Roo_Jpa_ActiveRecord.aj
+
+
+
+
+bc732bd Created SRC_MAIN_JAVA/com/foo/bar/Foo_Roo_ToString.aj
+
+
+
+
+8f19a9d Created SRC_MAIN_JAVA/com/foo/bar/Foo_Roo_Jpa_Entity.aj
+
+
+
+
+~.Foo roo&amp;gt; 
+
+
+
+
+
+</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.converters.JavaTypeConverter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-07 17:39:43" id="2925" opendate="2011-11-23 03:08:22" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>GWT Request interface not updated when invoked service is deleted</summary>
+			
+			
+			<description>To replicate:
+
+Create a GWT project in which the service layer delegates to active record methods:
+
+
+
+
+
+
+project --topLevelPackage com.example.gwtbug
+
+
+
+
+jpa setup --database HYPERSONIC_IN_MEMORY --provider HIBERNATE
+
+
+
+
+entity jpa --class ~.server.domain.Thing
+
+
+
+
+field string --fieldName name
+
+
+
+
+service --interface ~.services.ThingService --entity ~.server.domain.Thing
+
+
+
+
+web gwt setup
+
+
+
+
+web gwt all --proxyPackage ~.client.proxy --requestPackage ~.client.request
+
+
+
+
+
+
+Exit the Roo shell
+Delete ThingService.java and ThingServiceImpl.java
+Restart the Roo shell; some GWT-related artifacts are updated to reflect the deletion of the ThingService, but the Roo-managed ThingRequest interface still contains its class name and method signatures:
+
+
+
+
+
+
+package com.example.gwtbug.client.request;
+
+
+
+
+
+
+
+
+
+import com.example.gwtbug.client.proxy.ThingProxy;
+
+
+
+
+import com.google.web.bindery.requestfactory.shared.InstanceRequest;
+
+
+
+
+import com.google.web.bindery.requestfactory.shared.Request;
+
+
+
+
+import com.google.web.bindery.requestfactory.shared.RequestContext;
+
+
+
+
+import com.google.web.bindery.requestfactory.shared.ServiceName;
+
+
+
+
+import org.springframework.roo.addon.gwt.RooGwtRequest;
+
+
+
+
+
+
+
+
+
+@RooGwtRequest(value = &quot;com.example.gwtbug.server.domain.Thing&quot;, exclude = { &quot;clear&quot;, &quot;entityManager&quot;, &quot;equals&quot;, &quot;flush&quot;, &quot;hashCode&quot;, &quot;merge&quot;, &quot;toString&quot; })
+
+
+
+
+@ServiceName(value = &quot;com.example.gwtbug.services.ThingService&quot;, locator = &quot;com.example.gwtbug.server.locator.GwtServiceLocator&quot;)
+
+
+
+
+public interface ThingRequest extends RequestContext {
+
+
+
+
+
+
+
+
+
+    abstract Request&amp;lt;java.lang.Long&amp;gt; countAllThings();
+
+
+
+
+
+
+
+
+
+    abstract Request&amp;lt;java.lang.Void&amp;gt; deleteThing(ThingProxy thing);
+
+
+
+
+
+
+
+
+
+    abstract Request&amp;lt;com.example.gwtbug.client.proxy.ThingProxy&amp;gt; findThing(Long id);
+
+
+
+
+
+
+
+
+
+    abstract Request&amp;lt;java.util.List&amp;lt;com.example.gwtbug.client.proxy.ThingProxy&amp;gt;&amp;gt; findAllThings();
+
+
+
+
+
+
+
+
+
+    abstract Request&amp;lt;java.util.List&amp;lt;com.example.gwtbug.client.proxy.ThingProxy&amp;gt;&amp;gt; findThingEntries(int firstResult, int maxResults);
+
+
+
+
+
+
+
+
+
+    abstract Request&amp;lt;java.lang.Void&amp;gt; saveThing(ThingProxy thing);
+
+
+
+
+
+
+
+
+
+    abstract Request&amp;lt;com.example.gwtbug.client.proxy.ThingProxy&amp;gt; updateThing(ThingProxy thing);
+
+
+
+
+}
+
+
+
+
+
+
+The most obvious symptom is that the following Roo-managed Java files no longer compile (because they have been correctly updated with the expected Request method names):
+	
+ThingActivitiesMapper_Roo_Gwt.java
+ThingDetailsActivity_Roo_Gwt.java
+ThingListActivity_Roo_Gwt.java
+
+
+
+</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.request.GwtRequestMetadataProviderImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.service.ServiceLayerProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtOperationsImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.request.GwtRequestMetadataProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.layers.MemberTypeAdditions.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.layers.MemberTypeAdditionsTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.mongo.RepositoryMongoLayerMethod.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.jpa.RepositoryJpaLayerMethod.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.mongo.RepositoryMongoLayerProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.RooGwtRequest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtTypeService.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.jpa.RepositoryLayerMethodTest.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.activerecord.EntityLayerProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.layers.repository.jpa.RepositoryJpaLayerProvider.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.GwtTypeServiceImpl.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.activerecord.EntityLayerMethod.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.activerecord.EntityLayerMethodTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-08 17:54:15" id="2844" opendate="2011-10-19 17:11:56" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MVC controller and views not updated when related entity&amp;apos;s plural changes</summary>
+			
+			
+			<description>Found this bug while working on ROO-2839; it&amp;amp;apos;s similar to ROO-2840. To replicate:
+
+Run the vote.roo script.
+Edit Choice.java to include the class-level annotation @RooPlural(&quot;Options&quot;)
+
+Roo updates the Choice-related files:
+
+
+
+
+
+
+Updated SRC_TEST_JAVA/com/springsource/vote/domain/ChoiceIntegrationTest_Roo_IntegrationTest.aj
+
+
+
+
+Updated SRC_MAIN_JAVA/com/springsource/vote/web/ChoiceController_Roo_Controller.aj
+
+
+
+
+Updated SRC_MAIN_JAVA/com/springsource/vote/domain/Choice_Roo_Jpa_ActiveRecord.aj
+
+
+
+
+Updated SRC_MAIN_WEBAPP/WEB-INF/views/choices/list.jspx
+
+
+
+
+
+
+... but not the Vote-related files, until the shell is restarted:
+
+
+
+
+
+
+Updated SRC_MAIN_JAVA/com/springsource/vote/web/VoteController_Roo_Controller.aj
+
+
+
+
+Updated SRC_MAIN_WEBAPP/WEB-INF/views/votes/create.jspx
+
+
+
+
+Updated SRC_MAIN_WEBAPP/WEB-INF/views/votes/update.jspx
+
+
+
+
+
+
+Likewise, the same three files are skipped when the annotation is removed.</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.plural.PluralMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-11 19:52:47" id="2957" opendate="2011-12-08 21:18:47" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>validationMessageCode is erroneously added to boolean attributes in jspx files</summary>
+			
+			
+			<description>When a scaffold is generated for a JPA entity with a Boolean field, a validationMessageCode attribute is erroneously added to the jspx file:
+
+
+
+
+
+
+ &amp;lt;field:checkbox field=&quot;emailAllowed&quot;
+
+
+
+
+	id=&quot;c_com_kn_core_domain_KnEmailSource_emailAllowed&quot;
+
+
+
+
+	validationMessageCode=&quot;field_invalid_email&quot;
+
+
+
+
+	z=&quot;wTN+Jq4iS1yreKGSzQx31kMngEI=&quot; /&amp;gt;
+
+
+
+
+
+
+... which generates an error when the page is loaded.
+According to the TLD, the validationMessageCode attribute is invalid for the checkbox tag.</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.jsp.JspViewManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-12 19:22:14" id="2965" opendate="2011-12-12 19:20:14" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JSON responses have Content-Type &quot;application/text&quot; instead of &quot;application/json&quot;</summary>
+			
+			
+			<description>According to section 6 of RFC 4627, the correct MIME media type for JSON responses is &quot;application/json&quot;, however the JSON-generating methods created by Roo set the HTTP &quot;Content-Type&quot; header to &quot;application/text&quot;.</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.json.WebJsonMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-12 21:52:12" id="2966" opendate="2011-12-12 21:47:35" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NPE when &quot;populateXxxx&quot; method exists in controller</summary>
+			
+			
+			<description>To replicate:
+
+Run the embedded vote.roo script (or generate any application where an entity has a &quot;reference&quot; field).
+Push in VoteController.populateChoices() (or any other &quot;populateXxxx&quot; method).
+The shell displays this error (full stack trace only visible in development mode):
+
+
+
+
+
+
+java.lang.NullPointerException
+
+
+
+
+   at org.springframework.roo.addon.web.mvc.controller.scaffold.WebScaffoldMetadata.&amp;lt;init&amp;gt;(WebScaffoldMetadata.java:169)
+
+
+
+
+   at org.springframework.roo.addon.web.mvc.controller.scaffold.WebScaffoldMetadataProviderImpl.getMetadata(WebScaffoldMetadataProviderImpl.java:147)
+
+
+
+
+   at org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.get(AbstractItdMetadataProvider.java:324)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.getInternal(DefaultMetadataService.java:150)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.evictAndGet(DefaultMetadataService.java:285)
+
+
+
+
+   at org.springframework.roo.classpath.itd.AbstractItdMetadataProvider.notify(AbstractItdMetadataProvider.java:158)
+
+
+
+
+   at org.springframework.roo.metadata.DefaultMetadataService.notify(DefaultMetadataService.java:240)
+
+
+
+
+   at org.springframework.roo.metadata.internal.DefaultMetadataDependencyRegistry.notifyDownstream(DefaultMetadataDependencyRegistry.java:214)
+
+
+
+
+   at org.springframework.roo.classpath.DefaultPhysicalTypeMetadataProvider.onFileEvent(DefaultPhysicalTypeMetadataProvider.java:97)
+
+
+
+
+   at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.publish(PollingFileMonitorService.java:350)
+
+
+
+
+   at org.springframework.roo.file.monitor.polling.PollingFileMonitorService.scanAll(PollingFileMonitorService.java:323)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager.doTransactionally(DefaultProcessManager.java:181)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager.backgroundPoll(DefaultProcessManager.java:128)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager.timerBasedPoll(DefaultProcessManager.java:243)
+
+
+
+
+   at org.springframework.roo.process.manager.internal.DefaultProcessManager$2.run(DefaultProcessManager.java:71)
+
+
+
+
+   at java.lang.Thread.run(Thread.java:680)
+
+
+
+
+
+
+
+</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.WebScaffoldMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-13 01:54:56" id="2967" opendate="2011-12-13 01:52:53" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>WebScaffoldMetadata copies from wrong method&amp;apos;s builder when generating &quot;populateXxx&quot; methods</summary>
+			
+			
+			<description>Found this while refactoring in preparation for ROO-2514. WebScaffoldMetadata#getPopulateMethods() contains this code:
+
+
+
+
+
+
+if (javaTypePersistenceMd != null &amp;amp;&amp;amp; javaTypePersistenceMd.getFindAllMethod() != null) {
+
+
+
+
+    bodyBuilder.appendFormalLine(&quot;return &quot; + javaTypePersistenceMd.getFindAllMethod().getMethodCall() + &quot;;&quot;);
+
+
+
+
+    javaTypePersistenceMd.getFindMethod().copyAdditionsTo(builder, governorTypeDetails); // !!!
+
+
+
+
+}
+
+
+
+
+
+
+On the line marked &quot;!!!&quot;, copyAdditionsTo is invoked on the MemberTypeAdditions of the &quot;find&quot; method instead of the &quot;findAll&quot; method. This could cause the generated &quot;populateXxx&quot; method not to compile if:
+
+there was no &quot;find&quot; method (unlikely)
+the &quot;find&quot; method was provided by a different layer component (service, repository, active record, etc.) to the &quot;find all&quot; method (more likely, but still pretty unlikely)
+
+</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.scaffold.WebScaffoldMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-13 18:21:06" id="2969" opendate="2011-12-13 18:13:15" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Some Roo annotations are retained at runtime</summary>
+			
+			
+			<description>I found while testing Spring 3.1 for ROO-2894 that the following Roo annotations have the default retention, i.e. java.lang.annotation.RetentionPolicy.RUNTIME:
+
+RooGwtLocator
+RooJpaEntity
+RooWebFinder
+RooWebJson
+
+Obviously this violates the core Roo design goal of the user project having no runtime dependencies upon Roo itself.</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.finder.RooWebFinder.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.entity.RooJpaEntity.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.json.RooWebJson.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.gwt.RooGwtLocator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-14 03:41:29" id="2972" opendate="2011-12-14 03:34:23" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NPE when creating class in src/test/java default package</summary>
+			
+			
+			<description>Creating a simple class with no annotations at all in the default package of a project such as petclinic causes a NullPointerException in JavaParserTypeResolutionService#getPackage when attempting to evaluate compilationUnit.getPackage().
+</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserTypeResolutionService.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-15 00:19:05" id="2975" opendate="2011-12-14 21:33:10" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&quot;web flow&quot; command does not add required message codes to application.properties</summary>
+			
+			
+			<description>
+Create a project without Spring Web Flow (e.g. run vote.roo)
+Run the &quot;web flow&quot; shell command; note that the shell does not update the application.properties message bundle:
+
+
+
+
+
+
+roo&amp;gt; web flow 
+
+
+
+
+Created SRC_MAIN_WEBAPP/WEB-INF/spring/webflow-config.xml
+
+
+
+
+Created SRC_MAIN_WEBAPP/WEB-INF/views/sampleflow
+
+
+
+
+Created SRC_MAIN_WEBAPP/WEB-INF/views/sampleflow/flow.xml
+
+
+
+
+Created SRC_MAIN_WEBAPP/WEB-INF/views/sampleflow/view-state-1.jspx
+
+
+
+
+Created SRC_MAIN_WEBAPP/WEB-INF/views/sampleflow/view-state-2.jspx
+
+
+
+
+Created SRC_MAIN_WEBAPP/WEB-INF/views/sampleflow/end-state.jspx
+
+
+
+
+Created SRC_MAIN_WEBAPP/WEB-INF/views/sampleflow/views.xml
+
+
+
+
+Updated SRC_MAIN_WEBAPP/WEB-INF/spring/webmvc-config.xml
+
+
+
+
+Updated SRC_MAIN_WEBAPP/WEB-INF/views/sampleflow/flow.xml
+
+
+
+
+Updated SRC_MAIN_WEBAPP/WEB-INF/views/menu.jspx
+
+
+
+
+Updated ROOT/pom.xml [added dependency org.springframework.webflow:spring-webflow:2.2.1.RELEASE]
+
+
+
+
+Updated SRC_MAIN_WEBAPP/WEB-INF/spring/webflow-config.xml
+
+
+
+
+
+
+Run the application and go to http://localhost/vote
+The home page fails to load, with this error in the server log:
+
+
+
+
+
+
+No message found under code &amp;amp;apos;menu_category_flows_label&amp;amp;apos; for locale &amp;amp;apos;en&amp;amp;apos;.
+
+
+
+
+
+
+
+If you add this code to application.properties and restart the application, another message code is reported as missing:
+
+
+
+
+
+
+No message found under code &amp;amp;apos;menu_item_sampleflow_label&amp;amp;apos; for locale &amp;amp;apos;en&amp;amp;apos;.
+
+
+
+
+
+
+And if you fix that, you get:
+
+
+
+
+
+
+No message found under code &amp;amp;apos;Sampleflow&amp;amp;apos; for locale &amp;amp;apos;en&amp;amp;apos;.
+
+
+
+
+
+</description>
+			
+			
+			<version>1.2.0.RC1</version>
+			
+			
+			<fixedVersion>1.2.0.RELEASE</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.flow.WebFlowOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

@@ -1,0 +1,1208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="ROO">
+	<bug fixdate="2009-05-30 14:10:33" id="58" opendate="2009-05-29 05:53:24" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Application without installing JPA gives error (java.lang.NoClassDefFoundError: javax/persistence/PersistenceException)</summary>
+			
+			
+			<description>&amp;gt;mkdir testapp
+&amp;gt;cd testapp
+&amp;gt;roo
+    ____  ____  ____
+   / __ \/ __ \/ __ \
+  / /_/ / / / / / / /
+ / , _/ // / /_/ /
+// ||___/___/    1.0.0.M1 [rev 64]
+roo&amp;gt; create project -topLevelPackage org.testapp
+roo&amp;gt; exit
+&amp;gt; mvn tomcat-run
+[INFO] Scanning for projects...
+[INFO] artifact org.codehaus.mojo:tomcat-maven-plugin: checking for updates from
+ jboss-plugins
+[INFO] artifact org.codehaus.mojo:tomcat-maven-plugin: checking for updates from
+ jboss-snapshot-plugins
+[INFO] ------------------------------------------------------------------------
+[INFO] Building testapp
+[INFO]    task-segment: [tomcat:run]
+[INFO] ------------------------------------------------------------------------
+[INFO] Preparing tomcat:run
+[INFO] [aspectj:compile 
+{execution: default}
+]
+[INFO] [resources:resources]
+[INFO] Using default encoding to copy filtered resources.
+[INFO] [compiler:compile]
+[INFO] Nothing to compile - all classes are up to date
+[INFO] [tomcat:run]
+[INFO] Running war on http://localhost:8080/testapp
+[INFO] Creating Tomcat server configuration at D:\Spring\projects\testapp\target
+\tomcat
+29-mei-2009 20:50:09 org.apache.catalina.startup.Embedded start
+INFO: Starting tomcat server
+29-mei-2009 20:50:10 org.apache.catalina.core.StandardEngine start
+INFO: Starting Servlet Engine: Apache Tomcat/6.0.16
+29-mei-2009 20:50:11 org.apache.catalina.core.StandardContext addApplicationList
+ener
+INFO: The listener &quot;org.springframework.web.context.ContextLoaderListener&quot; is al
+ready configured for this context. The duplicate definition has been ignored.
+29-mei-2009 20:50:11 org.apache.catalina.core.ApplicationContext log
+INFO: Initializing Spring root WebApplicationContext
+log4j:WARN No appenders could be found for logger (org.springframework.web.conte
+xt.ContextLoader).
+log4j:WARN Please initialize the log4j system properly.
+29-mei-2009 20:50:12 org.apache.catalina.core.StandardContext filterStart
+SEVERE: Exception starting filter Spring OpenEntityManagerInViewFilter
+java.lang.NoClassDefFoundError: javax/persistence/PersistenceException
+        at java.lang.Class.getDeclaredConstructors0(Native Method)
+        at java.lang.Class.privateGetDeclaredConstructors(Class.java:2389)
+        at java.lang.Class.getConstructor0(Class.java:2699)
+        at java.lang.Class.newInstance0(Class.java:326)
+        at java.lang.Class.newInstance(Class.java:308)
+        at org.apache.catalina.core.ApplicationFilterConfig.getFilter(Applicatio
+nFilterConfig.java:255)
+        at org.apache.catalina.core.ApplicationFilterConfig.setFilterDef(Applica
+tionFilterConfig.java:397)
+        at org.apache.catalina.core.ApplicationFilterConfig.&amp;lt;init&amp;gt;(ApplicationFi
+lterConfig.java:108)
+        at org.apache.catalina.core.StandardContext.filterStart(StandardContext.
+java:3709)
+        at org.apache.catalina.core.StandardContext.start(StandardContext.java:4
+356)
+        at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1045)
+        at org.apache.catalina.core.StandardHost.start(StandardHost.java:719)
+        at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1045)
+        at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:443
+)
+        at org.apache.catalina.startup.Embedded.start(Embedded.java:825)
+        at org.codehaus.mojo.tomcat.AbstractRunMojo.startContainer(AbstractRunMo
+jo.java:385)
+        at org.codehaus.mojo.tomcat.AbstractRunMojo.execute(AbstractRunMojo.java
+:144)
+        at org.apache.maven.plugin.DefaultPluginManager.executeMojo(DefaultPlugi
+nManager.java:483)
+        at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoals(Defa
+ultLifecycleExecutor.java:678)
+        at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeStandalone
+Goal(DefaultLifecycleExecutor.java:553)
+        at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoal(Defau
+ltLifecycleExecutor.java:523)
+        at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeGoalAndHan
+dleFailures(DefaultLifecycleExecutor.java:371)
+        at org.apache.maven.lifecycle.DefaultLifecycleExecutor.executeTaskSegmen
+ts(DefaultLifecycleExecutor.java:332)
+        at org.apache.maven.lifecycle.DefaultLifecycleExecutor.execute(DefaultLi
+fecycleExecutor.java:181)
+        at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:356)
+        at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:137)
+        at org.apache.maven.cli.MavenCli.main(MavenCli.java:356)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.
+java:39)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAcces
+sorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:597)
+        at org.codehaus.classworlds.Launcher.launchEnhanced(Launcher.java:315)
+        at org.codehaus.classworlds.Launcher.launch(Launcher.java:255)
+        at org.codehaus.classworlds.Launcher.mainWithExitCode(Launcher.java:430)
+        at org.codehaus.classworlds.Launcher.main(Launcher.java:375)
+Caused by: java.lang.ClassNotFoundException: javax.persistence.PersistenceExcept
+ion
+        at org.apache.catalina.loader.WebappClassLoader.loadClass(WebappClassLoa
+der.java:1360)
+        at org.apache.catalina.loader.WebappClassLoader.loadClass(WebappClassLoa
+der.java:1206)
+        at java.lang.ClassLoader.loadClassInternal(ClassLoader.java:320)
+        ... 35 more
+29-mei-2009 20:50:12 org.apache.catalina.core.ApplicationContext log
+INFO: org.tuckey.web.filters.urlrewrite.UrlRewriteFilter INFO: loaded (conf ok)
+29-mei-2009 20:50:12 org.apache.catalina.core.StandardContext start
+SEVERE: Error filterStart
+29-mei-2009 20:50:12 org.apache.catalina.core.StandardContext start
+SEVERE: Context [/testapp] startup failed due to previous errors
+29-mei-2009 20:50:12 org.apache.catalina.core.ApplicationContext log
+INFO: org.tuckey.web.filters.urlrewrite.UrlRewriteFilter INFO: destroy called
+29-mei-2009 20:50:12 org.apache.catalina.core.ApplicationContext log
+INFO: Closing Spring root WebApplicationContext
+29-mei-2009 20:50:12 org.apache.coyote.http11.Http11Protocol init
+INFO: Initializing Coyote HTTP/1.1 on http-8080
+29-mei-2009 20:50:12 org.apache.coyote.http11.Http11Protocol start
+INFO: Starting Coyote HTTP/1.1 on http-8080
+</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.maven.MavenOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">54</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-05-30 14:10:51" id="57" opendate="2009-05-28 03:22:38" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>mvn test failure following tutorial on blog</summary>
+			
+			
+			<description>Following the steps in the &quot;roo 2&quot; blog post tutorial. Everything working great until the step where I run &quot;mvn test&quot;. At this point I get 9 test failures, due to missing classes on the classpath (javax/annotation types). 
+See attached file for full error log.</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.maven.MavenOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">54</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-05-31 14:40:01" id="60" opendate="2009-05-29 13:33:17" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Failure to create correct @javax.persistence.Column name attribute for non-clashing version field name</summary>
+			
+			
+			<description>EntityMetadata correctly resolves a non-conflicting field name for optimistic locking version support. However, it fails to ensure the @javax.persistence.Column definition has the correct &quot;name&quot; attribute to reflect the resolved non-conflicting field name. It always assumes the column name is &quot;version&quot;, even if the resolved non-conflicting field name is, for example, &quot;_version&quot;.
+Steps to reproduce:
+create project com.foo
+install jpa -provider HIBERNATE -database HYPERSONIC_IN_MEMORY 
+new persistent class jpa -name SomeClass -testAutomatically   
+add field string someField
+add field string version
+A review of SomeClass_Roo_Entity.aj includes:
+    @javax.persistence.Version    
+    @javax.persistence.Column(name = &quot;version&quot;)    
+    private java.lang.Integer SomeClass._version;    
+This is incorrect and will clash with the user-defined &quot;version&quot; property. The resulting exception when &quot;mvn test&quot; executed:
+Caused by: javax.persistence.PersistenceException: [PersistenceUnit: persistenceUnit] Unable to build EntityManagerFactory
+	at org.hibernate.ejb.Ejb3Configuration.buildEntityManagerFactory(Ejb3Configuration.java:677)
+	at org.hibernate.ejb.HibernatePersistence.createContainerEntityManagerFactory(HibernatePersistence.java:132)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:225)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:288)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1368)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1334)
+	... 53 more
+Caused by: org.hibernate.MappingException: Repeated column in mapping for entity: com.foo.SomeClass column: version (should be mapped with insert=&quot;false&quot; update=&quot;false&quot;)
+	at org.hibernate.mapping.PersistentClass.checkColumnDuplication(PersistentClass.java:652)
+	at org.hibernate.mapping.PersistentClass.checkPropertyColumnDuplication(PersistentClass.java:674)
+	at org.hibernate.mapping.PersistentClass.checkColumnDuplication(PersistentClass.java:696)
+	at org.hibernate.mapping.PersistentClass.validate(PersistentClass.java:450)
+	at org.hibernate.mapping.RootClass.validate(RootClass.java:192)
+	at org.hibernate.cfg.Configuration.validate(Configuration.java:1108)
+	at org.hibernate.cfg.Configuration.buildSessionFactory(Configuration.java:1293)
+	at org.hibernate.cfg.AnnotationConfiguration.buildSessionFactory(AnnotationConfiguration.java:859)
+	at org.hibernate.ejb.Ejb3Configuration.buildEntityManagerFactory(Ejb3Configuration.java:669)</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-05-31 16:55:55" id="61" opendate="2009-05-29 13:35:46" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Failure to detect existing fields with clashing name when introducing identifier field</summary>
+			
+			
+			<description>EntityMetadata fails to detect naming classes if there is an existing field with the same name as the proposed identifier field.
+The new version field name is correctly resolved (though also see ROO-60). We need similar logic for the identifier field.
+Steps to reproduce:
+create project com.foo
+install jpa -provider HIBERNATE -database HYPERSONIC_IN_MEMORY 
+new persistent class jpa -name SomeClass -testAutomatically   
+add field string someField
+Running &quot;mvn test&quot; at this point will pass. If you then &quot;add field string id -class com.foo.SomeClass&quot;, it will give an ITD error when the tests are compiled:
+compiler errors : 
+error at public java.lang.String SomeClass.getId() {    
+                                  ^^
+/home/balex/t/src/main/java/com/foo/SomeClass_Roo_JavaBean.aj:13:0::0 intertype declaration from com.foo.SomeClass_Roo_Entity conflicts with intertype declaration: java.lang.String com.foo.SomeClass.getId() from com.foo.SomeClass_Roo_JavaBean
+error at public java.lang.Long SomeClass.getId() {    
+                                ^^</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.RooEntity.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">71</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-05-31 18:45:01" id="64" opendate="2009-05-29 17:42:53" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Annotations containing class attributes erroneously remain unqualified</summary>
+			
+			
+			<description>As detailed in ROO-50, creating an integration test for an entity named com.foo.Test will erroneously result in the following type declaration:
+package com.foo;
+import org.springframework.roo.addon.test.RooIntegrationTest;
+import org.junit.Test;
+@RooIntegrationTest(entity = Test.class)
+public class TestIntegrationTest 
+{ ... }
+
+The annotation should be @RooIntegrationTest(entity = com.foo.Test.class), not @RooIntegrationTest(entity = Test.class). It is unclear at this moment whether this is due to a bug in the Java Parser metadata component or specific to the integration test add-on.</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is depended on by" type="Depends">50</link>
+			
+			
+			<link description="is related to" type="Related">306</link>
+			
+			
+			<link description="is related to" type="Related">50</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-05-31 19:10:26" id="50" opendate="2009-05-26 17:01:53" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Data on demand generation throws NPE for target classes without fields.</summary>
+			
+			
+			<description>Steps to reproduce (modified for compatibility with 1.0.0.M1):
+create project -topLevelPackage com.foo
+install jpa -provider HIBERNATE -database HYPERSONIC_IN_MEMORY
+new persistent class jpa -name Test
+new integration test
+mvn test
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.063 sec &amp;lt;&amp;lt;&amp;lt; FAILURE!
+initializationError(com.springsource.support.TestDataOnDemand)  Time elapsed: 0.005 sec  &amp;lt;&amp;lt;&amp;lt; ERROR!
+java.lang.Exception: No runnable methods
+	at org.junit.runners.BlockJUnit4ClassRunner.validateInstanceMethods(BlockJUnit4ClassRunner.java:154)
+	at org.junit.runners.BlockJUnit4ClassRunner.collectInitializationErrors(BlockJUnit4ClassRunner.java:112)
+	at org.junit.runners.ParentRunner.validate(ParentRunner.java:253)
+	at org.junit.runners.ParentRunner.&amp;lt;init&amp;gt;(ParentRunner.java:55)</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.ClasspathCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depends">64</link>
+			
+			
+			<link description="is related to" type="Related">64</link>
+			
+			
+			<link description="is related to" type="Related">666</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-01 21:01:58" id="73" opendate="2009-06-01 19:07:53" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Package declaration using package-info.java causes error message</summary>
+			
+			
+			<description>If a package contains the package definition file package-info.java, the Roo shell produces the following error message:
+&amp;gt; The first letter of the type name portion must be uppercase (attempted &amp;amp;apos;&amp;lt;packagename&amp;gt;.package-info&amp;amp;apos;)
+This seems to be a cosmetic issue only because Roo parses and generates code for all other files in the package as expected.</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserMetadataProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">1022</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-03 20:41:33" id="49" opendate="2009-05-25 19:58:19" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Invalid JavaBean code generation for generic type parameters</summary>
+			
+			
+			<description>The JavaBean addon generates invalid code if generic parameters are used:
+package foo;
+@RooJavaBean
+public class Generic&amp;lt;T&amp;gt; 
+{
+
+  private List&amp;lt;T&amp;gt; list;
+
+}
+
+will create an aspect Generic_Roo_JavaBean with the following methods:
+public java.util.List&amp;lt;foo.T&amp;gt; Generic.getList()
+public void Generic.setList(java.util.List&amp;lt;foo.T&amp;gt; list)
+The type parameter referenced using the package identifier which is invalid. Instead it should read
+public java.util.List&amp;lt;T&amp;gt; Generic.getList()
+public void Generic.setList(java.util.List&amp;lt;T&amp;gt; list)</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserClassMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserFieldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserMutableClassOrInterfaceTypeDetails.java</file>
+			
+			
+			<file type="M">org.springframework.roo.model.JavaType.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.itd.ItdSourceFileComposer.java</file>
+			
+			
+			<file type="D">org.springframework.roo.classpath.javaparser.Test.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserAnnotationMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.jsr303.SetField.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserMethodMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.FieldCommands.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserConstructorMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is depended on by" type="Depends">48</link>
+			
+			
+			<link description="is related to" type="Related">244</link>
+			
+			
+			<link description="is related to" type="Related">710</link>
+			
+			
+			<link description="is related to" type="Related">94</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-10 10:40:14" id="63" opendate="2009-05-29 16:32:19" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>script clinic.roo stops with &quot;Script execution aborted&quot;</summary>
+			
+			
+			<description>If I follow these steps:
+cd \java
+mkdir clinic
+cd clinic
+roo
+script clinic.roo
+I get many lines from previous steps executed right and:
+new controller automatic -name ~.web.OwnerController -formBackingObject ~.domain.Owner
+Created SRC_MAIN_JAVA\com\springsource\petclinic\web\OwnerController.java
+Created SRC_MAIN_JAVA\com\springsource\petclinic\domain\PetEditor.java
+Created SRC_MAIN_JAVA\com\springsource\petclinic\web\OwnerController_Roo_Controller.aj
+Created SRC_MAIN_WEBAPP\WEB-INF\jsp\owner
+Created SRC_MAIN_WEBAPP\WEB-INF\jsp\owner\list.jsp
+Created SRC_MAIN_WEBAPP\WEB-INF\jsp\owner\show.jsp
+Undo create SRC_MAIN_WEBAPP\WEB-INF\jsp\owner\show.jsp
+Undo create SRC_MAIN_WEBAPP\WEB-INF\jsp\owner\list.jsp
+Undo create SRC_MAIN_WEBAPP\WEB-INF\jsp\owner
+Undo create SRC_MAIN_JAVA\com\springsource\petclinic\web\OwnerController_Roo_Controller.aj
+Undo create SRC_MAIN_JAVA\com\springsource\petclinic\domain\PetEditor.java
+Undo create SRC_MAIN_JAVA\com\springsource\petclinic\web\OwnerController.java
+Script execution aborted
+roo&amp;gt;
+if I try to execute by hand the rest of the &quot;new controller automatic (Pet,Vet).&quot;, all undo the creation of files.</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">1466</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-10 15:59:13" id="82" opendate="2009-06-10 07:36:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Problem with the many to many relationship, script line is not closed correct</summary>
+			
+			
+			<description>When creating a many to many relationship, the following line contains an error
+&amp;lt;script type=&quot;text/javascript&quot;&amp;gt;Spring.addDecoration(new Spring.ElementDecoration(
+{elementId : &quot;_tasks&quot;, widgetType: &quot;dijit.form.MultiSelect&quot;)); &amp;lt;/script&amp;gt;
+
+Right after MultiSelect&quot; a }
+ is missing</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">81</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-12 13:30:01" id="78" opendate="2009-06-08 18:44:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Support for array types in parser</summary>
+			
+			
+			<description>Roo&amp;amp;apos;s parser apparently has problems when dealing with array types:
+@RooJavaBean
+public class Foo 
+{
+
+  private String bar[];
+
+}
+
+will produce the following aspect, not recognizing that bar is an array:
+privileged aspect Foo_Roo_JavaBean {
+    public java.lang.String at.telekomaustria.zusdie.xml.Foo.getBar() 
+{    
+        return this.bar;        
+    }
+ 
+    public void at.telekomaustria.zusdie.xml.Foo.setBar(java.lang.String bar) 
+{    
+        this.bar = bar;        
+    }
+ 
+}
+The alternative array syntax &quot;String[] bar;&quot; causes the whole aspect to be deleted, apparently because of a parsing failure.
+Parser and code generation should support all legal Java array type declarations, as defined in the JLS 10.2, also nasties such as &quot;byte[] rowvector, colvector, matrix[];&quot;</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.details.JavaParserFieldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.javaparser.JavaParserUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.model.JavaType.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.jsr303.SetField.java</file>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.FieldCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is depended on by" type="Depends">79</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-12 14:37:20" id="83" opendate="2009-06-11 06:29:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Integration test does not support entities which have timestamps as version</summary>
+			
+			
+			<description>If an entity has a timestamp field specified as the versioning field (the field is annotated with @Version) then the generated integration test has a compile error as it compares obj.getVersionTimestamp() &amp;gt; currentVersion (assuming the annotated timestamp field is called versionTimestamp). Instead if the version field is a timestamp the comparison should presumably be made using obj.getVersionTimestamp().after(currentVersion).</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.test.IntegrationTestMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-12 18:56:43" id="86" opendate="2009-06-11 17:47:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Annotation attributes initialized with arrays are not parsed correctly.</summary>
+			
+			
+			<description>Parsed annotation metadata (via JavaParserAnnotationMetadata) does not contain annotation initializers for attributes that have arrays as parameters (e.g. Hibernate&amp;amp;apos;s @Type(parameters = 
+{...}
+): The annotation attribute name is stored correctly inside the JavaParserAnnotationMetadata, whereas the AnnotationValue contains null for that attribute.
+Steps to reproduce:
+public @interface ArrayAnnot {
+  public String[] value() default {};
+}
+public class Foo {
+  @ArrayAnnot ( 
+{ &quot;1&quot; }
+)
+  private String type;
+}
+Result: the FieldMetadata for Foo.type does have an annotation &quot;@ArrayAnnot&quot;, but the value is null.
+This bug is possibly related to http://jira.springsource.org/browse/ROO-78</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.details.AnnotationMetadataUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-16 18:31:21" id="95" opendate="2009-06-16 18:17:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Invalid package declaration for generated resources of classes in default package</summary>
+			
+			
+			<description>For classes that reside in the default package, Roo generates source files that have a package declaration, but no package identifier.
+Steps to reproduce:
+create a class in the default package:
+import org.springframework.roo.addon.tostring.RooToString;
+@RooToString
+public class Foo {
+}
+The generated file Bar_Roo_ToString.aj will contain a package declaration as such:
+&quot;package ;&quot;
+which is invalid. The package declaration should not be emitted if a class resides in the default package.</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.itd.ItdSourceFileComposer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-16 18:32:56" id="85" opendate="2009-06-11 09:54:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hitting return/enter on a textarea field triggers form submit</summary>
+			
+			
+			<description>Using the auto scaffolded UI, any field with a @Size() &amp;gt; 30 characters generates a textarea.  However, the Dojo form widget adds form submit to pressing return in the field, so multi-line text entries cannot be created.</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is depended on by" type="Depends">440</link>
+			
+			
+			<link description="is related to" type="Related">80</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-17 12:28:22" id="53" opendate="2009-05-27 08:29:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Generated date field validation doesn&amp;apos;t properly take I18N into account</summary>
+			
+			
+			<description>Running through Ben&amp;amp;apos;s wedding example I noticed that the Selenium test will use a generated date that uses MM/dd/yyyy as the format, but the generated controller actually doesn&amp;amp;apos;t allow that as it expects yyyy-MM-dd when using a Dutch locale. This makes the test fail with a timeout, as the clickAndWait for saving the new Rsvp never progresses. 
+The generated HTML currently has this Spring-JS snippet:
+  &amp;lt;script type=&quot;text/javascript&quot;&amp;gt;Spring.addDecoration(new Spring.ElementDecoration({elementId : &quot;_confirmed&quot;, widgetType : &quot;dijit.form.DateTextBox&quot;, widgetAttrs : {datePattern : &quot;MM/dd/yyyy&quot;, required : false}})); &amp;lt;/script&amp;gt;
+However, the widget will still output yyyy-MM-dd format and won&amp;amp;apos;t accept anything else.
+The root cause seems to be http://jira.springframework.org/browse/SWF-844 which also has a solution/workaround to this issue. </description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.DojoUtils.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspDocumentHelper.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.shell.converters.DateConverter.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.selenium.SeleniumOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depends">1271</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-17 15:11:10" id="100" opendate="2009-06-17 09:02:52" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Carriage return &amp;#13; inserted into XML</summary>
+			
+			
+			<description>The XML that was inserted when creating the DriverManagerDataSource XML has several 
+ characters in it.  Other cases of XML that is managed by ROO do not have this issue.
+ 
+&amp;lt;bean class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot; id=&quot;dataSource&quot;&amp;gt;
+        &amp;lt;property name=&quot;driverClassName&quot; value=&quot;$
+{database.driverClassName}
+&quot;/&amp;gt;
+        &amp;lt;property name=&quot;url&quot; value=&quot;$
+{database.url}
+&quot;/&amp;gt;
+        &amp;lt;property name=&quot;username&quot; value=&quot;$
+{database.username}
+&quot;/&amp;gt;
+        &amp;lt;property name=&quot;password&quot; value=&quot;$
+{database.password}
+&quot;/&amp;gt;
+    &amp;lt;/bean&amp;gt;
+
+	&amp;lt;bean class=&quot;org.springframework.orm.jpa.JpaTransactionManager&quot; id=&quot;transactionManager&quot;&amp;gt;
+        &amp;lt;property name=&quot;entityManagerFactory&quot; ref=&quot;entityManagerFactory&quot;/&amp;gt;
+    &amp;lt;/bean&amp;gt;
+
+	&amp;lt;tx:annotation-driven mode=&quot;aspectj&quot; transaction-manager=&quot;transactionManager&quot;/&amp;gt;
+
+	&amp;lt;bean class=&quot;org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean&quot; id=&quot;entityManagerFactory&quot;&amp;gt;
+        &amp;lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&amp;gt;
+    &amp;lt;/bean&amp;gt;</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JpaOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">84</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-06-17 21:04:43" id="104" opendate="2009-06-17 21:03:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Selenium add-on should report clear error message instead of NPE if web scaffold metadata is unavailable</summary>
+			
+			
+			<description>Attempts to create a Selenium test via Roo for a web controller that is not an automatically scaffolded controller will presently result in a NullPointerException:
+NullPointerException at org.springframework.roo.addon.web.selenium.SeleniumOperations.generateTest(SeleniumOperations.java:76)
+It is desirable that a more informative error message is displayed to the user instead.</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.selenium.SeleniumOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-15 16:16:07" id="153" opendate="2009-07-14 21:17:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Delete object using openJPA</summary>
+			
+			
+			<description>Following error occurs when deleting any item from list.jsp
+Internal error
+org.springframework.web.bind.annotation.support.HandlerMethodInvocationException: Failed to invoke handler method [public java.lang.String com.nxp.web.PrefixController.delete(java.lang.Long)]; nested exception is java.lang.IllegalStateException: Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?) at org.springframework.web.bind.annotation.support.HandlerMethodInvoker.invokeHandlerMethod(HandlerMethodInvoker.java:154) at org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter.invokeHandlerMethod(AnnotationMethodHandlerAdapter.java:354) at org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter.handle(AnnotationMethodHandlerAdapter.java:342) at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:763) at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:709) at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:613) at org.springframework.web.servlet.FrameworkServlet.doDelete(FrameworkServlet.java:558) at javax.servlet.http.HttpServlet.service(HttpServlet.java:643) at javax.servlet.http.HttpServlet.service(HttpServlet.java:717) at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290) at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206) at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:646) at org.apache.catalina.core.ApplicationDispatcher.processRequest(ApplicationDispatcher.java:436) at org.apache.catalina.core.ApplicationDispatcher.doForward(ApplicationDispatcher.java:374) at org.apache.catalina.core.ApplicationDispatcher.forward(ApplicationDispatcher.java:302) at org.tuckey.web.filters.urlrewrite.NormalRewrittenUrl.doRewrite(NormalRewrittenUrl.java:195) at org.tuckey.web.filters.urlrewrite.RuleChain.handleRewrite(RuleChain.java:159) at org.tuckey.web.filters.urlrewrite.RuleChain.doRules(RuleChain.java:141) at org.tuckey.web.filters.urlrewrite.UrlRewriter.processRequest(UrlRewriter.java:90) at org.tuckey.web.filters.urlrewrite.UrlRewriteFilter.doFilter(UrlRewriteFilter.java:417) at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235) at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206) at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:68) at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76) at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235) at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206) at org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter.doFilterInternal(OpenEntityManagerInViewFilter.java:113) at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:76) at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235) at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206) at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233) at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191) at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128) at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102) at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109) at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:293) at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:847) at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:583) at org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:361) at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:650) at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:675) at java.lang.Thread.run(Thread.java:595) Caused by: java.lang.IllegalStateException: Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?) at com.nxp.key.Prefix_Roo_Entity.ajc$interMethod$com_nxp_key_Prefix_Roo_Entity$com_nxp_key_Prefix$remove(Prefix_Roo_Entity.aj:41) at com.nxp.key.Prefix.remove(Prefix.java:1) at com.nxp.key.Prefix_Roo_Entity.ajc$interMethodDispatch1$com_nxp_key_Prefix_Roo_Entity$com_nxp_key_Prefix$remove(Prefix_Roo_Entity.aj) at com.nxp.web.PrefixController_Roo_Controller.ajc$interMethod$com_nxp_web_PrefixController_Roo_Controller$com_nxp_web_PrefixController$delete(PrefixController_Roo_Controller.aj:62) at com.nxp.web.PrefixController.delete(PrefixController.java:1) at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39) at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25) at java.lang.reflect.Method.invoke(Method.java:585) at org.springframework.web.bind.annotation.support.HandlerMethodInvoker.doInvokeMethod(HandlerMethodInvoker.java:626) at org.springframework.web.bind.annotation.support.HandlerMethodInvoker.invokeHandlerMethod(HandlerMethodInvoker.java:150) ... 41 more Cookies: JSESSIONID=[F714DDD9FAC5F3D79A3BA7EE0C890928]
+used script:
+install jpa -database HYPERSONIC_PERSISTENT -provider OPENJPA
+add dependency -groupId javax.annotation -artifactId jsr250-api -version 1.0
+new persistent class jpa -name ~.key.Prefix -testAutomatically
+new persistent class jpa -name ~.key.Postfix -testAutomatically
+new persistent class jpa -name ~.key.ProductGroup -testAutomatically
+new persistent class jpa -name ~.key.Product -testAutomatically
+add field string -class ~.key.Prefix -fieldName code -notNull -sizeMax 3
+add field string -class ~.key.Postfix -fieldName code -notNull -sizeMax 3
+add field string -class ~.key.ProductGroup -fieldName name -notNull -sizeMax 30
+add field number -type integer -class ~.key.ProductGroup -fieldName index
+add field string -class ~.key.Product -fieldName name -notNull -sizeMax 30
+add field string -class ~.key.Product -fieldName prefix -notNull -sizeMax 3
+add field string -class ~.key.Product -fieldName postfix -notNull -sizeMax 3
+add field reference jpa -class ~.key.Prefix -fieldName productGroup -type ~.key.ProductGroup
+add field reference jpa -class ~.key.Postfix -fieldName productGroup -type ~.key.ProductGroup
+add field set jpa -class ~.key.ProductGroup -fieldName prefixes -element ~.key.Prefix -mappedBy productGroup -notNull
+add field set jpa -class ~.key.ProductGroup -fieldName postfixes -element ~.key.Postfix -mappedBy productGroup -notNull
+add field reference jpa -class ~.key.Product -fieldName productgroup -type ~.key.ProductGroup
+new integration test
+new controller automatic -name ~.web.PrefixController -formBackingObject ~.key.Prefix
+new controller automatic -name ~.web.PostfixController -formBackingObject ~.key.Postfix
+new controller automatic -name ~.web.ProductGroupController -formBackingObject ~.key.ProductGroup 
+new controller automatic -name ~.web.ProductController -formBackingObject ~.key.Product
+new selenium test -controller ~.web.PrefixController
+new selenium test -controller ~.web.PostfixController
+new selenium test -controller ~.web.ProductGroupController
+new selenium test -controller ~.web.ProductController</description>
+			
+			
+			<version>1.0.0.M1</version>
+			
+			
+			<fixedVersion>1.0.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">5934</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

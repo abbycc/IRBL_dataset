@@ -1,0 +1,2810 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="MATH">
+	<bug fixdate="2010-09-11 17:21:33" id="415" opendate="2010-09-11 17:05:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MathRuntimeException#createInternalError() method loosing the exception &quot;cause&quot;</summary>
+			
+			
+			<description>The MathRuntimeException#createInternalError(Throwable cause) method doesn&amp;amp;apos;t store the exception &quot;cause&quot;.
+Is this intentionally?
+</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.MathRuntimeException.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-07 17:01:48" id="466" opendate="2011-01-06 14:33:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BaseMultiStartMultivariateRealOptimizer.optimize() can generate NPE if starts &lt; 1</summary>
+			
+			
+			<description>The Javadoc for BaseMultiStartMultivariateRealOptimizer says that starts can be &amp;lt;= 1; however if it is set to 0, then the optimize() method will try to throw a null exception.
+Perhaps starts should be constrained to be at least 1?</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.univariate.MultiStartUnivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.BaseMultiStartMultivariateVectorialOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.BaseMultiStartMultivariateRealOptimizer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-02-22 23:51:58" id="519" opendate="2011-02-19 04:37:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>GaussianFitter Unexpectedly Throws NotStrictlyPositiveException</summary>
+			
+			
+			<description>Running the following:
+    	double[] observations = 
+
+{ 
+
+    			1.1143831578403364E-29, 
+
+    			 4.95281403484594E-28, 
+
+    			 1.1171347211930288E-26, 
+
+    			 1.7044813962636277E-25, 
+
+    			 1.9784716574832164E-24, 
+
+    			 1.8630236407866774E-23, 
+
+    			 1.4820532905097742E-22, 
+
+    			 1.0241963854632831E-21, 
+
+    			 6.275077366673128E-21, 
+
+    			 3.461808994532493E-20, 
+
+    			 1.7407124684715706E-19, 
+
+    			 8.056687953553974E-19, 
+
+    			 3.460193945992071E-18, 
+
+    			 1.3883326374011525E-17, 
+
+    			 5.233894983671116E-17, 
+
+    			 1.8630791465263745E-16, 
+
+    			 6.288759227922111E-16, 
+
+    			 2.0204433920597856E-15, 
+
+    			 6.198768938576155E-15, 
+
+    			 1.821419346860626E-14, 
+
+    			 5.139176445538471E-14, 
+
+    			 1.3956427429045787E-13, 
+
+    			 3.655705706448139E-13, 
+
+    			 9.253753324779779E-13, 
+
+    			 2.267636001476696E-12, 
+
+    			 5.3880460095836855E-12, 
+
+    			 1.2431632654852931E-11 
+
+    	}
+;
+    	GaussianFitter g = 
+    		new GaussianFitter(new LevenbergMarquardtOptimizer());
+    	for (int index = 0; index &amp;lt; 27; index++)
+    	{
+
+    		g.addObservedPoint(index, observations[index]);
+
+    	}
+       	g.fit();
+Results in:
+org.apache.commons.math.exception.NotStrictlyPositiveException: -1.277 is smaller than, or equal to, the minimum (0)
+	at org.apache.commons.math.analysis.function.Gaussian$Parametric.validateParameters(Gaussian.java:184)
+	at org.apache.commons.math.analysis.function.Gaussian$Parametric.value(Gaussian.java:129)
+I&amp;amp;apos;m guessing the initial guess for sigma is off.  </description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.fitting.GaussianFitterTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.fitting.GaussianFitter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-03-16 12:58:17" id="546" opendate="2011-03-12 04:52:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Truncation issue in KMeansPlusPlusClusterer</summary>
+			
+			
+			<description>The for loop inside KMeansPlusPlusClusterer.chooseInitialClusters defines a variable
+  int sum = 0;
+This variable should have type double, rather than int.  Using an int causes the method to truncate the distances between points to (square roots of) integers.  It&amp;amp;apos;s especially bad when the distances between points are typically less than 1.
+As an aside, in version 2.2, this bug manifested itself by making the clusterer return empty clusters.  I wonder if the EmptyClusterStrategy would still be necessary if this bug were fixed.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.clustering.KMeansPlusPlusClusterer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.clustering.KMeansPlusPlusClustererTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-10 18:09:45" id="572" opendate="2011-05-10 08:07:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Constructor parameter not used</summary>
+			
+			
+			<description>the constructor public ArrayFieldVector(Field&amp;lt;T&amp;gt; field, T[] v1, T[] v2)
+sets this
+&quot;this.field = data[0].getField();&quot;
+in the fast line...
+&quot;this.field = field;&quot;
+would be right - field was explicitly provided.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.linear.ArrayFieldVector.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-05 15:32:33" id="573" opendate="2011-05-10 08:23:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>in ArrayFielVector i.e. subtract calls wrong constructor</summary>
+			
+			
+			<description>I.E. subtract calls
+&quot;return new ArrayFieldVector&amp;lt;T&amp;gt;(out)&quot; this constructor clones the array...
+&quot;return new ArrayFieldVector&amp;lt;T&amp;gt;(field, out, false)&quot; would be better (preserving field as well)</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.linear.MatrixUtilsTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.ArrayFieldVector.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.MatrixUtils.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.Array2DRowFieldMatrix.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.FieldLUDecompositionImplTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.ArrayFieldVectorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.BlockFieldMatrix.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.AbstractFieldMatrix.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.FieldLUDecompositionImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.KolmogorovSmirnovDistributionImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.SparseFieldMatrixTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.AbstractRealMatrix.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-14 06:15:50" id="619" opendate="2011-07-14 05:33:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ADJUSTED R SQUARED INCORRECT IN REGRESSION RESULTS</summary>
+			
+			
+			<description>I forgot to cast to double when dividing two integers:
+            this.globalFitInfo[ADJRSQ_IDX] = 1.0 - 
+                    (1.0 - this.globalFitInfo[RSQ_IDX]) *
+                    (  nobs / ( (nobs - rank)));
+Should be
+            this.globalFitInfo[ADJRSQ_IDX] = 1.0 - 
+                    (1.0 - this.globalFitInfo[RSQ_IDX]) *
+                    ( (double) nobs / ( (double) (nobs - rank)));
+Patch attached.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.RegressionResults.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-09-02 20:54:19" id="645" opendate="2011-08-13 16:18:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MathRuntimeException with simple ebeMultiply on OpenMapRealVector</summary>
+			
+			
+			<description>The following piece of code
+
+
+
+import org.apache.commons.math.linear.OpenMapRealVector;
+
+import org.apache.commons.math.linear.RealVector;
+
+
+
+public class DemoBugOpenMapRealVector {
+
+    public static void main(String[] args) {
+
+        final RealVector u = new OpenMapRealVector(3, 1E-6);
+
+        u.setEntry(0, 1.);
+
+        u.setEntry(1, 0.);
+
+        u.setEntry(2, 2.);
+
+        final RealVector v = new OpenMapRealVector(3, 1E-6);
+
+        v.setEntry(0, 0.);
+
+        v.setEntry(1, 3.);
+
+        v.setEntry(2, 0.);
+
+        System.out.println(u);
+
+        System.out.println(v);
+
+        System.out.println(u.ebeMultiply(v));
+
+    }
+
+}
+
+
+
+raises an exception
+
+org.apache.commons.math.linear.OpenMapRealVector@7170a9b6
+
+Exception in thread &quot;main&quot; org.apache.commons.math.MathRuntimeException$6: map has been modified while iterating
+
+	at org.apache.commons.math.MathRuntimeException.createConcurrentModificationException(MathRuntimeException.java:373)
+
+	at org.apache.commons.math.util.OpenIntToDoubleHashMap$Iterator.advance(OpenIntToDoubleHashMap.java:564)
+
+	at org.apache.commons.math.linear.OpenMapRealVector.ebeMultiply(OpenMapRealVector.java:372)
+
+	at org.apache.commons.math.linear.OpenMapRealVector.ebeMultiply(OpenMapRealVector.java:1)
+
+	at DemoBugOpenMapRealVector.main(DemoBugOpenMapRealVector.java:17)
+
+
+</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.linear.SparseRealVectorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.OpenMapRealVector.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-09-15 14:28:55" id="669" opendate="2011-09-15 14:14:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>UnivariateRealIntegrator throws ConvergenceException</summary>
+			
+			
+			<description>ConvergenceException is a checked exception, which goes against the developer&amp;amp;apos;s guide. It occurs in the throws clause of some methods in package o.a.c.m.analysis.integration. It seems that these occurences are remnants from previous versions, where exceptions were probably checked. This exception is actually never thrown : it is safe to remove it from the throws clause.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.integration.UnivariateRealIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.integration.UnivariateRealIntegratorImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.integration.TrapezoidIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.integration.RombergIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.integration.LegendreGaussIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.integration.SimpsonIntegrator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-02-11 23:15:55" id="728" opendate="2011-12-20 02:05:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Errors in BOBYQAOptimizer when numberOfInterpolationPoints is greater than 2*dim+1</summary>
+			
+			
+			<description>I&amp;amp;apos;ve been having trouble getting BOBYQA to minimize a function (actually a non-linear least squares fit) so as one change I increased the number of interpolation points.  It seems that anything larger than 2*dim+1 causes an error (typically at
+line 1662
+                   interpolationPoints.setEntry(nfm, ipt, interpolationPoints.getEntry(ipt, ipt));
+I&amp;amp;apos;m guessing there is an off by one error in the translation from FORTRAN.  Changing the BOBYQAOptimizerTest as follows (increasing number of interpolation points by one) will cause failures.
+Bruce
+Index: src/test/java/org/apache/commons/math/optimization/direct/BOBYQAOptimizerTest.java
+===================================================================
+ src/test/java/org/apache/commons/math/optimization/direct/BOBYQAOptimizerTest.java	(revision 1221065)
++++ src/test/java/org/apache/commons/math/optimization/direct/BOBYQAOptimizerTest.java	(working copy)
+@@ -258,7 +258,7 @@
+ //        RealPointValuePair result = optim.optimize(100000, func, goal, startPoint);
+         final double[] lB = boundaries == null ? null : boundaries[0];
+         final double[] uB = boundaries == null ? null : boundaries[1];
+
+BOBYQAOptimizer optim = new BOBYQAOptimizer(2 * dim + 1);
++        BOBYQAOptimizer optim = new BOBYQAOptimizer(2 * dim + 2);
+         RealPointValuePair result = optim.optimize(maxEvaluations, func, goal, startPoint, lB, uB);
+ //        System.out.println(func.getClass().getName() + &quot; = &quot; 
+ //              + optim.getEvaluations() + &quot; f(&quot;);
+
+</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.direct.BOBYQAOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.direct.BOBYQAOptimizer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-03-23 08:14:24" id="770" opendate="2012-03-23 07:24:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SymmLQ not tested in SymmLQTest</summary>
+			
+			
+			<description>In SymmLQTest, two test actually create instances of ConjugateGradient instead of SymmLQ. These tests are
+
+testUnpreconditionedNormOfResidual()
+testPreconditionedNormOfResidual().
+
+</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.SymmLQTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.JacobiPreconditioner.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-04-02 18:47:29" id="776" opendate="2012-04-02 17:15:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Need range checks for elitismRate in ElitisticListPopulation constructors.</summary>
+			
+			
+			<description>There is a range check for setting the elitismRate via ElitisticListPopulation&amp;amp;apos;s setElitismRate method, but not via the constructors.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.genetics.ElitisticListPopulation.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.genetics.ElitisticListPopulationTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-04-12 18:19:25" id="775" opendate="2012-04-02 17:09:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>In the ListPopulation constructor, the check for a negative populationLimit should occur first.</summary>
+			
+			
+			<description>In the ListPopulation constructor, the check to see whether the populationLimit is positive should occur before the check to see if the number of chromosomes is greater than the populationLimit.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.genetics.ListPopulation.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.genetics.ElitisticListPopulation.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.genetics.Population.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.genetics.ListPopulationTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.genetics.TournamentSelection.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-04-12 18:34:06" id="779" opendate="2012-04-11 15:28:35" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ListPopulation Iterator allows you to remove chromosomes from the population.</summary>
+			
+			
+			<description>Calling the iterator method of ListPopulation returns an iterator of the protected modifiable list. Before returning the iterator we should wrap it in an unmodifiable list.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.genetics.ListPopulation.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.genetics.ListPopulationTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-04-27 23:31:21" id="782" opendate="2012-04-23 12:36:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BrentOptimizer: User-defined check block is badly placed</summary>
+			
+			
+			<description>The CM implementation of Brent&amp;amp;apos;s original algorithm was supposed to allow for a user-defined stopping criterion (in addition to Brent&amp;amp;apos;s default one).
+However, it turns out that this additional block of code is not at the right location, implying an unwanted early exit.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.univariate.BrentOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.univariate.BrentOptimizerTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-05-02 18:29:29" id="781" opendate="2012-04-21 07:11:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SimplexSolver gives bad results</summary>
+			
+			
+			<description>Methode SimplexSolver.optimeze(...) gives bad results with commons-math3-3.0
+in a simple test problem. It works well in commons-math-2.2. </description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.linear.SimplexTableau.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.linear.SimplexSolverTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">813</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-06-09 13:14:38" id="802" opendate="2012-06-09 13:05:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RealVector.subtract(RealVector) returns wrong answer.</summary>
+			
+			
+			<description>The following piece of code
+
+
+
+import org.apache.commons.math3.linear.ArrayRealVector;
+
+import org.apache.commons.math3.linear.OpenMapRealVector;
+
+import org.apache.commons.math3.linear.RealVectorFormat;
+
+
+
+public class DemoMath {
+
+
+
+    public static void main(String[] args) {
+
+        final double[] data1 = {
+
+            0d, 1d, 0d, 0d, 2d
+
+        };
+
+        final double[] data2 = {
+
+            3d, 0d, 4d, 0d, 5d
+
+        };
+
+        final RealVectorFormat format = new RealVectorFormat();
+
+        System.out.println(format.format(new ArrayRealVector(data1)
+
+            .subtract(new ArrayRealVector(data2))));
+
+        System.out.println(format.format(new OpenMapRealVector(data1)
+
+            .subtract(new ArrayRealVector(data2))));
+
+    }
+
+}
+
+
+
+prints
+
+{-3; 1; -4; 0; -3}
+
+{3; 1; 4; 0; -3}
+
+
+
+the second line being wrong. In fact, when subtracting mixed types, OpenMapRealVector delegates to the default implementation in RealVector which is buggy.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.RealVector.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-06-12 14:28:08" id="790" opendate="2012-05-19 17:01:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Mann-Whitney U Test Suffers From Integer Overflow With Large Data Sets</summary>
+			
+			
+			<description>When performing a Mann-Whitney U Test on large data sets (the attached test uses two 1500 element sets), intermediate integer values used in calculateAsymptoticPValue can overflow, leading to invalid results, such as p-values of NaN, or incorrect calculations.
+Attached is a patch, including a test, and a fix, which modifies the affected code to use doubles</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.MannWhitneyUTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.MannWhitneyUTestTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-04 18:01:53" id="798" opendate="2012-05-31 20:22:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>PolynomialFitter.fit() stalls</summary>
+			
+			
+			<description>Hi, in certain cases I ran into the problem that the PolynomialFitter.fit() method stalls, meaning that it does not return, nor throw an Exception (even if it runs for 90 min). Is there a way to tell the PolynomialFitter to iterate only N-times to ensure that my program does not stall?</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.fitting.PolynomialFitterTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.fitting.PolynomialFitter.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.fitting.CurveFitterTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">799</link>
+			
+			
+			<link description="is related to" type="Reference">800</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-10 20:05:31" id="813" opendate="2012-07-10 14:58:21" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SimplexSolver bug?</summary>
+			
+			
+			<description>I am trying to use the SimplexSolver in commons-math3-3.0 and am getting unpredictable results. I am pasting the problem code below. Basically swapping the sequence of the last two constraints results in two different results (of which one is pure sub-optimal). Am I not using the solver correctly?
+------------------------------
+import java.util.ArrayList;
+import java.util.Collection;
+import org.apache.commons.math3.optimization.*;
+import org.apache.commons.math3.optimization.linear.*;
+public class Commons_Solver {
+  public static void main(String[] args) {
+ // describe the optimization problem
+    LinearObjectiveFunction f = new LinearObjectiveFunction(new double[] 
+{ 1, 1, 1, 1, 1, 1, 0, 0 }
+, 0);
+    Collection &amp;lt;LinearConstraint&amp;gt;constraints = new ArrayList&amp;lt;LinearConstraint&amp;gt;();
+    //variables upper bounds
+    constraints.add(new LinearConstraint(new double[] 
+{ 1, 0, 0, 0, 0, 0, 0, 0 }, Relationship.LEQ, 38));
+    constraints.add(new LinearConstraint(new double[] { 0, 1, 0, 0, 0, 0, 0, 0 }, Relationship.LEQ, 34));
+    constraints.add(new LinearConstraint(new double[] { 0, 0, 1, 0, 0, 0, 0, 0 }, Relationship.LEQ, 1));
+    constraints.add(new LinearConstraint(new double[] { 0, 0, 0, 1, 0, 0, 0, 0 }, Relationship.LEQ, 6));
+    constraints.add(new LinearConstraint(new double[] { 0, 0, 0, 0, 1, 0, 0, 0 }, Relationship.LEQ, 17));
+    constraints.add(new LinearConstraint(new double[] { 0, 0, 0, 0, 0, 1, 0, 0 }, Relationship.LEQ, 11));
+    constraints.add(new LinearConstraint(new double[] { 0, 0, 0, 0, 0, 0, 1, 0 }, Relationship.LEQ, 101));
+    constraints.add(new LinearConstraint(new double[] { 0, 0, 0, 0, 0, 0, 0, 1 }, Relationship.LEQ, 1e10));
+
+    //variables lower bounds
+    constraints.add(new LinearConstraint(new double[] { 1, 0, 0, 0, 0, 0, 0, 0 }
+, Relationship.GEQ, 0));
+    constraints.add(new LinearConstraint(new double[] 
+{ 0, 1, 0, 0, 0, 0, 0, 0 }
+, Relationship.GEQ, 0));
+    constraints.add(new LinearConstraint(new double[] 
+{ 0, 0, 1, 0, 0, 0, 0, 0 }
+, Relationship.GEQ, 0));
+    constraints.add(new LinearConstraint(new double[] 
+{ 0, 0, 0, 1, 0, 0, 0, 0 }
+, Relationship.GEQ, 0));
+    constraints.add(new LinearConstraint(new double[] 
+{ 0, 0, 0, 0, 1, 0, 0, 0 }
+, Relationship.GEQ, 0));
+    constraints.add(new LinearConstraint(new double[] 
+{ 0, 0, 0, 0, 0, 1, 0, 0 }
+, Relationship.GEQ, 0));
+    constraints.add(new LinearConstraint(new double[] 
+{ 0, 0, 0, 0, 0, 0, 1, 0 }
+, Relationship.GEQ, 0));
+    constraints.add(new LinearConstraint(new double[] 
+{ 0, 0, 0, 0, 0, 0, 0, 1 }
+, Relationship.GEQ, 0));
+    constraints.add(new LinearConstraint(new double[] 
+{ -1,-1, -1, -1, -1, -1, 1, 0 }
+, Relationship.EQ, 0));
+    constraints.add(new LinearConstraint(new double[] 
+{ -1, -1, -1, -1, -1, -1,0 , 1 }
+, Relationship.EQ, 0));
+    constraints.add(new LinearConstraint(new double[] 
+{ 1, 0, 0, 0, 0, 0, 0, -0.2841121495327103  }
+, Relationship.GEQ, 0));
+    constraints.add(new LinearConstraint(new double[] 
+{ 0, 1, 0, 0, 0, 0, 0, -0.25420560747663556  }
+, Relationship.GEQ, 0));
+    constraints.add(new LinearConstraint(new double[] 
+{ 0, 0, 0, 1, 0, 0, 0, -0.04485981308411215 }
+, Relationship.GEQ, 0));
+    /*---------------
+    Swapping the sequence of the below two constraints produces two different results 
+    ------------------*/
+    constraints.add(new LinearConstraint(new double[] 
+{ 0, 0, 0, 0, 1, 0, 0, -0.12710280373831778  }
+, Relationship.GEQ, 0));
+    constraints.add(new LinearConstraint(new double[] 
+{ 0, 0, 0, 0, 0, 1, 0, -0.08224299065420561  }
+, Relationship.GEQ, 0));
+    /------------------/
+    PointValuePair solution = new SimplexSolver().optimize(f, constraints, GoalType.MAXIMIZE, false);
+    // get the solution
+    for (int i = 0 ; i &amp;lt; solution.getPoint().length; i++)      
+      System.out.println(&quot;x[&quot; + i + &quot;] = &quot; +  solution.getPoint()[i]);
+    System.out.println(&quot;value = &quot; + solution.getValue());
+  }
+}
+----------------------------------</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.linear.SimplexTableau.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.linear.SimplexSolverTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">781</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-12 13:38:05" id="812" opendate="2012-07-07 12:01:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>In RealVector, dotProduct and outerProduct return wrong results due to misuse of sparse iterators</summary>
+			
+			
+			<description>In class RealVector, the default implementation of RealMatrix outerProduct(RealVector) uses sparse iterators on the entries of the two vectors. The rationale behind this is that 0d * x == 0d is true for all double x. This assumption is in fact false, since 0d * NaN == NaN.
+Proposed fix is to loop through all entries of both vectors. This can have a significant impact on the CPU cost, but robustness should probably be preferred over speed in default implementations.
+Same issue occurs with double dotProduct(RealVector), which uses sparse iterators for this only.
+Another option would be to through an exception if isNaN() is true, in which case caching could be used for both isNaN() and isInfinite().</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.RealVector.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.OpenMapRealVector.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.ArrayRealVector.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-23 20:01:57" id="805" opendate="2012-06-12 15:14:23" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Percentile calculation is very slow when input data are constants</summary>
+			
+			
+			<description>I use the Percentile class to calculate quantile on a big array (10^6 entries). When I have to test the performance of my code, I notice that the calculation of quantile is at least 100x slower when my data are constants (10^6 of the same nomber). Maybe the Percentile calculation can be improved for this special case.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.descriptive.rank.Percentile.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">578</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-31 15:01:01" id="835" opendate="2012-07-31 13:09:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fraction percentageValue rare overflow</summary>
+			
+			
+			<description>The percentageValue() method of the Fraction class works by first multiplying the Fraction by 100, then converting the Fraction to a double. This causes overflows when the numerator is greater than Integer.MAX_VALUE/100, even when the value of the fraction is far below this value.
+The patch changes the method to first convert to a double value, and then multiply this value by 100 - the result should be the same, but with less overflows. An addition to the test for the method that covers this bug is also included.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.fraction.FractionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.fraction.Fraction.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-08-04 16:27:26" id="836" opendate="2012-07-31 17:04:25" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fraction(double, int) constructor strange behaviour</summary>
+			
+			
+			<description>The Fraction constructor Fraction(double, int) takes a double value and a int maximal denominator, and approximates a fraction. When the double value is a large, negative number with many digits in the fractional part, and the maximal denominator is a big, positive integer (in the 100&amp;amp;apos;000s), two distinct bugs can manifest:
+1: the constructor returns a positive Fraction. Calling Fraction(-33655.1677817278, 371880) returns the fraction 410517235/243036, which both has the wrong sign, and is far away from the absolute value of the given value
+2: the constructor does not manage to reduce the Fraction properly. Calling Fraction(-43979.60679604749, 366081) returns the fraction -1651878166/256677, which should have* been reduced to -24654898/3831.
+I have, as of yet, not found a solution. The constructor looks like this:
+public Fraction(double value, int maxDenominator)
+        throws FractionConversionException
+    {
+
+       this(value, 0, maxDenominator, 100);
+
+    }
+
+Increasing the 100 value (max iterations) does not fix the problem for all cases. Changing the 0-value (the epsilon, maximum allowed error) to something small does not work either, as this breaks the tests in FractionTest. 
+The problem is not neccissarily that the algorithm is unable to approximate a fraction correctly. A solution where a FractionConversionException had been thrown in each of these examples would probably be the best solution if an improvement on the approximation algorithm turns out to be hard to find.
+This bug has been found when trying to explore the idea of axiom-based testing (http://bldl.ii.uib.no/testing.html). Attached is a java test class FractionTestByAxiom (junit, goes into org.apache.commons.math3.fraction) which shows these bugs through a simplified approach to this kind of testing, and a text file describing some of the value/maxDenominator combinations which causes one of these failures.
+
+It is never specified in the documentation that the Fraction class guarantees that completely reduced rational numbers are constructed, but a comment inside the equals method claims that &quot;since fractions are always in lowest terms, numerators and can be compared directly for equality&quot;, so it seems like this is the intention.
+
+</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.fraction.FractionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.fraction.Fraction.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-08-05 02:38:14" id="840" opendate="2012-08-05 02:35:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Failures in &quot;FastMathTestPerformance&quot; when testRuns &gt;= 10,000,002</summary>
+			
+			
+			<description>Tests for methods &quot;asin&quot; and &quot;acos&quot; fail because they use
+
+
+
+i / 10000000.0
+
+
+
+as the argument to those methods, where &quot;i&quot; goes from 0 to the value of &quot;testRuns&quot; minus one (if &quot;testRuns&quot; is defined).
+A solution is to replace the above with
+
+
+
+i / (double) RUNS
+
+
+</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.util.FastMathTestPerformance.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-08-05 16:33:40" id="828" opendate="2012-07-19 15:07:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Not expected UnboundedSolutionException</summary>
+			
+			
+			<description>SimplexSolver throws UnboundedSolutionException when trying to solve minimization linear programming problem. The number of exception thrown depends on the number of variables.
+In order to see that behavior of SimplexSolver first try to run JUnit test setting a final variable ENTITIES_COUNT = 2 and that will give almost good result and then set it to 15 and you&amp;amp;apos;ll get a massive of unbounded exceptions.
+First iteration is runned with predefined set of input data with which the Solver gives back an appropriate result.
+The problem itself is well tested by it&amp;amp;apos;s authors (mathematicians who I believe know what they developed) using Matlab 10 with no unbounded solutions on the same rules of creatnig random variables values.
+What is strange to me is the dependence of the number of UnboundedSolutionException exceptions on the number of variables in the problem.
+The problem is formulated as
+min(1*t + 0*L) (for every r-th subject)
+s.t.
+-q(r) + QL &amp;gt;= 0
+x(r)t - XL &amp;gt;= 0
+L &amp;gt;= 0
+where 
+r = 1..R, 
+L = 
+{l(1), l(2), ..., l(R)}
+ (vector of R rows and 1 column),
+Q - coefficients matrix MxR
+X - coefficients matrix NxR </description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.linear.SimplexSolver.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.linear.SimplexSolverTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.linear.SimplexTableau.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">842</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-08-16 20:45:55" id="844" opendate="2012-08-12 21:03:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&quot;HarmonicFitter.ParameterGuesser&quot; sometimes fails to return sensible values</summary>
+			
+			
+			<description>The inner class &quot;ParameterGuesser&quot; in &quot;HarmonicFitter&quot; (package &quot;o.a.c.m.optimization.fitting&quot;) fails to compute a usable guess for the &quot;amplitude&quot; parameter.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.fitting.HarmonicFitterTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.fitting.HarmonicFitter.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.exception.util.LocalizedFormats.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-08-20 07:56:20" id="843" opendate="2012-08-07 19:13:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Precision.EPSILON: wrong documentation</summary>
+			
+			
+			<description>The documentation of the Field EPSILON in class org.apache.commons.math3.util.Precision states, that EPSILON is the smallest positive number such that 1 - EPSILON is not numerically equal to 1, and its value is defined as 1.1102230246251565E-16.
+However, this is NOT the smallest positive number with this property.
+Consider the following program:
+
+
+
+public class Eps {
+
+  public static void main(String[] args) {
+
+    double e = Double.longBitsToDouble(0x3c90000000000001L);
+
+	double e1 = 1-e;
+
+	System.out.println(e);
+
+	System.out.println(1-e);
+
+	System.out.println(1-e != 1);
+
+  }
+
+}
+
+
+
+The output is:
+
+
+
+% java Eps
+
+5.551115123125784E-17
+
+0.9999999999999999
+
+true
+
+
+
+This proves, that there are smaller positive numbers with the property that 1-eps != 1.
+I propose not to change the constant value, but to update the documentation. The value Precision.EPSILON is 
+an upper bound on the relative error which occurs when a real number is
+rounded to its nearest Double floating-point number. I propose to update 
+the api docs in this sense.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.util.Precision.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.util.PrecisionTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-09-05 14:23:33" id="855" opendate="2012-09-02 23:52:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&quot;BrentOptimizer&quot; not always reporting the best point</summary>
+			
+			
+			<description>BrentOptimizer (package &quot;o.a.c.m.optimization.univariate&quot;) does not check that the point it is going to return is indeed the best one it has encountered. Indeed, the last evaluated point might be slightly worse than the one before last.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.univariate.BrentOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.univariate.BrentOptimizerTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-09-13 15:19:07" id="789" opendate="2012-05-09 10:47:59" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Correlated random vector generator fails (silently) when faced with zero rows in covariance matrix</summary>
+			
+			
+			<description>The following three matrices (which are basically permutations of each other) produce different results when sampling a multi-variate Gaussian with the help of CorrelatedRandomVectorGenerator (sample covariances calculated in R, based on 10,000 samples):
+Array2DRowRealMatrix{
+{0.0,0.0,0.0,0.0,0.0},
+{0.0,0.013445532,0.01039469,0.009881156,0.010499559},
+{0.0,0.01039469,0.023006616,0.008196856,0.010732709},
+{0.0,0.009881156,0.008196856,0.019023866,0.009210099},
+{0.0,0.010499559,0.010732709,0.009210099,0.019107243}}
+
+&amp;gt; cov(data1)
+   V1 V2 V3 V4 V5
+V1 0 0.000000000 0.00000000 0.000000000 0.000000000
+V2 0 0.013383931 0.01034401 0.009913271 0.010506733
+V3 0 0.010344006 0.02309479 0.008374730 0.010759306
+V4 0 0.009913271 0.00837473 0.019005488 0.009187287
+V5 0 0.010506733 0.01075931 0.009187287 0.019021483
+
+Array2DRowRealMatrix{
+{0.013445532,0.01039469,0.0,0.009881156,0.010499559},
+{0.01039469,0.023006616,0.0,0.008196856,0.010732709},{0.0,0.0,0.0,0.0,0.0}
+,
+{0.009881156,0.008196856,0.0,0.019023866,0.009210099}
+,
+{0.010499559,0.010732709,0.0,0.009210099,0.019107243}}
+&amp;gt; cov(data2)
+            V1 V2 V3 V4 V5
+V1 0.006922905 0.010507692 0 0.005817399 0.010330529
+V2 0.010507692 0.023428918 0 0.008273152 0.010735568
+V3 0.000000000 0.000000000 0 0.000000000 0.000000000
+V4 0.005817399 0.008273152 0 0.004929843 0.009048759
+V5 0.010330529 0.010735568 0 0.009048759 0.018683544 
+Array2DRowRealMatrix{
+{0.013445532,0.01039469,0.009881156,0.010499559}
+,
+{0.01039469,0.023006616,0.008196856,0.010732709}
+,
+{0.009881156,0.008196856,0.019023866,0.009210099}
+,
+{0.010499559,0.010732709,0.009210099,0.019107243}}
+&amp;gt; cov(data3)
+            V1          V2          V3          V4
+V1 0.013445047 0.010478862 0.009955904 0.010529542
+V2 0.010478862 0.022910522 0.008610113 0.011046353
+V3 0.009955904 0.008610113 0.019250975 0.009464442
+V4 0.010529542 0.011046353 0.009464442 0.019260317
+I&amp;amp;apos;ve traced this back to the RectangularCholeskyDecomposition, which does not seem to handle the second matrix very well (decompositions in the same order as the matrices above):
+CorrelatedRandomVectorGenerator.getRootMatrix() = 
+Array2DRowRealMatrix{{0.0,0.0,0.0,0.0,0.0},
+{0.0759577418122063,0.0876125188474239,0.0,0.0,0.0}
+,
+{0.07764443622513505,0.05132821221460752,0.11976381821791235,0.0,0.0}
+,
+{0.06662930527909404,0.05501661744114585,0.0016662506519307997,0.10749324207653632,0.0}
+,{0.13822895138139477,0.0,0.0,0.0,0.0}}
+CorrelatedRandomVectorGenerator.getRank() = 5
+CorrelatedRandomVectorGenerator.getRootMatrix() = 
+Array2DRowRealMatrix{{0.0759577418122063,0.034512751379448724,0.0},
+{0.07764443622513505,0.13029949164628746,0.0}
+,
+{0.0,0.0,0.0}
+,
+{0.06662930527909404,0.023203936694855674,0.0}
+,{0.13822895138139477,0.0,0.0}}
+CorrelatedRandomVectorGenerator.getRank() = 3
+CorrelatedRandomVectorGenerator.getRootMatrix() = 
+Array2DRowRealMatrix{{0.0759577418122063,0.034512751379448724,0.033913748226348225,0.07303890149947785},
+{0.07764443622513505,0.13029949164628746,0.0,0.0}
+,
+{0.06662930527909404,0.023203936694855674,0.11851573313229945,0.0}
+,{0.13822895138139477,0.0,0.0,0.0}}
+CorrelatedRandomVectorGenerator.getRank() = 4
+Clearly, the rank of each of these matrices should be 4. The first matrix does not lead to incorrect results, but the second one does. Unfortunately, I don&amp;amp;apos;t know enough about the Cholesky decomposition to find the flaw in the implementation, and I could not find documentation for the &quot;rectangular&quot; variant (also not at the links provided in the javadoc).</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.random.CorrelatedRandomVectorGeneratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.RectangularCholeskyDecompositionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.RectangularCholeskyDecomposition.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-09-22 10:04:55" id="865" opendate="2012-09-19 21:10:42" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Wide bounds to CMAESOptimizer result in NaN parameters passed to fitness function</summary>
+			
+			
+			<description>If you give large values as lower/upper bounds (for example -Double.MAX_VALUE as a lower bound), the optimizer can call the fitness function with parameters set to NaN.  My guess is this is due to FitnessFunction.encode/decode generating NaN when normalizing/denormalizing parameters.  For example, if the difference between the lower and upper bound is greater than Double.MAX_VALUE, encode could divide infinity by infinity.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.direct.CMAESOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.direct.CMAESOptimizer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-09-22 10:05:11" id="864" opendate="2012-09-19 19:32:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CMAESOptimizer does not enforce bounds</summary>
+			
+			
+			<description>The CMAESOptimizer can exceed the bounds passed to optimize.  Looking at the generationLoop in doOptimize(), it does a bounds check by calling isFeasible() but if checkFeasableCount is zero (the default) then isFeasible() is never even called.  Also, even with non-zero checkFeasableCount it may give up before finding an in-bounds offspring and go forward with an out-of-bounds offspring.  This is against svn revision 1387637.  I can provide an example program where the optimizer ends up with a fit outside the prescribed bounds if that would help.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.direct.CMAESOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.direct.CMAESOptimizer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-10-19 11:09:26" id="881" opendate="2012-10-18 19:57:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Eliminate meaningless properties in multivariate distribution classes</summary>
+			
+			
+			<description>The MultivariateRealDistribution interface includes the following properties which make no sense for multivariate distributions:
+getSupportLowerBound, getSupporUpperBound, isSupportLowerBoundInclusive, isSupportUpperBoundInclusive
+In addition, the following property makes sense, but is unlikely to be useful:
+isSuportConnected
+All of these properties should be deprecated in 3.1 and dropped in 4.0</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.MultivariateRealDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.AbstractMultivariateRealDistribution.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-10-21 16:23:33" id="778" opendate="2012-04-10 06:06:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Dfp Dfp.multiply(int x) does not comply with the general contract FieldElement.multiply(int n)</summary>
+			
+			
+			<description>In class org.apache.commons.math3.Dfp,  the method multiply(int n) is limited to 0 &amp;lt;= n &amp;lt;= 9999. This is not consistent with the general contract of FieldElement.multiply(int n), where there should be no limitation on the values of n.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.dfp.DfpTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.dfp.Dfp.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-10-22 19:28:24" id="880" opendate="2012-10-12 17:31:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Polygon difference produces erronious results in some cases</summary>
+			
+			
+			<description>The 2D polygon difference method is returning incorrect
+results.  Below is a test case of subtracting two polygons (Sorry,
+this is the simplest case that I could find that duplicates the
+problem).  
+There are three problems with the result. The first is that the first
+point of the first set of vertices is null (and the first point of the
+second set is also null).  The second is that, even if the first null
+points are ignored,  the returned polygon is not the correct result.
+The first and last points are way off, and the remaining points do not
+match the original polygon boundaries.  Additionally, there are two
+holes that are returned in the results.  This subtraction case should
+not have holes.
+&quot;Complex Polygon Difference Test&quot;
+
+
+public void testComplexDifference() {
+
+        Vector2D[][] vertices1 = new Vector2D[][] {
+
+            new Vector2D[] {
+
+                    new Vector2D( 90.08714908223715,  38.370299337260235),
+
+                    new Vector2D( 90.08709517675004,  38.3702895991413),
+
+                    new Vector2D( 90.08401538704919,  38.368849330127944),
+
+                    new Vector2D( 90.08258210430711,  38.367634558585564),
+
+                    new Vector2D( 90.08251455106665,  38.36763409247078),
+
+                    new Vector2D( 90.08106599752608,  38.36761621664249),
+
+                    new Vector2D( 90.08249585300035,  38.36753627557965),
+
+                    new Vector2D( 90.09075743352184,  38.35914647644972),
+
+                    new Vector2D( 90.09099945896571,  38.35896264724079),
+
+                    new Vector2D( 90.09269383800086,  38.34595756121246),
+
+                    new Vector2D( 90.09638631543191,  38.3457988093121),
+
+                    new Vector2D( 90.09666417351019,  38.34523360999418),
+
+                    new Vector2D( 90.1297082145872,  38.337670454923625),
+
+                    new Vector2D( 90.12971687748956,  38.337669827794684),
+
+                    new Vector2D( 90.1240820219179,  38.34328502001131),
+
+                    new Vector2D( 90.13084259656404,  38.34017811765017),
+
+                    new Vector2D( 90.13378567942857,  38.33860579180606),
+
+                    new Vector2D( 90.13519557833206,  38.33621054663689),
+
+                    new Vector2D( 90.13545616732307,  38.33614965452864),
+
+                    new Vector2D( 90.13553111202748,  38.33613962818305),
+
+                    new Vector2D( 90.1356903436448,  38.33610227127048),
+
+                    new Vector2D( 90.13576283227428,  38.33609255422783),
+
+                    new Vector2D( 90.13595870833188,  38.33604606376991),
+
+                    new Vector2D( 90.1361556630693,  38.3360024198866),
+
+                    new Vector2D( 90.13622408795709,  38.335987048115726),
+
+                    new Vector2D( 90.13696189099994,  38.33581914328681),
+
+                    new Vector2D( 90.13746655304897,  38.33616706665265),
+
+                    new Vector2D( 90.13845973716064,  38.33650776167099),
+
+                    new Vector2D( 90.13950901827667,  38.3368469456463),
+
+                    new Vector2D( 90.14393814424852,  38.337591835857495),
+
+                    new Vector2D( 90.14483839716831,  38.337076122362475),
+
+                    new Vector2D( 90.14565474433601,  38.33769000964429),
+
+                    new Vector2D( 90.14569421179482,  38.3377117256905),
+
+                    new Vector2D( 90.14577067124333,  38.33770883625908),
+
+                    new Vector2D( 90.14600350631684,  38.337714326520995),
+
+                    new Vector2D( 90.14600355139731,  38.33771435193319),
+
+                    new Vector2D( 90.14600369112401,  38.33771443882085),
+
+                    new Vector2D( 90.14600382486884,  38.33771453466096),
+
+                    new Vector2D( 90.14600395205912,  38.33771463904344),
+
+                    new Vector2D( 90.14600407214999,  38.337714751520764),
+
+                    new Vector2D( 90.14600418462749,  38.337714871611695),
+
+                    new Vector2D( 90.14600422249327,  38.337714915811034),
+
+                    new Vector2D( 90.14867838361471,  38.34113888210675),
+
+                    new Vector2D( 90.14923750157374,  38.341582537502575),
+
+                    new Vector2D( 90.14877083250991,  38.34160685841391),
+
+                    new Vector2D( 90.14816667319519,  38.34244232585684),
+
+                    new Vector2D( 90.14797696744586,  38.34248455284745),
+
+                    new Vector2D( 90.14484318014337,  38.34385573215269),
+
+                    new Vector2D( 90.14477919958296,  38.3453797747614),
+
+                    new Vector2D( 90.14202393306448,  38.34464324839456),
+
+                    new Vector2D( 90.14198920640195,  38.344651155237216),
+
+                    new Vector2D( 90.14155207025175,  38.34486424263724),
+
+                    new Vector2D( 90.1415196143314,  38.344871730519),
+
+                    new Vector2D( 90.14128611910814,  38.34500196593859),
+
+                    new Vector2D( 90.14047850603913,  38.34600084496253),
+
+                    new Vector2D( 90.14045907000337,  38.34601860032171),
+
+                    new Vector2D( 90.14039496493928,  38.346223030432384),
+
+                    new Vector2D( 90.14037626063737,  38.346240203360026),
+
+                    new Vector2D( 90.14030005823724,  38.34646920000705),
+
+                    new Vector2D( 90.13799164754806,  38.34903093011013),
+
+                    new Vector2D( 90.11045289492762,  38.36801537312368),
+
+                    new Vector2D( 90.10871471476526,  38.36878044144294),
+
+                    new Vector2D( 90.10424901707671,  38.374300101757),
+
+                    new Vector2D( 90.10263482039932,  38.37310041316073),
+
+                    new Vector2D( 90.09834601753448,  38.373615053823414),
+
+                    new Vector2D( 90.0979455456843,  38.373578376172475),
+
+                    new Vector2D( 90.09086514328669,  38.37527884194668),
+
+                    new Vector2D( 90.09084931407364,  38.37590801712463),
+
+                    new Vector2D( 90.09081227075944,  38.37526295920463),
+
+                    new Vector2D( 90.09081378927135,  38.375193883266434)
+
+            }
+
+        };
+
+        PolygonsSet set1 = buildSet(vertices1);
+
+
+
+        Vector2D[][] vertices2 = new Vector2D[][] {
+
+            new Vector2D[] {
+
+                    new Vector2D( 90.13067558880044,  38.36977255037573),
+
+                    new Vector2D( 90.12907570488,  38.36817308242706),
+
+                    new Vector2D( 90.1342774136516,  38.356886880294724),
+
+                    new Vector2D( 90.13090330629757,  38.34664392676211),
+
+                    new Vector2D( 90.13078571364593,  38.344904617518466),
+
+                    new Vector2D( 90.1315602208914,  38.3447185040846),
+
+                    new Vector2D( 90.1316336226821,  38.34470643148342),
+
+                    new Vector2D( 90.134020944832,  38.340936644972885),
+
+                    new Vector2D( 90.13912536387306,  38.335497255122334),
+
+                    new Vector2D( 90.1396178806582,  38.334878075552126),
+
+                    new Vector2D( 90.14083049696671,  38.33316530644106),
+
+                    new Vector2D( 90.14145252901329,  38.33152722916191),
+
+                    new Vector2D( 90.1404779335565,  38.32863516047786),
+
+                    new Vector2D( 90.14282712131586,  38.327504432532066),
+
+                    new Vector2D( 90.14616669875488,  38.3237354115015),
+
+                    new Vector2D( 90.14860976050608,  38.315714862457924),
+
+                    new Vector2D( 90.14999277782437,  38.3164932507504),
+
+                    new Vector2D( 90.15005207194997,  38.316534677663356),
+
+                    new Vector2D( 90.15508513859612,  38.31878731691609),
+
+                    new Vector2D( 90.15919938519221,  38.31852743183782),
+
+                    new Vector2D( 90.16093758658837,  38.31880662005153),
+
+                    new Vector2D( 90.16099420184912,  38.318825953291594),
+
+                    new Vector2D( 90.1665411125756,  38.31859497874757),
+
+                    new Vector2D( 90.16999653861313,  38.32505772048029),
+
+                    new Vector2D( 90.17475243391698,  38.32594398441148),
+
+                    new Vector2D( 90.17940844844992,  38.327427213761325),
+
+                    new Vector2D( 90.20951909541378,  38.330616833491774),
+
+                    new Vector2D( 90.2155400467941,  38.331746223670336),
+
+                    new Vector2D( 90.21559881391778,  38.33175551425302),
+
+                    new Vector2D( 90.21916646426041,  38.332584299620805),
+
+                    new Vector2D( 90.23863749852285,  38.34778978875795),
+
+                    new Vector2D( 90.25459855175802,  38.357790570608984),
+
+                    new Vector2D( 90.25964298227257,  38.356918010203174),
+
+                    new Vector2D( 90.26024593994703,  38.361692743151366),
+
+                    new Vector2D( 90.26146187570015,  38.36311080550837),
+
+                    new Vector2D( 90.26614159359622,  38.36510808579902),
+
+                    new Vector2D( 90.26621342936448,  38.36507942500333),
+
+                    new Vector2D( 90.26652190211962,  38.36494042196722),
+
+                    new Vector2D( 90.26621240678867,  38.365113172030874),
+
+                    new Vector2D( 90.26614057102057,  38.365141832826794),
+
+                    new Vector2D( 90.26380080055299,  38.3660381760273),
+
+                    new Vector2D( 90.26315345241,  38.36670658276421),
+
+                    new Vector2D( 90.26251574942881,  38.367490323488084),
+
+                    new Vector2D( 90.26247873448426,  38.36755266444749),
+
+                    new Vector2D( 90.26234628016698,  38.36787989125406),
+
+                    new Vector2D( 90.26214559424784,  38.36945909356126),
+
+                    new Vector2D( 90.25861728442555,  38.37200753430875),
+
+                    new Vector2D( 90.23905557537864,  38.375405314295904),
+
+                    new Vector2D( 90.22517251874075,  38.38984691662256),
+
+                    new Vector2D( 90.22549955153215,  38.3911564273979),
+
+                    new Vector2D( 90.22434386063355,  38.391476432092134),
+
+                    new Vector2D( 90.22147729457276,  38.39134652252034),
+
+                    new Vector2D( 90.22142070120117,  38.391349167741964),
+
+                    new Vector2D( 90.20665060751588,  38.39475580900313),
+
+                    new Vector2D( 90.20042268367109,  38.39842558622888),
+
+                    new Vector2D( 90.17423771242085,  38.402727751805344),
+
+                    new Vector2D( 90.16756796257476,  38.40913898597597),
+
+                    new Vector2D( 90.16728283954308,  38.411255399912875),
+
+                    new Vector2D( 90.16703538220418,  38.41136059866693),
+
+                    new Vector2D( 90.16725865657685,  38.41013618805954),
+
+                    new Vector2D( 90.16746107640665,  38.40902614307544),
+
+                    new Vector2D( 90.16122795307462,  38.39773101873203)
+
+            }
+
+        };
+
+        PolygonsSet set2 = buildSet(vertices2);
+
+        PolygonsSet set  = (PolygonsSet) new
+
+RegionFactory&amp;lt;Euclidean2D&amp;gt;().difference(set1.copySelf(),
+
+
+
+              set2.copySelf());
+
+
+
+        Vector2D[][] verticies = set.getVertices();
+
+        Assert.assertTrue(verticies[0][0] != null);
+
+        Assert.assertEquals(1, verticies.length);
+
+    }
+
+
+</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.geometry.euclidean.twod.PolygonsSetTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.geometry.euclidean.twod.PolygonsSet.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-11-18 21:40:15" id="899" opendate="2012-11-16 08:08:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>A random crash of MersenneTwister random generator</summary>
+			
+			
+			<description>There is a very small probability that MersenneTwister generator gives a following error: 
+java.lang.ArrayIndexOutOfBoundsException: 624
+in MersenneTwister.java line 253
+The error is completely random and its probability is about 1e-8.
+UPD: The problem most probably arises only in multy-thread mode.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.random.SynchronizedRandomGenerator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-11-26 13:25:55" id="905" opendate="2012-11-20 20:54:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FastMath.[cosh, sinh] do not support the same range of values as the Math counterparts</summary>
+			
+			
+			<description>As reported by Jeff Hain:
+cosh(double) and sinh(double):
+Math.cosh(709.783) = 8.991046692770538E307
+FastMath.cosh(709.783) = Infinity
+Math.sinh(709.783) = 8.991046692770538E307
+FastMath.sinh(709.783) = Infinity
+===&amp;gt; This is due to using exp( x )/2 for values of |x|
+above 20: the result sometimes should not overflow,
+but exp( x ) does, so we end up with some infinity.
+===&amp;gt; for values of |x| &amp;gt;= StrictMath.log(Double.MAX_VALUE),
+exp will overflow, so you need to use that instead:
+for x positive:
+double t = exp(x*0.5);
+return (0.5*t)*t;
+for x negative:
+double t = exp(-x*0.5);
+return (-0.5*t)*t;</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.util.FastMath.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.util.FastMathTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">580</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-11-26 23:03:35" id="904" opendate="2012-11-20 20:51:23" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FastMath.pow deviates from Math.pow for negative, finite base values with an exponent 2^52 &lt; y &lt; 2^53 </summary>
+			
+			
+			<description>As reported by Jeff Hain:
+pow(double,double):
+Math.pow(-1.0,5.000000000000001E15) = -1.0
+FastMath.pow(-1.0,5.000000000000001E15) = 1.0
+===&amp;gt; This is due to considering that power is an even
+integer if it is &amp;gt;= 2^52, while you need to test
+that it is &amp;gt;= 2^53 for it.
+===&amp;gt; replace
+&quot;if (y &amp;gt;= TWO_POWER_52 || y &amp;lt;= -TWO_POWER_52)&quot;
+with
+&quot;if (y &amp;gt;= 2*TWO_POWER_52 || y &amp;lt;= -2*TWO_POWER_52)&quot;
+and that solves it.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.util.FastMath.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.util.FastMathTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">580</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-03-09 17:38:35" id="914" opendate="2012-12-13 13:28:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Inconsistent multi-start randomization (optimizers)</summary>
+			
+			
+			<description>In class &quot;o.a.c.m.optim.BaseMultiStartMultivariateOptimizer&quot;, the &quot;starting points&quot; generator is passed at construction. But random initial guesses must fulfill the bound constraint and be somehow related to the user-supplied initial guess; and those are passed to the &quot;optimize&quot; method and thus can change from one call to the other, leading to inconsistent (and probably useless) multi-starts.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.BaseMultiStartMultivariateOptimizer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-03-27 19:44:54" id="891" opendate="2012-11-08 18:31:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SpearmansCorrelation fails when using NaturalRanking together with NaNStrategy.REMOVED</summary>
+			
+			
+			<description>As reported by Martin Rosellen on the users mailinglist:
+Using a NaturalRanking with a REMOVED NaNStrategy can result in an exception when NaN are contained in the input arrays.
+The current implementation just removes the NaN values where they occur, without taken care to remove the corresponding values in the other array.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.correlation.SpearmansCorrelation.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.correlation.SpearmansRankCorrelationTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">958</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-02-20 15:58:58" id="803" opendate="2012-06-09 18:51:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Bugs in RealVector.ebeMultiply(RealVector) and ebeDivide(RealVector)</summary>
+			
+			
+			<description>OpenMapRealVector.ebeMultiply(RealVector) and OpenMapRealVector.ebeDivide(RealVector) return wrong values when one entry of the specified RealVector is nan or infinity. The bug is easy to understand. Here is the current implementation of ebeMultiply
+
+
+
+    public OpenMapRealVector ebeMultiply(RealVector v) {
+
+        checkVectorDimensions(v.getDimension());
+
+        OpenMapRealVector res = new OpenMapRealVector(this);
+
+        Iterator iter = entries.iterator();
+
+        while (iter.hasNext()) {
+
+            iter.advance();
+
+            res.setEntry(iter.key(), iter.value() * v.getEntry(iter.key()));
+
+        }
+
+        return res;
+
+    }
+
+
+
+The assumption is that for any double x, x * 0d == 0d holds, which is not true. The bug is easy enough to identify, but more complex to solve. The only solution I can come up with is to loop through all entries of v (instead of those entries which correspond to non-zero entries of this). I&amp;amp;apos;m afraid about performance losses.
+</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.RealVector.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.UnmodifiableRealVectorAbstractTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.RealVectorAbstractTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.OpenMapRealVector.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.SparseRealVectorTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-02-20 16:17:17" id="821" opendate="2012-07-12 14:01:58" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SparseRealVectorTest.testMap and testMapToSelf fail because zero entries lose their sign</summary>
+			
+			
+			<description>Mapping Inverse to an OpenMapRealVector can lead to wrong answers, because 1.0 / 0.0 should return +/-Infinity depending on the sign of the zero entry. Since the sign is lost in OpenMapRealVector, the answer must be wrong if the entry is truly -0.0.
+This is a difficult bug, because it potentially affects any function passed to OpenMapRealVector.map() or mapToSelf(). I would recommend we relax the requirements in the unit tests of this class, and make people aware of the issue in the class documentation.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.SparseRealVectorTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-02-16 23:04:05" id="825" opendate="2012-07-16 09:16:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>public method &quot;laguerre&quot; should be private</summary>
+			
+			
+			<description>In class &quot;LaguerreSolver&quot; (package &quot;o.a.c.m.analysis.solvers&quot;), the method &quot;laguerre&quot; is public. However, it doesn&amp;amp;apos;t make any sense to call it from outside the class (because its argument list does not contain the function whose roots must be computed).
+The method should be made private.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.analysis.solvers.LaguerreSolver.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.solvers.LaguerreSolver.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-02-24 22:09:34" id="859" opendate="2012-09-08 18:15:16" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix and then deprecate isSupportXxxInclusive in RealDistribution interface</summary>
+			
+			
+			<description>The conclusion from [1] was never implemented. We should deprecate these
+properties from the RealDistribution interface, but since removal
+will have to wait until 4.0, we should agree on a precise
+definition and fix the code to match it in the mean time.
+The definition that I propose is that isSupportXxxInclusive means
+that when the density function is applied to the upper or lower
+bound of support returned by getSupportXxxBound, a finite (i.e. not
+infinite), not NaN value is returned.
+[1] http://markmail.org/message/dxuxh7eybl7xejde</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.NormalDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.LevyDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.LogNormalDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.ParetoDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.GammaDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.TDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.ExponentialDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.LogisticDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.NakagamiDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.ConstantRealDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.FDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.EnumeratedRealDistributionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.ChiSquaredDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.RealDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.BetaDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.CauchyDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.RealDistributionAbstractTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.UniformRealDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.WeibullDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.TriangularDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.EnumeratedRealDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.LaplaceDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.GumbelDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.UniformRealDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.FDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.RealDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.RealDistributionAbstractTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-08-20 20:04:27" id="879" opendate="2012-10-11 12:33:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&quot;CMAESOptimizer&quot; silently changes invalid input</summary>
+			
+			
+			<description>The &quot;lambda&quot; input parameter must be strictly positive. But when it&amp;amp;apos;s not the case, an undocumented default is used (cf. line 526).
+When a precondition is not satisfied, the code must throw an exception.
+Instead of the code unknowingly changing the input, it is rather the documentation that should suggest a good default.
+This change would allow to make &quot;lambda&quot; a constant (final) field.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.direct.CMAESOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.direct.CMAESOptimizer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-06 06:48:25" id="1384" opendate="2016-09-06 02:26:39" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HypergeometricDistribution logProbability() returns NaN for edge cases</summary>
+			
+			
+			<description>For certain edge cases, HypergeometricDistribution.logProbability() will return NaN.
+To compute the hypergeometric log probability, three binomial log probabilities are computed and then combined accordingly. The implementation is essentially the same as in BinomialDistribution.logProbability() and uses the SaddlePointExpansion. However, the Binomial implementation includes an extra check for the edge case of 0 trials which the HyperGeometric lacks.
+An example call which fails is:
+new HypergeometricDistribution(null, 11, 0, 1).logProbability(0)
+which returns NaN instead of 0.0.
+Note that
+new HypergeometricDistribution(null, 10, 0, 1).logProbability(0)
+returns 0 as expected.
+Possible fixes:
+1. Check for the edge cases and return appropriate values. This would make the code somewhat more complex.
+2. Instead of duplicating the implementation use BinomialDistribution.logProbability(). This is much simpler/more readable but will reduce performance as each call to BinomialDistribution.logProbability() makes redundant checks of validity of input parameters etc.
+I am happy to submit a PR at the GitHub repo implementing either 1 or 2 with the necessary tests.</description>
+			
+			
+			<version>3.0</version>
+			
+			
+			<fixedVersion>4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.SaddlePointExpansion.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.distribution.HypergeometricDistributionTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">1356</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="SEC">
+	<bug fixdate="2008-04-18 09:54:25" id="773" opendate="2008-04-14 15:56:05" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>global-method-security fails with JPA</summary>
+			
+			
+			<description>Enabling global-method-security with JPA @PersistenceContext annotations will fail on startup.  This is with the recent 2.0.0 release cut. 
+My userDetailsService is a custom implementation that requires access to an @Repository bean with an EntityManager.
+	&amp;lt;sec:http auto-config=&quot;true&quot;&amp;gt;
+        &amp;lt;sec:intercept-url pattern=&quot;/assets/**&quot; access=&quot;IS_AUTHENTICATED_ANONYMOUSLY&quot;/&amp;gt;
+        &amp;lt;sec:intercept-url pattern=&quot;/login*&quot; access=&quot;IS_AUTHENTICATED_ANONYMOUSLY&quot;/&amp;gt;
+        &amp;lt;sec:intercept-url pattern=&quot;/logout*&quot; access=&quot;IS_AUTHENTICATED_ANONYMOUSLY&quot;/&amp;gt;
+        &amp;lt;sec:intercept-url pattern=&quot;/unsupported*&quot; access=&quot;IS_AUTHENTICATED_ANONYMOUSLY&quot;/&amp;gt;        
+        &amp;lt;sec:intercept-url pattern=&quot;/password-*&quot; access=&quot;IS_AUTHENTICATED_ANONYMOUSLY&quot;/&amp;gt;
+        &amp;lt;sec:intercept-url pattern=&quot;/**&quot; access=&quot;ROLE_USER,ROLE_ADMIN&quot;/&amp;gt;
+        &amp;lt;sec:form-login login-page=&quot;/login.html&quot; default-target-url=&quot;/app.html&quot; authentication-failure-url=&quot;?login_error=1&quot;/&amp;gt;
+        &amp;lt;sec:logout logout-success-url=&quot;/logout.html&quot;/&amp;gt;
+    &amp;lt;/sec:http&amp;gt;
+	&amp;lt;sec:authentication-provider user-service-ref=&quot;userDetailsService&quot;&amp;gt;
+		&amp;lt;sec:password-encoder ref=&quot;passwordEncoder&quot; /&amp;gt;
+	&amp;lt;/sec:authentication-provider&amp;gt;
+	&amp;lt;sec:global-method-security secured-annotations=&quot;enabled&quot; /&amp;gt;
+The exception: 
+2008-04-15 04:50:26,490 ERROR [main] org.springframework.web.context.ContextLoader: Context initialization failed 
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;amp;apos;_rememberMeServicesInjectionBeanPostProcessor&amp;amp;apos;: Initialization of bean failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;amp;apos;org.springframework.transaction.config.internalTransactionAdvisor&amp;amp;apos;: Cannot create inner bean &amp;amp;apos;(inner bean)&amp;amp;apos; of type [org.springframework.transaction.interceptor.TransactionInterceptor] while setting bean property &amp;amp;apos;transactionInterceptor&amp;amp;apos;; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;amp;apos;(inner bean)&amp;amp;apos;: Cannot resolve reference to bean &amp;amp;apos;transactionManager&amp;amp;apos; while setting bean property &amp;amp;apos;transactionManager&amp;amp;apos;; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;amp;apos;transactionManager&amp;amp;apos; defined in class path resource [epicenter-webapp-beans.xml]: Cannot resolve reference to bean &amp;amp;apos;entityManagerFactory&amp;amp;apos; while setting bean property &amp;amp;apos;entityManagerFactory&amp;amp;apos;; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;amp;apos;ehCacheManager&amp;amp;apos; defined in class path resource [epicenter-repository-beans.xml]: Initialization of bean failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;amp;apos;_methodDefinitionSourceAdvisor&amp;amp;apos;: Cannot create inner bean &amp;amp;apos;(inner bean)&amp;amp;apos; of type [org.springframework.security.intercept.method.aopalliance.MethodSecurityInterceptor] while setting constructor argument; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;amp;apos;(inner bean)&amp;amp;apos;: Cannot resolve reference to bean &amp;amp;apos;_authenticationManager&amp;amp;apos; while setting bean property &amp;amp;apos;authenticationManager&amp;amp;apos;; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;amp;apos;_authenticationManager&amp;amp;apos;: Cannot resolve reference to bean &amp;amp;apos;org.springframework.security.providers.dao.DaoAuthenticationProvider#0&amp;amp;apos; while setting bean property &amp;amp;apos;providers&amp;amp;apos; with key [2]; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;amp;apos;org.springframework.security.providers.dao.DaoAuthenticationProvider#0&amp;amp;apos;: Cannot resolve reference to bean &amp;amp;apos;userDetailsService&amp;amp;apos; while setting bean property &amp;amp;apos;userDetailsService&amp;amp;apos;; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;amp;apos;userDetailsService&amp;amp;apos;: Injection of resource fields failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;amp;apos;permissionRepository&amp;amp;apos;: Injection of persistence fields failed; nested exception is java.lang.NullPointerException
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:478)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory$1.run(AbstractAutowireCapableBeanFactory.java:409)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:380)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:264)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:217)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:261)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:185)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:164)
+	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:881)
+	at org.springframework.context.support.AbstractApplicationContext.registerBeanPostProcessors(AbstractApplicationContext.java:606)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:366)
+	at org.springframework.web.context.ContextLoader.createWebApplicationContext(ContextLoader.java:255)
+	at org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:199)
+	at org.springframework.web.context.ContextLoaderListener.contextInitialized(ContextLoaderListener.java:45)</description>
+			
+			
+			<version>2.0.0</version>
+			
+			
+			<fixedVersion>2.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.GlobalMethodSecurityBeanDefinitionParserTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.intercept.method.aopalliance.MethodDefinitionSourceAdvisor.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.GlobalMethodSecurityBeanDefinitionParser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-21 03:03:02" id="777" opendate="2008-04-15 19:18:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>The disabled status cannot be set in &lt;user-service&gt;</summary>
+			
+			
+			<description>UserServiceBeanDefinitionParser does parse the &quot;disabled&quot; attribute, but this attribute is not valid in spring-security-2.0.xsd.</description>
+			
+			
+			<version>2.0.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.UserServiceBeanDefinitionParserTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-21 03:51:33" id="782" opendate="2008-04-18 10:35:41" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Incorrect UrlMatcher initialization in FilterChainProxy results in wrong lowercase/uppercase matching</summary>
+			
+			
+			<description>When upgrading from Acegi 1.0.6 to Spring Security 2.0.0, we found that URL path matching did not work in some cases (we are still using the old definition source style since it&amp;amp;apos;s a big app and it will take time to migrate to the new simplified XML).
+We narrowed this down to patterns that contained both lowercase and uppercase characters. We have disabled the flag in the object definition source that marked whether we wanted to turn both the pattern and path to lowercase before comparison.
+The reason for this is that a different AntUrlPathMatcher instance is used when initializing the FilterChainProxyBean, than when the comparison is actually made. One instance has the requiresLowerCaseUrl set to true (the initial, default instance), while the second one which used the object definition source flag has requiresLowerCaseUrl set to false. Why does this happen? See subtle error:
+    public void afterPropertiesSet() throws Exception {
+        // Convert the FilterDefinitionSource to a filterChainMap if set
+        if (fids != null) 
+{
+            Assert.isNull(uncompiledFilterChainMap, &quot;Set the filterChainMap or FilterInvocationDefinitionSource but not both&quot;);
+            FIDSToFilterChainMapConverter converter = new FIDSToFilterChainMapConverter(fids, applicationContext);
+            setFilterChainMap(converter.getFilterChainMap()); &amp;lt;--------------- THIS SHOULD BE CALLED AFTER setMatcher(converter.getMatcher())
+            setMatcher(converter.getMatcher());                            &amp;lt;---------------
+            fids = null;
+        }
+
+        Assert.notNull(uncompiledFilterChainMap, &quot;filterChainMap must be set&quot;);
+    }
+The reason is that setFilterChainMap calls createCompiledMap which is turn uses the matcher instance field. At this point the instance matcher has not been changed yet, so that causes the compiled map to have been compiled with the wrong matcher.
+Our workaround has been to enable the CONVERT_URL_TO_LOWERCASE_BEFORE_COMPARISON flag and lowercase all patterns.</description>
+			
+			
+			<version>2.0.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.util.FilterChainProxyTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.util.FilterChainProxy.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-22 02:28:53" id="788" opendate="2008-04-21 03:16:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>x509 authentication does not work properly</summary>
+			
+			
+			<description>x509 authentication does not work properly
+I have an application with x509 authentication configured.
+First:
+In RC1 release my application startup properly. In final 2.0.0 release this exception occur:
+org.springframework.beans.factory.parsing.BeanDefinitionParsingException: Configuration problem: No AuthenticationEntryPoint could be established.
+If I write the entry point bean like this:
+&amp;lt;bean id=&quot;x509EntryPoint&quot; class=&quot;org.springframework.security.ui.x509.X509ProcessingFilterEntryPoint&quot; /&amp;gt;
+everything work properly.
+I think 2.0.0 should work automatic like RC1 &quot;OR&quot; x509 documentation section in the reference manual should document it.
+Second:
+When I do the first login with x509 certificate in my application, a 403 http status code occurs.
+This happens only if a http-&amp;gt;https redirection is needed. 
+Example:
+First page is &quot;IS_AUTHENTICATED_ANONYMOUSLY&quot; and HTTP. Then user goes to a secure page over HTTPS.
+The browser dialog appers to select the certificate. Then a 403 occur.
+If the first page is HTTPS everything work properly.
+I will attach the applicationContext and the error log.
+Sorry for my bad english.</description>
+			
+			
+			<version>2.0.0</version>
+			
+			
+			<fixedVersion>2.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.HttpSecurityBeanDefinitionParser.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">776</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-25 23:40:23" id="783" opendate="2008-04-18 17:57:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>GlobalMethodSecurityBeanDefinitionParser should support AfterInvocationProviders</summary>
+			
+			
+			<description>Even I define an AfterInvocationProviderManager, it can&amp;amp;apos;t be auto-wired into the MethodSecurityInterceptor when I use &amp;lt;global-method-security&amp;gt; to secure methods with @Secured. So the AfterInvocationProviders don&amp;amp;apos;t work with the @Secured annotations. I can only use &amp;lt;security:intercept-methods&amp;gt; to have my AfterInvocationProviders work!</description>
+			
+			
+			<version>2.0.0</version>
+			
+			
+			<fixedVersion>2.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.ConfigUtils.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.SecurityNamespaceHandler.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.Elements.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.BeanIds.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.GlobalMethodSecurityBeanDefinitionParser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-30 18:48:48" id="787" opendate="2008-04-21 00:58:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ACL SQL statements have inconsistent use of case (mixed upper and  lower).</summary>
+			
+			
+			<description>SQL statements in ACL package have mixed upper and lower case table names.  This causes problems on case sensitive systems such as linux.</description>
+			
+			
+			<version>2.0.0</version>
+			
+			
+			<fixedVersion>2.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.acls.jdbc.JdbcAclService.java</file>
+			
+			
+			<file type="M">org.springframework.security.acls.jdbc.JdbcMutableAclService.java</file>
+			
+			
+			<file type="M">org.springframework.security.acls.jdbc.BasicLookupStrategy.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-05-12 07:06:10" id="809" opendate="2008-05-01 01:15:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Concurrent Session Control and OpenID Incompatibility</summary>
+			
+			
+			<description>Hi,
+The openid sample worked fine for me.
+I tried to use the Concurrent Session Control but it doesn&amp;amp;apos;t work. 
+The following post has the same bug : http://forum.springframework.org/showthread.php?p=177626
+Solution proposed is to update the OpenIDAuthenticationProcessingFilter and to populate details before call to the authenticationManager, this way :
+token.setDetails(authenticationDetailsSource.buildDetails(req));
+Not sure what uNcode suggests is the good  way to fix it.
+Could be related to 
+http://jira.springframework.org/browse/SEC-618
+Here is my SS configuration (really basic, based on the sample openid):
+--------------------------------------
+        &amp;lt;http&amp;gt;
+		&amp;lt;intercept-url pattern=&quot;/**&quot; access=&quot;ROLE_USER&quot; /&amp;gt;
+		&amp;lt;logout /&amp;gt;
+		&amp;lt;openid-login login-page=&quot;/openidlogin.jsp&quot; /&amp;gt;
+		&amp;lt;concurrent-session-control max-sessions=&quot;1&quot; exception-if-maximum-exceeded=&quot;true&quot;/&amp;gt;
+	&amp;lt;/http&amp;gt;
+	&amp;lt;authentication-manager alias=&quot;authenticationManager&quot; /&amp;gt;
+	&amp;lt;user-service id=&quot;userService&quot;&amp;gt;
+		&amp;lt;user name=&quot;http://MYACCOUNT.myopenid.com/&quot; password=&quot;notused&quot; authorities=&quot;ROLE_SUPERVISOR,ROLE_USER&quot; /&amp;gt;
+	&amp;lt;/user-service&amp;gt;
+Here is my stack trace :
+--------------------------------
+java.lang.IllegalArgumentException: Authentication.getDetails() required
+        at org.springframework.util.Assert.notNull(Assert.java:112)
+        at org.springframework.security.concurrent.SessionRegistryUtils.obtainSessionIdFromAuthentication(SessionRegistryUtils.java:52)
+        at org.springframework.security.concurrent.ConcurrentSessionControllerImpl.checkAuthenticationAllowed(ConcurrentSessionControllerImpl.java:92)
+        at org.springframework.security.providers.ProviderManager.doAuthentication(ProviderManager.java:199)
+        at org.springframework.security.AbstractAuthenticationManager.authenticate(AbstractAuthenticationManager.java:46)
+        at org.springframework.security.ui.openid.OpenIDAuthenticationProcessingFilter.attemptAuthentication(OpenIDAuthenticationProcessingFilter.java:82)
+        at org.springframework.security.ui.AbstractProcessingFilter.doFilterHttp(AbstractProcessingFilter.java:249)
+        at org.springframework.security.ui.SpringSecurityFilter.doFilter(SpringSecurityFilter.java:53)
+        at org.springframework.security.util.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:371)
+        at org.springframework.security.ui.logout.LogoutFilter.doFilterHttp(LogoutFilter.java:87)
+        at org.springframework.security.ui.SpringSecurityFilter.doFilter(SpringSecurityFilter.java:53)
+        at org.springframework.security.util.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:371)
+        at org.springframework.security.ui.SessionFixationProtectionFilter.doFilterHttp(SessionFixationProtectionFilter.java:68)
+        at org.springframework.security.ui.SpringSecurityFilter.doFilter(SpringSecurityFilter.java:53)
+        at org.springframework.security.util.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:371)
+        at org.springframework.security.context.HttpSessionContextIntegrationFilter.doFilterHttp(HttpSessionContextIntegrationFilter.java:229)
+        at org.springframework.security.ui.SpringSecurityFilter.doFilter(SpringSecurityFilter.java:53)
+        at org.springframework.security.util.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:371)
+        at org.springframework.security.concurrent.ConcurrentSessionFilter.doFilterHttp(ConcurrentSessionFilter.java:97)
+        at org.springframework.security.ui.SpringSecurityFilter.doFilter(SpringSecurityFilter.java:53)
+        at org.springframework.security.util.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:371)
+        at org.springframework.security.securechannel.ChannelProcessingFilter.doFilterHttp(ChannelProcessingFilter.java:116)
+        at org.springframework.security.ui.SpringSecurityFilter.doFilter(SpringSecurityFilter.java:53)
+        at org.springframework.security.util.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:371)
+        at org.springframework.security.util.FilterChainProxy.doFilter(FilterChainProxy.java:174)
+        at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:183)
+        at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:138)
+</description>
+			
+			
+			<version>2.0.0</version>
+			
+			
+			<fixedVersion>2.0.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.ui.openid.OpenIDAuthenticationProcessingFilter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-05-21 02:02:05" id="792" opendate="2008-04-22 12:01:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Filters should only be added to the default stack if they are labelled using custom-filter.</summary>
+			
+			
+			<description>At the moment FilterChainProxyPostProcessor is adding any filters whose class names begin with org.springframework.security. A user may have a separate FilterChainProxy configured with different filters and these shouldn&amp;amp;apos;t be added to the namespace instance. The list of filter beans should be registered independently and added to by custom-filter and the namespace parser. This separate list should be used for the final configuration of the namespace FilterChainProxy instance.</description>
+			
+			
+			<version>2.0.0</version>
+			
+			
+			<fixedVersion>2.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.HttpSecurityBeanDefinitionParserTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.FilterChainProxyPostProcessor.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.OrderedFilterBeanDefinitionDecorator.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.HttpSecurityBeanDefinitionParser.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.RememberMeBeanDefinitionParser.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.ConfigUtils.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.BasicAuthenticationBeanDefinitionParser.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.ConcurrentSessionsBeanDefinitionParser.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.LogoutBeanDefinitionParser.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.AnonymousBeanDefinitionParser.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.X509BeanDefinitionParser.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.BeanIds.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-05-21 02:08:40" id="793" opendate="2008-04-22 22:36:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ldap-authentication-provider element parser ignores hash attribute.</summary>
+			
+			
+			<description>The parser only handles the &amp;lt;password-encoder&amp;gt; child element. Probably the attribute should have been left out of the namespace schema, but since it&amp;amp;apos;s there we need to handle it. The workaround is to use password-encoder.</description>
+			
+			
+			<version>2.0.0</version>
+			
+			
+			<fixedVersion>2.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.config.LdapProviderBeanDefinitionParserTests.java</file>
+			
+			
+			<file type="M">org.springframework.security.config.LdapProviderBeanDefinitionParser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-08-29 09:35:58" id="1224" opendate="2009-08-19 13:20:19" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BasicLookupStrategy, JdbcAclService, and JdbcMutableAclService should support Catalog and Schema</summary>
+			
+			
+			<description>Some systems may have security objects and normal application objects seperated in to different domains, and those domains may be defined in different database catalogs and/or schemas.
+The BasicLookupStrategy, JdbcAclService, and JdbcMutableAclService classes should account for a database catalog and schema.  A developer and/or integrator should be able to specify the catalog and schema for said classes when defining the beans in their context configurations.</description>
+			
+			
+			<version>2.0.0</version>
+			
+			
+			<fixedVersion>3.0.0 RC1</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.security.acls.jdbc.JdbcAclService.java</file>
+			
+			
+			<file type="M">org.springframework.security.acls.jdbc.JdbcMutableAclService.java</file>
+			
+			
+			<file type="M">org.springframework.security.acls.jdbc.BasicLookupStrategy.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">925</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

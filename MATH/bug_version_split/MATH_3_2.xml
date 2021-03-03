@@ -1,0 +1,1271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="MATH">
+	<bug fixdate="2013-03-20 11:38:17" id="949" opendate="2013-03-15 18:11:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>LevenbergMarquardtOptimizer reports 0 iterations</summary>
+			
+			
+			<description>The method LevenbergMarquardtOptimizer.getIterations() does not report the correct number of iterations; It always returns 0. A quick look at the code shows that only SimplexOptimizer calls BaseOptimizer.incrementEvaluationsCount()
+I&amp;amp;apos;ve put a test case below. Notice how the evaluations count is correctly incremented, but the iterations count is not.
+
+    @Test
+
+    public void testGetIterations() {
+
+        // setup
+
+        LevenbergMarquardtOptimizer otim = new LevenbergMarquardtOptimizer();
+
+
+
+        // action
+
+        otim.optimize(new MaxEval(100), new Target(new double[] { 1 }),
+
+                new Weight(new double[] { 1 }), new InitialGuess(
+
+                        new double[] { 3 }), new ModelFunction(
+
+                        new MultivariateVectorFunction() {
+
+                            @Override
+
+                            public double[] value(double[] point)
+
+                                    throws IllegalArgumentException {
+
+                                return new double[] { FastMath.pow(point[0], 4) };
+
+                            }
+
+                        }), new ModelFunctionJacobian(
+
+                        new MultivariateMatrixFunction() {
+
+                            @Override
+
+                            public double[][] value(double[] point)
+
+                                    throws IllegalArgumentException {
+
+                                return new double[][] { { 0.25 * FastMath.pow(
+
+                                        point[0], 3) } };
+
+                            }
+
+                        }));
+
+
+
+        // verify
+
+        assertThat(otim.getEvaluations(), greaterThan(1));
+
+        assertThat(otim.getIterations(), greaterThan(1));
+
+    }
+
+
+
+
+</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.BaseOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.vector.jacobian.LevenbergMarquardtOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.vector.jacobian.AbstractLeastSquaresOptimizerAbstractTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.scalar.noderiv.SimplexOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.scalar.noderiv.SimplexOptimizerMultiDirectionalTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.scalar.noderiv.PowellOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.scalar.noderiv.SimplexOptimizerNelderMeadTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.scalar.noderiv.PowellOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.scalar.gradient.NonLinearConjugateGradientOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.vector.jacobian.GaussNewtonOptimizer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-06-28 10:23:51" id="993" opendate="2013-06-18 11:40:41" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>GaussNewtonOptimizer convergence on singularity</summary>
+			
+			
+			<description>I am (ab-)using the GaussNewtonOptimizer as a MultivariateFunctionSolver (as I could not find one in commons.math). Recently I stumbled upon an interesting behavior in one of my test cases: If a function is defined in a way that yields a minimum (a root in my case) at a singular point, the solver crashes. This is because of the following lines in doOptimize():
+catch (SingularMatrixException e) 
+{
+
+                throw new ConvergenceException(LocalizedFormats.UNABLE_TO_SOLVE_SINGULAR_PROBLEM);
+
+            }
+
+I would propose to add a convergence check into the catch-phrase, so the solver returns the solution in that special case.</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.vector.jacobian.GaussNewtonOptimizer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-07-12 11:32:18" id="1005" opendate="2013-07-12 09:39:41" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ArrayIndexOutOfBoundsException in MathArrays.linearCombination</summary>
+			
+			
+			<description>When MathArrays.linearCombination is passed arguments with length 1, it throws an ArrayOutOfBoundsException. This is caused by this line:
+double prodHighNext = prodHigh[1];
+linearCombination should check the length of the arguments and fall back to simple multiplication if length == 1.</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.util.MathArraysTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.util.MathArrays.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-08-13 16:48:22" id="1022" opendate="2013-08-13 09:57:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Confused by the API docs for org.apache.commons.math3.analysis.function</summary>
+			
+			
+			<description>Something is wrong or unclear...
+We read:
+http://commons.apache.org/proper/commons-math/apidocs/org/apache/commons/math3/analysis/function/Logistic.Parametric.html
+   &quot;Parametric function where the input array contains the parameters
+    of the logit function, ordered as follows: &quot;
+ --&amp;gt; But the &quot;logit&quot; function is not the &quot;logistic&quot; function.
+http://commons.apache.org/proper/commons-math/apidocs/org/apache/commons/math3/analysis/function/Sigmoid.Parametric.html
+   &quot;Parametric function where the input array contains the parameters of
+   the logit function, ordered as follows: &quot;
+ --&amp;gt; But the &quot;logit&quot; function is not the &quot;sigmoid&quot; function, and what is
+     the difference between the Logistic Function snd the Sigmoid function?
+http://commons.apache.org/proper/commons-math/apidocs/org/apache/commons/math3/analysis/function/Logit.Parametric.html
+   &quot;Parametric function where the input array contains the parameters of
+    the logit function, ordered as follows: &quot;
+ --&amp;gt; That sounds correct.
+References:
+http://en.wikipedia.org/wiki/Logistic_function
+http://en.wikipedia.org/wiki/Logit
+http://en.wikipedia.org/wiki/Sigmoid_function
+</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.function.Sigmoid.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.function.Logistic.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-10-11 20:47:41" id="1037" opendate="2013-09-25 14:09:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Distribution tests are mostly meaningless due to high tolerance</summary>
+			
+			
+			<description>The tolerance used for value comparison in IntegerDistributionAbstractTest is 1E-4. However, most values being compared are much smaller, so they are considered equal even if they otherwise differ by orders of magnitude. For example, a typo in GeometricDistributionTest puts 29 in the test points instead of 19, while the test probability value is correctly given for 19. The test passes, disregarding the fact that 2.437439e-05 (test value for 19) and 1.473826e-07 (actual value for 29) differ almost hundredfold.</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.GeometricDistributionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.HypergeometricDistributionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.IntegerDistributionAbstractTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.BinomialDistributionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.ZipfDistributionTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-10-11 21:39:29" id="1033" opendate="2013-09-05 16:15:43" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Kalman filter does not work if covarance matrix is not of dimension 1</summary>
+			
+			
+			<description>In org.apache.commons.math3.filter.KalmanFilter,
+The check below doesn&amp;amp;apos;t look right, it reques measNoise&amp;amp;apos;s column dimension to be 1 at all time.
+// row dimension of R must be equal to row dimension of H
+        if (measNoise.getRowDimension() != measurementMatrix.getRowDimension() ||
+            measNoise.getColumnDimension() != 1) 
+{
+
+            throw new MatrixDimensionMismatchException(measNoise.getRowDimension(),
+
+                                                       measNoise.getColumnDimension(),
+
+                                                       measurementMatrix.getRowDimension(), 1);
+
+        }</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.filter.KalmanFilter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-10-29 15:55:15" id="1045" opendate="2013-10-22 13:10:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>EigenDecomposition.Solver should consider tiny values 0 for purposes of determining singularity</summary>
+			
+			
+			<description>EigenDecomposition.Solver tests for singularity by comparing eigenvalues to 0 for exact equality. Elsewhere in the class and in the code, of course, very small values are considered 0. This causes the solver to consider some singular matrices as non-singular.
+The patch here includes a test as well showing the behavior  the matrix is clearly singular but isn&amp;amp;apos;t considered as such since one eigenvalue are ~1e-14 rather than exactly 0.
+(What I am not sure of is whether we should really be evaluating the norm of the imaginary eigenvalues rather than real/imag components separately. But the javadoc says the solver only supports real eigenvalues anyhow, so it&amp;amp;apos;s kind of moot since imag=0 for all eigenvalues.)</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.EigenDecomposition.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.EigenSolverTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.EigenDecompositionTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">1049</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-10-31 20:06:32" id="1051" opendate="2013-10-31 20:01:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>EigenDecomposition may not converge for certain matrices</summary>
+			
+			
+			<description>Jama-1.0.3 contains a bugfix for certain matrices where the original code goes into an infinite loop.
+The commons-math translations would throw a MaxCountExceededException, so fails to compute the eigen decomposition.
+Port the fix from jama to CM.</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.SchurTransformer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.EigenDecompositionTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-11-05 13:52:10" id="1058" opendate="2013-11-03 21:47:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Beta, LogNormalDistribution, WeibullDistribution give slightly wrong answer for extremely small args due to log/exp inaccuracy</summary>
+			
+			
+			<description>Background for those who aren&amp;amp;apos;t familiar: math libs like Math and FastMath have two mysterious methods, log1p and expm1. log1p = log(1+x) and expm1 = exp-1 mathetmatically, but can return a correct answer even when x was small, where floating-point error due to the addition/subtraction introduces a relatively large error.
+There are three instances in the code that can employ these specialized methods and gain a measurable improvement in accuracy. See patch and tests for an example  try the tests without the code change to see the error.</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.WeibullDistributionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.WeibullDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.LogNormalDistributionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.special.BetaTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.special.Beta.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.LogNormalDistribution.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-11-08 23:31:45" id="1056" opendate="2013-11-03 14:19:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Small error in PoissonDistribution.nextPoisson() algorithm</summary>
+			
+			
+			<description>Here&amp;amp;apos;s a tiny bug I noticed via static inspection, since it flagged the integer division. PoissonDistribution.java:325 says:
+
+
+
+final double a1 = FastMath.sqrt(FastMath.PI * twolpd) * FastMath.exp(1 / 8 * lambda);
+
+
+
+The &quot;1 / 8 * lambda&quot; is evidently incorrect, since this will always evaluate to 0. I rechecked the original algorithm (http://luc.devroye.org/devroye-poisson.pdf) and it should instead be:
+
+
+
+final double a1 = FastMath.sqrt(FastMath.PI * twolpd) * FastMath.exp(1 / (8 * lambda));
+
+
+
+(lambda is a double so there is no int division issue.) This matches a later expression.
+I&amp;amp;apos;m not sure how to evaluate the effect of the bug. Better to be correct of course; it may never have made much practical difference.</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.PoissonDistribution.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-11-28 11:42:52" id="1067" opendate="2013-11-28 10:47:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Stack overflow in Beta.regularizedBeta</summary>
+			
+			
+			<description>In org.apache.commons.math3.special.Beta.regularizedBeta(double,double,double,double,int), the case
+ } else if (x &amp;gt; (a + 1.0) / (a + b + 2.0)) 
+{
+
+      ret = 1.0 - regularizedBeta(1.0 - x, b, a, epsilon, maxIterations);
+
+}
+ 
+is prone to infinite recursion: If x is approximately the tested value, then 1-x is approximately the tested value in the recursion. Thus, due to loss of precision after the subtraction, this condition can be true for the recursive call as well.
+Example:
+double x= Double.longBitsToDouble(4597303555101269224L);
+double a= Double.longBitsToDouble(4634227472812299606L);
+double b = Double.longBitsToDouble(4642050131540049920L);
+System.out.println(x &amp;gt; (a + 1.0) / (a + b + 2.0));
+System.out.println(1-x&amp;gt;(b + 1.0) / (b + a + 2.0));
+System.out.println(1-(1-x)&amp;gt;(a + 1.0) / (a + b + 2.0));
+Possible solution: change the condition to
+x &amp;gt; (a + 1.0) / (a + b + 2.0) &amp;amp;&amp;amp; 1-x&amp;lt;=(b + 1.0) / (b + a + 2.0)</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.special.Beta.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.special.BetaTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-12-03 23:03:58" id="1059" opendate="2013-11-05 14:30:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Use FastMath instead of Math within CM</summary>
+			
+			
+			<description>Some code in CM still uses Math.xxx instead of the counterparts in FastMath. This could lead to subtle differences with different jvms as could be seen in MATH-1057.
+All calls to Math shall be replaced by calls to FastMath.</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.util.PrecisionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.solvers.RegulaFalsiSolverTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.fitting.MultivariateNormalMixtureExpectationMaximization.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.regression.AbstractMultipleLinearRegression.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.TestUtilsTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.SymmLQTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.StatUtilsTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.special.ErfTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.AbstractIntegerDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.KolmogorovSmirnovDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.random.RandomDataGeneratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.function.SqrtTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.GTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.fitting.leastsquares.LevenbergMarquardtOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.complex.QuaternionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.util.MathArrays.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.ConjugateGradientTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.integration.gauss.GaussianQuadratureAbstractTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.util.ArithmeticUtils.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.random.AbstractWell.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.vector.jacobian.LevenbergMarquardtOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.regression.MillerUpdatingRegression.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.univariate.BracketFinder.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.general.LevenbergMarquardtOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.linear.UnmodifiableRealVectorAbstractTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.random.EmpiricalDistributionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.fraction.BigFraction.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.univariate.BracketFinder.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.inference.GTestTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.function.Logistic.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.fraction.ProperFractionFormat.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.util.MathUtilsTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.regression.SimpleRegressionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.random.ISAACRandom.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.direct.CMAESOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.filter.KalmanFilterTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.util.MathArraysTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.regression.MillerUpdatingRegressionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.scalar.noderiv.BOBYQAOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.direct.BOBYQAOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.optimization.direct.CMAESOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.complex.Complex.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.analysis.FunctionUtilsTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-01-09 13:18:50" id="1070" opendate="2013-12-03 12:31:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Incorrect rounding of float</summary>
+			
+			
+			<description>package org.apache.commons.math3.util 
+example of usage of round functions of Precision class:
+Precision.round(0.0f, 2, BigDecimal.ROUND_UP) = 0.01
+Precision.round((float)0.0, 2, BigDecimal.ROUND_UP) = 0.01
+Precision.round((float) 0.0, 2) = 0.0
+Precision.round(0.0, 2, BigDecimal.ROUND_UP) = 0.0
+Seems the reason is usage of extending float to double inside round functions and getting influence of memory trash as value.
+I think, same problem will be found at usage of other round modes.</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.util.PrecisionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.util.Precision.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-01-16 15:27:01" id="1088" opendate="2014-01-16 15:21:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MultidimensionalCounter does not throw &quot;NoSuchElementException&quot;</summary>
+			
+			
+			<description>The iterator should throw when &quot;next()&quot; is called even though &quot;hasNext()&quot; would return false.</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.util.MultidimensionalCounterTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.util.MultidimensionalCounter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-02-09 11:21:54" id="1065" opendate="2013-11-22 11:21:58" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>EnumeratedRealDistribution.inverseCumulativeProbability returns values not in the samples set</summary>
+			
+			
+			<description>The method EnumeratedRealDistribution.inverseCumulativeProbability() sometimes returns values that are not in the initial samples domain...
+I will attach a test to exploit this bug.</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.EnumeratedRealDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.distribution.EnumeratedRealDistributionTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-19 18:34:36" id="1111" opendate="2014-03-19 17:38:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Spelling mistake in org.apache.commons.math3.fitting </summary>
+			
+			
+			<description>in the paragraph containing : 
+&quot;should pass through sample points, and were the objective function is the&quot; 
+at http://commons.apache.org/proper/commons-math/javadocs/api-3.2/org/apache/commons/math3/fitting/package-summary.html
+&quot;were&quot; should be &quot;where&quot;</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.fitting.package-info.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-23 18:24:11" id="1112" opendate="2014-03-22 14:20:30" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Implementation of Percentile function that does not need to store values</summary>
+			
+			
+			<description>A new implementation of Percentile calculation based on P Square algorithm( http://www.cse.wustl.edu/~jain/papers/psqr.htm) is being proposed here. This new implementation has key advantage that it doesn&amp;amp;apos;t need to store inputs and needs a constant space to compute the percentile as the input is consumed.
+This advantage is much required when used in computing the percentiles at big-data scale or for in-stream analytics.</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.descriptive.rank.PSquarePercentileTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">418</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-05-01 11:54:31" id="1110" opendate="2014-03-14 22:27:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>OLSMultipleLinearRegression needs a way to specify non-zero singularity threshold when instantiating QRDecomposition</summary>
+			
+			
+			<description>OLSMultipleLinearRegression uses QRDecomposition to perform a least-squares solution. QRDecomposition has the capability to use a non-zero threshold for detecting when the design matrix is singular (see https://issues.apache.org/jira/browse/MATH-665, https://issues.apache.org/jira/browse/MATH-1024, https://issues.apache.org/jira/browse/MATH-1100, https://issues.apache.org/jira/browse/MATH-1101) but OLSMultipleLinearRegression does not use this capability and therefore always uses the default singularity test threshold of 0. This can lead to bad solutions (see in particular https://issues.apache.org/jira/browse/MATH-1101?focusedCommentId=13909750&amp;amp;page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-13909750) when a SingularMatrixException should instead be thrown. 
+When I encountered this situation, I noticed it because the solution values were extremely large (in the range 1e09 - 1e12). Normal values in the domain I am working with are on the order of 1e-3. To find out why the values are so large, I traced through the source and found that an rDiag value was on the order of 1e-15, and that this passed the threshold test. I then noticed that two columns of the design matrix are linearly dependent (one column is all 1&amp;amp;apos;s because I want an intercept value in the solution, and another is also all 1&amp;amp;apos;s because that&amp;amp;apos;s how the data worked out). Thus the matrix is definitely singular. 
+If I could specify a non-zero threshold, this situation would result in  a SingularMatrixException, but without that, the bad solution values would be blindly propagated. That is a problem because this solution is intended for controlling a physical system, and damage could result from a bad solution. 
+Unfortunately, I see no way to change the threshold value from outside  I would have to in effect re-implement OLSMultipleLinearRegression to do this as a user of the package. </description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.regression.OLSMultipleLinearRegressionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-10-05 18:44:26" id="1129" opendate="2014-06-17 09:22:55" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Percentile Computation errs</summary>
+			
+			
+			<description>In the following test, the 75th percentile is smaller than the 25th percentile, leaving me with a negative interquartile range.
+Bar.java
+
+
+@Test public void negativePercentiles(){
+
+
+
+        double[] data = new double[]{
+
+                -0.012086732064244697, 
+
+                -0.24975668704012527, 
+
+                0.5706168483164684, 
+
+                -0.322111769955327, 
+
+                0.24166759508327315, 
+
+                Double.NaN, 
+
+                0.16698443218942854, 
+
+                -0.10427763937565114, 
+
+                -0.15595963093172435, 
+
+                -0.028075857595882995, 
+
+                -0.24137994506058857, 
+
+                0.47543170476574426, 
+
+                -0.07495595384947631, 
+
+                0.37445697625436497, 
+
+                -0.09944199541668033
+
+        };
+
+        DescriptiveStatistics descriptiveStatistics = new DescriptiveStatistics(data);
+
+
+
+        double threeQuarters = descriptiveStatistics.getPercentile(75);
+
+        double oneQuarter = descriptiveStatistics.getPercentile(25);
+
+
+
+        double IQR = threeQuarters - oneQuarter;
+
+        
+
+        System.out.println(String.format(&quot;25th percentile %s 75th percentile %s&quot;, oneQuarter, threeQuarters ));
+
+        
+
+        assert IQR &amp;gt;= 0;
+
+        
+
+    }
+
+
+</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.descriptive.DescriptiveStatisticsTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.descriptive.rank.Percentile.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-07 14:47:35" id="1118" opendate="2014-04-14 06:04:42" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Complex: semantics of equals != Double equals, mismatch with hashCode</summary>
+			
+			
+			<description>Two complex numbers with real/imaginary parts 0.0d but different signs compare as equal numbers. This is according to their mathematical value; the comparison is done via 
+                return (real == c.real) &amp;amp;&amp;amp; (imaginary == c.imaginary);
+Unfortunately, two Double values do NOT compare as equal in that case, so real.equals(c.real) would return false if the signs differ.
+This becomes a problem because for the hashCode, MathUtils.hash is used on the real and imaginary parts, which in turn uses Double.hash.
+This violates the contract on equals/hashCode, so Complex numbers cannot be used in a hashtable or similar data structure:
+    Complex c1 = new Complex(0.0, 0.0);
+    Complex c2 = new Complex(0.0, -0.0);
+    // Checks the contract:  equals-hashcode on c1 and c2
+    assertTrue(&quot;Contract failed: equals-hashcode on c1 and c2&quot;, c1.equals(c2) ? c1.hashCode() == c2.hashCode() : true);</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>4.0, 3.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.complex.ComplexTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.complex.Complex.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.util.MathUtils.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.util.MathUtilsTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-19 11:47:22" id="1116" opendate="2014-04-14 02:51:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NullPointerException not advertized in Javadoc</summary>
+			
+			
+			<description>The following statement produces a NullPointerException:
+new org.apache.commons.math3.optim.nonlinear.vector.jacobian.LevenbergMarquardtOptimizer().getWeight();
+The documentation does not seem to indicate that other data must be set before getWeight is used (at least I could not find that information). In this case, weightMatrix is still null because it has not been initialized.
+This call should probably throw an IllegalStateException, which makes it clear that this API usage is incorrect.
+This test uses LevenbergMarquardtOptimizer but any instantiable subclass of MultivariateVectorOptimizer probably works the same way.</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>4.0, 3.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.random.EmpiricalDistribution.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression.java</file>
+			
+			
+			<file type="M">org.apache.commons.math3.random.ValueServer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-19 08:21:42" id="1234" opendate="2015-06-17 13:32:11" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Impossible NotStrictlyPositiveException after getStandardDeviation()</summary>
+			
+			
+			<description>org.apache.commons.math3.random.EmpiricalDistribution.density() calls 
+EmpiricalDistribution.getKernel which calls
+bStats.getStandardDeviation()  bStats is SummaryStatistics
+and return result caused NotStrictlyPositiveException: standard deviation (0)
+in new NormalDistribution(randomData.getRandomGenerator(),
+                bStats.getMean(), bStats.getStandardDeviation(),
+                NormalDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY);
+As I understand, it shouldn&amp;amp;apos;t be so by contract of SummaryStatistics.</description>
+			
+			
+			<version>3.2</version>
+			
+			
+			<fixedVersion>3.5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math4.random.EmpiricalDistributionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math4.random.EmpiricalDistribution.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">1203</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

@@ -1,0 +1,926 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="ROO">
+	<bug fixdate="2010-03-11 08:18:43" id="674" opendate="2010-03-04 21:29:02" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Spring Roo 1.0.2 DB2 trailing space in driver class name prevents its loading.</summary>
+			
+			
+			<description>Spring Roo v1.0.2 add a trailing space to the database.properties database.driverClassName=com.ibm.db2.jcc.DB2Driver when setting DB2 as database in persistence setup preventing to load Driver class at compile time and runtime.
+This issue is visible when launching maven with trace enabled (-e switch) reading the Driver class name it is looking for (&quot;...DB2Driver &quot;)</description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JdbcDatabase.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-11 16:21:04" id="650" opendate="2010-02-23 12:30:27" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&quot;List All&quot; link contains &quot;&amp;amp;&quot; instead of &quot;&amp;&quot;</summary>
+			
+			
+			<description>Create a simple Roo app as follows:
+
+
+
+
+
+
+project --topLevelPackage pizza
+
+
+
+
+persistence setup --provider HIBERNATE --database HYPERSONIC_IN_MEMORY 
+
+
+
+
+entity --class ~.Pizza 
+
+
+
+
+controller all --package ~.web
+
+
+
+
+
+
+Start the app using mvn jetty:run. In the left-hand navigation menu, the target of the &quot;List all Pizzas&quot; links will be:
+
+
+
+
+
+
+http://myhost:8080/pizza/pizza?page=1&amp;amp;amp;size=10
+
+
+
+
+
+
+... instead of:
+
+
+
+
+
+
+http://myhost:8080/pizza/pizza?page=1&amp;amp;size=10
+
+
+
+
+
+
+This causes the Pizza controller to use the wrong value for the &quot;size&quot; parameter.</description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspMetadataListener.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-14 15:25:04" id="699" opendate="2010-03-14 14:50:06" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>show.tagx cannot use ${object.class.name} directly due to issues with OpenJPA proxies</summary>
+			
+			
+			<description>When attempting to create an entity in the DB with OpenJPA using the ROO-generated UI, exception is thrown:
+SEVERE: Servlet.service() for servlet jsp threw exception
+javax.servlet.jsp.JspTagException: No message found under code &amp;amp;apos;label.org.apache.openjpa.enhance.com$springsource$simple$domain$employee$pcsubclass&amp;amp;apos; for locale &amp;amp;apos;en_US&amp;amp;apos;.
+        at org.springframework.web.servlet.tags.MessageTag.doStartTagInternal(MessageTag.java:184)
+        at org.springframework.web.servlet.tags.RequestContextAwareTag.doStartTag(RequestContextAwareTag.java:78)
+        at org.apache.jsp.tag.web.form.show_tagx._jspx_meth_spring_005fmessage_005f0(show_tagx.java:205)
+        at org.apache.jsp.tag.web.form.show_tagx._jspx_meth_c_005fif_005f0(show_tagx.java:177)
+        at org.apache.jsp.tag.web.form.show_tagx.doTag(show_tagx.java:133)
+        at org.apache.jsp.WEB_002dINF.views.employees.show_jspx._jspx_meth_page_005fshow_005f0(show_jspx.java:90)
+        at org.apache.jsp.WEB_002dINF.views.employees.show_jspx._jspService(show_jspx.java:60)
+        at org.apache.jasper.runtime.HttpJspBase.service(HttpJspBase.java:70)
+        at javax.servlet.http.HttpServlet.service(HttpServlet.java:803)
+        at org.apache.jasper.servlet.JspServletWrapper.service(JspServletWrapper.java:374)
+        at org.apache.jasper.servlet.JspServlet.serviceJspFile(JspServlet.java:337)
+        at org.apache.jasper.servlet.JspServlet.service(JspServlet.java:266)
+        at javax.servlet.http.HttpServlet.service(HttpServlet.java:803)
+        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:290)
+        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
+        at org.apache.catalina.core.ApplicationDispatcher.invoke(ApplicationDispatcher.java:630)
+        at org.apache.catalina.core.ApplicationDispatcher.doInclude(ApplicationDispatcher.java:535)
+        at org.apache.catalina.core.ApplicationDispatcher.include(ApplicationDispatcher.java:472)
+        at org.apache.jasper.runtime.JspRuntimeLibrary.include(JspRuntimeLibrary.java:968)
+        at org.apache.jasper.runtime.PageContextImpl.doInclude(PageContextImpl.java:638)
+        at org.apache.jasper.runtime.PageContextImpl.include(PageContextImpl.java:632)
+        at org.apache.tiles.jsp.context.JspTilesRequestContext.include(JspTilesRequestContext.java:103)
+        at org.apache.tiles.jsp.context.JspTilesRequestContext.dispatch(JspTilesRequestContext.java:96)
+        at org.apache.tiles.renderer.impl.UntypedAttributeRenderer.write(UntypedAttributeRenderer.java:61)
+        at org.apache.tiles.renderer.impl.AbstractBaseAttributeRenderer.render(AbstractBaseAttributeRenderer.java:103)
+        at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:669)
+        at org.apache.tiles.impl.BasicTilesContainer.render(BasicTilesContainer.java:337)
+        at org.apache.tiles.jsp.taglib.InsertAttributeTag.render(InsertAttributeTag.java:234)
+        at org.apache.tiles.jsp.taglib.InsertAttributeTag.render(InsertAttributeTag.java:211)
+        at org.apache.tiles.jsp.taglib.RenderTag.doEndTag(RenderTag.java:220)
+        at org.apache.jsp.WEB_002dINF.layouts.default_jspx._jspx_meth_tiles_005finsertAttribute_005f1(default_jspx.java:493)
+        at org.apache.jsp.WEB_002dINF.layouts.default_jspx._jspService(default_jspx.java:147)
+        at org.apache.jasper.runtime.HttpJspBase.service(HttpJspBase.java:70)
+        at javax.servlet.http.HttpServlet.service(HttpServlet.java:803)
+        at org.apache.jasper.servlet.JspServletWrapper.service(JspServletWrapper.java:374)
+        at org.apache.jasper.servlet.JspServlet.serviceJspFile(JspServlet.java:337)
+        at org.apache.jasper.servlet.JspServlet.service(JspServlet.java:266)</description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspViewManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-14 17:33:20" id="645" opendate="2010-02-21 10:18:32" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Shell reports incorrect location of database.properties</summary>
+			
+			
+			<description>If you configure a new project using Oracle, like this:
+
+
+
+
+
+
+project --topLevelPackage foo
+
+
+
+
+persistence setup --provider HIBERNATE --database ORACLE
+
+
+
+
+
+
+... the shell will respond to the second command as follows:
+
+
+
+
+
+
+Created SRC_MAIN_RESOURCES\META-INF\persistence.xml
+
+
+
+
+Created SRC_MAIN_RESOURCES\META-INF\spring\database.properties
+
+
+
+
+please enter your database details in src/main/resources/database.properties
+
+
+
+
+Managed SRC_MAIN_RESOURCES\META-INF\spring\applicationContext.xml
+
+
+
+
+Managed ROOT\pom.xml
+
+
+
+
+
+
+The bug is that database.properties is actually located in src\main\resources\META-INF\spring, not src/main/resources as the third line indicates. </description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JpaOperations.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-15 17:37:33" id="707" opendate="2010-03-15 17:35:49" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Dependency type only detects first exclusion if multiple are defined</summary>
+			
+			
+			<description>Dependency type only detects first exclusion if multiple are defined</description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.project.Dependency.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-17 17:09:40" id="677" opendate="2010-03-06 02:58:59" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>date field not working properly when the fieldname starts with uppercase</summary>
+			
+			
+			<description>When run the below code &amp;amp;apos;field1&amp;amp;apos; will work correctly (with datetime picker), &amp;amp;apos;Field2&amp;amp;apos; will not display datetime picker and manual input of a date (copied from first field) will not work. The problem goes away when you rename the fieldname.
+project --topLevelPackage nl.hotitem.ucasetest
+persistence setup --provider HIBERNATE --database HYPERSONIC_IN_MEMORY
+entity --class ~.ucasetest --testAutomatically
+field date --fieldName field1 --type java.util.Date
+field date --fieldName Field2 --type java.util.Date 
+controller all --package ~.web
+selenium test --controller ~.web.UcasetestController
+logging setup --level DEBUG</description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.web.mvc.controller.WebScaffoldMetadata.java</file>
+			
+			
+			<file type="M">org.springframework.roo.addon.mvc.jsp.JspViewManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-22 16:22:18" id="732" opendate="2010-03-22 16:16:38" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Roo generated data on demand types are not aware of Calendar types and Enum types</summary>
+			
+			
+			<description>Roo generated data on demand types are not aware of Calendar types and Enum types (annotated with JSR 303 @Enumerated)</description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-04-18 13:56:43" id="765" opendate="2010-04-03 10:05:19" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Incorrect maven dependency defined when using Oracle</summary>
+			
+			
+			<description>When ORACLE is specified as the database in persistence setup the following dependency is added:
+&amp;lt;dependency&amp;gt;
+&amp;lt;groupId&amp;gt;com.oracle&amp;lt;/groupId&amp;gt;
+&amp;lt;artifactId&amp;gt;ojdbc14&amp;lt;/artifactId&amp;gt;
+&amp;lt;version&amp;gt;10.2.0.2&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;
+Which maven can&amp;amp;apos;t resolve: &quot;Missing artifact com.oracle:ojdbc14:jar:10.2.0.2:compile&quot;
+The correct entry is:
+&amp;lt;dependency&amp;gt;
+&amp;lt;groupId&amp;gt;com.oracle.jdbc&amp;lt;/groupId&amp;gt;
+&amp;lt;artifactId&amp;gt;com.springsource.oracle.jdbc&amp;lt;/artifactId&amp;gt;
+&amp;lt;version&amp;gt;10.2.0.2&amp;lt;/version&amp;gt;
+&amp;lt;/dependency&amp;gt;</description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.jpa.JpaOperationsImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">713</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-04 10:41:46" id="741" opendate="2010-03-24 23:29:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Underscore (_) incorrectly rejected as first character by JavaType</summary>
+			
+			
+			<description>Right now we can&amp;amp;apos;t create org.springframework.roo.model.JavaType when the class name begins with underscore (_). To avoid this problem I&amp;amp;apos;ve modified my roo copy commenting the rule that&amp;amp;apos;s enforcing the class name to start with capital letter.
+Use case: we generate some metadata class associated with entity class. If original class is called com.contraza.test.domain.User then we generate com.contraza.test.domain.metadata._User (took the idea from JPA2 generated metadata).</description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.model.JavaTypeTests.java</file>
+			
+			
+			<file type="M">org.springframework.roo.model.JavaType.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-04 12:02:31" id="798" opendate="2010-04-17 18:37:09" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>@RooToString doesn&amp;apos;t handle nulls correctly</summary>
+			
+			
+			<description>Given an entity like this:
+@Entity
+@RooJavaBean
+@RooToString
+@RooEntity
+public class HistoricalItem {
+	@NotNull
+	@Size(min = 1)
+	private String title;
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(style = &quot;MM&quot;, iso = ISO.DATE_TIME)
+	private Calendar lastUpdated;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = &quot;historicalItem&quot;)
+	private Set&amp;lt;HistoricalPrice&amp;gt; historicalPrices = new HashSet&amp;lt;HistoricalPrice&amp;gt;();
+	@PrePersist
+	protected void onCreate() 
+{
+		dateCreated = new GregorianCalendar();
+		lastUpdated = new GregorianCalendar();
+	}
+
+	@PreUpdate
+	protected void onUpdate() 
+{
+		lastUpdated = new GregorianCalendar();
+	}
+}
+Roo generates a ToString like this:
+public String HistoricalItem.toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(&quot;Id: &quot;).append(getId()).append(&quot;, &quot;);
+        sb.append(&quot;Version: &quot;).append(getVersion()).append(&quot;, &quot;);
+        sb.append(&quot;Title: &quot;).append(getTitle()).append(&quot;, &quot;);
+        sb.append(&quot;DateCreated: &quot;).append(getDateCreated().getTime()).append(&quot;, &quot;); // Throws NPE !!!
+        sb.append(&quot;LastUpdated: &quot;).append(getLastUpdated().getTime()).append(&quot;, &quot;); // Throws NPE !!!
+        return sb.toString();
+}
+I need dateCreated and lastUpdated to be null when creating the entity so initializing them is not an option.
+Roo needs to add the necessary null checks before attempting to call Calendar.getTime()</description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.tostring.ToStringMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="supersedes" type="Supersede">797</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-04 12:44:51" id="710" opendate="2010-03-16 20:03:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[patch] ItdSourceFileComposer isn&amp;apos;t appending type parameters in appendExtendsTypes()</summary>
+			
+			
+			<description>ItdSourceFileComposer correctly takes type parameters in appendImplementsTypes() by means of calling extendsType.getNameIncludingTypeParameters() but in appendExtendsTypes() calls getFullyQualifiedTypeName() and getSimpleTypeName().
+We have an addon that triggers on @RooRepository annotation on interfaces and classes (the interface&amp;amp;apos;s implementation). For the interface it creates an aspect file that should look like this:
+privileged aspect UserRepository_Roo_Repository {    
+    declare parents: UserRepository extends Repository&amp;lt;User, Long&amp;gt;;
+}
+For the implementation it looks like this:
+privileged aspect UserRepositoryImpl_Roo_Repository {    
+    declare parents: UserRepositoryImpl extends RepositoryImpl&amp;lt;User, Long&amp;gt;;    
+    declare @type: UserRepositoryImpl: @Repository(&quot;userRepository&quot;);
+}
+With ItdSourceFileComposer unmodified the interface&amp;amp;apos;s aspect file looks like this:
+privileged aspect UserRepository_Roo_Repository {    
+    declare parents: UserRepository extends Repository;
+}
+Replacing the code in appendExtendsTypes() with the code in appendImplementsTypes() solves the problem.</description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.itd.ItdSourceFileComposer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">49</link>
+			
+			
+			<link description="is related to" type="Related">472</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-04 14:59:20" id="666" opendate="2010-03-03 03:04:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Roo rejects entity names containing &quot;Test&quot; even with --permitReservedWords</summary>
+			
+			
+			<description>It it currently not possible to define entities whose names contain the reserved word &quot;Test&quot;
+roo&amp;gt; 
+entity --class ~.model.TestCase
+Entity name rejected as conflicts with test execution defaults; please remove &amp;amp;apos;Test&amp;amp;apos; and/or &amp;amp;apos;TestCase&amp;amp;apos; 
+This is even true if reserved words are explicitly allowed:
+~.TestCase roo&amp;gt; entity --class ~.TestCase --permitReservedWords
+Entity name rejected as conflicts with test execution defaults; please remove &amp;amp;apos;Test&amp;amp;apos; and/or &amp;amp;apos;TestCase&amp;amp;apos;</description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.classpath.operations.ClasspathCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">50</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-05 19:09:48" id="746" opendate="2010-03-26 05:52:25" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Problem with --inheritanceType TABLE_PER_CLASS</summary>
+			
+			
+			<description>When creating entities using --inheritanceType TABLE_PER_CLASS the project will not run.
+e.g.
+persistence setup --provider HIBERNATE --database MYSQL --databaseName roodb
+entity --class ~.domain.Human --abstract --inheritancetype TABLE_PER_CLASS
+entity --class ~.domain.Man --extends ~.domain.Human --testautomatically
+Will not run due to problems with GenerationType.AUTO
+-end-</description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depends">833</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">805</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-06 13:08:22" id="757" opendate="2010-03-31 02:09:56" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>remove method doesn&amp;apos;t work for generated aspect of mappedsuperclass</summary>
+			
+			
+			<description>When generating a abstract superclass - mappedsuperclass -&amp;gt;
+@Entity
+@RooJavaBean
+@RooToString
+@RooEntity
+@MappedSuperclass
+public abstract class Myentity {
+}
+the corrosponding Myentity_Roo_Entity.aj generates a remove method -&amp;gt;
+@Transactional
+    public void Myentity.remove() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager.contains(this)) 
+{
+            this.entityManager.remove(this);
+        }
+ else 
+{
+            Myentity attached = this.entityManager.find(Myentity.class, this.id);
+            this.entityManager.remove(attached);
+        }
+    }
+This doesn&amp;amp;apos;t work for the finder part this.entityManager.find(Myentity.class, this.id);
+instead it should have generated -&amp;gt;
+this.entityManager.find(this.getClass(), this.id);
+</description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.entity.EntityMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-08 14:42:39" id="652" opendate="2010-02-24 04:05:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Some &quot;perform&quot; commands can cause Roo shell to hang on Windows</summary>
+			
+			
+			<description>There seems to be a bug in the way Roo shell deals with issuing maven commands to the system shell.
+This happens when using the liquibase plugin for example.</description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.maven.MavenCommands.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-06-01 13:44:14" id="946" opendate="2010-06-01 13:34:35" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Unit tests fail when DoD-generated values for String fields annotated with @Size are outside the range of the specified min and/or max attribute values</summary>
+			
+			
+			<description>When generated data on demand values for fields are not within the length range specified in the @Size annotation, unit tests fail during a persist(). </description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.addon.dod.DataOnDemandMetadata.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">1176</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-06-08 17:52:41" id="864" opendate="2010-05-19 08:02:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Give more details with error message &quot;The entire package name must be lowercase&quot;</summary>
+			
+			
+			<description>When starting roo, I receive the message &quot;The entire package name must be lowercase&quot;.
+Roo starts but I cannot execute any commands.
+I found where the message is thrown in an AssertTrue statement assumption. 
+I found where in the ROO code that throws the assertion: https://src.springframework.org/svn/spring-roo/branches/branch-1.0.x/model/src/main/java/org/springframework/roo/model/JavaPackage.java
+The problem is I am unsure where or how to find out what could be wrong with my code.  
+This is a project that has been running just fine.  I deleted some classes and now I cannot get roo to run.
+Based upon the assertion, it is running as specified so it may not be a bug, but I cannot figure out where in the load process it is failing.</description>
+			
+			
+			<version>1.0.2.RELEASE</version>
+			
+			
+			<fixedVersion>1.1.0.M2</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.roo.model.JavaPackage.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">898</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

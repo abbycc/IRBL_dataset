@@ -1,0 +1,1190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="WFCORE">
+	<bug fixdate="2014-11-21 07:51:17" id="213" opendate="2013-03-26 14:22:57" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Clean unreferenced items from the content repository</summary>
+			
+			
+			<description>The algorithm for removing unused deployments from the content repository is based on doing this as part of undeploy operation execution. This doesn&amp;amp;apos;t cover cases where the content is never explicitly undeployed. For example:
+1) Scanner content that is updated when the server is offline; the old content will not have been &quot;undeployed&quot; during shutdown, and on startup the new content will be installed.
+2) Similar issues with deployments generated from module resources (see &quot;A Mixed Approach on https://community.jboss.org/wiki/ExtendingAS7). When the server shuts down, there is no &quot;subsystem remove&quot; as part of shutdown, so the content added during start will not be removed.
+Note that the content repository can include things other than deployments. Currently it also includes management-client-content (specifically rollout plans) and can potentially include anything. This is why it&amp;amp;apos;s a &quot;content repository&quot; and not a &quot;deployment repository.&quot; The solution for this needs to deal with all cases.</description>
+			
+			
+			<version>1.0.0.Alpha19</version>
+			
+			
+			<fixedVersion>1.0.0.Alpha14</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.deployment.DeploymentAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.mgmt.ServerToHostProtocolHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.ApplyRemoteMasterDomainModelHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.model.host.HostResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.repository.LocalDeploymentFileRepository.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.deployment.DeploymentFullReplaceHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.DomainModelControllerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.deployment.DeploymentRemoveHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deploymentoverlay.DeploymentOverlayContentAdd.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.deployment.ServerGroupDeploymentReplaceHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.RemoteDomainConnectionService.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.logging.ServerLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.core.model.test.TestModelControllerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentFullReplaceHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentAddHandlerTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.repository.logging.DeploymentRepositoryLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.management.client.content.ManagedDMRContentTypeResource.java</file>
+			
+			
+			<file type="M">org.jboss.as.core.model.test.LegacyKernelServicesImpl.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.deployment.ServerGroupDeploymentAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.subsystem.test.TestModelControllerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.controller.resources.ServerRootResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deploymentoverlay.DeploymentOverlayContentDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.repository.DeploymentFileRepository.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.test.InterfaceManagementUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.mgmt.MasterDomainControllerOperationHandlerImpl.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.HostControllerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.deployment.ServerGroupDeploymentRemoveHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.management.client.content.ManagedDMRContentTypeAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.repository.LocalFileRepository.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.ApplicationServerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.shared.ModelParserUtils.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.ManagedServerOperationsFactory.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.resources.DomainRootDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentRemoveHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.resources.ServerGroupResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.repository.ContentRepository.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.resources.DomainDeploymentResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.mgmt.domain.RemoteFileRepositoryService.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentReplaceHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentAddHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Dependency">2606</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">604</link>
+			
+			
+			<link description="incorporates" type="Superset">211</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-02-26 14:02:56" id="566" opendate="2015-02-25 18:04:04" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>space- and comma-separated attribute marshaller are broken</summary>
+			
+			
+			<description>The AttributeMarshaller&amp;amp;apos;s STRING_LIST and COMMA_STRING_LIST are broken as they override marshallAsElement while it&amp;amp;apos;s their marshallAsAttribute method (inherited from DefaultAttributeMarshaller) that is called.</description>
+			
+			
+			<version>1.0.0.Alpha19</version>
+			
+			
+			<fixedVersion>1.0.0.Beta1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.domain.management.parsing.ManagementXml.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.SimpleListAttributeDefinitionUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.parsing.StandaloneXml.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.AttributeMarshaller.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.parsing.HostXml.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.management.security.KeytabResourceDefinition.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-02-28 06:42:59" id="567" opendate="2015-02-25 21:02:52" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Invoking shutdown command for slave HC results in CLI disconnecting</summary>
+			
+			
+			<description>Connect the CLI to the master in a domain with a slave HC and shut down the slave. CLI disconnects:
+
+
+
+
+
+
+[domain@localhost:9990 /] shutdown --host=slave
+
+
+
+
+[disconnected /]
+
+
+
+
+
+</description>
+			
+			
+			<version>1.0.0.Alpha19</version>
+			
+			
+			<fixedVersion>1.0.0.Beta1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.handlers.ShutdownHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">67</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-03-04 02:13:39" id="568" opendate="2015-02-19 19:54:30" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&quot;jboss-deployment-structure.xml&quot; with schema location fails to deploy</summary>
+			
+			
+			<description>A &quot;jboss-deployment-structure.xml&quot; with a schemaLocation attribute will fail to deploy.
+This is a sample file:
+&amp;lt;jboss-deployment-structure xmlns=&quot;urn:jboss:deployment-structure:1.1&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;urn:jboss:deployment-structure:1.1 http://www.jboss.org/schema/jbossas/jboss-deployment-structure-1_1.xsd&quot;&amp;gt;
+...
+&amp;lt;/jboss-deployment-structure&amp;gt;
+And this is the deployment error:
+And this is the parse exception:
+Caused by: javax.xml.stream.XMLStreamException: ParseError at [row,col]:[3,129]
+Message: JBAS018754: Unexpected content of type &amp;amp;apos;element start&amp;amp;apos;, name is &amp;amp;apos;
+{urn:jboss:deployment-structure:1.1}
+jboss-deployment-structure&amp;amp;apos;, text is: &amp;amp;apos;null&amp;amp;apos;
+    at org.jboss.as.server.deployment.module.descriptor.JBossDeploymentStructureParser11.unexpectedContent(JBossDeploymentStructureParser11.java:1129) [wildfly-server-8.2.0.Final.jar:8.2.0.Final]
+    at org.jboss.as.server.deployment.module.descriptor.JBossDeploymentStructureParser11.readElement(JBossDeploymentStructureParser11.java:211) [wildfly-server-8.2.0.Final.jar:8.2.0.Final]
+    at org.jboss.as.server.deployment.module.descriptor.JBossDeploymentStructureParser11.readElement(JBossDeploymentStructureParser11.java:69) [wildfly-server-8.2.0.Final.jar:8.2.0.Final]
+    at org.jboss.staxmapper.XMLMapperImpl.processNested(XMLMapperImpl.java:110)
+    at org.jboss.staxmapper.XMLMapperImpl.parseDocument(XMLMapperImpl.java:69)
+    at org.jboss.as.server.deployment.module.descriptor.DeploymentStructureDescriptorParser.parse(DeploymentStructureDescriptorParser.java:316) [wildfly-server-8.2.0.Final.jar:8.2.0.Final]
+    ... 8 more
+The schemaLocation attribute makes sense, because Eclipse will be able to validate the file,and you have code completion. With the JBossTools plugin, the &quot;xmlns&quot; attribute is enough to get all this, because JBossTools adds this file to the xml catalog.</description>
+			
+			
+			<version>1.0.0.Alpha19</version>
+			
+			
+			<fixedVersion>1.0.0.Beta1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.module.descriptor.JBossDeploymentStructureParser11.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.module.descriptor.JBossDeploymentStructureParser12.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.module.descriptor.JBossDeploymentStructureParser10.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-03-05 22:40:36" id="564" opendate="2015-02-24 13:09:43" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>setXmlWrapperElement() doesn&amp;apos;t work properly with multiple resource children</summary>
+			
+			
+			<description>
+
+
+
+
+
+Jeff Mesnil 12:13 @ctomc hi tomaz. The setXmlWrapperElement() method in persistent xml builder API is supposed to add a XML wrapper around all the resource&amp;amp;apos;s XML elements, right? and not around each resource element.
+
+
+
+
+ie it looks like &amp;lt;wrapper&amp;gt;&amp;lt;res /&amp;gt;&amp;lt;res /&amp;gt;&amp;lt;/wrapper&amp;gt; and not &amp;lt;wrapper&amp;gt;&amp;lt;res /&amp;gt;&amp;lt;/wrapper&amp;gt;&amp;lt;wrapper&amp;gt;&amp;lt;res /&amp;gt;&amp;lt;/wrapper&amp;gt;
+
+
+
+
+Tomaz Cerar 12:17 hmm, you are right also around resources
+
+
+
+
+it would be &amp;lt;wrapper&amp;gt; &amp;lt;res /&amp;gt; &amp;lt;res/&amp;gt; &amp;lt;/wrapper&amp;gt;
+
+
+
+
+just remembered i had that in 1.0 xsd of undertow subsystem
+
+
+
+
+Jeff Mesnil 12:20 yes, I want to wrap some resources (eg queue) in a wrapper (&amp;lt;queues&amp;gt;). But the persistent XM parser is broken (it wants one wrapper around each resource)
+
+
+
+
+the XML persister is working as expected though
+
+
+
+
+Tomaz Cerar @jmesnil you are right it is broken, i can reproduce it also on undertow-1.0.xml test case
+
+
+
+
+i just had one resource under it so it passed
+
+
+
+
+
+</description>
+			
+			
+			<version>1.0.0.Alpha19</version>
+			
+			
+			<fixedVersion>1.0.0.Beta1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.persistence.PersistentResourceXMLParserTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.PersistentResourceXMLDescription.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-03-11 22:33:09" id="581" opendate="2015-03-05 13:17:56" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CLI accepts operation requests with addresses ending on resource types</summary>
+			
+			
+			<description>It doesn&amp;amp;apos;t concern the tab-completion. But if the address is entered manually and ends on a resource type, the generated operation request will target the parent resource.
+[standalone@localhost:9999 /] echo-dmr /subsystem=logging/file-handler=:remove
+{
+
+    &quot;address&quot; =&amp;gt; [(&quot;subsystem&quot; =&amp;gt; &quot;logging&quot;)],
+
+    &quot;operation&quot; =&amp;gt; &quot;remove&quot;
+
+}</description>
+			
+			
+			<version>1.0.0.Alpha19</version>
+			
+			
+			<fixedVersion>1.0.0.Beta1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.parsing.test.OperationParsingTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.operation.CommandLineParser.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.operation.impl.DefaultCallbackHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-03-13 09:01:55" id="591" opendate="2015-03-12 14:57:45" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>revertReloadRequired() throws a NPE is reloadRequired has not been called</summary>
+			
+			
+			<description>If an operation step handler calls org.jboss.as.controller.OperationContext#revertReloadRequired() when org.jboss.as.controller.OperationContext#reloadRequired() has not been called, it throws a NPE:
+
+
+
+
+
+
+java.lang.NullPointerException
+
+
+
+
+	at org.jboss.as.controller.ControlledProcessState.revertReloadRequired(ControlledProcessState.java:181)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext.revertReloadRequired(AbstractOperationContext.java:1037)
+
+
+
+
+	at org.jboss.as.controller.test.RevertReloadRequiredTestCase$TestResourceAddHandler.rollbackRuntime(RevertReloadRequiredTestCase.java:98)
+
+
+
+
+	at org.jboss.as.controller.AbstractAddStepHandler$1$1.handleRollback(AbstractAddStepHandler.java:133)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext$RollbackDelegatingResultHandler.handleResult(AbstractOperationContext.java:1419)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext$Step.invokeResultHandler(AbstractOperationContext.java:1385)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext$Step.handleResult(AbstractOperationContext.java:1367)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext$Step.finalizeInternal(AbstractOperationContext.java:1323)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext$Step.finalizeStep(AbstractOperationContext.java:1283)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext$Step.access$300(AbstractOperationContext.java:1172)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext.finishStep(AbstractOperationContext.java:929)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext.executeStep(AbstractOperationContext.java:877)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext.doCompleteStep(AbstractOperationContext.java:601)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext.completeStepInternal(AbstractOperationContext.java:354)
+
+
+
+
+	at org.jboss.as.controller.AbstractOperationContext.executeOperation(AbstractOperationContext.java:330)
+
+
+
+
+	at org.jboss.as.controller.OperationContextImpl.executeOperation(OperationContextImpl.java:1182)
+
+
+
+
+	at org.jboss.as.controller.ModelControllerImpl.internalExecute(ModelControllerImpl.java:362)
+
+
+
+
+	at org.jboss.as.controller.ModelControllerImpl.execute(ModelControllerImpl.java:205)
+
+
+
+
+
+
+The NPE is caused by this.activeStep.restartStamp field which is set only when reloadRequired() (or restartRequired()) is called.
+My OSH may call reloadRequired() or not depending on some runtime state and I could add some logic to make sure I call 
+I can fix my handle to check that I call context.revertReloadRequired() only I had previously called reloadRequired () first.
+However, in order to make the OperationContext more robust, I think that the revertReloadRequired() method should instead be a no-op if there is no reload required. </description>
+			
+			
+			<version>1.0.0.Alpha19</version>
+			
+			
+			<fixedVersion>1.0.0.Beta1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.AbstractOperationContext.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-03-13 09:46:40" id="587" opendate="2015-03-09 14:16:03" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Wildfly does not log stack trace of an exception</summary>
+			
+			
+			<description>Copied from BZ 1198186:
+AbstractOperationContext.java line 1159 seems to be &quot;swallowing&quot; exceptions. It&amp;amp;apos;s possible to get NullPointerException without a stack trace. This makes it impossible to trace the cause of the NPE. 
+https://github.com/jbossas/jboss-eap/blob/2292b0a8763683d0fab03efc3de6a29b974c09eb/controller/src/main/java/org/jboss/as/controller/AbstractOperationContext.java#L1159
+2015-02-27 12:53:26,587 TRACE [|] [org.jboss.modules] (MSC service thread 1-11) Finding class org.jboss.logging.DelegatingBasicLogger from Module &quot;org.picketbox:main&quot; from local module loader @416a8198 (finder: local module finder @376243b5 (roots: /usr/share/jbossas/modules,/usr/share/jbossas/modules/system/layers/base))
+2015-02-27 12:53:26,586 ERROR [|] [org.jboss.as.controller.client] (ServerService Thread Pool  29) JBAS014781: Step handler org.jboss.as.controller.AbstractAddStepHandler$1@1e6a7c88 for operation 
+{&quot;operation&quot; =&amp;gt; &quot;add&quot;,&quot;factory-class&quot; =&amp;gt; &quot;org.hornetq.core.remoting.impl.netty.NettyConnectorFactory&quot;,&quot;param&quot; =&amp;gt; [(&quot;host&quot; =&amp;gt; &quot;tp4.app.paypoint.net&quot;),(&quot;port&quot; =&amp;gt; &quot;6495&quot;),(&quot;use-nio&quot; =&amp;gt; &quot;true&quot;)],&quot;address&quot; =&amp;gt; [(&quot;subsystem&quot; =&amp;gt; &quot;messaging&quot;),(&quot;hornetq-server&quot; =&amp;gt; &quot;default&quot;),(&quot;connector&quot; =&amp;gt; &quot;tp4&quot;)],&quot;socket-binding&quot; =&amp;gt; undefined}
+ at address [
+    (&quot;subsystem&quot; =&amp;gt; &quot;messaging&quot;),
+    (&quot;hornetq-server&quot; =&amp;gt; &quot;default&quot;),
+    (&quot;connector&quot; =&amp;gt; &quot;tp4&quot;)
+] failed handling operation rollback  java.lang.NullPointerException
+2015-02-27 12:53:26,587 TRACE [|] [org.jboss.modules] (MSC service thread 1-4) Finding class org.jboss.remoting3.UnlockedReadHashMap$EntryIterator from Module &quot;org.jboss.remoting3:main&quot; from local module loader @416a8198 (finder: local module finder @376243b5 (roots: /usr/share/jbossas/modules,/usr/share/jbossas/modules/system/layers/base))</description>
+			
+			
+			<version>1.0.0.Alpha19</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.AbstractOperationContext.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-03-25 18:39:26" id="604" opendate="2015-03-18 09:19:35" resolution="Duplicate Issue">
+		
+		
+		<buginformation>
+			
+			
+			<summary> After failed to deploy, remain deployment information in JBOSS_HOME/{standalone|domaine}/data/content directory</summary>
+			
+			
+			<description>
+
+
+
+
+
+Description of problem:
+
+
+
+
+===
+
+
+
+
+
+
+
+
+
+- After failed to deploy, remain deployment information in JBOSS_HOME/{standalone|domaine}/data/content directory 
+
+
+
+
+- Please see following reproduce steps.
+
+
+
+
+
+
+
+
+
+How reproducible:
+
+
+
+
+===
+
+
+
+
+
+
+
+
+
+Steps to Reproduce:
+
+
+
+
+1. Fail to deploy application via jboss-cli
+
+
+
+
+2. Find deployment info in JBOSS_HOME/{standalone|domaine}/data/content, but there are no standalone.xml in &amp;lt;deployments&amp;gt; tag.
+
+
+
+
+3. Fix deployment and success to deploy.
+
+
+
+
+4. Find &quot;new&quot; deployment info in JBOSS_HOME/{standalone|domaine}/data/content, and the old deployment info will be still there.
+
+
+
+
+
+
+
+
+
+- I know that as we changed application in step-3, its hash value was changed. And then, old info is remained in JBOSS_HOME/{standalone|domaine}/data/content. But I think it always happens and should be fixed.
+
+
+
+
+
+
+
+
+
+Actual results:
+
+
+
+
+
+
+
+
+
+- The deployment information which created when deploy was failed remains in JBOSS_HOME/{standalone|domaine}/data/content.
+
+
+
+
+
+
+
+
+
+Expected results:
+
+
+
+
+
+
+
+
+
+- The deployment information which created when deploy was failed should be removed if the deploy is failed.
+
+
+
+
+
+</description>
+			
+			
+			<version>1.0.0.Alpha19</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.deployment.DeploymentAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.mgmt.ServerToHostProtocolHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.ApplyRemoteMasterDomainModelHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.model.host.HostResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.repository.LocalDeploymentFileRepository.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.deployment.DeploymentFullReplaceHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.DomainModelControllerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.deployment.DeploymentRemoveHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deploymentoverlay.DeploymentOverlayContentAdd.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.deployment.ServerGroupDeploymentReplaceHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.RemoteDomainConnectionService.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.logging.ServerLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.core.model.test.TestModelControllerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentFullReplaceHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentAddHandlerTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.repository.logging.DeploymentRepositoryLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.management.client.content.ManagedDMRContentTypeResource.java</file>
+			
+			
+			<file type="M">org.jboss.as.core.model.test.LegacyKernelServicesImpl.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.deployment.ServerGroupDeploymentAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.subsystem.test.TestModelControllerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.controller.resources.ServerRootResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deploymentoverlay.DeploymentOverlayContentDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.repository.DeploymentFileRepository.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.test.InterfaceManagementUnitTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.mgmt.MasterDomainControllerOperationHandlerImpl.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.HostControllerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.operations.deployment.ServerGroupDeploymentRemoveHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.management.client.content.ManagedDMRContentTypeAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.repository.LocalFileRepository.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.ApplicationServerService.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.shared.ModelParserUtils.java</file>
+			
+			
+			<file type="M">org.jboss.as.host.controller.ManagedServerOperationsFactory.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.resources.DomainRootDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentRemoveHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.resources.ServerGroupResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.repository.ContentRepository.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.controller.resources.DomainDeploymentResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.mgmt.domain.RemoteFileRepositoryService.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentReplaceHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.DeploymentAddHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">213</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-04-21 14:35:55" id="580" opendate="2015-03-05 09:50:59" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Recursive read-resource with include-runtime=true assumes all runtime singleton resources will be present.</summary>
+			
+			
+			<description>Take the following hierarchy: -
+
+
+
+
+
+
+keystore=xxx
+
+
+
+
+    alias=yyy
+
+
+
+
+        certificate-chain=default
+
+
+
+
+        certificate-chain=x509
+
+
+
+
+
+
+keystore is a regular resource with storage=configuration.
+alias is a regular resource with storage=runtime
+certificate-chain=default and certificate-chain=x509 are regular resources with storage=runtime.
+So alias represents a single alias from a Java KeyStore, this may or may not have a certificate chain and it may be a default chain or it may be an x509 chain.
+The recursive read-resource is fine with regular resources such as alias as it has to rely on the underlying resource implementation to identify the instances that actually exist.
+For the singleton resources however the following method is called: -
+
+
+
+
+
+
+org.jboss.as.controller.operations.global.GlobalOperationHandlers.getChildAddresses(OperationContext, PathAddress, ImmutableManagementResourceRegistration, Resource, String)
+
+
+
+
+
+
+Within this method the following check takes place: -
+
+
+
+
+
+
+                if (resource != null &amp;amp;&amp;amp; resource.hasChildren(childType)) {
+
+
+
+
+                    Set&amp;lt;String&amp;gt; childNames = resource.getChildrenNames(childType);
+
+
+
+
+                    if (element.isWildcard()) {
+
+
+
+
+                        set.addAll(childNames);
+
+
+
+
+                    } else if (childNames.contains(element.getValue())) {
+
+
+
+
+                        set.add(element.getValue());
+
+
+
+
+                    }
+
+
+
+
+
+
+Up to this point all is fine, the children the resource claims are available are the only ones added.
+But further down this happens: -
+
+
+
+
+
+
+            if (!element.isWildcard()) {
+
+
+
+
+                ImmutableManagementResourceRegistration childReg = registry.getSubModel(PathAddress.pathAddress(element));
+
+
+
+
+                if (childReg != null &amp;amp;&amp;amp; childReg.isRuntimeOnly()) {
+
+
+
+
+                    set.add(element.getValue());
+
+
+
+
+                }
+
+
+
+
+            }
+
+
+
+
+
+
+So even though the resource was previously checked and missing children excluded they are now added back.
+The end result in this example is that the recursive read resource attempts to read for certificate-chain=default when it should only be reading for certificate-chain=x509 as already reported by the resource implementation.
+From a discussion in HipChat yesterday there was general agreement this behaviour seems to be wrong, however support for Proxied resources may be (incorrectly) dependent on this.</description>
+			
+			
+			<version>1.0.0.Alpha19</version>
+			
+			
+			<fixedVersion>1.0.0.Beta5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.test.ReadResourceWithRuntimeResourceTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.operations.global.GlobalOperationHandlers.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Related">17</link>
+			
+			
+			<link description="relates to" type="Related">635</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-09-16 19:40:32" id="579" opendate="2015-03-05 09:21:45" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ProxyMetadataSource does not return JDK8 &amp;apos;default&amp;apos; methods from interfaces</summary>
+			
+			
+			<description/>
+			
+			
+			<version>1.0.0.Alpha19</version>
+			
+			
+			<fixedVersion>2.0.0.CR1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.reflect.ProxyMetadataSource.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="causes" type="Causality">4404</link>
+			
+			
+			<link description="causes" type="Causality">3873</link>
+			
+			
+			<link description="blocks" type="Dependency">4407</link>
+			
+			
+			<link description="is incorporated by" type="Superset">725</link>
+			
+			
+			<link description="is incorporated by" type="Superset">4835</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

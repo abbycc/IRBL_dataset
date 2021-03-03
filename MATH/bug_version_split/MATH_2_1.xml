@@ -1,0 +1,1834 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="MATH">
+	<bug fixdate="2009-08-25 18:10:08" id="288" opendate="2009-08-24 22:31:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SimplexSolver not working as expected 2</summary>
+			
+			
+			<description>SimplexSolver didn&amp;amp;apos;t find the optimal solution.
+Program for Lpsolve:
+=====================
+/* Objective function */
+max: 7 a 3 b;
+/* Constraints */
+R1: +3 a -5 c &amp;lt;= 0;
+R2: +2 a -5 d &amp;lt;= 0;
+R3: +2 b -5 c &amp;lt;= 0;
+R4: +3 b -5 d &amp;lt;= 0;
+R5: +3 a +2 b &amp;lt;= 5;
+R6: +2 a +3 b &amp;lt;= 5;
+/* Variable bounds */
+a &amp;lt;= 1;
+b &amp;lt;= 1;
+=====================
+Results(correct): a = 1, b = 1, value = 10
+Program for SimplexSolve:
+=====================
+LinearObjectiveFunction kritFcia = new LinearObjectiveFunction(new double[]
+{7, 3, 0, 0}
+, 0);
+Collection&amp;lt;LinearConstraint&amp;gt; podmienky = new ArrayList&amp;lt;LinearConstraint&amp;gt;();
+podmienky.add(new LinearConstraint(new double[]
+{1, 0, 0, 0}
+, Relationship.LEQ, 1));
+podmienky.add(new LinearConstraint(new double[]
+{0, 1, 0, 0}
+, Relationship.LEQ, 1));
+podmienky.add(new LinearConstraint(new double[]
+{3, 0, -5, 0}
+, Relationship.LEQ, 0));
+podmienky.add(new LinearConstraint(new double[]
+{2, 0, 0, -5}
+, Relationship.LEQ, 0));
+podmienky.add(new LinearConstraint(new double[]
+{0, 2, -5, 0}
+, Relationship.LEQ, 0));
+podmienky.add(new LinearConstraint(new double[]
+{0, 3, 0, -5}
+, Relationship.LEQ, 0));
+podmienky.add(new LinearConstraint(new double[]
+{3, 2, 0, 0}
+, Relationship.LEQ, 5));
+podmienky.add(new LinearConstraint(new double[]
+{2, 3, 0, 0}
+, Relationship.LEQ, 5));
+SimplexSolver solver = new SimplexSolver();
+RealPointValuePair result = solver.optimize(kritFcia, podmienky, GoalType.MAXIMIZE, true);
+=====================
+Results(incorrect): a = 1, b = 0.5, value = 8.5
+P.S. I used the latest software from the repository (including MATH-286 fix).</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>2.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.linear.SimplexSolverTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.linear.SimplexSolver.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-04-21 14:35:53" id="365" opendate="2010-04-20 14:21:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Issue with &quot;SmoothingBicubicSplineInterpolator&quot;</summary>
+			
+			
+			<description>I figured out that the name of this class is misleading as the implementation doesn&amp;amp;apos;t perform the intended smoothing.
+In order to solve this issue, I propose to:
+
+deprecate the &quot;SmoothingBicubicSplineInterpolator&quot; class
+create a &quot;BicubicSplineInterpolator&quot; class (similar to the above class but with the useless code removed)
+remove the &quot;SmoothingBicubicSplineInterpolatorTest&quot; class
+add a &quot;BicubicSplineInterpolatorTest&quot; with essentially the same contents as the above one
+
+Then I would also add a new &quot;SmoothingPolynomialBicubicSplineInterpolator&quot; where I used the &quot;PolynomialFitter&quot; class to smooth the input data along both dimensions before the interpolating function is computed.
+Does someone object to these changes?</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.fitting.PolynomialFitter.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.BivariateRealFunction.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.interpolation.SmoothingBicubicSplineInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.interpolation.SmoothingBicubicSplineInterpolator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.interpolation.BivariateRealGridInterpolator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-03 18:43:59" id="369" opendate="2010-05-03 15:48:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BisectionSolver.solve(final UnivariateRealFunction f, double min, double max, double initial) throws NullPointerException</summary>
+			
+			
+			<description>Method 
+    BisectionSolver.solve(final UnivariateRealFunction f, double min, double max, double initial)  
+invokes 
+    BisectionSolver.solve(double min, double max) 
+which throws NullPointerException, as member variable
+    UnivariateRealSolverImpl.f 
+is null.
+Instead the method:
+    BisectionSolver.solve(final UnivariateRealFunction f, double min, double max)
+should be called.
+Steps to reproduce:
+invoke:
+     new BisectionSolver().solve(someUnivariateFunctionImpl, 0.0, 1.0, 0.5);
+NullPointerException will be thrown.
+</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.solvers.BisectionSolver.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.solvers.BisectionSolverTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-09 23:07:24" id="368" opendate="2010-04-29 03:41:10" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>OpenMapRealVector.getSparcity should be getSparsity</summary>
+			
+			
+			<description>The term for describing the ratio of nonzero elements to zero elements in a matrix/vector is sparsity, not sparcity.  Suggest renaming getSparcity() to getSparsity()</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.linear.OpenMapRealVector.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-10 01:17:14" id="367" opendate="2010-04-22 18:31:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>AbstractRealVector.sparseIterator fails when vector has exactly one non-zero entry</summary>
+			
+			
+			<description>The following program:
+===
+import java.util.Iterator;
+import org.apache.commons.math.linear.*;
+public class SparseIteratorTester
+{
+    public static void main(String[] args) {
+        double vdata[] = 
+{ 0.0, 1.0, 0.0 }
+;
+        RealVector v = new ArrayRealVector(vdata);
+        Iterator&amp;lt;RealVector.Entry&amp;gt; iter = v.sparseIterator();
+        while(iter.hasNext()) 
+{
+
+            RealVector.Entry entry = iter.next();
+
+            System.out.printf(&quot;%d: %f\n&quot;, entry.getIndex(), entry.getValue());
+
+        }
+ 
+    }       
+} 
+===
+generates this output:
+1: 1.000000
+Exception in thread &quot;main&quot; java.lang.ArrayIndexOutOfBoundsException: -1
+	at org.apache.commons.math.linear.ArrayRealVector.getEntry(ArrayRealVector.java:995)
+	at org.apache.commons.math.linear.AbstractRealVector$EntryImpl.getValue(AbstractRealVector.java:850)
+	at test.SparseIteratorTester.main(SparseIteratorTester.java:13)
+===
+This patch fixes it, and simplifies AbstractRealVector.SparseEntryIterator  (sorry, i don&amp;amp;apos;t see any form entry for attaching a file)
+===
+Index: src/main/java/org/apache/commons/math/linear/AbstractRealVector.java
+===================================================================
+ src/main/java/org/apache/commons/math/linear/AbstractRealVector.java	(revision 936985)
++++ src/main/java/org/apache/commons/math/linear/AbstractRealVector.java	(working copy)
+@@ -18,6 +18,7 @@
+ package org.apache.commons.math.linear;
+ import java.util.Iterator;
++import java.util.NoSuchElementException;
+ import org.apache.commons.math.FunctionEvaluationException;
+ import org.apache.commons.math.MathRuntimeException;
+@@ -875,40 +876,25 @@
+         /** Dimension of the vector. */
+         private final int dim;
+
+/** Temporary entry (reused on each call to 
+{@link #next()}
+. */
+private EntryImpl tmp = new EntryImpl();
+-
+/** Current entry. */
++        /** Last entry returned by #next(). */
+         private EntryImpl current;
+
+
+/** Next entry. */
++        /** Next entry for #next() to return. */
+         private EntryImpl next;
+
+         /** Simple constructor. */
+         protected SparseEntryIterator() {
+             dim = getDimension();
+             current = new EntryImpl();
+
+if (current.getValue() == 0) 
+{
+
+-                advance(current);
+
+-            }
+if(current.getIndex() &amp;gt;= 0)
+{
+
+-                // There is at least one non-zero entry
+
+-                next = new EntryImpl();
+
+-                next.setIndex(current.getIndex());
+
++            next = new EntryImpl();
+
++            if(next.getValue() == 0)
+
+                 advance(next);
+
+-            }
+ else 
+{
+
+-                // The vector consists of only zero entries, so deny having a next
+
+-                current = null;
+
+-            }
+         }
+
+
+/** Advance an entry up to the next non null one.
++        /** Advance an entry up to the next nonzero value.
+
+
+@param e entry to advance
+          */
+         protected void advance(EntryImpl e) {
+
+
+if (e == null) 
+{
+
+-                return;
+
+-            }
+             do 
+{
+
+                 e.setIndex(e.getIndex() + 1);
+
+             }
+ while (e.getIndex() &amp;lt; dim &amp;amp;&amp;amp; e.getValue() == 0);
+@@ -919,22 +905,17 @@
+
+         /** 
+{@inheritDoc} */
+         public boolean hasNext() {
+
+-            return current != null;
+
++            return next.getIndex() &amp;gt;= 0;
+
+         }
+
+         /** {@inheritDoc}
+ */
+         public Entry next() {
+
+tmp.setIndex(current.getIndex());
+if (next != null) {
+current.setIndex(next.getIndex());
+advance(next);
+if (next.getIndex() &amp;lt; 0) 
+{
+
+-                    next = null;
+
+-                }
+} else 
+{
+
+-                current = null;
+
+-            }
+return tmp;
++            int index = next.getIndex();
++            if(index &amp;lt; 0)
++                throw new NoSuchElementException();
++            current.setIndex(index);
++            advance(next);
++            return current;
+         }
+
+         /** 
+{@inheritDoc}
+ */</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.linear.AbstractRealVectorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.AbstractRealVector.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-05 14:11:28" id="382" opendate="2010-07-05 12:57:19" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Wrong variable in precondition check</summary>
+			
+			
+			<description>In the class MicrosphereInterpolator (package analysis.interpolation), the method
+
+
+
+  public void setMicropshereElements(int elements)
+
+
+
+is checking the precondition with the instance variable instead of the passed argument.</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.interpolation.SplineInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.interpolation.MicrosphereInterpolator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.exception.NotStrictlyPositiveException.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.interpolation.LinearInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.util.LocalizedFormats.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.interpolation.BicubicSplineInterpolatingFunction.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.exception.NotStrictlyPositiveExceptionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.interpolation.BicubicSplineInterpolator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.interpolation.LinearInterpolator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.exception.NotPositiveExceptionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.exception.NotPositiveException.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.interpolation.SplineInterpolator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.analysis.interpolation.MicrosphereInterpolatingFunction.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-25 19:49:09" id="377" opendate="2010-06-17 09:06:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>weight versus sigma in AbstractLeastSquares</summary>
+			
+			
+			<description>In AbstractLeastSquares, residualsWeights contains the WEIGHTS assigned to each observation.  In the method getRMS(), these weights are multiplicative as they should. unlike in getChiSquare() where it appears at the denominator!   If the weight is really the weight of the observation, it should multiply the square of the residual even in the computation of the chi2.
+ Once corrected, getRMS() can even reduce
+ public double getRMS() 
+{return Math.sqrt(getChiSquare()/rows);}</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.LevenbergMarquardtOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.AbstractLeastSquaresOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.SingularValueDecompositionImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.EigenDecompositionImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-28 12:11:09" id="395" opendate="2010-07-25 21:26:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Bugs in &quot;BrentOptimizer&quot;</summary>
+			
+			
+			<description>I apologize for having provided a buggy implementation of Brent&amp;amp;apos;s optimization algorithm (class &quot;BrentOptimizer&quot; in package &quot;optimization.univariate&quot;).
+The unit tests didn&amp;amp;apos;t show that there was something wrong, although (from the &quot;changes.xml&quot; file) I discovered that, at the time, Luc had noticed something weird in the implementation&amp;amp;apos;s behaviour.
+Comparing with an implementation in Python, I could figure out the fixes. I&amp;amp;apos;ll modify &quot;BrentOptimizer&quot; and add a test. I also propose to change the name of the unit test class from &quot;BrentMinimizerTest&quot; to &quot;BrentOptimizerTest&quot;.</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.univariate.AbstractUnivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.univariate.BrentOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultiStartUnivariateRealOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ConvergingAlgorithmImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.univariate.BrentOptimizer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-11 13:46:55" id="405" opendate="2010-08-11 13:24:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Inconsistent result from Levenberg-Marquardt</summary>
+			
+			
+			<description>Levenberg-Marquardt (its method doOptimize) returns a VectorialPointValuePair.  However, the class holds the optimum point, the vector of the objective function, the cost and residuals.  The value returns by doOptimize does not always corresponds to the point which leads to the residuals and cost</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.AbstractLeastSquaresOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.MinpackTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.LevenbergMarquardtOptimizer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-14 22:02:03" id="406" opendate="2010-08-14 21:57:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Wrong weight handling in Levenberg-Marquardt</summary>
+			
+			
+			<description>A comparison with a Fortran version of Levenberg-Marquardt reveals that when observations have different weights, the 2.1 version reaches a value of the function which does not necessary correspond to the minimum</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.AbstractLeastSquaresOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.LevenbergMarquardtOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.GaussNewtonOptimizerTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-22 13:16:29" id="392" opendate="2010-07-21 18:43:10" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>calculateYVariance in OLS/GLSMultipleLinearRegression uses residuals not Y vars</summary>
+			
+			
+			<description>Implementation of OLS/GLSMultipleLinearRegression is:
+@Override
+173        protected double calculateYVariance() 
+{
+
+174            RealVector residuals = calculateResiduals();
+
+175            return residuals.dotProduct(residuals) /
+
+176                   (X.getRowDimension() - X.getColumnDimension());
+
+177        }
+
+This gives variance of residuals not variance of the dependent (Y) variable as the documentation suggests.</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.AbstractMultipleLinearRegression.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.GLSMultipleLinearRegression.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.OLSMultipleLinearRegressionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.GLSMultipleLinearRegressionTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.regression.OLSMultipleLinearRegression.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-26 09:01:33" id="410" opendate="2010-08-26 08:57:09" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Wrong variable in &quot;FunctionEvaluationException&quot;</summary>
+			
+			
+			<description>Some constructors use both argument and arguments as argument names and, in the body, argument is sometimes used in places where it should have been arguments.</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.FunctionEvaluationException.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-30 13:52:18" id="397" opendate="2010-07-27 15:18:06" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Inconsistencies between &quot;optimization.univariate&quot; and &quot;optimization.general&quot;</summary>
+			
+			
+			<description>I think that we could make the usage (from the developer&amp;amp;apos;s point-of-view) of &quot;optimization.univariate&quot; more similar to what is done in &quot;optimization.general&quot;. At first this looked like a small change but then I discovered that &quot;AbstractUnivariateRealOptimizer&quot; competes with &quot;ConvergingAlgorithmImpl&quot; for some functionality, and that everything could be more coherent by enforcing the use of accessors and avoiding &quot;protected&quot; fields.
+Moreover the logic inside  &quot;AbstractUnivariateRealOptimizer&quot; seems convoluted and one change leading to another...
+Currently only &quot;BrentOptimizer&quot; inherits from &quot;AbstractUnivariateRealOptimizer&quot;, so I hope that it&amp;amp;apos;s OK to revise that class.
+In &quot;ConvergingAlgorithmImpl&quot;, I propose to add a method:
+
+
+
+protected void incrementIterationsCounter()
+
+    throws ConvergenceException {
+
+    if (++iterationCount &amp;gt; maximalIterationCount) {
+
+        throw new ConvergenceException(new MaxIterationsExceededException(maximalIterationCount));
+
+    }
+
+}
+
+
+
+This is still not the best since in &quot;BaseAbstractScalarOptimizer&quot;, we have
+
+
+
+protected void incrementIterationsCounter()
+
+    throws OptimizationException {
+
+    if (++iterations &amp;gt; maxIterations) {
+
+        throw new OptimizationException(new MaxIterationsExceededException(maxIterations));
+
+    }
+
+}
+
+
+
+(thus: two codes for the same problem, throwing different exceptions).
+Then it seems that there is also a functionality overlap between &quot;ConvergingAlgorithm&quot; and &quot;ConvergenceChecker&quot;...</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.direct.NelderMead.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultiStartDifferentiableMultivariateRealOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.SimpleVectorialValueChecker.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.SimpleScalarValueChecker.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultiStartMultivariateRealOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultiStartDifferentiableMultivariateVectorialOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.LevenbergMarquardtOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.DifferentiableMultivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.PowellOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ConvergingAlgorithm.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.DifferentiableMultivariateVectorialOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.direct.MultiDirectional.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.direct.DirectSearchOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.univariate.BrentOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultiStartMultivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.MinpackTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ConvergingAlgorithmImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.LevenbergMarquardtOptimizerTest.java</file>
+			
+			
+			<file type="D">org.apache.commons.math.optimization.MultiStartUnivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.univariate.BrentOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.direct.NelderMeadTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.GaussNewtonOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.univariate.BracketFinderTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.GaussNewtonOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.direct.MultiDirectionalTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.NonLinearConjugateGradientOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.AbstractLeastSquaresOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultiStartDifferentiableMultivariateVectorialOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.BaseMultivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.univariate.AbstractUnivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.fitting.CurveFitter.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.NonLinearConjugateGradientOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.fitting.PolynomialFitter.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.univariate.BracketFinder.java</file>
+			
+			
+			<file type="D">org.apache.commons.math.optimization.UnivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.AbstractScalarDifferentiableOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.SimpleRealPointChecker.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.BaseAbstractScalarOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.RealConvergenceChecker.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.AbstractScalarOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.fitting.PolynomialFitterTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.SimpleVectorialPointChecker.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.PowellOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultiStartDifferentiableMultivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultiStartUnivariateRealOptimizerTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is part of" type="Incorporates">413</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-30 13:53:12" id="404" opendate="2010-08-09 11:44:12" resolution="Later">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Confusing interface for &quot;LevenbergMarquardtOptimizer&quot;</summary>
+			
+			
+			<description>LevenbergMarquardtOptimizer inherits from AbstractLeastSquaresOptimizer which in turn implements DifferentiableMultivariateVectorialOptimizer. That interface mandates methods for setting and getting a VectorialConvergenceChecker.
+In v2.1, however, that checker is never used! The convergence check is performed using parameters specific to the Levenberg-Marquardt algorithm. Such circumvention of the superclass interface is confusing and leads to totally unexpected behaviour (such as changing the values of the thresholds of the VectorialConvergenceChecker being ineffective).
+In the development version, the default constructor of LevenbergMarquardtOptimizer sets the the VectorialConvergenceChecker field to &quot;null&quot; and when such is the case, the behaviour is as in v2.1. Although it is documented, this is still confusing since it is impossible to use LevenbergMarquardtOptimizer through its DifferentiableMultivariateVectorialOptimizer interface: When using the VectorialConvergenceChecker, one does not know what parameters to use in order to reproduce the results obtained with the LM-specific convergence check (i.e. how to reproduce the result from v2.1).
+Unless I&amp;amp;apos;m missing something, I think that there should be an LM-specific implementation of VectorialConvergenceChecker that, when given the usual relative and absolute thresholds, can perform a check that will give the same result as the currently specific check (when the &quot;checker&quot; field is &quot;null&quot;).</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.direct.NelderMead.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultiStartDifferentiableMultivariateRealOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.SimpleVectorialValueChecker.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.SimpleScalarValueChecker.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultiStartMultivariateRealOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultiStartDifferentiableMultivariateVectorialOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.LevenbergMarquardtOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.DifferentiableMultivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.PowellOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ConvergingAlgorithm.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.DifferentiableMultivariateVectorialOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.direct.MultiDirectional.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.direct.DirectSearchOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.univariate.BrentOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultiStartMultivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.MinpackTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ConvergingAlgorithmImpl.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.LevenbergMarquardtOptimizerTest.java</file>
+			
+			
+			<file type="D">org.apache.commons.math.optimization.MultiStartUnivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.univariate.BrentOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.direct.NelderMeadTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.GaussNewtonOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.univariate.BracketFinderTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.GaussNewtonOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.direct.MultiDirectionalTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.NonLinearConjugateGradientOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.AbstractLeastSquaresOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultiStartDifferentiableMultivariateVectorialOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.BaseMultivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.univariate.AbstractUnivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.fitting.CurveFitter.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.NonLinearConjugateGradientOptimizerTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.fitting.PolynomialFitter.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.univariate.BracketFinder.java</file>
+			
+			
+			<file type="D">org.apache.commons.math.optimization.UnivariateRealOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.AbstractScalarDifferentiableOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.SimpleRealPointChecker.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.BaseAbstractScalarOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.RealConvergenceChecker.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.AbstractScalarOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.fitting.PolynomialFitterTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.SimpleVectorialPointChecker.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.general.PowellOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.optimization.MultiStartDifferentiableMultivariateRealOptimizer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">362</link>
+			
+			
+			<link description="is part of" type="Incorporates">413</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-09-02 04:52:33" id="373" opendate="2010-06-07 14:54:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StatUtils.sum returns NaN for zero-length arrays</summary>
+			
+			
+			<description>StatUtils.sum returns NaN for zero-length arrays, which is:
+1. inconsistent with the mathematical notion of sum: in maths, sum_
+{i=0}^{N-1} a_i will be 0 for N=0. In particular, the identity
+
+sum_{i=0}
+^
+{k-1}
+ a_i + sum_
+{i=k}
+^
+{N-1} = sum_{i=0}^{N-1}
+
+is broken for k = 0, since NaN + x = NaN, not x.
+2. introduces hard to debug erros (returning a NaN is one of the worst forms of reporting an exceptional condition, as NaNs propagate silently and require manual tracing during the debugging)
+3. enforces &quot;special case&quot; handling when the user expects that the summed array can have a zero length.
+The correct behaviour is, in my opinion, to return 0.0, not NaN in the above case.</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.StatUtilsTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.summary.SumLogTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.AbstractUnivariateStatistic.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.summary.Sum.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.summary.SumTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.summary.SumSqTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.summary.SumOfLogs.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.StorelessUnivariateStatisticAbstractTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.AbstractUnivariateStatisticTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.summary.Product.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.summary.ProductTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.summary.SumOfSquares.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-09-29 19:51:49" id="421" opendate="2010-09-29 18:24:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>restarting an ODE solver that has been stopped by an event doesn&amp;apos;t work</summary>
+			
+			
+			<description>If an ODE solver is setup with an EventHandler that return STOP when the even is triggered, the integrators stops (which is exactly the expected behavior).
+If however the user want to restart the solver from the final state reached at the event with the same configuration (expecting the event to be triggered again at a later time), then the integrator may fail to start. It can get stuck at the previous event.
+The occurrence of the bug depends on the residual sign of the g function which is not exactly 0, it depends on the convergence of the first event.
+As this use case is fairly general, event occurring less than epsilon after the solver start in the first step should be ignored, where epsilon is the convergence threshold of the event. The sign of the g function should be evaluated after this initial ignore zone, not exactly at beginning (if there are no event at the very beginning g(t0) and g(t0+epsilon) have the same sign, so this does not hurt ; if there is an event at the very beginning, g(t0) and g(t0+epsilon) have opposite signs and we want to start with the second one. Of course, the sign of epsilon depend on the integration direction (forward or backward).</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.ode.events.EventStateTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.events.EventState.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.events.CombinedEventsManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-03 16:43:11" id="391" opendate="2010-07-21 08:57:46" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Inconsistent behaviour of constructors in ArrayRealVector class</summary>
+			
+			
+			<description>ArrayRealVector(double[] d) allows to construct a zero-length vector, but ArrayRealVector(double[] d, boolean copyArray) doesn&amp;amp;apos;t. Both should allow this as zero-length vectors are mathematically well-defined objects and they are useful boundary cases in many algorithms.
+This breaks some arithmetic operators (addition) on zero-length real vectors which worked in 2.0 but don&amp;amp;apos;t work in 2.1</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.linear.ArrayFieldVector.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.ArrayFieldVectorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.ArrayRealVectorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.linear.ArrayRealVector.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-23 19:35:26" id="429" opendate="2010-10-22 08:01:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>KMeansPlusPlusClusterer breaks by division by zero</summary>
+			
+			
+			<description>For a certain space, KMeansPlusPlusClusterer  breaks. This is a blocker because this space occurs in our domain. </description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.exception.util.LocalizedFormats.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.clustering.KMeansPlusPlusClusterer.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.exception.ConvergenceException.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.exception.MathIllegalStateException.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.stat.clustering.KMeansPlusPlusClustererTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-02-14 14:20:29" id="484" opendate="2011-01-18 20:49:51" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>events detection in ODE solvers is too complex and not robust</summary>
+			
+			
+			<description>All ODE solvers support multiple events detection since a long time. Events are specified by users by implementing the EventHandler interface. Events occur when the g(t, y) function evaluates to 0. When an event occurs, the solver step is shortened to make sure the event is located at the end of the step, and the event is triggered by calling the eventOccurred method in the user defined implementation class. Depending on the return value of this method, integration can continue, it can be stopped, or the state vector can be reset.
+Some ODE solvers are adaptive step size solvers. They can modify step size to match an integration error setting, increasing step size when error is low (thus reducing computing costs) or reducing step size when error is high (thus fulfilling accuracy requirements).
+The step adaptations due to events on one side and due to adaptive step size solvers are quite intricate by now, due to numerous fixes (MATH-161, MATH-213, MATH-322, MATH-358, MATH-421 and also during standard maintenance - see for example r781157). The code is very difficult to maintain. It seems each bug fix introduces new bugs (r781157/MATH-322) or tighten the link between adaptive step size and event detection (MATH-388/r927202).
+A new bug discovered recently on an external library using a slightly modified version of this code could not be retroffitted into commons-math, despite the same problem is present. At the beginning of EventState.evaluateStep, the initial step may be exactly 0 thus preventing root solving, but preventing this size to drop to 0 would reopen MATH-388. I could not fix both bugs at the same time.
+So it is now time to untangle events detection and adaptive step size, simplify code, and remove some inefficiency (event root solving is always done twice, once before step truncation and another time after truncation, of course with slightly different results, events shortened steps induce high computation load until the integrator recovers its optimal pace again, steps are rejected even when the event does not requires it ...).</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.ode.AbstractIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.ThreeEighthesIntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.GillStepInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.EulerIntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.sampling.DummyStepInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.GraggBulirschStoerStepInterpolator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.DormandPrince54StepInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.HighamHall54IntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.GraggBulirschStoerIntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.sampling.AbstractStepInterpolator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.events.EventState.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.HighamHall54StepInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.sampling.NordsieckStepInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.GraggBulirschStoerIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.AdamsMoultonIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.TestProblemHandler.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.MidpointStepInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.GraggBulirschStoerStepInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.DormandPrince54IntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.RungeKuttaIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.DormandPrince853StepInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.ODEIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.ClassicalRungeKuttaStepInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.DormandPrince853StepInterpolator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.DormandPrince853IntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.AdamsBashforthIntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.AdamsBashforthIntegrator.java</file>
+			
+			
+			<file type="D">org.apache.commons.math.ode.events.CombinedEventsManager.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.TestProblemAbstract.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.EmbeddedRungeKuttaIntegrator.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.MidpointIntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.ClassicalRungeKuttaIntegratorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.TestProblem4.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.ThreeEighthesStepInterpolatorTest.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.ode.nonstiff.GillIntegratorTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-12 05:58:50" id="540" opendate="2011-03-06 00:43:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>AbstractIntegerDistribution.inverseCumulativeProbability(...) Bug</summary>
+			
+			
+			<description>The AbstractIntegerDistribution.inverseCumulativeProbability(...) function attempts to decrement the lower bound of discrete distributions to values that go below the lower bound.</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.distribution.AbstractIntegerDistribution.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-20 12:20:51" id="465" opendate="2011-01-05 17:34:41" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Incorrect matrix rank via SVD</summary>
+			
+			
+			<description>The getRank() function of SingularValueDecompositionImpl does not work properly. This problem is probably related to the numerical stability problems mentioned in MATH-327 and MATH-320.
+Example call with the standard matrix from R (rank 2):
+TestSVDRank.java
+
+
+import org.apache.commons.math.linear.Array2DRowRealMatrix;
+
+import org.apache.commons.math.linear.RealMatrix;
+
+import org.apache.commons.math.linear.SingularValueDecomposition;
+
+import org.apache.commons.math.linear.SingularValueDecompositionImpl;
+
+
+
+public class TestSVDRank {
+
+	public static void main(String[] args) {
+
+		double[][] d = { { 1, 1, 1 }, { 0, 0, 0 }, { 1, 2, 3 } };
+
+		RealMatrix m = new Array2DRowRealMatrix(d);
+
+		SingularValueDecomposition svd = new SingularValueDecompositionImpl(m);
+
+		int r = svd.getRank();
+
+		System.out.println(&quot;Rank: &quot;+r);
+
+	}
+
+}
+
+
+
+The rank is computed as 3. This problem also occurs for larger matrices. I discovered the problem when trying to replace the corresponding JAMA method.</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.special.Erf.java</file>
+			
+			
+			<file type="M">org.apache.commons.math.special.ErfTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is part of" type="Incorporates">611</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-10-01 13:54:20" id="380" opendate="2010-06-24 16:47:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Need to (re)initialize dYdY0 for multiple integrate with FirstOrderIntegratorWithJacobians</summary>
+			
+			
+			<description>There is a lack in the method integrate of FirstOrderIntegratorWithJacobians. The jacobian DYDY0 can&amp;amp;apos;t be initialized by the user, unlike DFDP with DF0DP.
+So, for several successive integrations, the matrix is reinitialized to identity and that is not what we might want.</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="D">org.apache.commons.math.ode.jacobians.FirstOrderIntegratorWithJacobiansTest.java</file>
+			
+			
+			<file type="D">org.apache.commons.math.ode.jacobians.StepHandlerWithJacobians.java</file>
+			
+			
+			<file type="D">org.apache.commons.math.ode.jacobians.ODEWithJacobians.java</file>
+			
+			
+			<file type="D">org.apache.commons.math.ode.jacobians.StepInterpolatorWithJacobians.java</file>
+			
+			
+			<file type="D">org.apache.commons.math.ode.jacobians.ParameterizedODE.java</file>
+			
+			
+			<file type="D">org.apache.commons.math.ode.jacobians.EventHandlerWithJacobians.java</file>
+			
+			
+			<file type="D">org.apache.commons.math.ode.jacobians.FirstOrderIntegratorWithJacobians.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is blocked by" type="Blocker">381</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-02-05 19:54:50" id="588" opendate="2011-06-12 18:19:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Weighted Mean evaluation may not have optimal numerics</summary>
+			
+			
+			<description>I recently got this in a test run
+
+
+
+testWeightedConsistency(org.apache.commons.math.stat.descriptive.moment.MeanTest)  Time elapsed: 0 sec  &amp;lt;&amp;lt;&amp;lt; FAILURE!
+
+java.lang.AssertionError: expected:&amp;lt;0.002282165958997601&amp;gt; but was:&amp;lt;0.002282165958997157&amp;gt;
+
+	at org.junit.Assert.fail(Assert.java:91)
+
+	at org.junit.Assert.failNotEquals(Assert.java:645)
+
+	at org.junit.Assert.assertEquals(Assert.java:441)
+
+	at org.apache.commons.math.TestUtils.assertRelativelyEquals(TestUtils.java:178)
+
+	at org.apache.commons.math.TestUtils.assertRelativelyEquals(TestUtils.java:153)
+
+	at org.apache.commons.math.stat.descriptive.UnivariateStatisticAbstractTest.testWeightedConsistency(UnivariateStatisticAbstractTest.java:170)
+
+
+
+The correction formula used to compute the unweighted mean may not be appropriate or optimal in the presence of weights:
+
+
+
+// Compute initial estimate using definitional formula
+
+double sumw = sum.evaluate(weights,begin,length);
+
+double xbarw = sum.evaluate(values, weights, begin, length) / sumw;
+
+
+
+// Compute correction factor in second pass
+
+double correction = 0;
+
+for (int i = begin; i &amp;lt; begin + length; i++) {
+
+  correction += weights[i] * (values[i] - xbarw);
+
+}
+
+return xbarw + (correction/sumw);
+
+
+</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math.stat.descriptive.UnivariateStatisticAbstractTest.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-06-21 18:21:55" id="418" opendate="2010-09-18 15:51:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>add a storeless version of Percentile</summary>
+			
+			
+			<description>The Percentile class can handle only in-memory data.
+It would be interesting to use an on-line algorithm to estimate quantiles as a storeless statistic.
+An example of such an algorithm is the exponentially weighted stochastic approximation  described in a 2000 paper by Fei Chen ,  Diane Lambert  and Jos C. Pinheiro &quot;Incremental Quantile Estimation for Massive Tracking&quot; which can be retrieved from CiteSeerX at http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.105.1580.</description>
+			
+			
+			<version>2.1</version>
+			
+			
+			<fixedVersion>3.4</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.commons.math3.stat.descriptive.rank.PSquarePercentileTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1112</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

@@ -1,0 +1,1253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="WFCORE">
+	<bug fixdate="2016-02-26 16:55:38" id="1406" opendate="2016-02-22 20:01:10" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CLI client freezes for undefined security realm</summary>
+			
+			
+			<description>During work, CLI freezes randomly. See attached thread dump which was taken on Fedora 23.</description>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>2.1.0.Final</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.impl.CommandContextImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">3509</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-12 14:04:57" id="1432" opendate="2016-03-10 22:59:08" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>PersistentResourceXMLDescription#marshallAttributes does not marshall defined values if they match default values</summary>
+			
+			
+			<description/>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>2.1.0.Final</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.PersistentResourceXMLDescription.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned to" type="Cloners">3792</link>
+			
+			
+			<link description="blocks" type="Dependency">6350</link>
+			
+			
+			<link description="blocks" type="Dependency">3773</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-14 16:38:01" id="1394" opendate="2016-02-17 11:58:11" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>default maxPermgen is added when jvm isn&amp;apos;t configured </summary>
+			
+			
+			<description>Default maxPermgen size is added when jvm element isn&amp;amp;apos;t specified in domain.xml/host.xml and warning is logged. 
+
+
+
+
+
+
+&amp;lt;server-group name=&quot;main-server-group&quot; profile=&quot;default&quot;&amp;gt;
+
+
+
+
+&amp;lt;!--            
+
+
+
+
+    &amp;lt;jvm name=&quot;default&quot;&amp;gt;
+
+
+
+
+        &amp;lt;heap size=&quot;64m&quot; max-size=&quot;512m&quot;/&amp;gt;
+
+
+
+
+    &amp;lt;/jvm&amp;gt;
+
+
+
+
+--&amp;gt;
+
+
+
+
+    &amp;lt;socket-binding-group ref=&quot;standard-sockets&quot;/&amp;gt;
+
+
+
+
+&amp;lt;/server-group&amp;gt;
+
+
+
+
+
+
+
+
+
+
+
+
+WFLYHC0011: Ignoring &amp;lt;permgen&amp;gt; for jvm &amp;amp;apos;SUN&amp;amp;apos; type jvm: null
+
+
+
+
+
+
+It happens because default is defined in JvmElement.java#L76
+</description>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>2.1.0.Final</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.host.controller.model.jvm.JvmElement.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">3457</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-18 20:07:15" id="1370" opendate="2016-02-15 08:59:28" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>All configuration changes have the same operation date</summary>
+			
+			
+			<description> When I list the changes, the operation date for all of the changes are the same, and seem to be the date/time when the `list-changes` operation is performed.  I tried this just now with ER5:</description>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.ConfigurationChangesCollector.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned to" type="Cloners">3406</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-18 20:09:16" id="1397" opendate="2016-02-17 21:48:41" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Boot errors and unmanageable server if http-interface resource&amp;apos;s http-upgrade-enabled attribute != true</summary>
+			
+			
+			<description>The https://github.com/wildfly/wildfly-core/pull/1360 work added a new XnioWorker service that the HTTP interface depends on, but for a standalone server it isn&amp;amp;apos;t installed unless http-upgrade-enabled == true. Otherwise you see this during boot:
+
+
+
+
+
+
+ 15:43:25,005 ERROR [org.jboss.as.controller.management-operation] (Controller Boot Thread) WFLYCTL0013: Operation (&quot;add&quot;) failed - address: ([
+
+
+
+
+    (&quot;core-service&quot; =&amp;gt; &quot;management&quot;),
+
+
+
+
+    (&quot;management-interface&quot; =&amp;gt; &quot;http-interface&quot;)
+
+
+
+
+]) - failure description: {&quot;WFLYCTL0180: Services with missing/unavailable dependencies&quot; =&amp;gt; [
+
+
+
+
+    &quot;jboss.serverManagement.controller.management.http is missing [jboss.serverManagement.controller.management.worker]&quot;,
+
+
+
+
+    &quot;jboss.serverManagement.controller.management.http.shutdown is missing [jboss.remoting.management.channel.registry]&quot;
+
+
+
+
+]}
+
+
+
+
+15:43:25,006 ERROR [org.jboss.as.controller.management-operation] (Controller Boot Thread) WFLYCTL0013: Operation (&quot;add&quot;) failed - address: ([
+
+
+
+
+    (&quot;subsystem&quot; =&amp;gt; &quot;jmx&quot;),
+
+
+
+
+    (&quot;remoting-connector&quot; =&amp;gt; &quot;jmx&quot;)
+
+
+
+
+]) - failure description: {&quot;WFLYCTL0180: Services with missing/unavailable dependencies&quot; =&amp;gt; [&quot;jboss.jmx.remoting-connector-ref is missing [jboss.remoting.endpoint.management]&quot;]}
+
+
+
+
+15:43:25,031 INFO  [org.jboss.as.controller] (Controller Boot Thread) WFLYCTL0183: Service status report
+
+
+
+
+WFLYCTL0184:    New missing/unsatisfied dependencies:
+
+
+
+
+      service jboss.remoting.endpoint.management (missing) dependents: [service jboss.jmx.remoting-connector-ref] 
+
+
+
+
+      service jboss.remoting.management.channel.registry (missing) dependents: [service jboss.serverManagement.controller.management.http.shutdown] 
+
+
+
+
+      service jboss.serverManagement.controller.management.worker (missing) dependents: [service jboss.serverManagement.controller.management.http] 
+
+
+
+
+
+
+
+
+
+15:43:25,127 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0063: Http management interface is not enabled
+
+
+
+
+15:43:25,128 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0054: Admin console is not enabled
+
+
+
+
+15:43:25,128 ERROR [org.jboss.as] (Controller Boot Thread) WFLYSRV0026: JBoss EAP 7.0.0.GA (WildFly Core 2.0.12.Final-redhat-1) started (with errors) in 3493ms - Started 254 of 544 services (3 services failed or missing dependencies, 369 services are lazy, passive or on-demand)
+
+
+
+
+
+
+The problem is org.jboss.as.server.operations.HttpManagementAddHandler doesn&amp;amp;apos;t install the service. The HC variant of HttpManagementAddHandler does.</description>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.operations.NativeManagementServices.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.operations.HttpManagementAddHandler.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.operations.NativeManagementAddHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-18 20:11:51" id="1426" opendate="2016-03-03 22:22:30" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NPE in GlobalOperationHandlers.getChildAddresses</summary>
+			
+			
+			<description>Second line is a potential NPE if the MRR tree has changed since &amp;amp;apos;element&amp;amp;apos; was found:
+            final ImmutableManagementResourceRegistration childRegistration = registry.getSubModel(PathAddress.pathAddress(element));
+            final AliasEntry aliasEntry = childRegistration.getAliasEntry();
+Failed here:
+http://brontes.lab.eng.brq.redhat.com/viewLog.html?buildId=92710&amp;amp;buildTypeId=WildFlyCore_PullRequest_WildFlyCoreFullIntegration
+======= Failed test run #1 ==========
+org.jboss.as.test.integration.management.util.MgmtOperationException: Management operation failed.
+    at org.jboss.as.test.integration.domain.management.util.DomainTestUtils.executeForResult(DomainTestUtils.java:160)
+    at org.jboss.as.test.integration.domain.mixed.DomainHostExcludesTest.readChildrenNames(DomainHostExcludesTest.java:302)
+    at org.jboss.as.test.integration.domain.mixed.DomainHostExcludesTest.stopSlave(DomainHostExcludesTest.java:111)
+    at org.jboss.as.test.integration.domain.mixed.DomainHostExcludesTest.setup(DomainHostExcludesTest.java:93)
+    at org.jboss.as.test.integration.domain.mixed.eap630.DomainHostExcludes630TestCase.beforeClass(DomainHostExcludes630TestCase.java:40)
+------- Stdout: -------
+...
+&amp;amp;amp#27;[0m[Host Controller] &amp;amp;amp#27;[0m&amp;amp;amp#27;[0m22:06:43,569 INFO  [org.jboss.as.domain.controller] (management task-5) WFLYHC0026: Unregistered remote slave host &quot;slave&quot;&amp;amp;amp#27;[0m
+[Host Controller] &amp;amp;amp#27;[0m&amp;amp;amp#27;[31m22:06:43,569 ERROR [org.jboss.as.controller.management-operation] (management-handler-thread - 3) WFLYCTL0013: Operation (&quot;read-children-names&quot;) failed - address: ([]): java.lang.NullPointerException&amp;amp;amp#27;[0m
+[Host Controller] &amp;amp;amp#27;[31m    at org.jboss.as.controller.operations.global.GlobalOperationHandlers.getChildAddresses(GlobalOperationHandlers.java:960)&amp;amp;amp#27;[0m
+[Host Controller] &amp;amp;amp#27;[31m    at org.jboss.as.controller.operations.global.ReadChildrenNamesHandler.execute(ReadChildrenNamesHandler.java:78)&amp;amp;amp#27;[0m
+[Host Controller] &amp;amp;amp#27;[31m    at org.jboss.as.controller.AbstractOperationContext.executeStep(AbstractOperationContext.java:890)&amp;amp;amp#27;[0m
+[Host Controller] &amp;amp;amp#27;[31m    at org.jboss.as.controller.AbstractOperationContext.processStages(AbstractOperationContext.java:659)&amp;amp;amp#27;[0m
+[Host Controller] &amp;amp;amp#27;[31m    at org.jboss.as.controller.AbstractOperationContext.executeOperation(AbstractOperationContext.java:370)&amp;amp;amp#27;[0m
+[Host Controller] &amp;amp;amp#27;[31m    at org.jboss.as.controller.OperationContextImpl.executeOperation(OperationContextImpl.java:1344)&amp;amp;amp#27;[0m
+[Host Controller] &amp;amp;amp#27;[31m    at org.jboss.as.controller.ModelControllerImpl.internalExecute(ModelControllerImpl.java:392)&amp;amp;amp#27;[0m
+[Host Controller] &amp;amp;amp#27;[31m    at org.jboss.as.controller.ModelControllerImpl.execute(ModelControllerImpl.java:217)&amp;amp;amp#27;[0m
+[Host Controller] &amp;amp;amp#27;
+...
+The test stops host slave and then starts reading children names of type &amp;amp;apos;host&amp;amp;apos; to see when &amp;amp;apos;slave&amp;amp;apos; is gone. The registration disappears in the middle of the getChildAddresses logic resulting in NPE.</description>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.operations.global.GlobalOperationHandlers.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-18 22:15:49" id="1398" opendate="2016-02-17 23:22:49" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RemotingHttpUpgradeService.SERVICE_NAME has a superfluous space</summary>
+			
+			
+			<description>public static final ServiceName UPGRADE_SERVICE_NAME = ServiceName.JBOSS.append(&quot;remoting &quot;, &quot;remoting-http-upgrade-service&quot;);
+Note the space in &quot;remoting &quot;</description>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.remoting.RemotingHttpUpgradeService.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-18 22:17:52" id="1428" opendate="2016-03-04 14:45:35" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>log-file.stream attribute is of type LONG but contains a string</summary>
+			
+			
+			<description>The stream attribute of the log-file resource is of type LONG, but contains a UUID (string). This leads to an error in the console where I rely on proper attribute data types.  
+/subsystem=logging/log-file=*:read-resource-description
+/subsystem=logging/log-file=*:read-resource(include-runtime=true)</description>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.logging.LogFileResourceDefinition.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-18 22:18:16" id="1430" opendate="2016-03-07 11:52:40" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Deployment scanner logs ERROR when server is shutting down</summary>
+			
+			
+			<description>It happens time to time that deployment scanner can throw and log error [1] when server is shutting down.
+It&amp;amp;apos;s in case of clean startup and clean shutdown when error messages should not be shown. I can hit it when unbounding a datasource takes a bit longer and scan of deployment scanner hits that time.
+[1]
+
+
+
+
+
+
+ERROR [org.jboss.as.server.deployment.scanner] (DeploymentScanner-threads - 1) WFLYDS0012: Scan of /mnt/hudson_workspace/workspace/eap-70-jbossts-crashrec-tests-mssql2014/90fac01f/eap-tests-transactions/jbossts/target/jbossas-jbossts/standalone/deployments threw Exception: java.lang.RuntimeException: WFLYDS0036: Deployment model operation failed. WFLYCTL0271: Operation cancelled
+
+
+
+
+	at org.jboss.as.server.deployment.scanner.DefaultDeploymentOperations.getDeploymentsStatus(DefaultDeploymentOperations.java:83)
+
+
+
+
+	at org.jboss.as.server.deployment.scanner.FileSystemDeploymentService$ScanContext.&amp;lt;init&amp;gt;(FileSystemDeploymentService.java:1614)
+
+
+
+
+	at org.jboss.as.server.deployment.scanner.FileSystemDeploymentService$ScanContext.&amp;lt;init&amp;gt;(FileSystemDeploymentService.java:1563)
+
+
+
+
+	at org.jboss.as.server.deployment.scanner.FileSystemDeploymentService.scan(FileSystemDeploymentService.java:568)
+
+
+
+
+	at org.jboss.as.server.deployment.scanner.FileSystemDeploymentService.scan(FileSystemDeploymentService.java:489)
+
+
+
+
+	at org.jboss.as.server.deployment.scanner.FileSystemDeploymentService$DeploymentScanRunnable.run(FileSystemDeploymentService.java:250)
+
+
+
+
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+
+
+
+
+	at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:308)
+
+
+
+
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(ScheduledThreadPoolExecutor.java:180)
+
+
+
+
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:294)
+
+
+
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+
+
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+
+
+
+	at java.lang.Thread.run(Thread.java:745)
+
+
+
+
+	at org.jboss.threads.JBossThread.run(JBossThread.java:320)
+
+
+
+
+
+</description>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.FileSystemDeploymentService.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">3697</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-18 22:18:45" id="1439" opendate="2016-03-17 15:20:26" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Allow for testsuite to pass on French OS</summary>
+			
+			
+			<description>Some tests are checking failure message or exception message as if the Locale is always English. Fixing those</description>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.test.manualmode.management.cli.ManagementOpTimeoutTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.XmlCompletionScannerTest.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.XmlCompletionScanner.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.integration.mgmt.access.ConfigurationChangesHistoryTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.server.deployment.scanner.logging.DeploymentScannerLogger.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.integration.mgmt.access.ValidateAddressOrOperationTestCase.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.integration.domain.suites.ResponseStreamTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">3856</link>
+			
+			
+			<link description="blocks" type="Dependency">5333</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-19 00:41:46" id="1420" opendate="2016-03-02 15:03:25" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CLI shutdown command doesn&amp;apos;t support graceful shutdown</summary>
+			
+			
+			<description>The shutdown command needs to support a timeout param so users can have a graceful shutdown.
+I&amp;amp;apos;m calling this a bug because the low level :shutdown op is not reliable for CLI users due to the issues with handling of connection closing that the shutdown command takes care of.</description>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>2.1.0.Final</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.cli.Util.java</file>
+			
+			
+			<file type="M">org.jboss.as.cli.handlers.ShutdownHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned to" type="Cloners">3652</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-19 00:42:43" id="1435" opendate="2016-03-15 17:49:55" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Users with low privileges can see logged operations they shouldn&amp;apos;t be able to see</summary>
+			
+			
+			<description>If a SuperUser performs for example this:
+
+
+
+
+
+
+/core-service=management/access=audit/in-memory-handler=y:add   
+
+
+
+
+/core-service=management/access=audit/in-memory-handler=y:write-attribute(name=max-history,value=50)
+
+
+
+
+
+
+then a Monitor user shouldn&amp;amp;apos;t be able to see this in the configuration change log (as decided in EAP7-89), because he doesn&amp;amp;apos;t even have the permission to &quot;read&quot; the manipulated resource.. But actually he can see it:
+
+
+
+
+
+
+/core-service=management/service=configuration-changes:list-changes
+
+
+
+
+{
+
+
+
+
+    &quot;outcome&quot; =&amp;gt; &quot;success&quot;,
+
+
+
+
+    &quot;result&quot; =&amp;gt; [
+
+
+
+
+        {
+
+
+
+
+            &quot;operation-date&quot; =&amp;gt; &quot;2016-03-15T08:40:25.807Z&quot;,
+
+
+
+
+            &quot;access-mechanism&quot; =&amp;gt; &quot;NATIVE&quot;,
+
+
+
+
+            &quot;remote-address&quot; =&amp;gt; &quot;127.0.0.1/127.0.0.1&quot;,
+
+
+
+
+            &quot;outcome&quot; =&amp;gt; &quot;success&quot;,
+
+
+
+
+            &quot;operations&quot; =&amp;gt; [{
+
+
+
+
+                &quot;operation&quot; =&amp;gt; &quot;write-attribute&quot;,
+
+
+
+
+                &quot;address&quot; =&amp;gt; [
+
+
+
+
+                    (&quot;core-service&quot; =&amp;gt; &quot;management&quot;),
+
+
+
+
+                    (&quot;access&quot; =&amp;gt; &quot;audit&quot;),
+
+
+
+
+                    (&quot;in-memory-handler&quot; =&amp;gt; &quot;y&quot;)
+
+
+
+
+                ]
+
+
+
+
+            }]
+
+
+
+
+        },
+
+
+
+
+        {
+
+
+
+
+            &quot;operation-date&quot; =&amp;gt; &quot;2016-03-15T08:40:25.809Z&quot;,
+
+
+
+
+            &quot;access-mechanism&quot; =&amp;gt; &quot;NATIVE&quot;,
+
+
+
+
+            &quot;remote-address&quot; =&amp;gt; &quot;127.0.0.1/127.0.0.1&quot;,
+
+
+
+
+            &quot;outcome&quot; =&amp;gt; &quot;success&quot;,
+
+
+
+
+            &quot;operations&quot; =&amp;gt; [{
+
+
+
+
+                &quot;operation&quot; =&amp;gt; &quot;add&quot;,
+
+
+
+
+                &quot;address&quot; =&amp;gt; [
+
+
+
+
+                    (&quot;core-service&quot; =&amp;gt; &quot;management&quot;),
+
+
+
+
+                    (&quot;access&quot; =&amp;gt; &quot;audit&quot;),
+
+
+
+
+                    (&quot;in-memory-handler&quot; =&amp;gt; &quot;y&quot;)
+
+
+
+
+                ]
+
+
+
+
+            }]
+
+
+
+
+        }
+
+
+
+
+    ]
+
+
+
+
+}
+
+
+
+
+
+
+</description>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>2.1.0.Final</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.domain.management.ConfigurationChangeResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.test.integration.mgmt.access.ConfigurationChangesHistoryTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">3817</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-19 00:44:11" id="1437" opendate="2016-03-16 17:00:04" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Using JKS truststore leads to &quot;FIPS mode: only SunJSSE TrustManagers may be used&quot;</summary>
+			
+			
+			<description>User can&amp;amp;apos;t start domain in FIPS mode when JKS truststore is used in master &amp;lt;-&amp;gt; slave host controllers communication. (Using PKCS11 keystore works well)
+
+
+
+
+
+
+[Host Controller] ^[[0m^[[31m15:52:23,822 ERROR [org.jboss.msc.service.fail] (MSC service thread 1-8) MSC000001: Failed to start service jboss.server.controller.management.security_realm.SlaveManagementRealm.ssl-context-trust-only: org.jboss.msc.service.StartException in service jboss.server.controller.management.security_realm.SlaveManagementRealm.ssl-context-trust-only: WFLYDM0018: Unable to start service^[[0m
+
+
+
+
+[Host Controller] ^[[31m        at org.jboss.as.domain.management.security.SSLContextService.start(SSLContextService.java:124)^[[0m
+
+
+
+
+[Host Controller] ^[[31m        at org.jboss.msc.service.ServiceControllerImpl$StartTask.startService(ServiceControllerImpl.java:1948)^[[0m
+
+
+
+
+[Host Controller] ^[[31m        at org.jboss.msc.service.ServiceControllerImpl$StartTask.run(ServiceControllerImpl.java:1881)^[[0m
+
+
+
+
+[Host Controller] ^[[31m        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)^[[0m
+
+
+
+
+[Host Controller] ^[[31m        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)^[[0m
+
+
+
+
+[Host Controller] ^[[31m        at java.lang.Thread.run(Thread.java:745)^[[0m
+
+
+
+
+[Host Controller] ^[[31mCaused by: java.security.KeyManagementException: FIPS mode: only SunJSSE TrustManagers may be used^[[0m
+
+
+
+
+[Host Controller] ^[[31m        at sun.security.ssl.SSLContextImpl.chooseTrustManager(SSLContextImpl.java:124)^[[0m
+
+
+
+
+[Host Controller] ^[[31m        at sun.security.ssl.SSLContextImpl.engineInit(SSLContextImpl.java:87)^[[0m
+
+
+
+
+[Host Controller] ^[[31m        at javax.net.ssl.SSLContext.init(SSLContext.java:282)^[[0m
+
+
+
+
+[Host Controller] ^[[31m        at org.jboss.as.domain.management.security.SSLContextService.start(SSLContextService.java:87)^[[0m
+
+
+
+
+[Host Controller] ^[[31m        ... 5 more^[[0m
+
+
+
+
+[Hos
+
+
+
+
+
+</description>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>2.1.0.Final</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.domain.management.security.FileTrustManagerService.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="cloned from" type="Cloners">3788</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-22 02:18:11" id="1399" opendate="2016-02-17 14:29:26" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Failure when resolving an expression with the default value containing a &amp;apos;$&amp;apos; at the end</summary>
+			
+			
+			<description>Can not add a JNDI / naming entry which contains a &quot;$&quot; sign at the end of its default value.
+e.g. 
+
+
+
+
+
+value=&quot;${my.sample.property1:entry5-default-value-with-special-char-at-the-end-$}&quot;
+
+
+
+
+
+</description>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.controller.ExpressionResolverImpl.java</file>
+			
+			
+			<file type="M">org.jboss.as.controller.ExpressionResolverUnitTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-16 11:13:34" id="1373" opendate="2016-02-15 11:24:44" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Unable to specify custom configuration directory via -Djboss.server.config.dir</summary>
+			
+			
+			<description>Broken support for server config files location customization via: jboss.server.config.dir.
+Previous Wildfly 10 versions till CR4 it works as expected. Broken since WF10.0.0.CR5
+See Steps to reproduce.
+Error:
+Cannot start embedded server: WFLYEMB0022: Cannot invoke &amp;amp;apos;start&amp;amp;apos; on embedded process: WFLYCTL0214: Could not get main file: config.xml. Specified files must be relative to the configuration dir: /opt/wildfly-10.0.0.Final/standalone/configuration</description>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>2.2.0.CR1, 3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.wildfly.core.embedded.EmbeddedProcessFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-16 13:30:44" id="1395" opendate="2016-02-17 12:58:32" resolution="Done">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Remove /host=master/core-service=management/access=authorization</summary>
+			
+			
+			<description>The /host=master/core-service=management/access=authorization is odd. It should be removed in WF 11.</description>
+			
+			
+			<version>2.1.0.CR1</version>
+			
+			
+			<fixedVersion>3.0.0.Alpha1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.jboss.as.domain.management.access.AccessAuthorizationResourceDefinition.java</file>
+			
+			
+			<file type="M">org.jboss.as.domain.management.CoreManagementResourceDefinition.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>
