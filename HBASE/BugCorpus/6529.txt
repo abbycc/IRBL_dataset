@@ -1,0 +1,1 @@
+hfile v2 region server perform extra copi sourc file hfile v2 implement hbase 0 94 amp 0 96 region server hfilesystem fs perform bulk load store bulkloadhfil check fs srcf distributedfilesystem perform extra copi sourc file

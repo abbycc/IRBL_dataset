@@ -1,0 +1,1 @@
+There is no way to set the ChunkOperations ExceptionHandler in any factory bean The SimpleStepFactoryBean has a setter for the ExceptionHandler, but it isn&amp;apos;t used anywhere.

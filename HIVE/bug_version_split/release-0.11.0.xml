@@ -1,0 +1,4253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HIVE">
+	<bug fixdate="2013-04-26 18:40:51" id="4425" opendate="2013-04-26 17:18:49" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HiveSessionImpl contains hard-coded version number</summary>
+			
+			
+			<description>As a result doing getInfo() call on HiveServer2 currently returns current hard coded value which is 0.10.0</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.HiveSessionImpl.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.TestJdbcDriver2.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveDatabaseMetaData.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">4373</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-04-29 18:28:42" id="4373" opendate="2013-04-17 22:20:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive Version returned by HiveDatabaseMetaData.getDatabaseProductVersion is incorrect</summary>
+			
+			
+			<description>When running beeline
+
+
+
+% beeline -u &amp;amp;apos;jdbc:hive2://localhost:10000&amp;amp;apos; -n hive -p passwd -d org.apache.hive.jdbc.HiveDriver
+
+Connecting to jdbc:hive2://localhost:10000
+
+Connected to: Hive (version 0.10.0)
+
+Driver: Hive (version 0.11.0)
+
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+
+
+
+The Hive version in the &quot;Connected to: &quot; string says 0.10.0 instead of 0.11.0.
+Looking at the code it seems that the version is hardcoded at two places:
+line 250 in jdbc/src/java/org/apache/hive/jdbc/HiveDatabaseMetaData.java
+line 833 in jdbc/src/test/org/apache/hive/jdbc/TestJdbcDriver2.java</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.11.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.HiveSessionImpl.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.TestJdbcDriver2.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveDatabaseMetaData.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">4425</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-05-16 01:52:58" id="4490" opendate="2013-05-03 18:44:20" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HS2 - &amp;apos;select null ..&amp;apos; fails with NPE</summary>
+			
+			
+			<description>Eg, from beeline 
+
+
+
+&amp;gt; select null, i from t1 ;
+
+Error: Error running query: java.lang.NullPointerException (state=,code=0)
+
+Error: Error running query: java.lang.NullPointerException (state=,code=0)
+
+
+
+In HS2 log
+org.apache.hive.service.cli.HiveSQLException: Error running query: java.lang.NullPointerException
+        at org.apache.hive.service.cli.operation.SQLOperation.run(SQLOperation.java:113)
+        at org.apache.hive.service.cli.session.HiveSessionImpl.executeStatement(HiveSessionImpl.java:169)
+        at sun.reflect.GeneratedMethodAccessor11.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:597)
+        at org.apache.hive.service.cli.session.HiveSessionProxy$1.run(HiveSessionProxy.java:62)
+        at java.security.AccessController.doPrivileged(Native Method)
+        at javax.security.auth.Subject.doAs(Subject.java:396)
+        at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1178)
+        at org.apache.hadoop.hive.shims.HadoopShimsSecure.doAs(HadoopShimsSecure.java:524)
+        at org.apache.hive.service.cli.session.HiveSessionProxy.invoke(HiveSessionProxy.java:57)
+        at $Proxy8.executeStatement(Unknown Source)
+        at org.apache.hive.service.cli.CLIService.executeStatement(CLIService.java:148)
+        at org.apache.hive.service.cli.thrift.ThriftCLIService.ExecuteStatement(ThriftCLIService.java:203)
+        at org.apache.hive.service.cli.thrift.TCLIService$Processor$ExecuteStatement.getResult(TCLIService.java:1133)
+        at org.apache.hive.service.cli.thrift.TCLIService$Processor$ExecuteStatement.getResult(TCLIService.java:1118)
+        at org.apache.thrift.ProcessFunction.process(ProcessFunction.java:39)
+        at org.apache.thrift.TBaseProcessor.process(TBaseProcessor.java:39)
+        at org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge20S$Server$TUGIAssumingProcessor.process(HadoopThriftAuthBridge20S.java:565)
+        at org.apache.thrift.server.TThreadPoolServer$WorkerProcess.run(TThreadPoolServer.java:206)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+        at java.lang.Thread.run(Thread.java:662)</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.SkewedValueList.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.SkewedInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ThriftHiveMetastore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.TestJdbcDriver.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.Row.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveBaseResultSet.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.Type.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyFactory.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.thrift.TTypeId.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.ColumnValue.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveResultSetMetaData.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.thrift.TCLIServiceConstants.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.TestJdbcDriver2.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">4172</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-05-31 03:31:19" id="4633" opendate="2013-05-30 13:35:25" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MR Jobs execution failed.</summary>
+			
+			
+			<description>I am running Hive-0.11.0 + Hadoop-0.23 version. All queries that spawn MR jobs got failed. When I look into logs, below exception is thrown in hive.log
+
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: org.apache.hadoop.hive.ql.metadata.HiveException: Configuration and input path are inconsistent
+
+	at org.apache.hadoop.hive.ql.exec.MapOperator.setChildren(MapOperator.java:522)
+
+	at org.apache.hadoop.hive.ql.exec.ExecMapper.configure(ExecMapper.java:90)
+
+
+
+</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapOperator.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">4619</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-06-21 02:27:41" id="4172" opendate="2013-03-14 06:03:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JDBC2 does not support VOID type</summary>
+			
+			
+			<description>In beeline, &quot;select key, null from src&quot; fails with exception,
+
+org.apache.hive.service.cli.HiveSQLException: Error running query: java.lang.NullPointerException
+
+	at org.apache.hive.service.cli.operation.SQLOperation.run(SQLOperation.java:112)
+
+	at org.apache.hive.service.cli.session.HiveSessionImpl.executeStatement(HiveSessionImpl.java:166)
+
+	at org.apache.hive.service.cli.CLIService.executeStatement(CLIService.java:148)
+
+	at org.apache.hive.service.cli.thrift.ThriftCLIService.ExecuteStatement(ThriftCLIService.java:183)
+
+	at org.apache.hive.service.cli.thrift.TCLIService$Processor$ExecuteStatement.getResult(TCLIService.java:1133)
+
+	at org.apache.hive.service.cli.thrift.TCLIService$Processor$ExecuteStatement.getResult(TCLIService.java:1118)
+
+	at org.apache.thrift.ProcessFunction.process(ProcessFunction.java:39)
+
+	at org.apache.thrift.TBaseProcessor.process(TBaseProcessor.java:39)
+
+	at org.apache.hive.service.auth.TSetIpAddressProcessor.process(TSetIpAddressProcessor.java:39)
+
+	at org.apache.thrift.server.TThreadPoolServer$WorkerProcess.run(TThreadPoolServer.java:206)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+
+	at java.lang.Thread.run(Thread.java:662)
+
+
+</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.SkewedValueList.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.SkewedInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ThriftHiveMetastore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.TestJdbcDriver.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.Row.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveBaseResultSet.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.Type.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyFactory.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.thrift.TTypeId.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.ColumnValue.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveResultSetMetaData.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.thrift.TCLIServiceConstants.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.TestJdbcDriver2.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is blocked by" type="Blocker">4300</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2615</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">4490</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-08-07 17:58:32" id="4893" opendate="2013-07-19 16:37:09" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[WebHCat] HTTP 500 errors should be mapped to 400 for bad request</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hcatalog.templeton.TestWebHCatE2e.java</file>
+			
+			
+			<file type="M">org.apache.hcatalog.templeton.CatchallExceptionMapper.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">4586</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-08-08 20:05:41" id="4911" opendate="2013-07-22 20:03:02" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Enable QOP configuration for Hive Server 2 thrift transport</summary>
+			
+			
+			<description>The QoP for hive server 2 should be configurable to enable encryption. A new configuration should be exposed &quot;hive.server2.thrift.sasl.qop&quot;. This would give greater control configuring hive server 2 service.</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveConnection.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.auth.HiveAuthFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge20S.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.auth.KerberosSaslHelper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStoreClient.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.TestHadoop20SAuthBridge.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">4225</link>
+			
+			
+			<link description="is related to" type="Reference">5120</link>
+			
+			
+			<link description="supercedes" type="Supercedes">4225</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-08-19 17:14:05" id="4225" opendate="2013-03-25 06:44:19" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HiveServer2 does not support SASL QOP</summary>
+			
+			
+			<description>HiveServer2 implements Kerberos authentication through SASL framework, but does not support setting QOP.</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveConnection.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.auth.HiveAuthFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge20S.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.auth.KerberosSaslHelper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStoreClient.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.TestHadoop20SAuthBridge.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">4911</link>
+			
+			
+			<link description="relates to" type="Reference">4232</link>
+			
+			
+			<link description="is superceded by" type="Supercedes">4911</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-03 19:34:18" id="5149" opendate="2013-08-26 01:35:43" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ReduceSinkDeDuplication can pick the wrong partitioning columns</summary>
+			
+			
+			<description>https://mail-archives.apache.org/mod_mbox/hive-user/201308.mbox/%3CCAG6Lhyex5XPwszpihKqkPRpzri2k=m4QGc+cpAR5yVR8SJtM4Q@mail.gmail.com%3E</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.correlation.ReduceSinkDeDuplication.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">5237</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-03 19:56:31" id="4586" opendate="2013-05-22 00:04:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[HCatalog] WebHCat should return 404 error for undefined resource</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hcatalog.templeton.TestWebHCatE2e.java</file>
+			
+			
+			<file type="M">org.apache.hcatalog.templeton.CatchallExceptionMapper.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">4893</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-04 23:36:49" id="4266" opendate="2013-03-29 19:08:50" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Refactor HCatalog code to org.apache.hive.hcatalog</summary>
+			
+			
+			<description>Currently HCatalog code is in packages org.apache.hcatalog.  It needs to now move to org.apache.hive.hcatalog.  Shell classes/interface need to be created for public facing classes so that user&amp;amp;apos;s code does not break.</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestHCatInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.HCatRecordable.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.TestReaderWriter.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.JsonSerDe.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.HBaseInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.HBaseDirectOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.rcfile.RCFileMapReduceInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.har.HarOutputCommitterPostProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.HDFSStorage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.HBaseBulkOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.ZKBasedRevisionManager.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.IDGenerator.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.HCatDriver.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.HCatSplit.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.ProgressReporter.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.IDGenClient.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.ReadText.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.HCatRecord.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.ExecService.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.RevisionManagerFactory.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.json.JSONCreateDatabaseMessage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestHCatExternalHCatNonPartitioned.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.TestPigHCatUtil.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.PartInfo.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.ResultConverter.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.HBaseAuthorizationProvider.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.DataReaderMaster.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.ImportSequenceFile.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.NotAuthorizedException.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.lock.TestWriteLock.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.common.TestHiveClientCache.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.fileformats.TestOrcDynamicPartitioned.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.StorerInfo.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.NotFoundException.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.QueueException.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.HCatMapRedUtil.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.HcatException.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.HCatMapReduceTest.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.GroupByAge.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.HCatStorerWrapper.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.NoExitSecurityManager.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.HCatClient.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.TempletonControllerJob.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.ReadWrite.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.HcatDelegator.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.transfer.HCatWriter.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.storagehandler.DummyHCatAuthProvider.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.SemanticAnalysis.HCatSemanticAnalyzerBase.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.common.TestHCatUtil.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.DatabaseDesc.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.BusyException.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.DeleteDelegator.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.HBaseConstants.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.MaxByteArrayOutputStream.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.ReadJson.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.LazyHCatRecord.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.TestTempletonUtils.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.InitializeInput.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.TempletonStorage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.common.HCatConstants.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.TestPermsGrp.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.HCatRecordSerDe.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.HCatBaseOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.json.JSONDropTableMessage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.HBaseReadWrite.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.lock.TestZNodeName.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.HCatStorageHandler.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.StoreDemo.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.TestHBaseDirectOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestSequenceFileReadWrite.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.lock.WriteLock.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.HCatPartition.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.NullRecordReader.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.HCatTable.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.PigDelegator.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.transfer.impl.HCatInputFormatReader.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.transaction.thrift.StoreFamilyRevisionList.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.TableSnapshot.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.schema.HCatSchema.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.HCatStorer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.TablePropertyDesc.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.DataType.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.lock.ZooKeeperOperation.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.HCatClientHMSImpl.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.RevisionManagerConfiguration.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.PathUtil.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.TestDesc.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.HCatTableSnapshot.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.HCatRecordReader.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.TestHCatStorerWrapper.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.OutputJobInfo.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.WriteTextPartitioned.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.schema.HCatSchemaUtils.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.schema.TestHCatSchemaUtils.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.HCatBaseStorer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.PartitionDesc.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.rcfile.RCFileMapReduceRecordReader.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.ExecServiceImpl.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.InternalUtil.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.Security.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.TestSemanticAnalysis.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.TempletonDelegator.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.HCatRecordObjectInspector.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.ListDelegator.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.security.StorageDelegationAuthorizationProvider.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.HCatCreateTableDesc.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.MyPigStorage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.TestHCatStorerMulti.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.security.TestHdfsAuthorizationProvider.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.RevisionManagerProtocol.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.HDFSCleanup.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.StatusDelegator.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.package-info.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.json.JSONDropDatabaseMessage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.HCatCli.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.CompleteBean.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.TestHBaseBulkOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.FileOutputCommitterContainer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestHCatDynamicPartitioned.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.LauncherDelegator.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.lock.LockListener.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.RevisionManagerEndpointClient.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.common.HiveClientCache.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.InputJobInfo.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.HBaseRevisionManagerUtil.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.HCatTypeCheckHive.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.TestHCatLoader.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.schema.TestHCatSchema.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.TestIDGenerator.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.SecureProxySupport.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.transfer.impl.HCatOutputFormatWriter.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.common.HCatException.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.CallbackFailedException.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.FileRecordWriterContainer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.transfer.HCatReader.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.TableLikeDesc.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.TestHCatClient.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.HBaseHCatStorageHandler.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.MultiOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.transfer.ReadEntity.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.DefaultOutputCommitterContainer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.FosterStorageHandler.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.ZooKeeperCleanup.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.mock.MockServer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.TestUseDatabase.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.jms.MessagingUtils.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestHCatHiveThriftCompatibility.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.json.JSONDropPartitionMessage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.HCatLoader.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.lock.ZNodeName.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.Transaction.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.ZKUtil.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.DropPartitionMessage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.AppConfig.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.mock.MockUriInfo.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.StoreComplex.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.AddPartitionMessage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.SumNumbers.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.TestHCatStorer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.transfer.WriteEntity.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestInputJobInfo.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.ManyMiniCluster.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.TestThriftSerialization.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.DataReaderSlave.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.ColumnDesc.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.JobStateTracker.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.TestZNodeSetUp.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.json.JSONMessageDeserializer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.HCatOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.Server.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.TempletonUtils.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.listener.NotificationListener.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.DropDatabaseMessage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestHCatNonPartitioned.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.security.HdfsAuthorizationProvider.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.CompleteDelegator.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.TestTrivialExecService.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.HCatRecordObjectInspectorFactory.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.TestRevisionManager.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.HCatAddPartitionDesc.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.TestHBaseInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.TestOrcHCatStorer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.TestOrcHCatLoader.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.transfer.DataTransferFactory.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.JobState.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.DataWriterMaster.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.RMConstants.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.TestOrcHCatLoaderComplexSchema.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.TestDefaultHCatRecord.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.SemanticAnalysis.CreateTableHook.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.TrivialExecService.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.MessageDeserializer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.json.JSONAddPartitionMessage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.FileOutputFormatContainer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.TestE2EScenarios.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.JsonBuilder.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.ReaderWriter.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.PigHCatUtil.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestHCatExternalDynamicPartitioned.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.NullSplit.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.HCatBaseInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.TestHCatLoaderStorer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.HBaseBaseOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.SimpleExceptionMapper.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.mock.MockExecService.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.EnqueueBean.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.Main.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.HCatTypeCheck.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.DataWriterSlave.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.Util.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.HCatDatabase.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.TestHCatLoaderComplexSchema.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestHCatExternalPartitioned.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.transfer.ReaderContext.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.CreateDatabaseMessage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.QueueStatusBean.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.DummyStorageHandler.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.TestSnapshots.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.transfer.state.StateProvider.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.HCatCreateDBDesc.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestPassProperties.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.ConnectionFailureException.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.common.ErrorType.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.schema.HCatFieldSchema.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.HCatTableInfo.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.WadlConfig.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.SemanticAnalysis.HCatSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.listener.TestNotificationListener.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.ZooKeeperStorage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.RevisionManagerEndpoint.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.DefaultOutputFormatContainer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.ObjectNotFoundException.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.ExitException.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.MockLoader.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.DropTableMessage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.StreamingDelegator.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.SkeletonHBaseTest.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.RecordWriterContainer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.UgiFactory.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.ReadRC.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.HCatTestDriver.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.HiveDelegator.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.HbaseSnapshotRecordReader.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.DefaultRecordWriterContainer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestMultiOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.HBaseUtil.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.TableDesc.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.MiniCluster.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.Pair.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.MessageFactory.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.GroupPermissionsDesc.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.rcfile.TestRCFileMapReduceInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.TestRevisionManagerEndpoint.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.SimpleWebException.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.transaction.thrift.StoreFamilyRevision.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.common.HCatContext.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.SimpleRead.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.oozie.JavaAction.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.CatchallExceptionMapper.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.TestHCatRecordSerDe.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestHCatPartitioned.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.SingleInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.DefaultHCatRecord.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.json.JSONCreateTableMessage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.TestServer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.pig.HCatBaseLoader.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.lock.ProtocolSupport.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.common.HCatUtil.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.TypeDataCheck.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.WriteRC.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.HCatDataCheckUtil.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.BadParam.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.transfer.state.DefaultStateProvider.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.OutputCommitterContainer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.TestLazyHCatRecord.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.transfer.EntityBase.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.HCatEventMessage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.transfer.WriterContext.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestHCatMultiOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.TestRevisionManagerConfiguration.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestHCatPartitionPublish.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.OutputFormatContainer.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.HCatBaseTest.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.TestWebHCatE2e.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.ExecBean.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.WriteText.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.TestHBaseHCatStorageHandler.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestHCatOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestHCatHiveCompatibility.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.HcatTestUtils.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.SemanticAnalysis.CreateDatabaseHook.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.RevisionManager.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.WriteJson.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.utils.StoreNumbers.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.hbase.snapshot.FamilyRevision.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.json.JSONMessageFactory.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.rcfile.RCFileMapReduceOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.HCatInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.JarDelegator.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.messaging.CreateTableMessage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.ProxyUserSupport.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.data.TestJsonSerDe.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.listener.TestMsgBusConnection.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.BadParam.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.TestHCatLoaderStorer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.HBaseDirectOutputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.MultiOutputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.PartitionDesc.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.LauncherDelegator.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.transfer.WriteEntity.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.SingleInputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.json.JSONAddPartitionMessage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.TestOrcHCatStorer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.ReaderWriter.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.DataType.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.cli.TestSemanticAnalysis.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.MessageFactory.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.HCatBaseStorer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.QueueException.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.TestIDGenerator.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.HCatDataCheckUtil.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.MyPigStorage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.TempletonUtils.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.api.ObjectNotFoundException.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.DataWriterMaster.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.ResultConverter.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestHCatOutputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.rcfile.RCFileMapReduceOutputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.Transaction.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.MaxByteArrayOutputStream.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.lock.LockListener.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.ExecServiceImpl.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.common.HCatUtil.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.RevisionManagerEndpointClient.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.WriteJson.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.HbaseSnapshotRecordReader.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.HCatRecordSerDe.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.NotAuthorizedException.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.StoreDemo.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.HBaseAuthorizationProvider.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestInputJobInfo.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.lock.ZooKeeperOperation.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.common.HiveClientCache.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.LazyHCatRecord.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.transfer.state.DefaultStateProvider.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.HCatMapRedUtil.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.TestHBaseInputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.TableLikeDesc.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.cli.SemanticAnalysis.CreateTableHook.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.PathUtil.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.security.StorageDelegationAuthorizationProvider.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.security.HdfsAuthorizationProvider.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.HCatBaseInputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.transfer.ReaderContext.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.transfer.state.StateProvider.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.api.TestHCatClient.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.HcatDelegator.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.DefaultOutputCommitterContainer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.TestRevisionManagerConfiguration.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.lock.ProtocolSupport.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.api.HCatAddPartitionDesc.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.HDFSCleanup.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.schema.TestHCatSchemaUtils.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.CatchallExceptionMapper.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.transfer.DataTransferFactory.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.RMConstants.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.common.TestHiveClientCache.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.JobState.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.TempletonControllerJob.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.DropTableMessage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestHCatExternalDynamicPartitioned.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.transfer.WriterContext.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.HBaseRevisionManagerUtil.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.FileRecordWriterContainer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.HBaseUtil.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.Util.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.HCatRecordReader.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.DataReaderSlave.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.QueueStatusBean.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.DataReaderMaster.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.api.HCatTable.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.TestHBaseBulkOutputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.rcfile.RCFileMapReduceInputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.ReadText.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.transfer.impl.HCatOutputFormatWriter.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.TestWebHCatE2e.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.TestRevisionManagerEndpoint.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.BusyException.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.HDFSStorage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.TestServer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.PartInfo.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.schema.TestHCatSchema.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.SimpleWebException.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.ManyMiniCluster.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.HCatRecordObjectInspectorFactory.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.mock.MockExecService.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.HCatBaseTest.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.JsonSerDe.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.WriteTextPartitioned.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.HCatSplit.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestHCatInputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.api.HCatPartition.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.Pair.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.listener.TestNotificationListener.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.TestPigHCatUtil.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.DataWriterSlave.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.WriteRC.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.cli.SemanticAnalysis.CreateDatabaseHook.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.IDGenerator.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.transfer.impl.HCatInputFormatReader.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.TestOrcHCatLoader.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.HBaseBaseOutputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.RecordWriterContainer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.CreateTableMessage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.schema.HCatSchemaUtils.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.RevisionManagerEndpoint.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.common.HCatException.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestMultiOutputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.HCatOutputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.RevisionManager.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.HCatInputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.HCatRecord.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.RevisionManagerProtocol.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.HCatTableSnapshot.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.har.HarOutputCommitterPostProcessor.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.cli.TestPermsGrp.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.HiveDelegator.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.TestHBaseHCatStorageHandler.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.ColumnDesc.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.EnqueueBean.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.OutputJobInfo.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.FileOutputFormatContainer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.WadlConfig.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.storagehandler.DummyHCatAuthProvider.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.HCatRecordable.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.HCatStorer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.StoreNumbers.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.ProxyUserSupport.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.DropDatabaseMessage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.TestHCatLoaderComplexSchema.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.oozie.JavaAction.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestHCatDynamicPartitioned.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.Server.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.DropPartitionMessage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.listener.NotificationListener.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.api.HCatCreateTableDesc.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.json.JSONMessageDeserializer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.HCatTableInfo.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.json.JSONDropDatabaseMessage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestHCatMultiOutputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.TestHCatStorerWrapper.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.TestOrcHCatLoaderComplexSchema.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.SimpleExceptionMapper.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.cli.TestUseDatabase.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.TestHCatStorer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.ProgressReporter.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.schema.HCatSchema.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.cli.HCatDriver.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.MockLoader.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.NullSplit.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.rcfile.TestRCFileMapReduceInputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.HCatTestDriver.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.transfer.EntityBase.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.PigDelegator.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.AppConfig.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.ImportSequenceFile.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.CallbackFailedException.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.CreateDatabaseMessage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.GroupByAge.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.MessageDeserializer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.TestReaderWriter.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.StreamingDelegator.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.lock.ZNodeName.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.rcfile.RCFileMapReduceRecordReader.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.cli.SemanticAnalysis.HCatSemanticAnalyzer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.cli.HCatCli.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.HcatTestUtils.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.HCatStorageHandler.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.Security.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.DatabaseDesc.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.TableDesc.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.HCatRecordObjectInspector.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.ListDelegator.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestHCatPartitioned.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.TrivialExecService.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.ZKUtil.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.PigHCatUtil.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.api.HCatClientHMSImpl.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.transfer.ReadEntity.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.api.HCatDatabase.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.JobStateTracker.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.TestDesc.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.lock.TestWriteLock.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestHCatHiveCompatibility.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.NotFoundException.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.transaction.thrift.StoreFamilyRevisionList.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.transfer.HCatReader.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.GroupPermissionsDesc.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.common.ErrorType.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.TestZNodeSetUp.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.schema.HCatFieldSchema.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.TempletonDelegator.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.mock.MockUriInfo.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.package-info.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.TestSnapshots.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.ExitException.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.SumNumbers.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.TypeDataCheck.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.HCatMapReduceTest.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.FileOutputCommitterContainer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestHCatNonPartitioned.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.FamilyRevision.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.HBaseHCatStorageHandler.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.TestHCatStorerMulti.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.listener.TestMsgBusConnection.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.TestThriftSerialization.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestPassProperties.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.HBaseInputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.FosterStorageHandler.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.HCatEventMessage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.api.HCatCreateDBDesc.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.RevisionManagerConfiguration.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.InputJobInfo.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.json.JSONDropPartitionMessage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.HCatBaseOutputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.ExecService.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.DefaultOutputFormatContainer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.common.TestHCatUtil.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.TestLazyHCatRecord.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.ZKBasedRevisionManager.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.HCatTypeCheck.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.transaction.thrift.StoreFamilyRevision.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.JsonBuilder.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.DeleteDelegator.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.JarDelegator.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.TestHCatRecordSerDe.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.HcatException.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.TestDefaultHCatRecord.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.HBaseReadWrite.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.TempletonStorage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.TestTrivialExecService.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.TestHCatLoader.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.fileformats.TestOrcDynamicPartitioned.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.TablePropertyDesc.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.TestTempletonUtils.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.cli.SemanticAnalysis.HCatSemanticAnalyzerBase.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.jms.MessagingUtils.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.StorerInfo.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.HCatBaseLoader.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.OutputCommitterContainer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.HCatStorerWrapper.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.CompleteBean.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.json.JSONMessageFactory.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.common.HCatContext.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.mock.MockServer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.TestHBaseDirectOutputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.transfer.HCatWriter.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.ZooKeeperCleanup.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.HCatTypeCheckHive.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.CompleteDelegator.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.StoreComplex.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.AddPartitionMessage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.ReadWrite.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestHCatExternalHCatNonPartitioned.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.api.HCatClient.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.HCatLoader.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestSequenceFileReadWrite.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.UgiFactory.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.MiniCluster.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.HBaseConstants.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.IDGenClient.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.SecureProxySupport.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.TableSnapshot.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.NoExitSecurityManager.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestHCatHiveThriftCompatibility.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.WriteText.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.ExecBean.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.api.ConnectionFailureException.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.cli.DummyStorageHandler.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.OutputFormatContainer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.TestRevisionManager.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.SimpleRead.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.Main.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.json.JSONCreateTableMessage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.HBaseBulkOutputFormat.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.security.TestHdfsAuthorizationProvider.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.SkeletonHBaseTest.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.DefaultRecordWriterContainer.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.ReadRC.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.utils.ReadJson.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestHCatExternalPartitioned.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.DefaultHCatRecord.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.NullRecordReader.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.json.JSONCreateDatabaseMessage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.StatusDelegator.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.RevisionManagerFactory.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.InternalUtil.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.lock.TestZNodeName.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.data.TestJsonSerDe.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.templeton.tool.ZooKeeperStorage.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.hbase.snapshot.lock.WriteLock.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.TestHCatPartitionPublish.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.mapreduce.InitializeInput.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.common.HCatConstants.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.pig.TestE2EScenarios.java</file>
+			
+			
+			<file type="D">org.apache.hcatalog.messaging.json.JSONDropTableMessage.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">4895</link>
+			
+			
+			<link description="is related to" type="Reference">4869</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-06 01:10:52" id="5228" opendate="2013-09-05 18:37:15" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>exceptions regarding NonExistentDatabaseUsedForHealthCheck are extremely annoying</summary>
+			
+			
+			<description>There are bunch of exceptions in the logs of many tests, with long call stacks, regarding NonExistentDatabaseUsedForHealthCheck. This is coming from CacheableHiveMetaStoreClient. Perhaps it could do something better for health check, like remember last database that was used and use that instead. I am not familiar with the code so I would assume this health check is actually useful.</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.common.HiveClientCache.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5225</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-10 17:03:41" id="5056" opendate="2013-08-11 13:25:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MapJoinProcessor ignores order of values in removing RS</summary>
+			
+			
+			<description>http://www.mail-archive.com/user@hive.apache.org/msg09073.html</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.MapJoinProcessor.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">5256</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-10 17:09:01" id="5256" opendate="2013-09-10 12:50:26" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>A map join operator may have in-consistent output row schema with the common join operator which it will replace</summary>
+			
+			
+			<description>When generating a common join operator, Semantic Analyzer gets the input RowResolver of each parent operators. It then uses the following piece of code to interate the tables from the RowResolver (refer to genJoinOperatorChildren()):
+        RowResolver inputRS = opParseCtx.get(input).getRowResolver();
+        Iterator&amp;lt;String&amp;gt; keysIter = inputRS.getTableNames().iterator();
+		...
+        while (keysIter.hasNext()) {
+          String key = keysIter.next();
+Note that the interation order is not deterministic because of the current RowResolver implementation:
+  private  HashMap&amp;lt;String, LinkedHashMap&amp;lt;String, ColumnInfo&amp;gt;&amp;gt; rslvMap;
+  ...
+  public Set&amp;lt;String&amp;gt; getTableNames() 
+{
+
+    return rslvMap.keySet();
+
+  }
+
+Generally, the interation order has no problem. However, it may be problematic when a common join operator is being converted to a map join operator.
+MapJoinProcessor.convertMapJoin():
+      RowResolver inputRS = opParseCtxMap.get(newParentOps.get(pos)).getRowResolver();
+      List&amp;lt;ExprNodeDesc&amp;gt; values = new ArrayList&amp;lt;ExprNodeDesc&amp;gt;();
+      Iterator&amp;lt;String&amp;gt; keysIter = inputRS.getTableNames().iterator();
+      while (keysIter.hasNext()) {
+The problem is that the table iteration order for a input RowResolver may be different from that in the generation of the common join operator, which result in an in-consistent output row schema. Thus wrong row schema may be input to child operators and will cause problems.
+I found this issue when running a TPC-DS query. And this issue happens to be exposed due to HIVE-4078.
+The proposed fix is to change RowResolver to define rslvMap as LinkedHashMap instead of HashMap. Thus the table iteration order of a RowResolver is fixed.</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.MapJoinProcessor.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5056</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-10 19:23:27" id="4619" opendate="2013-05-28 07:54:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive 0.11.0 is not working with pre-cdh3u6 and hadoop-0.23</summary>
+			
+			
+			<description>path uris in input split are missing scheme (it&amp;amp;apos;s fixed on cdh3u6 and hadoop 1.0)
+
+2013-05-28 14:34:28,857 INFO org.apache.hadoop.hive.ql.exec.MapOperator: Adding alias data_type to work list for file hdfs://qa14:9000/user/hive/warehouse/data_type
+
+2013-05-28 14:34:28,858 ERROR org.apache.hadoop.hive.ql.exec.MapOperator: Configuration does not have any alias for path: /user/hive/warehouse/data_type/000000_0
+
+2013-05-28 14:34:28,875 INFO org.apache.hadoop.mapred.TaskLogsTruncater: Initializing logs&amp;amp;apos; truncater with mapRetainSize=-1 and reduceRetainSize=-1
+
+2013-05-28 14:34:28,877 WARN org.apache.hadoop.mapred.Child: Error running child
+
+java.lang.RuntimeException: Error in configuring object
+
+        at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:93)
+
+        at org.apache.hadoop.util.ReflectionUtils.setConf(ReflectionUtils.java:64)
+
+        at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:117)
+
+        at org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:387)
+
+        at org.apache.hadoop.mapred.MapTask.run(MapTask.java:325)
+
+        at org.apache.hadoop.mapred.Child$4.run(Child.java:266)
+
+        at java.security.AccessController.doPrivileged(Native Method)
+
+        at javax.security.auth.Subject.doAs(Subject.java:396)
+
+        at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1278)
+
+        at org.apache.hadoop.mapred.Child.main(Child.java:260)
+
+Caused by: java.lang.reflect.InvocationTargetException
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+
+        at java.lang.reflect.Method.invoke(Method.java:597)
+
+        at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:88)
+
+        ... 9 more
+
+Caused by: java.lang.RuntimeException: Error in configuring object
+
+        at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:93)
+
+        at org.apache.hadoop.util.ReflectionUtils.setConf(ReflectionUtils.java:64)
+
+        at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:117)
+
+        at org.apache.hadoop.mapred.MapRunner.configure(MapRunner.java:34)
+
+        ... 14 more
+
+Caused by: java.lang.reflect.InvocationTargetException
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+
+        at java.lang.reflect.Method.invoke(Method.java:597)
+
+        at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:88)
+
+        ... 17 more
+
+Caused by: java.lang.RuntimeException: Map operator initialization failed
+
+        at org.apache.hadoop.hive.ql.exec.ExecMapper.configure(ExecMapper.java:121)
+
+        ... 22 more
+
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: org.apache.hadoop.hive.ql.metadata.HiveException: Configuration and input path are inconsistent
+
+        at org.apache.hadoop.hive.ql.exec.MapOperator.setChildren(MapOperator.java:522)
+
+        at org.apache.hadoop.hive.ql.exec.ExecMapper.configure(ExecMapper.java:90)
+
+        ... 22 more
+
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: Configuration and input path are inconsistent
+
+        at org.apache.hadoop.hive.ql.exec.MapOperator.setChildren(MapOperator.java:516)
+
+        ... 23 more
+
+2013-05-28 14:34:28,881 INFO org.apache.hadoop.mapred.Task: Runnning cleanup for the task
+
+
+</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.12.0, 0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapOperator.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">4633</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-11 00:50:04" id="5225" opendate="2013-09-05 16:47:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>There is no database named nonexistentdatabaseusedforhealthcheck</summary>
+			
+			
+			<description>HiveClientCache.CacheableHiveMetaStoreClient.isOpen() tries to do a health status check of the connection.  This causes the following exception to be written to the log file.  It needlessly pollutes the log file and cause alarm for customers.
+The exception itself is produced by the metastore so the client can&amp;amp;apos;t suppress it.
+Metastore should not log this since this is clearly a user error.  It should instead throw an exception to the client (or return an error some other way).
+13/09/05 12:04:38 ERROR metastore.RetryingHMSHandler: NoSuchObjectException(message:There is no database named nonexistentdatabaseusedforhealthcheck)
+	at org.apache.hadoop.hive.metastore.ObjectStore.getMDatabase(ObjectStore.java:429)
+	at org.apache.hadoop.hive.metastore.ObjectStore.getDatabase(ObjectStore.java:439)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.hadoop.hive.metastore.RetryingRawStore.invoke(RetryingRawStore.java:124)
+	at $Proxy9.getDatabase(Unknown Source)
+	at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler.get_database(HiveMetaStore.java:627)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.hadoop.hive.metastore.RetryingHMSHandler.invoke(RetryingHMSHandler.java:103)
+	at $Proxy10.get_database(Unknown Source)
+	at org.apache.hadoop.hive.metastore.HiveMetaStoreClient.getDatabase(HiveMetaStoreClient.java:810)
+	at org.apache.hive.hcatalog.common.HiveClientCache$CacheableHiveMetaStoreClient.isOpen(HiveClientCache.java:276)
+	at org.apache.hive.hcatalog.common.HiveClientCache.get(HiveClientCache.java:146)
+	at org.apache.hive.hcatalog.common.HCatUtil.getHiveClient(HCatUtil.java:544)
+	at org.apache.hive.hcatalog.mapreduce.FileOutputCommitterContainer.cancelDelegationTokens(FileOutputCommitterContainer.java:728)
+	at org.apache.hive.hcatalog.mapreduce.FileOutputCommitterContainer.commitJob(FileOutputCommitterContainer.java:228)
+	at org.apache.hive.hcatalog.mapreduce.HCatMapReduceTest.runMRCreate(HCatMapReduceTest.java:306)
+	at org.apache.hive.hcatalog.mapreduce.TestHCatDynamicPartitioned.runHCatDynamicPartitionedTable(TestHCatDynamicPartitioned.java:118)
+	at org.apache.hive.hcatalog.mapreduce.TestHCatDynamicPartitioned.testHCatDynamicPartitionedTable(TestHCatDynamicPartitioned.java:104)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:45)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:42)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:28)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:30)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:263)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:68)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:47)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:231)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:60)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:50)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:222)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:28)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:300)
+	at junit.framework.JUnit4TestAdapter.run(JUnit4TestAdapter.java:39)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:523)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.launch(JUnitTestRunner.java:1063)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:914)</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.common.HiveClientCache.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">5228</link>
+			
+			
+			<link description="is related to" type="Reference">5266</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-11 17:11:22" id="4868" opendate="2013-07-16 18:30:06" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>When reading an ORC file by an MR job, some Mappers may not be able to process data in some cases</summary>
+			
+			
+			<description>Let&amp;amp;apos;s say a stripe of an ORC file is 256 MB and we set the split size for an MR job to 64 MB. Right now, splits are created based on byte ranges. 
+Here is an example:
+
+
+
+|&amp;lt;-The start of a stripe                |&amp;lt;-The end of a stripe
+
+v                                       v
+
+|---------------------------------------|
+
+   ^                        ^ 
+
+   |&amp;lt;- The start of a split |&amp;lt;- The end of a split
+
+
+
+So, for some Mappers, it is possible that there is no start of a stripe within the byte range of a split. Those Mappers will process 0 record. We can improve how splits are created for ORC.
+</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.TestOrcFile.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop23Shims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop20Shims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.TestInputOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.ReaderImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.StripeInformation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop20SShims.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5102</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-12 12:09:14" id="5102" opendate="2013-08-15 21:45:59" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ORC getSplits should create splits based the stripes </summary>
+			
+			
+			<description>Currently ORC inherits getSplits from FileFormat, which basically makes a split per an HDFS block. This can create too little parallelism and would be better done by having getSplits look at the file footer and create splits based on the stripes.</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.TestOrcFile.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop23Shims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop20Shims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.TestInputOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.ReaderImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.StripeInformation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop20SShims.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">4868</link>
+			
+			
+			<link description="relates to" type="Reference">6016</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-13 09:25:50" id="5237" opendate="2013-09-06 14:34:09" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Incorrect group-by aggregation in 0.11.0</summary>
+			
+			
+			<description>
+group by with sub queries does not correctly aggregate results in Hive 0.11.0.
+To reproduce:
+Put the file
+
+
+
+1,b
+
+2,c
+
+2,b
+
+3,a
+
+3,c
+
+4,a
+
+
+
+in HDFS, and run
+
+
+
+create external table abc (x int, y string) row format delimited fields terminated by &amp;amp;apos;,&amp;amp;apos; location &amp;amp;apos;/data/&amp;amp;apos;;
+
+
+
+The query
+
+
+
+select
+
+        x,
+
+        count(*)
+
+from
+
+(select
+
+        x,
+
+        y
+
+from
+
+        abc
+
+group by
+
+      x,
+
+      y
+
+) a
+
+group by
+
+        x;
+
+
+
+will then give the result
+
+
+
+2	1
+
+3	1
+
+2	1
+
+4	1
+
+3	1
+
+1	1
+
+
+
+instead of the correct
+
+
+
+1	1
+
+2	2
+
+3	2
+
+4	1
+
+
+
+In 0.9.0 and 0.10.0 this is all working correctly.</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.correlation.ReduceSinkDeDuplication.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5149</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-10-29 15:14:12" id="5528" opendate="2013-10-12 20:06:28" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>hive log file name in local is &quot;.log&quot;</summary>
+			
+			
+			<description>In local mode the log is getting written to /tmp/
+{user.name}/.log instead of /tmp/{user.name}
+/hive.log</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.TestExecDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.TestHiveLogging.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop23Shims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestLocationQueries.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.formatting.MetaDataPrettyFormatUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.auth.TestCustomAuthentication.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.mr.ExecDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.TestHiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.mr.MapRedTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.TestMemoryManager.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestPassProperties.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.TestMarkPartitionRemote.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Driver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.mr.MapredLocalTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.cli.TestCliDriverMethods.java</file>
+			
+			
+			<file type="M">org.apache.hcatalog.mapreduce.FileOutputCommitterContainer.java</file>
+			
+			
+			<file type="M">org.apache.hcatalog.mapreduce.TestPassProperties.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.common.LogUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestMTQueries.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.ObjectStore.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5676</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-10-29 15:25:50" id="5676" opendate="2013-10-28 21:06:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Cleanup test cases as done during mavenization</summary>
+			
+			
+			<description>A number of issues where found in HIVE-5107 and we plan on committing them directly to trunk.</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.TestExecDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.TestHiveLogging.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop23Shims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestLocationQueries.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.formatting.MetaDataPrettyFormatUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.auth.TestCustomAuthentication.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.mr.ExecDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.TestHiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.mr.MapRedTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.TestMemoryManager.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.TestPassProperties.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.TestMarkPartitionRemote.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Driver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.mr.MapredLocalTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.cli.TestCliDriverMethods.java</file>
+			
+			
+			<file type="M">org.apache.hcatalog.mapreduce.FileOutputCommitterContainer.java</file>
+			
+			
+			<file type="M">org.apache.hcatalog.mapreduce.TestPassProperties.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.common.LogUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestMTQueries.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.ObjectStore.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">5528</link>
+			
+			
+			<link description="relates to" type="Reference">5610</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-12-19 06:34:31" id="4256" opendate="2013-03-29 07:29:05" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JDBC2 HiveConnection does not use the specified database</summary>
+			
+			
+			<description>HiveConnection ignores the database specified in the connection string when configuring the connection.</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveConnection.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.TestJdbcWithMiniHS2.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">5904</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2564</link>
+			
+			
+			<link description="relates to" type="Reference">6180</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-14 18:17:31" id="4501" opendate="2013-05-06 04:23:51" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HS2 memory leak - FileSystem objects in FileSystem.CACHE</summary>
+			
+			
+			<description>org.apache.hadoop.fs.FileSystem objects are getting accumulated in FileSystem.CACHE, with HS2 in unsecure mode.
+As a workaround, it is possible to set fs.hdfs.impl.disable.cache and fs.file.impl.disable.cache to true.
+Users should not have to bother with this extra configuration. 
+As a workaround disable impersonation by setting hive.server2.enable.doAs to false.</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.HiveSessionProxy.java</file>
+			
+			
+			<file type="D">org.apache.hive.service.auth.TUGIContainingProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.SessionManager.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.HiveSession.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.HiveSessionImpl.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.auth.TSetIpAddressProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.thrift.ThriftCLIService.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6312</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">8369</link>
+			
+			
+			<link description="relates to" type="Reference">3545</link>
+			
+			
+			<link description="relates to" type="Reference">6484</link>
+			
+			
+			<link description="is related to" type="Reference">5268</link>
+			
+			
+			<link description="is related to" type="Reference">3098</link>
+			
+			
+			<link description="is related to" type="Reference">5296</link>
+			
+			
+			<link description="is related to" type="Reference">9234</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-20 22:52:54" id="6652" opendate="2014-03-13 18:09:35" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Beeline gives evasive error message for any unrecognized command line arguement</summary>
+			
+			
+			<description>For any unrecognized command line argument, Beeline emits a warning message that&amp;amp;apos;s evasive and meaningless. For instance:
+
+
+
+beeline abc
+
+abc (No such file or directory)
+
+Beeline version 0.14.0-SNAPSHOT by Apache Hive
+
+...
+
+beeline -hh
+
+-hh (No such file or directory)
+
+
+
+The error seeming suggests that Beeline accepts an argument as a file name. However, neither Beeline doc nor command line help indicates there is such an option. 
+
+
+
+beeline --help
+
+Usage: java org.apache.hive.cli.beeline.BeeLine 
+
+   -u &amp;lt;database url&amp;gt;               the JDBC URL to connect to
+
+   -n &amp;lt;username&amp;gt;                   the username to connect as
+
+   -p &amp;lt;password&amp;gt;                   the password to connect as
+
+   -d &amp;lt;driver class&amp;gt;               the driver class to use
+
+   -e &amp;lt;query&amp;gt;                      query that should be executed
+
+   -f &amp;lt;file&amp;gt;                       script file that should be executed
+
+   --hiveconf property=value       Use value for given property
+
+   --hivevar name=value            hive variable name and value
+
+                                   This is Hive specific settings in which variables
+
+                                   can be set at session level and referenced in Hive
+
+                                   commands or queries.
+
+   --color=[true/false]            control whether color is used for display
+
+   --showHeader=[true/false]       show column names in query results
+
+   --headerInterval=ROWS;          the interval between which heades are displayed
+
+   --fastConnect=[true/false]      skip building table/column list for tab-completion
+
+   --autoCommit=[true/false]       enable/disable automatic transaction commit
+
+   --verbose=[true/false]          show verbose error messages and debug info
+
+   --showWarnings=[true/false]     display connection warnings
+
+   --showNestedErrs=[true/false]   display nested errors
+
+   --numberFormat=[pattern]        format numbers using DecimalFormat pattern
+
+   --force=[true/false]            continue running script even after errors
+
+   --maxWidth=MAXWIDTH             the maximum width of the terminal
+
+   --maxColumnWidth=MAXCOLWIDTH    the maximum width to use when displaying columns
+
+   --silent=[true/false]           be more silent
+
+   --autosave=[true/false]         automatically save preferences
+
+   --outputformat=[table/vertical/csv/tsv]   format mode for result display
+
+   --isolation=LEVEL               set the transaction isolation level
+
+   --nullemptystring=[true/false]  set to true to get historic behavior of printing null as empty string
+
+   --help                          display this message
+
+
+
+Further research shows that this is a residual from SQLLine from which Beeline is derived, which allows user to specify a property file based on which SQLLine can make a DB connection.
+While this might be useful, this isn&amp;amp;apos;t documented and has caused a lot of confusions. And it&amp;amp;apos;s the root cause for quite a few problems such as those described in HIVE-5677. HIVE-6173 had the same symptom, which uncovered another problem.
+Thus, I&amp;amp;apos;d suggest we disable this option. If it&amp;amp;apos;s desirable to have this option, then we need at least corresponding documentation plus better error message.</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.beeline.BeeLine.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6176</link>
+			
+			
+			<link description="relates to" type="Reference">5677</link>
+			
+			
+			<link description="relates to" type="Reference">6173</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-08-29 21:46:19" id="5447" opendate="2013-10-04 18:48:11" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HiveServer2 should allow secure impersonation over LDAP or other non-kerberos connection</summary>
+			
+			
+			<description>Currently the impersonation on a secure hadoop cluster only works when HS2 connection itself is kerberos. This forces clients to configure kerberos which can be a deployment nightmare.
+We should allow other authentications mechanism to perform secure impersonation.</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.service.cli.CLIService.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.thrift.ThriftCLIService.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6312</link>
+			
+			
+			<link description="duplicates" type="Duplicate">7764</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6973</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-10-14 13:36:57" id="6833" opendate="2014-04-03 14:47:42" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>when output hive table query to HDFS file,users should have a separator of their own choice</summary>
+			
+			
+			<description>HIVE-3682 allows user to store output of Hive query to a local file along with delimiters and separators of their choice.
+e.g. insert overwrite local directory &amp;amp;apos;/users/home/XYZ&amp;amp;apos; row format delimited FIELDS TERMINATED BY &amp;amp;apos;,&amp;amp;apos; SELECT * from table_name;
+Storing query output with default separator(\001) to HDFS is possible.
+e.g. insert overwrite directory &amp;amp;apos;/user/xYZ/security&amp;amp;apos; SELECT * from table_name;
+But user can not store output of Hive query to a HDFS directory with delimiters and separators of their choice. 
+e.g. insert overwrite directory &amp;amp;apos;/user/xYZ/security&amp;amp;apos;  row format delimited FIELDS TERMINATED BY &amp;amp;apos;,&amp;amp;apos; SELECT * from table_name; (Gives ERROR)</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.PlanUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.QB.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5672</link>
+			
+			
+			<link description="duplicates" type="Duplicate">6410</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-11-15 17:16:46" id="4978" opendate="2013-08-01 21:01:57" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[WebHCat] Close the PrintWriter after writing data</summary>
+			
+			
+			<description>We are not closing the PrintWriter after writing data into it. I haven&amp;amp;apos;t seen any problems so far, but it is good to close the PrintWriter so that resources are released properly.</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.mapred.WebHCatJTShim20S.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.PigJobIDParser.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.mapred.WebHCatJTShim23.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.TempletonUtils.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.JarJobIDParser.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.HiveJobIDParser.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.HDFSStorage.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.TestTrivialExecService.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.TempletonControllerJob.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.tool.TrivialExecService.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.CompleteDelegator.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.AppConfig.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">4773</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">5511</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-12-15 03:54:23" id="6198" opendate="2014-01-14 20:45:59" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ORC file and struct column names are case sensitive</summary>
+			
+			
+			<description>HiveQL document states that the &quot;Table names and column names are case insensitive&quot;. But the struct behavior for ORC file is different. 
+Consider a sample text file:
+
+
+
+$ cat data.txt
+
+line1|key11:value11,key12:value12,key13:value13|a,b,c|one,two
+
+line2|key21:value21,key22:value22,key23:value23|d,e,f|three,four
+
+line3|key31:value31,key32:value32,key33:value33|g,h,i|five,six
+
+
+
+Creating a table stored as txt and then using this to create a table stored as orc 
+
+
+
+CREATE TABLE orig (
+
+  str STRING,
+
+  mp  MAP&amp;lt;STRING,STRING&amp;gt;,
+
+  lst ARRAY&amp;lt;STRING&amp;gt;,
+
+  strct STRUCT&amp;lt;A:STRING,B:STRING&amp;gt;
+
+) ROW FORMAT DELIMITED
+
+    FIELDS TERMINATED BY &amp;amp;apos;|&amp;amp;apos;
+
+    COLLECTION ITEMS TERMINATED BY &amp;amp;apos;,&amp;amp;apos;
+
+    MAP KEYS TERMINATED BY &amp;amp;apos;:&amp;amp;apos;;
+
+LOAD DATA LOCAL INPATH &amp;amp;apos;data.txt&amp;amp;apos; INTO TABLE orig;
+
+
+
+CREATE TABLE tableorc (
+
+  str STRING,
+
+  mp  MAP&amp;lt;STRING,STRING&amp;gt;,
+
+  lst ARRAY&amp;lt;STRING&amp;gt;,
+
+  strct STRUCT&amp;lt;A:STRING,B:STRING&amp;gt;
+
+) STORED AS ORC;
+
+INSERT OVERWRITE TABLE tableorc SELECT * FROM orig;
+
+
+
+Suppose we project columns or read the strct columns for both table types, here are the results. I have also tested the same with RC. The behavior is similar to txt files.
+
+
+
+hive&amp;gt; SELECT * FROM orig;
+
+line1   {&quot;key11&quot;:&quot;value11&quot;,&quot;key12&quot;:&quot;value12&quot;,&quot;key13&quot;:&quot;value13&quot;} [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]  
+
+{&quot;a&quot;:&quot;one&quot;,&quot;b&quot;:&quot;two&quot;}
+
+line2   {&quot;key21&quot;:&quot;value21&quot;,&quot;key22&quot;:&quot;value22&quot;,&quot;key23&quot;:&quot;value23&quot;} [&quot;d&quot;,&quot;e&quot;,&quot;f&quot;]  
+
+{&quot;a&quot;:&quot;three&quot;,&quot;b&quot;:&quot;four&quot;}
+
+line3   {&quot;key31&quot;:&quot;value31&quot;,&quot;key32&quot;:&quot;value32&quot;,&quot;key33&quot;:&quot;value33&quot;} [&quot;g&quot;,&quot;h&quot;,&quot;i&quot;]  
+
+{&quot;a&quot;:&quot;five&quot;,&quot;b&quot;:&quot;six&quot;}
+
+Time taken: 0.126 seconds, Fetched: 3 row(s)
+
+
+
+hive&amp;gt; SELECT * FROM tableorc;
+
+line1   {&quot;key12&quot;:&quot;value12&quot;,&quot;key11&quot;:&quot;value11&quot;,&quot;key13&quot;:&quot;value13&quot;} [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]  
+
+{&quot;A&quot;:&quot;one&quot;,&quot;B&quot;:&quot;two&quot;}
+
+line2   {&quot;key21&quot;:&quot;value21&quot;,&quot;key23&quot;:&quot;value23&quot;,&quot;key22&quot;:&quot;value22&quot;} [&quot;d&quot;,&quot;e&quot;,&quot;f&quot;]  
+
+{&quot;A&quot;:&quot;three&quot;,&quot;B&quot;:&quot;four&quot;}
+
+line3   {&quot;key33&quot;:&quot;value33&quot;,&quot;key31&quot;:&quot;value31&quot;,&quot;key32&quot;:&quot;value32&quot;} [&quot;g&quot;,&quot;h&quot;,&quot;i&quot;]  
+
+{&quot;A&quot;:&quot;five&quot;,&quot;B&quot;:&quot;six&quot;}
+
+Time taken: 0.178 seconds, Fetched: 3 row(s)
+
+
+
+hive&amp;gt; SELECT strct FROM tableorc;
+
+{&quot;a&quot;:&quot;one&quot;,&quot;b&quot;:&quot;two&quot;}
+
+{&quot;a&quot;:&quot;three&quot;,&quot;b&quot;:&quot;four&quot;}
+
+{&quot;a&quot;:&quot;five&quot;,&quot;b&quot;:&quot;six&quot;}
+
+
+
+hive&amp;gt;SELECT strct.A FROM orig;
+
+one
+
+three
+
+five
+
+
+
+hive&amp;gt;SELECT strct.a FROM orig;
+
+one
+
+three
+
+five
+
+
+
+hive&amp;gt;SELECT strct.A FROM tableorc;
+
+one
+
+three
+
+five
+
+
+
+hive&amp;gt;SELECT strct.a FROM tableorc;
+
+FAILED: Execution Error, return code 2 from
+
+org.apache.hadoop.hive.ql.exec.mr.MapRedTask
+
+MapReduce Jobs Launched: 
+
+Job 0: Map: 1   HDFS Read: 0 HDFS Write: 0 FAIL
+
+
+
+So it seems that ORC behaves differently for struct columns. Also why are we storing the column names for struct for the other types as CASE SENSITIVE? What is the standard for Hive QL with respect to structs?
+Regards
+Viraj
+</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcStruct.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">8870</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-08-21 18:22:13" id="5277" opendate="2013-09-12 02:15:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HBase handler skips rows with null valued first cells when only row key is selected</summary>
+			
+			
+			<description>HBaseStorageHandler skips rows with null valued first cells when only row key is selected.
+
+SELECT key, col1, col2 FROM hbase_table;
+
+key1	cell1	cell2 
+
+key2	NULL	cell3
+
+
+
+SELECT COUNT(key) FROM hbase_table;
+
+1
+
+
+
+HiveHBaseTableInputFormat.getRecordReader makes first cell selected to avoid skipping rows. But when the first cell is null, HBase skips that row.
+http://hbase.apache.org/book/perf.reading.html 12.9.6. Optimal Loading of Row Keys describes how to deal with this problem.
+I tried to find an existing issue, but I couldn&amp;amp;apos;t. If you find a same issue, please make this issue duplicated.</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HiveHBaseInputFormatUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">7566</link>
+			
+			
+			<link description="relates to" type="Reference">11849</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-01 22:00:56" id="4046" opendate="2013-02-20 22:34:02" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Column masking</summary>
+			
+			
+			<description>Sometimes data in a table needs to be kept around but made inaccessible. Right now it is possible to offline a table or a partition, but not a specific column of a partition. Also, accessing an offlined table results in an error. With this change, it will be possible to mask a column at the partition level, causing all further queries to that column to return null.</description>
+			
+			
+			<version>0.11.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.HiveV1Authorizer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.SQLStdHiveAuthorizationValidator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthorizationValidator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthorizer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.SQLStdHiveAuthorizationValidatorForTest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAuthorizerImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.DummyHiveAuthorizationValidator.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">13125</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

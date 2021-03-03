@@ -1,0 +1,1 @@
+crossport hadoop ipc fix fix hadoop ipc cross port copi hadoop 7227 remov protocol version check call time hadoop 7146 fix socket leak server hadoop 7121 fix behavior respons serial throw hadoop 7346 send back nicer error respons client date ipc version

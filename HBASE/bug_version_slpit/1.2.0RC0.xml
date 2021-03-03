@@ -1,0 +1,3910 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HBASE">
+	<bug fixdate="2015-05-27 17:46:41" id="13767" opendate="2015-05-25 16:42:49" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Allow ZKAclReset to set and not just clear ZK ACLs</summary>
+			
+			
+			<description>The ZKAclReset tool allows to clear ZK ACLs, which is useful if you are migrating from a secure to unsecure cluster setup.
+If you want to make sure that your znode ACLs are correct, a -set-acls option, which allows to enforce the proper ACLs on the znodes in a secure setup, can be useful too.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.13, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.zookeeper.ZKUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.zookeeper.ZkAclReset.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-30 03:51:49" id="13813" opendate="2015-05-30 00:44:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix Javadoc warnings in Procedure.java</summary>
+			
+			
+			<description>[WARNING] Javadoc Warnings
+[WARNING] /home/jenkins/jenkins-slave/workspace/PreCommit-HBASE-Build/hbase-procedure/src/main/java/org/apache/hadoop/hbase/procedure2/Procedure.java:90: warning - @throw is an unknown tag.
+[WARNING] /home/jenkins/jenkins-slave/workspace/PreCommit-HBASE-Build/hbase-procedure/src/main/java/org/apache/hadoop/hbase/procedure2/Procedure.java:90: warning - @throw is an unknown tag.
+[WARNING] /home/jenkins/jenkins-slave/workspace/PreCommit-HBASE-Build/hbase-procedure/src/main/java/org/apache/hadoop/hbase/procedure2/Procedure.java:104: warning - @throw is an unknown tag.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.Procedure.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-02 01:12:07" id="13895" opendate="2015-06-12 21:37:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DATALOSS: Region assigned before WAL replay when abort</summary>
+			
+			
+			<description>Opening a place holder till finish analysis.
+I have dataloss running ITBLL at 3B (testing HBASE-13877). Most obvious culprit is the double-assignment that I can see.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.test.IntegrationTestBigLinkedList.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.AssignmentManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestWALPlayer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.RSRpcServices.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.test.IntegrationTestLoadAndVerify.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.RegionServerStoppedException.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.TestAssignmentManagerOnCluster.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.WALPlayer.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hbase.regionserver.RegionServerAbortedException.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-06 15:04:45" id="14012" opendate="2015-07-02 20:06:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Double Assignment and Dataloss when ServerCrashProcedure runs during Master failover</summary>
+			
+			
+			<description>(Rewrite to be more explicit about what the problem is)
+ITBLL. Master comes up (It is being killed every 1-5 minutes or so). It is joining a running cluster (all servers up except Master with most regions assigned out on cluster). ProcedureStore has two ServerCrashProcedures unfinished (RUNNABLE state) for two separate servers. One SCP is in the middle of the assign step when master crashes (SERVER_CRASH_ASSIGN). This SCP step has this comment on it:
+
+
+
+        // Assign may not be idempotent. SSH used to requeue the SSH if we got an IOE assigning
+
+        // which is what we are mimicing here but it looks prone to double assignment if assign
+
+        // fails midway. TODO: Test.
+
+
+
+This issue is 1.2+ only since it is ServerCrashProcedure (Added in HBASE-13616, post hbase-1.1.x).
+Looking at ServerShutdownHandler, how we used to do crash processing before we moved over to the Pv2 framework, SSH may have (accidentally) avoided this issue since it does its processing in a big blob starting over if killed mid-crash. In particular, post-crash, SSH scans hbase:meta to find servers that were on the downed server. SCP scanneds Meta in one step, saves off the regions it finds into the ProcedureStore, and then in the next step, does actual assign. In this case, we crashed post-meta scan and during assign. Assign is a bulk assign. It mostly succeeded but got this:
+
+
+
+ 809622 2015-06-09 20:05:28,576 INFO  [ProcedureExecutorThread-9] master.GeneralBulkAssigner: Failed assigning 3 regions to server c2021.halxg.cloudera.com,16020,1433905510696, reassigning them
+
+
+
+So, most regions actually made it to new locations except for a few stragglers. All of the successfully assigned regions then are reassigned on other side of master restart when we replay the SCP assign step.
+Let me put together the scan meta and assign steps in SCP; this should do until we redo all of assign to run on Pv2.
+A few other things I noticed:
+In SCP, we only check if failover in first step, not for every step, which means ServerCrashProcedure will run if on reload it is beyond the first step.
+
+
+
+    // Is master fully online? If not, yield. No processing of servers unless master is up
+
+    if (!services.getAssignmentManager().isFailoverCleanupDone()) {
+
+      throwProcedureYieldException(&quot;Waiting on master failover to complete&quot;);
+
+    }
+
+
+
+This means we are assigning while Master is still coming up, a no-no (though it does not seem to have caused problem here). Fix.
+Also, I see that over the 8 hours of this particular log, each time the master crashes and comes back up, we queue a ServerCrashProcedure for c2022 because an empty dir never gets cleaned up:
+
+
+
+ 39 2015-06-09 22:15:33,074 WARN  [ProcedureExecutorThread-0] master.SplitLogManager: returning success without actually splitting and deleting all the log files in path hdfs://c2020.halxg.cloudera.com:8020/hbase/WALs/c2022.halxg.cloudera.com,16020,1433902151857-splitting
+
+
+
+Fix this too.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.procedure.ServerCrashProcedure.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.SplitLogManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.ProcedureExecutor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.MasterProcedureProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.RegionStateStore.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-15 18:22:10" id="14077" opendate="2015-07-14 20:24:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Add package to hbase-protocol protobuf files.</summary>
+			
+			
+			<description>c++ generated code is currently in the default namespace. That&amp;amp;apos;s bad practice; so lets fix it</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.ClientProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.coprocessor.example.generated.BulkDeleteProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.MapReduceProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.AdminProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.TracingProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.LoadBalancerProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.RPCProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.AccessControlProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.MasterProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.RowProcessorProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.FilterProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.AggregateProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.ProcedureProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.AuthenticationProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.ClusterStatusProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.CellProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.ClusterIdProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.ErrorHandlingProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.coprocessor.example.generated.ExampleProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.FSProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.RegionServerStatusProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.HBaseProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.SecureBulkLoadProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.MasterProcedureProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.HFileProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.EncryptionProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.VisibilityLabelsProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.WALProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.QuotaProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.MultiRowMutationProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.ZooKeeperProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.ComparatorProtos.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-15 22:53:24" id="14094" opendate="2015-07-15 21:26:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Procedure.proto can&amp;apos;t be compiled to C++</summary>
+			
+			
+			<description>EOF is a defined symbol in c and C++.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.store.wal.ProcedureWALFormatReader.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.store.wal.ProcedureWALFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.ProcedureProtos.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-17 16:27:13" id="14076" opendate="2015-07-14 18:39:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ResultSerialization and MutationSerialization can throw InvalidProtocolBufferException when serializing a cell larger than 64MB</summary>
+			
+			
+			<description>This was reported in CRUNCH-534 but is a problem how we handle deserialization of large Cells (&amp;gt; 64MB) in ResultSerialization and MutationSerialization.
+The fix is just re-using what it was done in HBASE-13230.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, hbase-11339</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.MutationSerialization.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.ResultSerialization.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">534</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-17 17:42:29" id="14106" opendate="2015-07-16 17:13:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestProcedureRecovery is flaky</summary>
+			
+			
+			<description>Encountered this when running master tests locally using 7u79:
+
+Tests run: 8, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 12.28 sec &amp;lt;&amp;lt;&amp;lt; FAILURE! - in org.apache.hadoop.hbase.procedure2.TestProcedureRecovery
+
+testRunningProcWithSameNonce(org.apache.hadoop.hbase.procedure2.TestProcedureRecovery)  Time elapsed: 0.318 sec  &amp;lt;&amp;lt;&amp;lt; ERROR!
+
+java.lang.IllegalArgumentException: null
+
+	at com.google.common.base.Preconditions.checkArgument(Preconditions.java:76)
+
+	at org.apache.hadoop.hbase.procedure2.ProcedureExecutor.submitProcedure(ProcedureExecutor.java:595)
+
+	at org.apache.hadoop.hbase.procedure2.ProcedureTestingUtility.submitAndWait(ProcedureTestingUtility.java:137)
+
+	at org.apache.hadoop.hbase.procedure2.TestProcedureRecovery.testRunningProcWithSameNonce(TestProcedureRecovery.java:321)
+
+
+
+
+Flaked tests: 
+
+org.apache.hadoop.hbase.procedure2.TestProcedureRecovery.testRunningProcWithSameNonce(org.apache.hadoop.hbase.procedure2.TestProcedureRecovery)
+
+  Run 1: TestProcedureRecovery.testRunningProcWithSameNonce:321  IllegalArgument
+
+  Run 2: PASS
+
+
+</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.TestProcedureRecovery.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-22 13:01:42" id="14115" opendate="2015-07-17 07:52:25" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix resource leak in HMasterCommandLine</summary>
+			
+			
+			<description>In HMasterCommandLine#stopMaster(), admin is not closed.
+HMasterCommandLine.java
+
+
+try (Connection connection = ConnectionFactory.createConnection(conf)) {
+
+      try (Admin admin = connection.getAdmin()) {
+
+        connection.getAdmin().shutdown();
+
+      } catch (Throwable t) {
+
+        LOG.error(&quot;Failed to stop master&quot;, t);
+
+        return 1;
+
+      }
+
+    }
+
+
+</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMasterCommandLine.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-23 23:13:06" id="14146" opendate="2015-07-22 21:26:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Once replication sees an error it slows down forever</summary>
+			
+			
+			<description>sleepMultiplier inside of HBaseInterClusterReplicationEndpoint and ReplicationSource never gets reset to zero.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.14, 1.0.2, 1.2.0, 1.1.2, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.ReplicationSource.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-09-09 19:44:01" id="14384" opendate="2015-09-09 01:01:23" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Trying to run canary locally with -regionserver option causes exception</summary>
+			
+			
+			<description>Tried to run canary locally (on branch master) with command: 
+bin/hbase org.apache.hadoop.hbase.tool.Canary -regionserver
+Exception was thrown:
+Exception in thread &quot;main&quot; java.lang.ClassCastException: org.apache.hadoop.hbase.tool.Canary$StdOutSink cannot be cast to org.apache.hadoop.hbase.tool.Canary$ExtendedSink
+	at org.apache.hadoop.hbase.tool.Canary.newMonitor(Canary.java:640)
+	at org.apache.hadoop.hbase.tool.Canary.run(Canary.java:551)
+	at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:70)
+	at org.apache.hadoop.hbase.tool.Canary.main(Canary.java:1127)</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.tool.Canary.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-09-11 19:08:54" id="6617" opendate="2012-08-20 17:40:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ReplicationSourceManager should be able to track multiple WAL paths</summary>
+			
+			
+			<description>Currently ReplicationSourceManager uses logRolled() to receive notification about new HLog and remembers it in latestPath.
+When region server has multiple WAL support, we need to keep track of multiple Path&amp;amp;apos;s in ReplicationSourceManager</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.TestReplicationEndpoint.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.MetricsSource.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.LogRoller.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.ReplicationSourceManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.ReplicationEndpoint.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.wal.DefaultWALProvider.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.HBaseInterClusterReplicationEndpoint.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.TestRegionReplicaReplicationEndpointNoMaster.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.TestReplicationWALReaderManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.TestReplicationSourceManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.ReplicationSource.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.wal.WALFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="Is contained by" type="Container">14457</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">14699</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-09-29 20:55:02" id="14473" opendate="2015-09-23 18:57:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Compute region locality in parallel</summary>
+			
+			
+			<description>Right now on large clusters it&amp;amp;apos;s necessary to turn off the locality balance cost as it takes too long to compute the region locality. This is because it&amp;amp;apos;s computed when need in serial.
+We should compute this in parallel before it&amp;amp;apos;s needed.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.balancer.RegionLocationFinder.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">16570</link>
+			
+			
+			<link description="is related to" type="Reference">16393</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-03 20:36:13" id="14545" opendate="2015-10-02 22:27:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestMasterFailover often times out</summary>
+			
+			
+			<description>Tests run: 7, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 301.644 sec &amp;lt;&amp;lt;&amp;lt; FAILURE! - in org.apache.hadoop.hbase.master.TestMasterFailover
+testMasterFailoverWithMockedRIT(org.apache.hadoop.hbase.master.TestMasterFailover)  Time elapsed: 240.112 sec  &amp;lt;&amp;lt;&amp;lt; ERROR!
+org.junit.runners.model.TestTimedOutException: test timed out after 240000 milliseconds
+	at java.lang.Thread.sleep(Native Method)
+	at org.apache.hadoop.hbase.util.Threads.sleep(Threads.java:146)
+	at org.apache.hadoop.hbase.MiniHBaseCluster.waitForActiveAndReadyMaster(MiniHBaseCluster.java:535)
+	at org.apache.hadoop.hbase.HBaseCluster.waitForActiveAndReadyMaster(HBaseCluster.java:280)
+	at org.apache.hadoop.hbase.master.TestMasterFailover.testMasterFailoverWithMockedRIT(TestMasterFailover.java:400)
+Results :
+Tests in error:
+  TestMasterFailover.testMasterFailoverWithMockedRIT:400  TestTimedOut test tim...
+Tests run: 7, Failures: 0, Errors: 1, Skipped: 0</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 1.0.3, 1.1.3, 0.98.16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.RegionStates.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.LocalHBaseCluster.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-06 00:51:06" id="14555" opendate="2015-10-06 00:10:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Deadlock in MVCC branch-1.2 toString()</summary>
+			
+			
+			<description>Just saw this in an IT test.
+
+
+
+Thread 75 (PriorityRpcServer.handler=3,queue=1,port=16020):
+
+  State: BLOCKED
+
+  Blocked count: 691635
+
+  Waited count: 1557446
+
+  Blocked on java.util.LinkedList@32b53d9e
+
+  Blocked by 81 (PriorityRpcServer.handler=9,queue=1,port=16020)
+
+  Stack:
+
+    org.apache.hadoop.hbase.regionserver.MultiVersionConcurrencyControl.toString(MultiVersionConcurrencyControl.java:234)
+
+    java.lang.String.valueOf(String.java:2994)
+
+    java.lang.StringBuilder.append(StringBuilder.java:131)
+
+    org.apache.hadoop.hbase.regionserver.MultiVersionConcurrencyControl.waitForRead(MultiVersionConcurrencyControl.java:209)
+
+    org.apache.hadoop.hbase.regionserver.MultiVersionConcurrencyControl.completeAndWait(MultiVersionConcurrencyControl.java:144)
+
+    org.apache.hadoop.hbase.regionserver.HRegion.doMiniBatchMutation(HRegion.java:3191)
+
+    org.apache.hadoop.hbase.regionserver.HRegion.batchMutate(HRegion.java:2837)
+
+    org.apache.hadoop.hbase.regionserver.HRegion.batchMutate(HRegion.java:2779)
+
+    org.apache.hadoop.hbase.regionserver.RSRpcServices.doBatchOp(RSRpcServices.java:697)
+
+    org.apache.hadoop.hbase.regionserver.RSRpcServices.doNonAtomicRegionMutation(RSRpcServices.java:659)
+
+    org.apache.hadoop.hbase.regionserver.RSRpcServices.multi(RSRpcServices.java:2047)
+
+    org.apache.hadoop.hbase.protobuf.generated.ClientProtos$ClientService$2.callBlockingMethod(ClientProtos.java:32594)
+
+    org.apache.hadoop.hbase.ipc.RpcServer.call(RpcServer.java:2120)
+
+    org.apache.hadoop.hbase.ipc.CallRunner.run(CallRunner.java:106)
+
+    org.apache.hadoop.hbase.ipc.RpcExecutor.consumerLoop(RpcExecutor.java:130)
+
+    org.apache.hadoop.hbase.ipc.RpcExecutor$1.run(RpcExecutor.java:107)
+
+    java.lang.Thread.run(Thread.java:745)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Thread 81 (PriorityRpcServer.handler=9,queue=1,port=16020):
+
+  State: BLOCKED
+
+  Blocked count: 691858
+
+  Waited count: 1558138
+
+  Blocked on java.lang.Object@2a5e9ae8
+
+  Blocked by 75 (PriorityRpcServer.handler=3,queue=1,port=16020)
+
+  Stack:
+
+    org.apache.hadoop.hbase.regionserver.MultiVersionConcurrencyControl.complete(MultiVersionConcurrencyControl.java:191)
+
+    org.apache.hadoop.hbase.regionserver.MultiVersionConcurrencyControl.completeAndWait(MultiVersionConcurrencyControl.java:143)
+
+    org.apache.hadoop.hbase.regionserver.HRegion.doMiniBatchMutation(HRegion.java:3191)
+
+    org.apache.hadoop.hbase.regionserver.HRegion.batchMutate(HRegion.java:2837)
+
+    org.apache.hadoop.hbase.regionserver.HRegion.batchMutate(HRegion.java:2779)
+
+    org.apache.hadoop.hbase.regionserver.RSRpcServices.doBatchOp(RSRpcServices.java:697)
+
+    org.apache.hadoop.hbase.regionserver.RSRpcServices.doNonAtomicRegionMutation(RSRpcServices.java:659)
+
+    org.apache.hadoop.hbase.regionserver.RSRpcServices.multi(RSRpcServices.java:2047)
+
+    org.apache.hadoop.hbase.protobuf.generated.ClientProtos$ClientService$2.callBlockingMethod(ClientProtos.java:32594)
+
+    org.apache.hadoop.hbase.ipc.RpcServer.call(RpcServer.java:2120)
+
+    org.apache.hadoop.hbase.ipc.CallRunner.run(CallRunner.java:106)
+
+    org.apache.hadoop.hbase.ipc.RpcExecutor.consumerLoop(RpcExecutor.java:130)
+
+    org.apache.hadoop.hbase.ipc.RpcExecutor$1.run(RpcExecutor.java:107)
+
+    java.lang.Thread.run(Thread.java:745)
+
+Thread 80 (PriorityRpcServer.handler=8,queue=0,port=16020):
+
+
+
+
+</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.MultiVersionConcurrencyControl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-13 00:08:03" id="14211" opendate="2015-08-11 20:37:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Add more rigorous integration tests of splits</summary>
+			
+			
+			<description>Add a chaos action that will turn down region size.
+
+Eventually this will cause regions to split a lot.
+It will need to have a min region size.
+
+Add a chaos monkey action that will change split policy
+
+Change between Uniform and SplittingUpTo and back
+
+Add chaos monkey action that will request splits of every region.
+
+When regions all reach the size a the exact same time the compactions add a lot of work.
+This simulates a very well distributed write pattern reaching the region size.
+
+Add the ability to start with fewer regions than normal to ITBLL</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.factories.StressAssignmentManagerMonkeyFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.factories.SlowDeterministicMonkeyFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.factories.MonkeyConstants.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HBaseTestingUtility.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.test.IntegrationTestBigLinkedList.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.balancer.StochasticLoadBalancer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-16 22:21:22" id="14597" opendate="2015-10-13 15:28:09" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix Groups cache in multi-threaded env</summary>
+			
+			
+			<description>UGI doesn&amp;amp;apos;t hash based on the user as expected so since we have lots of ugi potentially created the cache doesn&amp;amp;apos;t do it&amp;amp;apos;s job.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 0.98.17</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.UserProvider.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.TestUser.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.User.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-16 22:25:16" id="14625" opendate="2015-10-15 23:11:38" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Chaos Monkey should shut down faster</summary>
+			
+			
+			<description>Right now we have a couple of tests clusters that are just cycling through IT tests. There&amp;amp;apos;s a pretty sizable gap between the last MR job stopping and the next one starting. It&amp;amp;apos;s almost always waiting on an action to finish.
+
+
+
+&quot;main&quot; #1 prio=5 os_prio=0 tid=0x00007f455000d800 nid=0x2a2773 in Object.wait() [0x00007f4556e42000]
+
+   java.lang.Thread.State: WAITING (on object monitor)
+
+	at java.lang.Object.wait(Native Method)
+
+	at java.lang.Thread.join(Thread.java:1245)
+
+	- locked &amp;lt;0x00000003ef054138&amp;gt; (a java.lang.Thread)
+
+	at java.lang.Thread.join(Thread.java:1319)
+
+	at org.apache.hadoop.hbase.chaos.monkies.PolicyBasedChaosMonkey.waitForStop(PolicyBasedChaosMonkey.java:149)
+
+	at org.apache.hadoop.hbase.IntegrationTestBase.cleanUpMonkey(IntegrationTestBase.java:173)
+
+	at org.apache.hadoop.hbase.IntegrationTestBase.cleanUpMonkey(IntegrationTestBase.java:167)
+
+	at org.apache.hadoop.hbase.IntegrationTestBase.cleanUp(IntegrationTestBase.java:139)
+
+	at org.apache.hadoop.hbase.IntegrationTestBase.doWork(IntegrationTestBase.java:125)
+
+	at org.apache.hadoop.hbase.util.AbstractHBaseTool.run(AbstractHBaseTool.java:112)
+
+	at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:70)
+
+	at org.apache.hadoop.hbase.test.IntegrationTestBigLinkedList.main(IntegrationTestBigLinkedList.java:1686)
+
+
+</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.ForceBalancerAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.SnapshotTableAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.MergeRandomAdjacentRegionsOfTableAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.ChangeEncodingAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.FlushTableAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.Action.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.TruncateTableAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.DecreaseMaxHFileSizeAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.RollingBatchRestartRsAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.ChangeCompressionAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.ChangeVersionsAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.MoveRegionsOfTableAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.ChangeBloomFilterAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.SplitAllRegionOfTableAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.UnbalanceKillAndRebalanceAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.SplitRandomRegionOfTableAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.CompactMobAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.RestartActionBaseAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.policies.Policy.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.AddColumnAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.BatchRestartRsAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.RemoveColumnAction.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-22 15:57:12" id="14658" opendate="2015-10-21 01:21:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Allow loading a MonkeyFactory by class name</summary>
+			
+			
+			<description>Users should be able to define their own chaos monkey that is loaded by class name.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 0.98.16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.factories.MonkeyFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-27 06:55:05" id="14257" opendate="2015-08-19 16:46:46" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Periodic flusher only handles hbase:meta, not other system tables</summary>
+			
+			
+			<description>In HRegion.shouldFlush we have
+
+
+
+    long modifiedFlushCheckInterval = flushCheckInterval;
+
+    if (getRegionInfo().isMetaRegion() &amp;amp;&amp;amp;
+
+        getRegionInfo().getReplicaId() == HRegionInfo.DEFAULT_REPLICA_ID) {
+
+      modifiedFlushCheckInterval = META_CACHE_FLUSH_INTERVAL;
+
+    }
+
+
+
+That method is called by the PeriodicMemstoreFlusher thread, and prefers the hbase:meta only for faster flushing. It should be doing the same for other system tables. I suggest to use HRI.isSystemTable().</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestDefaultMemStore.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-29 06:27:54" id="14699" opendate="2015-10-26 21:11:42" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Replication crashes regionservers when hbase.wal.provider is set to multiwal</summary>
+			
+			
+			<description>When the hbase.wal.provider is set to multiwal and replication is enabled, the regionservers start crashing with the following exception:
+
+
+
+&amp;lt;hostname&amp;gt;,16020,1445495411258: Failed to write replication wal position (filename=&amp;lt;hostname&amp;gt;%2C16020%2C1445495411258.null0.1445495898373, position=1322399)
+
+org.apache.zookeeper.KeeperException$NoNodeException: KeeperErrorCode = NoNode for /hbase/replication/rs/&amp;lt;hostname&amp;gt;,16020,1445495411258/1/&amp;lt;hostname&amp;gt;%2C16020%2C1445495411258.null0.1445495898373
+
+	at org.apache.zookeeper.KeeperException.create(KeeperException.java:111)
+
+	at org.apache.zookeeper.KeeperException.create(KeeperException.java:51)
+
+	at org.apache.zookeeper.ZooKeeper.setData(ZooKeeper.java:1270)
+
+	at org.apache.hadoop.hbase.zookeeper.RecoverableZooKeeper.setData(RecoverableZooKeeper.java:429)
+
+	at org.apache.hadoop.hbase.zookeeper.ZKUtil.setData(ZKUtil.java:940)
+
+	at org.apache.hadoop.hbase.zookeeper.ZKUtil.setData(ZKUtil.java:990)
+
+	at org.apache.hadoop.hbase.zookeeper.ZKUtil.setData(ZKUtil.java:984)
+
+	at org.apache.hadoop.hbase.replication.ReplicationQueuesZKImpl.setLogPosition(ReplicationQueuesZKImpl.java:129)
+
+	at org.apache.hadoop.hbase.replication.regionserver.ReplicationSourceManager.logPositionAndCleanOldLogs(ReplicationSourceManager.java:177)
+
+	at org.apache.hadoop.hbase.replication.regionserver.ReplicationSource.run(ReplicationSource.java:388)
+
+
+</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.TestReplicationEndpoint.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.MetricsSource.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.LogRoller.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.ReplicationSourceManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.ReplicationEndpoint.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.wal.DefaultWALProvider.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.HBaseInterClusterReplicationEndpoint.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.TestRegionReplicaReplicationEndpointNoMaster.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.TestReplicationWALReaderManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.TestReplicationSourceManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.ReplicationSource.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.wal.WALFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6617</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-30 15:51:14" id="14557" opendate="2015-10-06 03:31:05" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MapReduce WALPlayer issue with NoTagsKeyValue</summary>
+			
+			
+			<description>Running MapReduce WALPlayer to convert WAL into HFiles:
+
+15/10/05 20:28:08 INFO mapred.JobClient: Task Id : attempt_201508031611_0029_m_000000_0, Status : FAILED
+
+java.io.IOException: Type mismatch in value from map: expected org.apache.hadoop.hbase.KeyValue, recieved org.apache.hadoop.hbase.NoTagsKeyValue
+
+        at org.apache.hadoop.mapred.MapTask$MapOutputBuffer.collect(MapTask.java:997)
+
+        at org.apache.hadoop.mapred.MapTask$NewOutputCollector.write(MapTask.java:689)
+
+        at org.apache.hadoop.mapreduce.task.TaskInputOutputContextImpl.write(TaskInputOutputContextImpl.java:89)
+
+        at org.apache.hadoop.mapreduce.lib.map.WrappedMapper$Context.write(WrappedMapper.java:112)
+
+        at org.apache.hadoop.hbase.mapreduce.WALPlayer$WALKeyValueMapper.map(WALPlayer.java:111)
+
+        at org.apache.hadoop.hbase.mapreduce.WALPlayer$WALKeyValueMapper.map(WALPlayer.java:96)
+
+        at org.apache.hadoop.mapreduce.Mapper.run(Mapper.java:140)
+
+        at org.apache.hadoop.mapred.MapTask.runNewMapper(MapTask.java:751)
+
+        at org.apache.hadoop.mapred.MapTask.run(MapTask.java:368)
+
+        at org.apache.hadoop.mapred.Child$4.run(Child.java:255)
+
+        at java.security.AccessController.doPrivileged(AccessController.java:369)
+
+        at javax.security.auth.Subject.doAs(Subject.java:572)
+
+        at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1502)
+
+        at org.apache.hadoop.mapred.Child.main(Child.java:249)
+
+
+</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mob.mapreduce.SweepReducer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.hfile.HFileBlockIndex.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mob.mapreduce.MemStoreWrapper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.KeyValueUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-03 01:12:58" id="14742" opendate="2015-11-02 17:05:17" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestHeapMemoryManager is flakey</summary>
+			
+			
+			<description>On our internal build system we&amp;amp;apos;ve seen TestHeapMemoryManager fail twice.
+
+
+
+Failed tests: 
+
+  TestHeapMemoryManager.testWhenClusterIsReadHeavy:174-&amp;gt;assertHeapSpaceDelta:317 null
+
+  TestHeapMemoryManager.testWhenClusterIsWriteHeavy:136-&amp;gt;assertHeapSpaceDelta:317 null
+
+
+</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestHeapMemoryManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-04 19:58:41" id="14723" opendate="2015-10-29 20:51:41" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix IT tests split too many times</summary>
+			
+			
+			<description>Splitting the whole table is happening too often. Lets make this happen less frequently as there are more regions.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.SplitAllRegionOfTableAction.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-06 14:18:28" id="14706" opendate="2015-10-27 14:40:08" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RegionLocationFinder should return multiple servernames by top host</summary>
+			
+			
+			<description>Multiple RS can run on the same host. But in current RegionLocationFinder, mapHostNameToServerName map one host to only one server. This will make LocalityCostFunction get wrong locality about region.
+
+
+
+    // create a mapping from hostname to ServerName for fast lookup
+
+    HashMap&amp;lt;String, ServerName&amp;gt; hostToServerName = new HashMap&amp;lt;String, ServerName&amp;gt;();
+
+    for (ServerName sn : regionServers) {
+
+      hostToServerName.put(sn.getHostname(), sn);
+
+    }
+
+
+</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 1.1.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.balancer.RegionLocationFinder.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-07 21:27:05" id="14781" opendate="2015-11-06 20:08:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Turn per cf flushing on for ITBLL by default</summary>
+			
+			
+			<description/>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.test.IntegrationTestBigLinkedList.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-15 23:02:42" id="14802" opendate="2015-11-12 22:09:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Replaying server crash recovery procedure after a failover causes incorrect handling of deadservers</summary>
+			
+			
+			<description>The way dead servers are processed is that a ServerCrashProcedure is launched for a server after it is added to the dead servers list. 
+Every time a server is added to the dead list, a counter &quot;numProcessing&quot; is incremented and it is decremented when a crash recovery procedure finishes. Since, adding a dead server and recovering it are two separate events, it can cause inconsistencies.
+If a master failover occurs in the middle of the crash recovery, the numProcessing counter resets but the ServerCrashProcedure is replayed by the new master. This causes the counter to go negative and makes the master think that dead servers are still in process of recovery. 
+This has ramifications on the balancer that the balancer ceases to run after such a failover.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.TestDeadServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.procedure.ServerCrashProcedure.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.DeadServer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-17 22:51:18" id="14812" opendate="2015-11-14 00:05:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix ResultBoundedCompletionService deadlock</summary>
+			
+			
+			<description>
+
+
+&quot;thrift2-worker-0&quot; #31 daemon prio=5 os_prio=0 tid=0x00007f5ad9c45000 nid=0x484 in Object.wait() [0x00007f5aa3832000]
+
+   java.lang.Thread.State: WAITING (on object monitor)
+
+        at java.lang.Object.wait(Native Method)
+
+        at java.lang.Object.wait(Object.java:502)
+
+        at org.apache.hadoop.hbase.client.ResultBoundedCompletionService.take(ResultBoundedCompletionService.java:148)
+
+        - locked &amp;lt;0x00000006b6ae7670&amp;gt; (a [Lorg.apache.hadoop.hbase.client.ResultBoundedCompletionService$QueueingFuture;)
+
+        at org.apache.hadoop.hbase.client.ScannerCallableWithReplicas.call(ScannerCallableWithReplicas.java:188)
+
+        at org.apache.hadoop.hbase.client.ScannerCallableWithReplicas.call(ScannerCallableWithReplicas.java:59)
+
+        at org.apache.hadoop.hbase.client.RpcRetryingCaller.callWithoutRetries(RpcRetryingCaller.java:200)
+
+        at org.apache.hadoop.hbase.client.ClientSmallReversedScanner.loadCache(ClientSmallReversedScanner.java:212)
+
+        at org.apache.hadoop.hbase.client.ClientSmallReversedScanner.next(ClientSmallReversedScanner.java:186)
+
+        at org.apache.hadoop.hbase.client.ConnectionManager$HConnectionImplementation.locateRegionInMeta(ConnectionManager.java:1276)
+
+        at org.apache.hadoop.hbase.client.ConnectionManager$HConnectionImplementation.locateRegion(ConnectionManager.java:1182)
+
+        at org.apache.hadoop.hbase.client.AsyncProcess.submit(AsyncProcess.java:370)
+
+        at org.apache.hadoop.hbase.client.AsyncProcess.submit(AsyncProcess.java:321)
+
+        at org.apache.hadoop.hbase.client.BufferedMutatorImpl.backgroundFlushCommits(BufferedMutatorImpl.java:194)
+
+        at org.apache.hadoop.hbase.client.BufferedMutatorImpl.flush(BufferedMutatorImpl.java:171)
+
+        - locked &amp;lt;0x00000006b6ae79c0&amp;gt; (a org.apache.hadoop.hbase.client.BufferedMutatorImpl)
+
+        at org.apache.hadoop.hbase.client.HTable.flushCommits(HTable.java:1430)
+
+        at org.apache.hadoop.hbase.client.HTable.put(HTable.java:1033)
+
+        at org.apache.hadoop.hbase.thrift2.ThriftHBaseServiceHandler.putMultiple(ThriftHBaseServiceHandler.java:268)
+
+        at sun.reflect.GeneratedMethodAccessor11.invoke(Unknown Source)
+
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+        at java.lang.reflect.Method.invoke(Method.java:497)
+
+        at org.apache.hadoop.hbase.thrift2.ThriftHBaseServiceHandler$THBaseServiceMetricsProxy.invoke(ThriftHBaseServiceHandler.java:114)
+
+        at com.sun.proxy.$Proxy10.putMultiple(Unknown Source)
+
+        at org.apache.hadoop.hbase.thrift2.generated.THBaseService$Processor$putMultiple.getResult(THBaseService.java:1637)
+
+        at org.apache.hadoop.hbase.thrift2.generated.THBaseService$Processor$putMultiple.getResult(THBaseService.java:1621)
+
+        at org.apache.thrift.ProcessFunction.process(ProcessFunction.java:39)
+
+        at org.apache.thrift.TBaseProcessor.process(TBaseProcessor.java:39)
+
+        at org.apache.thrift.server.AbstractNonblockingServer$FrameBuffer.invoke(AbstractNonblockingServer.java:478)
+
+        at org.apache.thrift.server.Invocation.run(Invocation.java:18)
+
+        at org.apache.hadoop.hbase.thrift.CallQueue$Call.run(CallQueue.java:64)
+
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+        at java.lang.Thread.run(Thread.java:745)
+
+
+
+
+</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 1.1.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.ResultBoundedCompletionService.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.ScannerCallableWithReplicas.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">15140</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-09 23:40:23" id="14942" opendate="2015-12-07 18:29:02" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Allow turning off BoundedByteBufferPool</summary>
+			
+			
+			<description>The G1 does a great job of compacting, there&amp;amp;apos;s no reason to use the BoundedByteBufferPool when the JVM can it for us. So we should allow turning this off for people who are running new jvm&amp;amp;apos;s where the G1 is working well.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RpcServer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-11 21:22:27" id="14953" opendate="2015-12-08 22:55:59" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HBaseInterClusterReplicationEndpoint: Do not retry the whole batch of edits in case of RejectedExecutionException</summary>
+			
+			
+			<description>When we have wal provider set to multiwal, the ReplicationSource has multiple worker threads submitting batches to HBaseInterClusterReplicationEndpoint. In such a scenario, it is quite common to encounter RejectedExecutionException because it takes quite long for shipping edits to peer cluster compared to reading edits from source and submitting more batches to the endpoint. 
+The logs are just filled with warnings due to this very exception.
+Since we subdivide batches before actually shipping them, we don&amp;amp;apos;t need to fail and resend the whole batch if one of the sub-batches fails with RejectedExecutionException. Rather, we should just retry the failed sub-batches. </description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.HBaseInterClusterReplicationEndpoint.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-16 15:01:01" id="14838" opendate="2015-11-19 02:45:19" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Clarify that SimpleRegionNormalizer does not merge empty (&lt;1MB) regions</summary>
+			
+			
+			<description>SImpleRegionNormalizer does not merge empty region of a table
+Steps to repro:
+
+Create an empty table with few, say 5-6 regions without any data in any of them
+Verify hbase:meta table to verify the regions for the table or check HMaster UI
+Enable normalizer switch and normalization for this table
+Run normalizer, by &amp;amp;apos;normalize&amp;amp;apos; command from hbase shell
+Verify the regions for table by scanning hbase:meta table or checking HMaster web UI
+
+The empty regions are not merged on running the region normalizer. This seems to be an edge case with completely empty regions since the Normalizer checks for: smallestRegion (in this case 0 size) + smallestNeighborOfSmallestRegion (in this case 0 size) &amp;gt; avg region size (in this case 0 size)
+thanks to Josh Elser for verifying this from the source code side</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.normalizer.SimpleRegionNormalizer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">13103</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-16 15:18:10" id="14843" opendate="2015-11-19 13:40:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestWALProcedureStore.testLoad is flakey</summary>
+			
+			
+			<description>I see it twice recently, 
+see.
+https://builds.apache.org/job/PreCommit-HBASE-Build/16589//testReport/org.apache.hadoop.hbase.procedure2.store.wal/TestWALProcedureStore/testLoad/
+https://builds.apache.org/job/PreCommit-HBASE-Build/16532/testReport/org.apache.hadoop.hbase.procedure2.store.wal/TestWALProcedureStore/testLoad/
+Let&amp;amp;apos;s see what&amp;amp;apos;s happening.
+Update.
+It failed once again today, 
+https://builds.apache.org/job/PreCommit-HBASE-Build/16602/testReport/junit/org.apache.hadoop.hbase.procedure2.store.wal/TestWALProcedureStore/testLoad/
+</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.store.wal.WALProcedureStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.store.wal.TestWALProcedureStore.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-22 06:48:24" id="15001" opendate="2015-12-17 21:27:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Thread Safety issues in ReplicationSinkManager and HBaseInterClusterReplicationEndpoint</summary>
+			
+			
+			<description>ReplicationSinkManager is not thread-safe. This can cause problems in HBaseInterClusterReplicationEndpoint,  when the walprovider is multiwal. 
+For example: 
+1. When multiple threads report bad sinks, the sink list can be non-empty but report a negative size because the ArrayList itself is not thread-safe. 
+2. HBaseInterClusterReplicationEndpoint depends on the number of sinks to batch edits for shipping. However, it&amp;amp;apos;s quite possible that the following code makes it assume that there are no batches to process (sink size is non-zero, but by the time we reach the &quot;batching&quot; part, sink size becomes zero.)
+
+
+
+if (replicationSinkMgr.getSinks().size() == 0) {
+
+    return false;
+
+}
+
+...
+
+int n = Math.min(Math.min(this.maxThreads, entries.size()/100+1),
+
+               replicationSinkMgr.getSinks().size());
+
+
+
+[Update] This leads to ArithmeticException: division by zero at:
+
+
+
+entryLists.get(Math.abs(Bytes.hashCode(e.getKey().getEncodedRegionName())%n)).add(e);
+
+
+
+which is benign and will just lead to retries by the ReplicationSource.
+The idea is to make all operations in ReplicationSinkManager thread-safe and do a verification on the size of replicated edits before we report success.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.HBaseInterClusterReplicationEndpoint.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.TestReplicationSinkManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.ReplicationSinkManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-22 07:08:07" id="15014" opendate="2015-12-18 21:09:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix filterCellByStore in WALsplitter is awful for performance</summary>
+			
+			
+			<description>Testing the latest 1.2 I see this when there is a regionserver that crashes.
+
+
+
+Thread 921 (RS_LOG_REPLAY_OPS-hbase2698:16020-0-Writer-1):
+
+  State: RUNNABLE
+
+  Blocked count: 6354
+
+  Waited count: 6249
+
+  Stack:
+
+    org.apache.hadoop.hbase.KeyValue.equals(KeyValue.java:1128)
+
+    java.util.ArrayList.indexOf(ArrayList.java:317)
+
+    java.util.ArrayList.contains(ArrayList.java:300)
+
+    java.util.ArrayList.batchRemove(ArrayList.java:720)
+
+    java.util.ArrayList.removeAll(ArrayList.java:690)
+
+    org.apache.hadoop.hbase.wal.WALSplitter$LogRecoveredEditsOutputSink.filterCellByStore(WALSplitter.java:1529)
+
+    org.apache.hadoop.hbase.wal.WALSplitter$LogRecoveredEditsOutputSink.append(WALSplitter.java:1557)
+
+    org.apache.hadoop.hbase.wal.WALSplitter$WriterThread.writeBuffer(WALSplitter.java:1113)
+
+    org.apache.hadoop.hbase.wal.WALSplitter$WriterThread.doRun(WALSplitter.java:1105)
+
+    org.apache.hadoop.hbase.wal.WALSplitter$WriterThread.run(WALSplitter.java:1075)
+
+Thread 920 (RS_LOG_REPLAY_OPS-hbase2698:16020-0-Writer-0):
+
+  State: TIMED_WAITING
+
+  Blocked count: 17560
+
+  Waited count: 19695
+
+  Stack:
+
+    java.lang.Object.wait(Native Method)
+
+    org.apache.hadoop.hbase.wal.WALSplitter$WriterThread.doRun(WALSplitter.java:1093)
+
+    org.apache.hadoop.hbase.wal.WALSplitter$WriterThread.run(WALSplitter.java:1075)
+
+Thread 919 (RS_LOG_REPLAY_OPS-hbase2698:16020-0):
+
+  State: TIMED_WAITING
+
+  Blocked count: 115
+
+  Waited count: 976
+
+  Stack:
+
+    java.lang.Object.wait(Native Method)
+
+    org.apache.hadoop.hbase.wal.WALSplitter$EntryBuffers.appendEntry(WALSplitter.java:944)
+
+    org.apache.hadoop.hbase.wal.WALSplitter.splitLogFile(WALSplitter.java:365)
+
+    org.apache.hadoop.hbase.wal.WALSplitter.splitLogFile(WALSplitter.java:236)
+
+    org.apache.hadoop.hbase.regionserver.SplitLogWorker$1.exec(SplitLogWorker.java:104)
+
+    org.apache.hadoop.hbase.regionserver.handler.WALSplitterHandler.process(WALSplitterHandler.java:72)
+
+    org.apache.hadoop.hbase.executor.EventHandler.run(EventHandler.java:128)
+
+    java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+    java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+    java.lang.Thread.run(Thread.java:745)
+
+
+
+This has been going on for &amp;gt;10 mins.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.wal.WALSplitter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.WALEdit.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-04 15:32:14" id="14867" opendate="2015-11-21 01:55:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SimpleRegionNormalizer needs to have better heuristics to trigger merge operation</summary>
+			
+			
+			<description>SimpleRegionNormalizer needs to have better heuristics to trigger merge operation. SimpleRegionNormalizer is not able to trigger a merge action if the table&amp;amp;apos;s smallest region has neighboring regions that are larger than table&amp;amp;apos;s average region size, whereas there are other smaller regions whose combined size is less than the average region size. 
+For example, 
+
+Consider a table with six region, say r1 to r6.
+Keep r1 as empty and create some data say, 100K rows of data for each of the regions r2, r3 and r4. Create smaller amount of data for regions r5 and r6, say about 27K rows of data.
+Run the normalizer. Verify the number the regions for that table and also check the master log to see if any merge action was triggered as a result of normalization.
+
+In such scenario, it would be better to have a merge action triggered for those two smaller regions r5 and r6 even though either of them is not the smallest one</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.normalizer.SimpleRegionNormalizer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.normalizer.TestSimpleRegionNormalizer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-15 15:30:37" id="15104" opendate="2016-01-14 01:56:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Occasional failures due to NotServingRegionException in IT tests</summary>
+			
+			
+			<description>IntegrationTestAcidGuarantees fails when trying to cleanup with NotServerRegionExceptions giving up (after 36 attempts) .
+5/11/09 09:19:24 INFO client.AsyncProcess: #33, waiting for some tasks to finish. Expected max=0, tasksInProgress=9
+15/11/09 09:19:33 INFO client.AsyncProcess: #45, table=TestAcidGuarantees, attempt=10/35 failed=1ops, last exception: org.apache.hadoop.hbase.NotServingRegionException: org.apache.hadoop.hbase.NotServingRegionException: Region TestAcidGuarantees,test_row_1,1447089367019.032439ef4f3353cb894d20337ba043bc. is not online on node-4.internal,22101,1447089152259
+	at org.apache.hadoop.hbase.regionserver.HRegionServer.getRegionByEncodedName(HRegionServer.java:2786)
+	at org.apache.hadoop.hbase.regionserver.RSRpcServices.getRegion(RSRpcServices.java:922)
+	at org.apache.hadoop.hbase.regionserver.RSRpcServices.multi(RSRpcServices.java:1893)
+	at org.apache.hadoop.hbase.protobuf.generated.ClientProtos$ClientService$2.callBlockingMethod(ClientProtos.java:32213)
+	at org.apache.hadoop.hbase.ipc.RpcServer.call(RpcServer.java:2035)
+	at org.apache.hadoop.hbase.ipc.CallRunner.run(CallRunner.java:107)
+	at org.apache.hadoop.hbase.ipc.RpcExecutor.consumerLoop(RpcExecutor.java:130)
+	at org.apache.hadoop.hbase.ipc.RpcExecutor$1.run(RpcExecutor.java:107)
+	at java.lang.Thread.run(Thread.java:745)
+...
+Caused by: org.apache.hadoop.hbase.client.RetriesExhaustedException: Failed after attempts=36, exceptions:
+Mon Nov 09 09:19:53 PST 2015, null, java.net.SocketTimeoutException: callTimeout=60000, callDuration=68104: row &amp;amp;apos;test_row_1&amp;amp;apos;
+Looked at the RS log, the following exception is found:
+2015-11-10 10:07:49,091 ERROR org.apache.hadoop.hbase.regionserver.handler.OpenRegionHandler: Failed open of region=TestAcidGuarantees,,1447177733243.f1be6b850fe3958c5c9b5e330b5dfb00., starting to roll back the global memstore size.
+org.apache.hadoop.hbase.DoNotRetryIOException: java.lang.RuntimeException: java.lang.ClassNotFoundException: com.hadoop.compression.lzo.LzoCodec
+        at org.apache.hadoop.hbase.util.CompressionTest.testCompression(CompressionTest.java:102)
+        at org.apache.hadoop.hbase.regionserver.HRegion.checkCompressionCodecs(HRegion.java:6011)
+        at org.apache.hadoop.hbase.regionserver.HRegion.openHRegion(HRegion.java:5995)
+        at org.apache.hadoop.hbase.regionserver.HRegion.openHRegion(HRegion.java:5967)
+        at org.apache.hadoop.hbase.regionserver.HRegion.openHRegion(HRegion.java:5938)
+        at org.apache.hadoop.hbase.regionserver.HRegion.openHRegion(HRegion.java:5894)
+        at org.apache.hadoop.hbase.regionserver.HRegion.openHRegion(HRegion.java:5845)
+        at org.apache.hadoop.hbase.regionserver.handler.OpenRegionHandler.openRegion(OpenRegionHandler.java:356)
+        at org.apache.hadoop.hbase.regionserver.handler.OpenRegionHandler.process(OpenRegionHandler.java:126)
+        at org.apache.hadoop.hbase.executor.EventHandler.run(EventHandler.java:128)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+        at java.lang.Thread.run(Thread.java:745)</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 0.94.28, 1.2.0, 1.0.3, 1.1.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.ChangeCompressionAction.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-16 03:28:08" id="14512" opendate="2015-09-29 21:00:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Cache UGI groups</summary>
+			
+			
+			<description>Right now every call gets a new User object.
+We should keep the same user for the life of a connection. We should also cache the group names. However we can&amp;amp;apos;t cache the groups for forever as that would mean groups don&amp;amp;apos;t get refreshed every 5 mins.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 0.98.17</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RpcServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.UserProvider.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.CallRunner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.User.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">12450</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-16 03:28:12" id="14771" opendate="2015-11-05 13:29:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RpcServer#getRemoteAddress always returns null</summary>
+			
+			
+			<description>RpcServer.getRemoteAddress always returns null, because Call object is getting initialized with null.This seems to be happening because of using RpcServer.getRemoteIp() in  Call object constructor before RpcServer thread local &amp;amp;apos;CurCall&amp;amp;apos; being set in CallRunner.run method:
+
+// --- RpcServer.java ---
+
+protected void processRequest(byte[] buf) throws IOException, InterruptedException {
+
+ .................................
+
+// Call object getting initialized here with address 
+
+// obtained from RpcServer.getRemoteIp()
+
+Call call = new Call(id, this.service, md, header, param, cellScanner, this, responder,
+
+              totalRequestSize, traceInfo, RpcServer.getRemoteIp());
+
+  scheduler.dispatch(new CallRunner(RpcServer.this, call));
+
+ }
+
+
+
+// getRemoteIp method gets address from threadlocal &amp;amp;apos;CurCall&amp;amp;apos; which 
+
+// gets set in CallRunner.run and calling it before this as in above case, will return null
+
+// --- CallRunner.java ---
+
+public void run() {
+
+  .........................   
+
+  Pair&amp;lt;Message, CellScanner&amp;gt; resultPair = null;
+
+  RpcServer.CurCall.set(call);
+
+  ..............................
+
+}
+
+
+
+// Using &amp;amp;apos;this.addr&amp;amp;apos; in place of getRemoteIp method in RpcServer.java seems to be fixing this issue
+
+Call call = new Call(id, this.service, md, header, param, cellScanner, this, responder,
+
+              totalRequestSize, traceInfo, this.addr);
+
+
+</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 0.98.17</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RpcServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.AbstractTestIPC.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-19 20:54:29" id="15102" opendate="2016-01-13 23:27:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HeapMemoryTuner can &quot;overtune&quot; memstore size and suddenly drop it into blocking zone</summary>
+			
+			
+			<description>DefaultHeapMemoryTuner often resets the maximum step size for tuning to 8% of total heap size. Often, when the size of memstore is to be decreased while tuning, the 8% tuning can suddenly drop the memstore size below the low water mark of the previous memstore size (which could potentially be  the used size of the memstore)
+This is problematic because suddenly it blocks all the updates by suddenly causing a situation where memstore used size is above high water mark. This has a very bad performance impact on an otherwise fine HBase cluster. </description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestHeapMemoryManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.DefaultHeapMemoryTuner.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-20 17:40:28" id="15098" opendate="2016-01-13 12:03:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Normalizer switch in configuration is not used</summary>
+			
+			
+			<description>The newly added global switch to enable the new normalizer functionality is never used apparently, meaning it is always on. The hbase-default.xml has this:
+
+  &amp;lt;property&amp;gt;
+
+    &amp;lt;name&amp;gt;hbase.normalizer.enabled&amp;lt;/name&amp;gt;
+
+    &amp;lt;value&amp;gt;false&amp;lt;/value&amp;gt;
+
+    &amp;lt;description&amp;gt;If set to true, Master will try to keep region size
+
+      within each table approximately the same.&amp;lt;/description&amp;gt;
+
+  &amp;lt;/property&amp;gt;
+
+
+
+But only a test class uses it to set the switch to &quot;true&quot;. We should implement a proper if statement that checks this value and properly disables the feature cluster wide if not wanted.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HConstants.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.normalizer.TestSimpleRegionNormalizerOnCluster.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">13103</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-20 22:23:06" id="15139" opendate="2016-01-20 21:49:02" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Connection manager doesn&amp;apos;t pass client metrics to RpcClient</summary>
+			
+			
+			<description/>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.ConnectionImplementation.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-28 13:16:01" id="15146" opendate="2016-01-21 01:39:35" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Don&amp;apos;t block on Reader threads queueing to a scheduler queue</summary>
+			
+			
+			<description>Blocking on the epoll thread is awful. The new rpc scheduler can have lots of different queues. Those queues have different capacity limits. Currently the dispatch method can block trying to add the the blocking queue in any of the schedulers.
+This causes readers to block, tcp acks are delayed, and everything slows down.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.AsyncProcess.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.BalancedQueueRpcExecutor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestAsyncProcess.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RpcScheduler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.ConnectionImplementation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestHCM.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.FifoRpcScheduler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RpcExecutor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RpcServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.SimpleRpcScheduler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RWQueueRpcExecutor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-13 07:49:43" id="15079" opendate="2016-01-07 21:05:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestMultiParallel.validateLoadedData AssertionError: null</summary>
+			
+			
+			<description>Saw this failure on internal rig:
+
+
+
+Stack Trace:
+
+java.lang.AssertionError: null
+
+        at org.junit.Assert.fail(Assert.java:86)
+
+        at org.junit.Assert.assertTrue(Assert.java:41)
+
+        at org.junit.Assert.assertTrue(Assert.java:52)
+
+        at org.apache.hadoop.hbase.client.TestMultiParallel.validateLoadedData(TestMultiParallel.java:676)
+
+        at org.apache.hadoop.hbase.client.TestMultiParallel.doTestFlushCommits(TestMultiParallel.java:293)
+
+        at org.apache.hadoop.hbase.client.TestMultiParallel.testFlushCommitsNoAbort(TestMultiParallel.java:241)
+
+
+
+Heng Chen actually added a fix for this failure over in HBASE-14915 but we never committed it. Let me attach his patch here.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestMultiParallel.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-18 05:38:42" id="15100" opendate="2016-01-13 21:11:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Master WALProcs still never clean up</summary>
+			
+			
+			<description>
+
+
+bin/hdfs dfs -ls /hbase/MasterProcWALs | wc -l
+
+218631
+
+
+</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 1.1.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ProcedureInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.store.wal.ProcedureWALFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.store.wal.TestWALProcedureStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.store.ProcedureStoreTracker.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.ProcedureExecutor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.Procedure.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.store.wal.ProcedureWALFormatReader.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.store.ProcedureStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.store.TestProcedureStoreTracker.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure2.store.wal.WALProcedureStore.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">14783</link>
+			
+			
+			<link description="depends upon" type="dependent">15113</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-22 23:40:30" id="15285" opendate="2016-02-17 19:54:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Forward-port respect for isReturnResult from HBASE-15095</summary>
+			
+			
+			<description>This issue is about forward-porting the bug fix done in HBASE-15095 so we respect the isReturnResult properly in append and increment.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.Append.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.Mutation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.Increment.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-01 23:42:05" id="15315" opendate="2016-02-23 16:58:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Remove always set super user call as high priority</summary>
+			
+			
+			<description>Current implementation set superuser call as ADMIN_QOS, but we have many customers use superuser to do normal table operation such as put/get data and so on. If client put much data during region assignment, RPC from HMaster may timeout because of no handle. so it is better to remove always set super user call as high priority. </description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0, 1.2.4</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.AnnotationReadingPriorityFunction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestPriorityRpc.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">16676</link>
+			
+			
+			<link description="relates to" type="Reference">15295</link>
+			
+			
+			<link description="relates to" type="Reference">16676</link>
+			
+			
+			<link description="is broken by" type="Regression">13375</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-08 11:05:16" id="15137" opendate="2016-01-20 09:01:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CallTimeoutException and CallQueueTooBigException should trigger PFFE</summary>
+			
+			
+			<description>If a region server is backed up enough that lots of calls are timing out then we should think about treating a server as failing.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.exceptions.PreemptiveFastFailException.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestFastFail.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.PreemptiveFastFailInterceptor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.FastFailInterceptorContext.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.exceptions.ClientExceptionsUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">15390</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-24 17:16:26" id="14256" opendate="2015-08-19 15:43:59" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Flush task message may be confusing when region is recovered</summary>
+			
+			
+			<description>In HRegion.setRecovering() we have this code:
+
+
+
+    // force a flush only if region replication is set up for this region. Otherwise no need.
+
+      boolean forceFlush = getTableDesc().getRegionReplication() &amp;gt; 1;
+
+
+
+      // force a flush first
+
+      MonitoredTask status = TaskMonitor.get().createStatus(
+
+        &quot;Flushing region &quot; + this + &quot; because recovery is finished&quot;);
+
+      try {
+
+        if (forceFlush) {
+
+          internalFlushcache(status);
+
+        }
+
+
+
+So we only optionally force flush after a recovery of a region, but the message always is set to &quot;Flushing...&quot;, which might be confusing. We should change the message based on forceFlush.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.2.1, 1.4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-28 23:53:59" id="15548" opendate="2016-03-28 18:18:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SyncTable: sourceHashDir is supposed to be optional but won&amp;apos;t work without </summary>
+			
+			
+			<description>1) SyncTable code is contradictory. Usage said sourcehashdir is optional (https://github.com/apache/hbase/blob/ad3feaa44800f10d102255a240c38ccf23a82d49/hbase-server/src/main/java/org/apache/hadoop/hbase/mapreduce/SyncTable.java#L687). However, the command won&amp;amp;apos;t run if sourcehashdir is missing (https://github.com/apache/hbase/blob/ad3feaa44800f10d102255a240c38ccf23a82d49/hbase-server/src/main/java/org/apache/hadoop/hbase/mapreduce/SyncTable.java#L83-L85) 
+2) There is no documentation on how to create the desired sourcehash</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.19, 1.4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.SyncTable.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-11 04:42:29" id="15591" opendate="2016-04-04 22:42:23" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ServerCrashProcedure not yielding</summary>
+			
+			
+			<description>ServerCrashProcedure is not propagating ProcedureYieldException to the ProcedureExecutor 
+One symptom is that while ServerCrashProcedure is waiting for meta to be up the Procedure WALs get filled up rapidly with all the executions.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0, 1.2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.procedure.ServerCrashProcedure.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-11 15:27:46" id="15093" opendate="2016-01-12 23:41:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Replication can report incorrect size of log queue for the global source when multiwal is enabled</summary>
+			
+			
+			<description>Replication can  report incorrect size for the size of log queue for the global source when multiwal is enabled. This happens because the method MetricsSource#setSizeofLogQueue performs non-trivial operations in a multithreaded world, even though it is not synchronized. 
+We can simply divide MetricsSource#setSizeofLogQueue into MetricsSource#incrSizeofLogQueue and MetricsSource#decrSizeofLogQueue. Not sure why we are currently directly setting the size instead of incrementing/decrementing it.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.MetricsSource.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.ReplicationSource.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.MetricsReplicationGlobalSourceSource.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.MetricsReplicationSourceSourceImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.MetricsReplicationSourceSource.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">14457</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-05-06 18:27:09" id="15773" opendate="2016-05-05 17:51:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CellCounter improvements</summary>
+			
+			
+			<description>Looking at the CellCounter map reduce, it seems like it can be improved in a few areas:
+
+it does not currently support setting scan batching.  This is important when we&amp;amp;apos;re fetching all versions for columns.  Actually, it would be nice to support all of the scan configuration currently provided in TableInputFormat.
+generating job counters containing row keys and column qualifiers is guaranteed to blow up on anything but the smallest table.  This is not usable and doesn&amp;amp;apos;t make any sense when the same counts are in the job output.  The row and qualifier specific counters should be dropped.
+
+</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>1.3.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TableInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.CellCounter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">13707</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-05-20 03:48:05" id="15465" opendate="2016-03-15 03:08:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>userPermission returned by getUserPermission() for the selected namespace does not have namespace set</summary>
+			
+			
+			<description>The request sent is with type = Namespace, but the response returned contains Global permissions (that is, the field of namespace is not set)
+It is in hbase-client/src/main/java/org/apache/hadoop/hbase/protobuf/ProtobufUtil.java, from line 2380, and I made some comments into it
+
+
+
+/**
+
+   * A utility used to get permissions for selected namespace.
+
+   * &amp;lt;p&amp;gt;
+
+   * It&amp;amp;apos;s also called by the shell, in case you want to find references.
+
+   *
+
+   * @param protocol the AccessControlService protocol proxy
+
+   * @param namespace name of the namespace
+
+   * @throws ServiceException
+
+   */
+
+  public static List&amp;lt;UserPermission&amp;gt; getUserPermissions(
+
+      AccessControlService.BlockingInterface protocol,
+
+      byte[] namespace) throws ServiceException {
+
+    AccessControlProtos.GetUserPermissionsRequest.Builder builder =
+
+      AccessControlProtos.GetUserPermissionsRequest.newBuilder();
+
+    if (namespace != null) {
+
+      builder.setNamespaceName(ByteStringer.wrap(namespace)); 
+
+    }
+
+    builder.setType(AccessControlProtos.Permission.Type.Namespace);  //builder is set with type = Namespace
+
+    AccessControlProtos.GetUserPermissionsRequest request = builder.build();  //I printed the request, its type is Namespace, which is correct.
+
+    AccessControlProtos.GetUserPermissionsResponse response =  
+
+       protocol.getUserPermissions(null, request);
+
+/* I printed the response, it contains Global permissions, as below, not a Namespace permission.
+
+
+
+user_permission {
+
+  user: &quot;a1&quot;
+
+  permission {
+
+    type: Global
+
+    global_permission {
+
+      action: READ
+
+      action: WRITE
+
+      action: ADMIN
+
+      action: EXEC
+
+      action: CREATE
+
+    }
+
+  }
+
+}
+
+
+
+AccessControlProtos.GetUserPermissionsRequest has a member called type_ to store the type, but AccessControlProtos.GetUserPermissionsResponse does not.
+
+*/
+
+     
+
+    List&amp;lt;UserPermission&amp;gt; perms = new ArrayList&amp;lt;UserPermission&amp;gt;(response.getUserPermissionCount());
+
+    for (AccessControlProtos.UserPermission perm: response.getUserPermissionList()) {
+
+      perms.add(ProtobufUtil.toUserPermission(perm));  // (1)
+
+    }
+
+    return perms;
+
+  }
+
+
+
+it could be more reasonable to return user permissions with namespace set in getUserPermission() for selected namespace ?</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0, 1.2.2, 0.98.20</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.AccessControlLists.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.TestAccessController.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">10879</link>
+			
+			
+			<link description="relates to" type="Reference">14818</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-05-22 03:46:44" id="14818" opendate="2015-11-16 17:08:13" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>user_permission does not list namespace permissions</summary>
+			
+			
+			<description>The user_permission command does not list namespace permissions:
+For example: if I create a new namespace or use an existing namespace and grant a user privileges to that namespace, the command user_permission does not list it. The permission is visible in the acl table.
+Example:
+hbase(main):005:0&amp;gt;  create_namespace &amp;amp;apos;ns3&amp;amp;apos;
+0 row(s) in 0.1640 seconds
+hbase(main):007:0&amp;gt; grant &amp;amp;apos;test_user&amp;amp;apos;,&amp;amp;apos;RWXAC&amp;amp;apos;,&amp;amp;apos;@ns3&amp;amp;apos;
+0 row(s) in 0.5680 seconds
+hbase(main):008:0&amp;gt; user_permission &amp;amp;apos;.*&amp;amp;apos;
+User                               Namespace,Table,Family,Qualifier:Permission                                                        
+ sh82993                           finance,finance:emp,,: [Permission: actions=READ,WRITE,EXEC,CREATE,ADMIN] 
+ @hbaseglobaldba                   hbase,hbase:acl,,: [Permission: actions=EXEC,CREATE,ADMIN] 
+ @hbaseglobaloper                  hbase,hbase:acl,,: [Permission: actions=EXEC,ADMIN] 
+ hdfs                              hbase,hbase:acl,,: [Permission: actions=READ,WRITE,CREATE,ADMIN,EXEC] 
+ sh82993                           ns1,ns1:tbl1,,: [Permission: actions=READ,WRITE,EXEC,CREATE,ADMIN] 
+ ns1admin                          ns1,ns1:tbl2,,: [Permission: actions=EXEC,CREATE,ADMIN] 
+ @hbaseappltest_ns1funct           ns1,ns1:tbl2,,: [Permission: actions=READ,WRITE,EXEC] 
+ ns1funct                          ns1,ns1:tbl2,,: [Permission: actions=READ,WRITE,EXEC,CREATE,ADMIN] 
+ hbase                             ns2,ns2:tbl1,,: [Permission: actions=READ,WRITE,EXEC,CREATE,ADMIN] 
+9 row(s) in 1.8090 seconds
+As you can see user test_user does not appear in the output, but we can see the permission in the ACL table. 
+hbase(main):001:0&amp;gt;  scan &amp;amp;apos;hbase:acl&amp;amp;apos;
+ROW                                COLUMN+CELL                                                                                        
+ @finance                          column=l:sh82993, timestamp=1444405519510, value=RWXCA                                             
+ @gcbcppdn                         column=l:hdfs, timestamp=1446141119602, value=RWCXA                                                
+ @hbase                            column=l:hdfs, timestamp=1446141485136, value=RWCAX                                                
+ @ns1                              column=l:@hbaseappltest_ns1admin, timestamp=1447437007467, value=RWXCA                             
+ @ns1                              column=l:@hbaseappltest_ns1funct, timestamp=1447427366835, value=RWX                               
+ @ns2                              column=l:@hbaseappltest_ns2admin, timestamp=1446674470456, value=XCA                               
+ @ns2                              column=l:test_user, timestamp=1447692840030, value=RWAC                                            
+ @ns3                              column=l:test_user, timestamp=1447692860434, value=RWXAC                                           
+ finance:emp                       column=l:sh82993, timestamp=1444407723316, value=RWXCA                                             
+ hbase:acl                         column=l:@hbaseglobaldba, timestamp=1446590375370, value=XCA                                       
+ hbase:acl                         column=l:@hbaseglobaloper, timestamp=1446590387965, value=XA                                       
+ hbase:acl                         column=l:hdfs, timestamp=1446141737213, value=RWCAX                                                
+ ns1:tbl1                          column=l:sh82993, timestamp=1446674153058, value=RWXCA                                             
+ ns1:tbl2                          column=l:@hbaseappltest_ns1funct, timestamp=1447183824580, value=RWX                               
+ ns1:tbl2                          column=l:ns1admin, timestamp=1447183766370, value=XCA                                              
+ ns1:tbl2                          column=l:ns1funct, timestamp=1447184077545, value=RWXCA                                            
+ ns2:tbl1                          column=l:hbase, timestamp=1447182228314, value=RWXCA                                               
+11 row(s) in 0.4990 seconds
+It would be nice to be able to see namespace permissions via the user_permission &amp;amp;apos;.*&amp;amp;apos; command as scanning the acl table is not the recommended way to view object permissions. Especially if one is looking to access base via a shell and collect ACL information.
+Steven</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0, 1.2.2, 0.98.20</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.AccessControlClient.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.TestAccessController.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">15465</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-06 17:51:42" id="15889" opendate="2016-05-25 15:33:16" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>String case conversions are locale-sensitive, used without locale</summary>
+			
+			
+			<description>Static code analysis is flagging cases of String.toLowerCase and String.toUpperCase being used without Locale. From the API reference:
+
+Note: This method is locale sensitive, and may produce unexpected results if used for strings that are intended to be interpreted locale independently. Examples are programming language identifiers, protocol keys, and HTML tags. For instance, &quot;TITLE&quot;.toLowerCase() in a Turkish locale returns &quot;t\u0131tle&quot;, where &amp;amp;apos;\u0131&amp;amp;apos; is the LATIN SMALL LETTER DOTLESS I character. To obtain correct results for locale insensitive strings, use toLowerCase(Locale.ROOT).
+Many uses of these functions do appear to be looking up classes, etc. and not dealing with stored data, so I&amp;amp;apos;d think there aren&amp;amp;apos;t significant compatibility problems here and specifying the locale is indeed the safer way to go.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.4.0, 0.98.20</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.Import.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.ServerCommandLine.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.LoadTestTool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.AsyncRpcChannelImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RpcExecutor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.HBaseSaslRpcServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestRegionServerHostname.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HBaseClusterManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestLoadIncrementalHFiles.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ServerName.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.StripeCompactionsPerformanceEvaluation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.thrift.HThreadedSelectorServerArgs.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.zookeeper.MetaTableLocator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HColumnDescriptor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.RESTApiClusterManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.thrift.ThriftUtilities.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RpcClientImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestTableInputFormatScanBase.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.DataBlockEncodingTool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.MetricsHBaseServerSourceFactoryImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.test.MetricsAssertHelperImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.HBaseFsck.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.MultiTableInputFormatTestBase.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.FSUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.CompressionTest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.crypto.KeyStoreKeyProvider.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.filter.GzipFilter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.BaseRowProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.SubstringComparator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TableInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.RegionMover.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.DirectMemoryUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.PerformanceEvaluation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.classification.tools.StabilityOptions.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.ProtobufUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.PoolMap.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TimedOutTestsListener.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestIPv6NIOServerSocketChannel.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-07 06:14:18" id="15698" opendate="2016-04-23 01:21:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Increment TimeRange not serialized to server</summary>
+			
+			
+			<description>Before HBase-1.2, the Increment TimeRange set on the client was serialized over to the server. As of HBase 1.2, this appears to no longer be true, as my preIncrement coprocessor always gets HConstants.LATEST_TIMESTAMP as the value of increment.getTimeRange().getMax() regardless of what the client has specified.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0, 1.2.2, 0.98.20, 1.1.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.ProtobufUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-23 00:59:53" id="16221" opendate="2016-07-13 00:55:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Thrift server drops connection on long scans</summary>
+			
+			
+			<description>Thrift servers use connection cache and we drop connections after hbase.thrift.connection.max-idletime milliseconds from the last time a connection object was accessed. However, we never update this last accessed time on scan path. 
+By default, this will cause scanners to fail after 10 minutes, if the underlying connection object is not being used along other operation paths (like put).</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.thrift2.ThriftHBaseServiceHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.ConnectionCache.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.thrift2.TestThriftHBaseServiceHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-28 18:32:55" id="16096" opendate="2016-06-23 21:02:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Replication keeps accumulating znodes</summary>
+			
+			
+			<description>If there is an error while creating the replication source on adding the peer, the source if not added to the in memory list of sources but the replication peer is. 
+However, in such a scenario, when you remove the peer, it is deleted from zookeeper successfully but for removing the in memory list of peers, we wait for the corresponding sources to get deleted (which as we said don&amp;amp;apos;t exist because of error creating the source). 
+The problem here is the ordering of operations for adding/removing source and peer. 
+Modifying the code to always remove queues from the underlying storage, even if there exists no sources also requires a small refactoring of TableBasedReplicationQueuesImpl to not abort on removeQueues() of an empty queue</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.TestReplicationSourceManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.ReplicationSourceManager.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is depended upon by" type="dependent">15867</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-31 17:09:57" id="16528" opendate="2016-08-30 02:29:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Procedure-V2: ServerCrashProcedure misses owner information</summary>
+			
+			
+			<description>ServerCrashProcedure constructor does not set up owner information.  If someone wants to access the owner of ServerCrashProcedure, it would get NPE (eg. in case someone accidentally tries to abort a ServerCrashProcedure, the coprocessor to check owner of the procedure would throw NPE)</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0, 1.2.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.TestDeadServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.procedure.TestServerCrashProcedure.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.procedure.ServerCrashProcedure.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ServerManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.procedure.TestMasterProcedureEvents.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends upon" type="dependent">16522</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-01 23:27:03" id="16375" opendate="2016-08-08 17:39:47" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Mapreduce mini cluster using HBaseTestingUtility not setting correct resourcemanager and jobhistory webapp address of MapReduceTestingShim  </summary>
+			
+			
+			<description>Starting mapreduce mini cluster using HBaseTestingUtility is not setting &quot;yarn.resourcemanager.webapp.address&quot; and &quot;mapreduce.jobhistory.webapp.address&quot; which are required for getting the submitted yarn apps using mapreduce webapp. These properties are not being copied from jobConf of MapReduceTestingShim resulting in default values.
+
+HBaseTestingUtility.java
+    // Allow the user to override FS URI for this map-reduce cluster to use.
+    mrCluster = new MiniMRCluster(servers,
+      FS_URI != null ? FS_URI : FileSystem.get(conf).getUri().toString(), 1,
+      null, null, new JobConf(this.conf));
+    JobConf jobConf = MapreduceTestingShim.getJobConf(mrCluster);
+    if (jobConf == null) 
+Unknown macro: {
+      jobConf = mrCluster.createJobConf();
+    } 
+    jobConf.set(&quot;mapreduce.cluster.local.dir&quot;,
+      conf.get(&quot;mapreduce.cluster.local.dir&quot;)); //Hadoop MiniMR overwrites this while it should not
+    LOG.info(&quot;Mini mapreduce cluster started&quot;);
+    // In hadoop2, YARN/MR2 starts a mini cluster with its own conf instance and updates settings.
+    // Our HBase MR jobs need several of these settings in order to properly run.  So we copy the
+    // necessary config properties here.  YARN-129 required adding a few properties.
+    conf.set(&quot;mapreduce.jobtracker.address&quot;, jobConf.get(&quot;mapreduce.jobtracker.address&quot;));
+    // this for mrv2 support; mr1 ignores this
+    conf.set(&quot;mapreduce.framework.name&quot;, &quot;yarn&quot;);
+    conf.setBoolean(&quot;yarn.is.minicluster&quot;, true);
+    String rmAddress = jobConf.get(&quot;yarn.resourcemanager.address&quot;);
+    if (rmAddress != null) 
+Unknown macro: {
+      conf.set(&quot;yarn.resourcemanager.address&quot;, rmAddress);
+    } 
+    String historyAddress = jobConf.get(&quot;mapreduce.jobhistory.address&quot;);
+    if (historyAddress != null) 
+Unknown macro: {
+      conf.set(&quot;mapreduce.jobhistory.address&quot;, historyAddress);
+    } 
+    String schedulerAddress =
+      jobConf.get(&quot;yarn.resourcemanager.scheduler.address&quot;);
+    if (schedulerAddress != null) 
+Unknown macro: {
+      conf.set(&quot;yarn.resourcemanager.scheduler.address&quot;, schedulerAddress);
+    } 
+As a immediate fix for phoenix e2e test to succeed, need the below lines to be added as well
+
+    String rmWebappAddress = jobConf.get(&quot;yarn.resourcemanager.webapp.address&quot;);
+    if (rmWebappAddress != null) 
+Unknown macro: {
+      conf.set(&quot;yarn.resourcemanager.webapp.address&quot;, rmWebappAddress);
+    } 
+    String historyWebappAddress = jobConf.get(&quot;mapreduce.jobhistory.webapp.address&quot;);
+    if (historyWebappAddress != null) 
+Unknown macro: {
+      conf.set(&quot;mapreduce.jobhistory.webapp.address&quot;, historyWebappAddress);
+    } 
+Eventually, we should also see if we can copy over all the jobConf properties to HBaseTestingUtility conf object.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 0.98.22, 1.1.7, 1.2.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HBaseTestingUtility.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestHBaseTestingUtility.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-13 13:05:52" id="15297" opendate="2016-02-20 04:07:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>error message is wrong when a wrong namspace is specified in grant in hbase shell</summary>
+			
+			
+			<description>In HBase shell, specify a non-existing namespace in &quot;grant&quot; command, such as
+
+
+
+hbase(main):001:0&amp;gt; grant &amp;amp;apos;a1&amp;amp;apos;, &amp;amp;apos;R&amp;amp;apos;, &amp;amp;apos;@aaa&amp;amp;apos;    &amp;lt;--- there is no namespace called &quot;aaa&quot;
+
+
+
+The error message issued is not correct
+
+
+
+ERROR: Unknown namespace a1!
+
+
+
+a1 is the user name, not the namespace.
+The following error message would be better
+
+
+
+ERROR: Unknown namespace aaa!
+
+
+
+or
+
+
+
+Can&amp;amp;apos;t find a namespace: aaa
+
+
+</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HBaseAdmin.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.Admin.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">14254</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-22 22:04:51" id="16676" opendate="2016-09-22 00:05:54" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>All RPC requests serviced by PriorityRpcServer in some deploys after HBASE-13375</summary>
+			
+			
+			<description>I have been trying to track down why 1.2.x won&amp;amp;apos;t sometimes pass a 1 billion row ITBLL run while 0.98.22 and 1.1.6 will always, and a defeat of RPC prioritization could explain it. We get stuck during the loading phase and the loader job eventually fails. 
+All testing is done in an insecure environment under the same UNIX user (clusterdock) so effectively all ops are issued by the superuser.
+Doing unrelated work - or so I thought! - I was looking at object allocations by YCSB workload by thread and when looking at the RegionServer RPC threads noticed that for 0.98.22 and 1.1.6, as expected, the vast majority of allocations are from threads named &quot;B.defaultRpcServer.handler*&quot;. In 1.2.0 and up, instead the vast majority are from threads named &quot;PriorityRpcServer.handler*&quot; with very little from threads named &quot;B.defaultRpcServer.handler*&quot;.  A git bisect to find the change that causes this leads to HBASE-13375, and so of course this makes sense out of what I am seeing, but is this really what we want? What about production environments (insecure and degenerate secure) where all ops are effectively issued by the superuser? We run one of these at Salesforce.</description>
+			
+			
+			<version>1.2.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.AnnotationReadingPriorityFunction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestPriorityRpc.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">15315</link>
+			
+			
+			<link description="is related to" type="Reference">13375</link>
+			
+			
+			<link description="is related to" type="Reference">15315</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

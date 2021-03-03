@@ -1,0 +1,2614 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HIVE">
+	<bug fixdate="2010-06-28 21:38:25" id="1440" opendate="2010-06-26 05:57:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FetchOperator(mapjoin) does not work with RCFile</summary>
+			
+			
+			<description>RCFile needs column prunning&amp;amp;apos;s results. But when initializing the mapjoin&amp;amp;apos;s fetch operator, the cp&amp;amp;apos;s result is not passed to record reader.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecMapper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.SMBMapJoinOperator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-27 07:20:47" id="1489" opendate="2010-07-27 00:48:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestCliDriver -Doverwrite=true does not put the file in the correct directory</summary>
+			
+			
+			<description>When adding a new file in clientpositive with -Doverwrite=true, the output file was in ql/ rather than ql/src/test/results/clientpositive. </description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QTestUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-31 02:34:37" id="1494" opendate="2010-07-30 23:34:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Index followup: remove sort by clause and fix a bug in collect_set udaf</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFCollectSet.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-17 20:58:16" id="1547" opendate="2010-08-17 02:09:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Unarchiving operation throws NPE</summary>
+			
+			
+			<description>Unarchiving a partition throws a null pointer exception similar to the following:
+2010-08-16 12:44:18,801 ERROR exec.DDLTask (SessionState.java:printError(277)) - Failed with exception null
+java.lang.NullPointerException
+        at org.apache.hadoop.hive.ql.exec.DDLTask.unarchive(DDLTask.java:729)
+        at org.apache.hadoop.hive.ql.exec.DDLTask.execute(DDLTask.java:195)
+        at org.apache.hadoop.hive.ql.exec.Task.executeTask(Task.java:108)
+        at org.apache.hadoop.hive.ql.exec.TaskRunner.runSequential(TaskRunner.java:55)
+        at org.apache.hadoop.hive.ql.Driver.launchTask(Driver.java:609)
+        at org.apache.hadoop.hive.ql.Driver.execute(Driver.java:478)
+        at org.apache.hadoop.hive.ql.Driver.run(Driver.java:356)
+        at org.apache.hadoop.hive.cli.CliDriver.processCmd(CliDriver.java:140)
+        at org.apache.hadoop.hive.cli.CliDriver.processLine(CliDriver.java:199)
+        at org.apache.hadoop.hive.cli.CliDriver.main(CliDriver.java:351)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:597)
+        at org.apache.hadoop.util.RunJar.main(RunJar.java:156)
+This error seems to be DFS specific, as local file system in the unit tests don&amp;amp;apos;t catch this.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-09-04 05:26:11" id="1614" opendate="2010-09-03 17:56:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>UDTF json_tuple should return null row when input is not a valid JSON string</summary>
+			
+			
+			<description>If the input column is not a valid JSON string, json_tuple will not return anything but this will prevent the downstream operators to access the left-hand side table. We should output a NULL row instead, similar to when the input column is a NULL value. </description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDTFJSONTuple.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-01 17:16:26" id="1673" opendate="2010-09-29 19:55:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Create table bug causes the row format property lost when serde is specified.</summary>
+			
+			
+			<description>An example:
+create table src_rc_serde_yongqiang(key string, value string) ROW FORMAT  DELIMITED FIELDS TERMINATED BY &amp;amp;apos;0&amp;amp;apos; stored as rcfile; 
+will lost the row format information.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-13 04:28:05" id="1658" opendate="2010-09-21 01:19:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix describe [extended] column formatting</summary>
+			
+			
+			<description>When displaying the column schema, the formatting should follow should be 
+name&amp;lt;TAB&amp;gt;type&amp;lt;TAB&amp;gt;comment&amp;lt;NEWLINE&amp;gt;
+to be inline with the previous formatting style for backward compatibility.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hwi.TestHWISessionManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.TestJdbcDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.DescTableDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.MetaDataFormatUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-17 04:50:11" id="1720" opendate="2010-10-16 00:22:47" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>hbase_stats.q is failing</summary>
+			
+			
+			<description>Saw this failure on Hudson and in my own sandbox.
+https://hudson.apache.org/hudson/job/Hive-trunk-h0.20/392/</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Partition.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-30 04:59:02" id="1760" opendate="2010-10-29 22:55:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Mismatched open/commit transaction calls in case of connection retry</summary>
+			
+			
+			<description>Consider the create table function (parts removed for simplicity):
+
+
+
+
+
+    private void create_table_core(final RawStore ms, final Table tbl)
+
+        throws AlreadyExistsException, MetaException, InvalidObjectException {
+
+
+
+      Path tblPath = null;
+
+      boolean success = false, madeDir = false;
+
+      try {
+
+        ms.openTransaction();
+
+
+
+        // get_table checks whether database exists, it should be moved here
+
+        if (is_table_exists(tbl.getDbName(), tbl.getTableName())) {
+
+          throw new AlreadyExistsException(&quot;Table &quot; + tbl.getTableName()
+
+              + &quot; already exists&quot;);
+
+        }
+
+
+
+        ms.createTable(tbl);
+
+        success = ms.commitTransaction();
+
+
+
+      } finally {
+
+        if (!success) {
+
+          ms.rollbackTransaction();
+
+          if (madeDir) {
+
+            wh.deleteDir(tblPath, true);
+
+          }
+
+        }
+
+      }
+
+    }
+
+
+
+
+
+A potential openTransaction() / commitTransaction() mismatch can occur if the is_table_exits() method call experiences a connection failure. 
+Since get_table() in is_table_exists() uses executeWithRetry(),  the transaction will be rolled back and get_table() will be called again if the is a connection problem. However, this rollback and retry will reset the global openTransactionCalls counter back to 0, effectively canceling out the openTransaction() call. 
+Then later in the method when commitTransaction() is called, Hive will throw an error similar to the following:
+Caused by: java.lang.RuntimeException: commitTransaction was called but openTransactionCalls = 0. This probably indicates that there are unbalanced calls to openTransaction/commitTransaction
+A similar problem exists with create_type_core()</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">4996</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-11-04 03:19:57" id="1753" opendate="2010-10-26 18:21:46" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HIVE 1633 hit for Stage2 jobs with CombineHiveInputFormat</summary>
+			
+			
+			<description>Errors are the same as HIVE-1633 but I see them for Stage-2 jobs.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Context.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">1633</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-11-09 19:59:15" id="1777" opendate="2010-11-08 23:17:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Outdated comments for GenericUDTF.close()</summary>
+			
+			
+			<description>In a GenericUDTF, rows can be forward()&amp;amp;apos;ed on close(), contrary to what the comment says.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDTF.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-11-10 23:22:01" id="1501" opendate="2010-07-31 00:56:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>when generating reentrant INSERT for index rebuild, quote identifiers using backticks</summary>
+			
+			
+			<description>Yongqiang, you mentioned that you weren&amp;amp;apos;t able to do this due to SORT BY not accepting them.  The SORT BY is gone now as of HIVE-1494 (and SORT BY needs to be fixed anyway).</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.HiveUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">417</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-11-30 00:06:51" id="1804" opendate="2010-11-22 20:31:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Mapjoin will fail if there are no files associating with the join tables</summary>
+			
+			
+			<description>If there are some empty tables without any file associated, the map join will fail.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.MapJoinProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.GenMapRedUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FetchOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.ConditionalResolverCommonJoin.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapredLocalTask.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-12-16 21:46:41" id="1853" opendate="2010-12-16 06:38:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>downgrade JDO version</summary>
+			
+			
+			<description>After HIVE-1609, we are seeing some table not found errors intermittently.
+We have a test case where 5 processes are concurrently issueing the same query - 
+explain extended insert .. select from &amp;lt;T&amp;gt;
+and once in a while, we get a error &amp;lt;T&amp;gt; not found - 
+When we revert back the JDO version, the error is gone.
+We can investigate later to find the JDO bug, but for now this is a show-stopper for facebook, and needs
+to be reverted back immediately.
+This also means, that the filters will not be pushed to mysql.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Utilities.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.ObjectStore.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">1539</link>
+			
+			
+			<link description="relates to" type="Reference">1862</link>
+			
+			
+			<link description="is related to" type="Reference">1609</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-12-20 19:31:44" id="1854" opendate="2010-12-19 06:53:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Temporarily disable metastore tests for listPartitionsByFilter()</summary>
+			
+			
+			<description>After the JDO downgrade in HIVE-1853, the tests for the disabled function listPartitionByFilter() should be disabled as well.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.TestHiveMetaStore.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-12-21 23:19:45" id="1856" opendate="2010-12-20 22:19:59" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Implement DROP TABLE/VIEW ... IF EXISTS </summary>
+			
+			
+			<description>This issue combines issues HIVE-1550/1165/1542/1551:
+
+augment DROP TABLE/VIEW with IF EXISTS
+signal an error if the table/view doesn&amp;amp;apos;t exist and IF EXISTS wasn&amp;amp;apos;t specified
+introduce a flag in the configuration that allows you to turn off the new behavior
+
+</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">1858</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1550</link>
+			
+			
+			<link description="incorporates" type="Incorporates">1542</link>
+			
+			
+			<link description="incorporates" type="Incorporates">1551</link>
+			
+			
+			<link description="incorporates" type="Incorporates">1550</link>
+			
+			
+			<link description="incorporates" type="Incorporates">1165</link>
+			
+			
+			<link description="is related to" type="Reference">6754</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-03 22:13:47" id="1874" opendate="2011-01-03 04:31:23" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>fix HBase filter pushdown broken by HIVE-1638</summary>
+			
+			
+			<description>See comments at end of HIVE-1660 for what happened.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HiveHBaseTableInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-13 18:57:20" id="1911" opendate="2011-01-13 18:42:43" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestHBaseCliDriver is broken</summary>
+			
+			
+			<description>It broken on the current trunk:
+$ ant test -Dtestcase=TestHBaseCliDriver 
+....
+....
+test:
+[junit] Running org.apache.hadoop.hive.cli.TestHBaseCliDriver
+[junit] Exception: Timed out trying to locate root region
+[junit] org.apache.hadoop.hbase.client.NoServerForRegionException: Timed out trying to locate root region
+[junit]     at org.apache.hadoop.hbase.client.HConnectionManager$TableServers.locateRootRegion(HConnectionManager.java:976)
+[junit]     at org.apache.hadoop.hbase.client.HConnectionManager$TableServers.locateRegion(HConnectionManager.java:625)
+[junit]     at org.apache.hadoop.hbase.client.HConnectionManager$TableServers.relocateRegion(HConnectionManager.java:607)
+[junit]     at org.apache.hadoop.hbase.client.HConnectionManager$TableServers.locateRegionInMeta(HConnectionManager.java:738)
+[junit]     at org.apache.hadoop.hbase.client.HConnectionManager$TableServers.locateRegion(HConnectionManager.java:634)
+[junit]     at org.apache.hadoop.hbase.client.HConnectionManager$TableServers.locateRegion(HConnectionManager.java:601)
+[junit]     at org.apache.hadoop.hbase.client.HTable.&amp;lt;init&amp;gt;(HTable.java:128)
+[junit]     at org.apache.hadoop.hive.hbase.HBaseTestSetup.setUpFixtures(HBaseTestSetup.java:87)
+[junit]     at org.apache.hadoop.hive.hbase.HBaseTestSetup.preTest(HBaseTestSetup.java:59)
+[junit]     at org.apache.hadoop.hive.hbase.HBaseQTestUtil.&amp;lt;init&amp;gt;(HBaseQTestUtil.java:31)
+[junit]     at org.apache.hadoop.hive.cli.TestHBaseCliDriver.setUp(TestHBaseCliDriver.java:43)
+[junit]     at junit.framework.TestCase.runBare(TestCase.java:125)
+[junit]     at junit.framework.TestResult$1.protect(TestResult.java:106)
+[junit]     at junit.framework.TestResult.runProtected(TestResult.java:124)
+[junit]     at junit.framework.TestResult.run(TestResult.java:109)
+[junit]     at junit.framework.TestCase.run(TestCase.java:118)
+[junit]     at junit.framework.TestSuite.runTest(TestSuite.java:208)
+[junit]     at junit.framework.TestSuite.run(TestSuite.java:203)
+[junit]     at junit.extensions.TestDecorator.basicRun(TestDecorator.java:22)
+[junit]     at junit.extensions.TestSetup$1.protect(TestSetup.java:19)
+[junit]     at junit.framework.TestResult.runProtected(TestResult.java:124)
+[junit]     at junit.extensions.TestSetup.run(TestSetup.java:23)
+[junit]     at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:422)
+[junit]     at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.launch(JUnitTestRunner.java:931)
+[junit]     at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:785)
+[junit] Hive history file=/data/users/nzhang/work/2/apache-hive/build/hbase-handler/tmp/hive_job_log_nzhang_20110</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HBaseTestSetup.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">1716</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-15 01:21:59" id="1914" opendate="2011-01-14 07:07:57" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>failures in testhbaseclidriver</summary>
+			
+			
+			<description>i didnt debug it</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HBaseTestSetup.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">1716</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-20 03:59:19" id="1862" opendate="2010-12-22 21:46:38" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Revive partition filtering in the Hive MetaStore</summary>
+			
+			
+			<description>HIVE-1853 downgraded the JDO version. This makes the feature of partition filtering in the metastore unusable. This jira is to keep track of the lost feature and discussing approaches to bring it back.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.TestHiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.parser.ExpressionTree.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.ObjectStore.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">2048</link>
+			
+			
+			<link description="is related to" type="Reference">1539</link>
+			
+			
+			<link description="is related to" type="Reference">1853</link>
+			
+			
+			<link description="is related to" type="Reference">1609</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-02-03 17:47:32" id="1716" opendate="2010-10-15 17:38:59" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>make TestHBaseCliDriver use dynamic ports to avoid conflicts with already-running services</summary>
+			
+			
+			<description>ant test -Dhadoop.version=0.20.0 -Dtestcase=TestHBaseCliDriver:
+.... 
+[junit] org.apache.hadoop.hbase.client.NoServerForRegionException: Timed out trying to locate root region
+[junit]     at org.apache.hadoop.hbase.client.HConnectionManager$TableServers.locateRootRegion(HConnectionManager.java:976)
+[junit]     at org.apache.hadoop.hbase.client.HConnectionManager$TableServers.locateRegion(HConnectionManager.java:625)
+[junit]     at org.apache.hadoop.hbase.client.HConnectionManager$TableServers.relocateRegion(HConnectionManager.java:607)
+[junit]     at org.apache.hadoop.hbase.client.HConnectionManager$TableServers.locateRegionInMeta(HConnectionManager.java:738)
+[junit]     at org.apache.hadoop.hbase.client.HConnectionManager$TableServers.locateRegion(HConnectionManager.java:634)
+[junit]     at org.apache.hadoop.hbase.client.HConnectionManager$TableServers.locateRegion(HConnectionManager.java:601)
+[junit]     at org.apache.hadoop.hbase.client.HTable.&amp;lt;init&amp;gt;(HTable.java:128)
+[junit]     at org.apache.hadoop.hive.hbase.HBaseTestSetup.setUpFixtures(HBaseTestSetup.java:87)
+[junit]     at org.apache.hadoop.hive.hbase.HBaseTestSetup.preTest(HBaseTestSetup.java:59)
+[junit]     at org.apache.hadoop.hive.hbase.HBaseQTestUtil.&amp;lt;init&amp;gt;(HBaseQTestUtil.java:31)
+[junit]     at org.apache.hadoop.hive.cli.TestHBaseCliDriver.setUp(TestHBaseCliDriver.java:43)
+[junit]     at junit.framework.TestCase.runBare(TestCase.java:125)
+[junit]     at junit.framework.TestResult$1.protect(TestResult.java:106)
+[junit]     at junit.framework.TestResult.runProtected(TestResult.java:124)
+[junit]     at junit.framework.TestResult.run(TestResult.java:109)
+[junit]     at junit.framework.TestCase.run(TestCase.java:118)
+[junit]     at junit.framework.TestSuite.runTest(TestSuite.java:208)
+[junit]     at junit.framework.TestSuite.run(TestSuite.java:203)</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HBaseTestSetup.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1911</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1914</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-02-13 09:30:49" id="1896" opendate="2011-01-06 10:21:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HBase and Contrib JAR names are missing version numbers</summary>
+			
+			
+			<description>Also, does anyone know why the hbase and contrib JARs use underscores
+instead of dashes in their names? Can I change this or will it break something?
+
+
+
+./build/dist/lib/hive-anttasks-0.7.0-SNAPSHOT.jar
+
+./build/dist/lib/hive-cli-0.7.0-SNAPSHOT.jar
+
+./build/dist/lib/hive-common-0.7.0-SNAPSHOT.jar
+
+./build/dist/lib/hive-exec-0.7.0-SNAPSHOT.jar
+
+./build/dist/lib/hive-hwi-0.7.0-SNAPSHOT.jar
+
+./build/dist/lib/hive-jdbc-0.7.0-SNAPSHOT.jar
+
+./build/dist/lib/hive-metastore-0.7.0-SNAPSHOT.jar
+
+./build/dist/lib/hive-serde-0.7.0-SNAPSHOT.jar
+
+./build/dist/lib/hive-service-0.7.0-SNAPSHOT.jar
+
+./build/dist/lib/hive-shims-0.7.0-SNAPSHOT.jar
+
+./build/dist/lib/hive_contrib.jar                                   &amp;lt;------
+
+./build/dist/lib/hive_hbase-handler.jar                     &amp;lt;------
+
+
+
+</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QTestUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-02-16 06:21:09" id="1995" opendate="2011-02-16 02:23:25" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Mismatched open/commit transaction calls when using get_partition()</summary>
+			
+			
+			<description>Nested executeWithRetry() calls caused by using HiveMetaStore.get_partition() can result in mis-matched open/commit calls. Fixes the same issue as described in HIVE-1760.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-02-17 07:46:13" id="1928" opendate="2011-01-26 01:53:02" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>GRANT/REVOKE should handle privileges as tokens, not identifiers</summary>
+			
+			
+			<description>The grammar for the GRANT and REVOKE Privileges statements currently handle the list of privileges as a list of
+identifiers. Since most of the privileges are also keywords in the HQL grammar this requires users
+to individually quote-escape each of the privileges, e.g:
+
+
+
+grant `Create` on table authorization_part to user hive_test_user;
+
+grant `Update` on table authorization_part to user hive_test_user;
+
+grant `Drop` on table authorization_part to user hive_test_user;
+
+grant `select` on table src to user hive_test_user;
+
+
+
+Both MySQL and the SQL standard treat privileges as tokens. Hive should do the same.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.PrivilegeRegistry.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.Privilege.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.DefaultHiveAuthorizationProvider.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">78</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-02-26 15:31:41" id="2007" opendate="2011-02-25 11:40:19" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Executing queries using Hive Server is not logging to the log file specified in hive-log4j.properties</summary>
+			
+			
+			<description>Start Hive Server by specifying the log details ( filelocation , appender , loglevel ) in hive-log4j.properties, but logging is not happening as per the details provided in the hive-log4j.properties.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.service.HiveServer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-03-15 20:49:24" id="1867" opendate="2010-12-24 22:22:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Add mechanism for disabling tests with intermittent failures</summary>
+			
+			
+			<description>
+
+
+[junit] Begin query: dyn_part_empty.q
+
+    [junit] Running org.apache.hadoop.hive.cli.TestNegativeCliDriver
+
+    [junit] Tests run: 1, Failures: 0, Errors: 1, Time elapsed: 0 sec
+
+    [junit] Test org.apache.hadoop.hive.cli.TestNegativeCliDriver FAILED (crashed)
+
+
+
+dyn_part_empty.q has been intermittently failing on Hudson. I was able to reproduce locally,
+and with different versions of JUnit (3.8.1, 4.5, 4.8.2).</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ant.QTestGenTask.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">1872</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-03-17 04:39:58" id="2059" opendate="2011-03-16 18:56:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Add datanucleus.identifierFactory property to HiveConf to avoid unintentional MetaStore Schema corruption</summary>
+			
+			
+			<description>Hive 0.6.0 we upgraded the version of DataNucleus from 1.0 to 2.0, which changed some of the defaults for how field names get mapped to datastore identifiers. This was problem was resolved in HIVE-1435 by setting datanucleus.identifierFactory=datanucleus in hive-default.xml
+However, this property definition was not added to HiveConf. This can result in schema corruption if the user upgrades from Hive 0.5.0 to 0.6.0 or 0.7.0 and retains the Hive 0.5.0 version hive-default.xml on their classpath.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">1435</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-03-19 01:29:37" id="2064" opendate="2011-03-18 17:14:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Make call to SecurityUtil.getServerPrincipal unambiguous</summary>
+			
+			
+			<description>HadoopThriftAuthBridge20S calls SecurityUtil.getServerPrincipal and passes null for the 2nd arg. When building against the hadoop security branch this is a compilation error as it matches the signatures of both getServerPrincipal methods (one takes a String for the 2nd arg, one an InetAddress). This call needs to be made unambiguous eg by passing &quot;0.0.0.0&quot; instead of null, which per the getServerPrincipal javadoc is equivalent:
+
+It replaces hostname pattern with hostname, which should be
+
+fully-qualified domain name. If hostname is null or &quot;0.0.0.0&quot;, it uses
+dynamically looked-up fqdn of the current host instead.
+
+</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge20S.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-03-22 09:55:50" id="2042" opendate="2011-03-11 08:23:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>In error scenario some opened streams may not closed</summary>
+			
+			
+			<description>1) In error scenario PrintStream may not be closed in execute() of  ExplainTask.java
+2) In error scenario InputStream may not be closed in checkJobTracker() of Throttle.java </description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExplainTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.SequenceFileInputFormatChecker.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Utilities.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.contrib.util.typedbytes.TypedBytesWritableOutput.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Throttle.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-04-06 10:51:02" id="1988" opendate="2011-02-14 11:45:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Make the delegation token issued by the MetaStore owned by the right user</summary>
+			
+			
+			<description>The &amp;amp;apos;owner&amp;amp;apos; of any delegation token issued by the MetaStore is set to the requesting user. When a delegation token is asked by the user himself during a job submission, this is fine. However, in the case where the token is requested for by services (e.g., Oozie), on behalf of the user, the token&amp;amp;apos;s owner is set to the user the service is running as. Later on, when the token is used by a MapReduce task, the MetaStore treats the incoming request as coming from Oozie and does operations as Oozie. This means any new directory creations (e.g., create_table) on the hdfs by the MetaStore will end up with Oozie as the owner.
+Also, the MetaStore doesn&amp;amp;apos;t check whether a user asking for a token on behalf of some other user, is actually authorized to act on behalf of that other user. We should start using the ProxyUser authorization in the MetaStore (HADOOP-6510&amp;amp;apos;s APIs).</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.TestHadoop20SAuthBridge.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ThriftHiveMetastore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge20S.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.IMetaStoreClient.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStoreClient.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.DelegationTokenSecretManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-04-08 22:00:09" id="2095" opendate="2011-04-05 21:42:49" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>auto convert map join bug</summary>
+			
+			
+			<description>1) 
+when considering to choose one table as the big table candidate for a map join, if at compile time, hive can find out that the total known size of all other tables excluding the big table in consideration is bigger than a configured value, this big table candidate is a bad one, and should not put into plan. Otherwise, at runtime to filter this out may cause more time.
+2)
+added a null check for back up tasks. Otherwise will see NullPointerException
+3)
+CommonJoinResolver needs to know a full mapping of pathToAliases. Otherwise it will make wrong decision.
+4)
+changes made to the ConditionalResolverCommonJoin: added pathToAliases, aliasToSize (alias&amp;amp;apos;s input size that is known at compile time, by inputSummary), and intermediate dir path.
+So the logic is, go over all the pathToAliases, and for each path, if it is from intermediate dir path, add this path&amp;amp;apos;s size to all aliases. And finally based on the size information and others like aliasToTask to choose the big table. 
+5)
+Conditional task&amp;amp;apos;s children contains wrong options, which may cause join fail or incorrect results. Basically when getting all possible children for the conditional task, should use a whitelist of big tables. Only tables in this while list can be considered as a big table.
+Here is the logic:
+
+Get a list of big table candidates. Only the tables in the returned set can be used as big table in the join operation.
+The logic here is to scan the join condition array from left to right.
+	
+If see a inner join and the bigTableCandidates is empty, add both side of this inner join to big table candidates.
+If see a left outer join, and the bigTableCandidates is empty, add the left side to it, and
+if the bigTableCandidates is not empty, do nothing (which means the bigTableCandidates is from left side).
+If see a right outer join, clear the bigTableCandidates, and add right side to the bigTableCandidates, it means the right side of a right outer join always win.
+If see a full outer join, return null immediately (no one can be the big table, can not do a mapjoin).
+
+
+
+</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.MapJoinProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Task.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.physical.CommonJoinResolver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.ConditionalResolverCommonJoin.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.physical.LocalMapJoinProcFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-04-09 16:26:05" id="2031" opendate="2011-03-08 11:38:53" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Correct the exception message for the better traceability for the scenario load into the partitioned table having 2  partitions by specifying only one partition in the load statement. </summary>
+			
+			
+			<description> Load into the partitioned table having 2 partitions by specifying only one partition in the load statement is failing and logging the following exception message.
+
+ org.apache.hadoop.hive.ql.parse.SemanticException: line 1:91 Partition not found &amp;amp;apos;21Oct&amp;amp;apos;
+
+	at org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer$tableSpec.&amp;lt;init&amp;gt;(BaseSemanticAnalyzer.java:685)
+
+	at org.apache.hadoop.hive.ql.parse.LoadSemanticAnalyzer.analyzeInternal(LoadSemanticAnalyzer.java:196)
+
+	at org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.analyze(BaseSemanticAnalyzer.java:238)
+
+	at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:340)
+
+	at org.apache.hadoop.hive.ql.Driver.run(Driver.java:736)
+
+	at org.apache.hadoop.hive.service.HiveServer$HiveServerHandler.execute(HiveServer.java:151)
+
+	at org.apache.hadoop.hive.service.ThriftHive$Processor$execute.process(ThriftHive.java:764)
+
+	at org.apache.hadoop.hive.service.ThriftHive$Processor.process(ThriftHive.java:742)
+
+	at org.apache.thrift.server.TThreadPoolServer$WorkerProcess.run(TThreadPoolServer.java:253)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+
+	at java.lang.Thread.run(Thread.java:619)
+
+
+
+This needs to be corrected in such a way what is the actual root cause for this.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-06-04 07:44:49" id="1550" opendate="2010-08-17 18:49:32" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Implement DROP VIEW IF EXISTS</summary>
+			
+			
+			<description>Implement the IF EXISTS clause for the DROP VIEW statement.
+See http://dev.mysql.com/doc/refman/5.0/en/drop-view.html
+</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">1856</link>
+			
+			
+			<link description="is part of" type="Incorporates">1856</link>
+			
+			
+			<link description="is related to" type="Reference">1165</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-08 18:32:26" id="2045" opendate="2011-03-11 08:39:55" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TCTLSeparatedProtocol.SimpleTransportTokenizer.nextToken() throws Null Pointer Exception in some cases</summary>
+			
+			
+			<description>1) In TCTLSeparatedProtocol.SimpleTransportTokenizer.nextToken() is doing null check for the tokenizer.
+If tokenizer is null, fillTokenizer() method is called to get the tokenizer object. But fillTokenizer() method also can update the tokenizer with NULL , so NULL check should be done before using the tokenizer.
+2) Also improved some logging in TCTLSeparatedProtocol.java</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.TestTCTLSeparatedProtocol.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.thrift.TCTLSeparatedProtocol.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-16 15:28:56" id="2260" opendate="2011-07-05 22:42:17" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ExecDriver::addInputPaths should pass the table properties to the record writer</summary>
+			
+			
+			<description>Currently when ExecDriver encounters a non-existent partition, it creates an empty file so that the query will be valid (and return 0 results).  However, when it does this and calls getHiveRecordWriter(), it creates a new instance of Properties, rather than providing the Properties associated with the table.
+This causes RecordWriters that pull information from the table through the Properties to fail (such as Haivvreo).  The RecordWriter should be provided the table&amp;amp;apos;s Properties, as it is in all other cases where it&amp;amp;apos;s called.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecDriver.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-18 19:01:15" id="1218" opendate="2010-03-09 23:23:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CREATE TABLE t LIKE some_view should create a new empty base table, but instead creates a copy of view</summary>
+			
+			
+			<description>I think it should copy only the column definitions from the view metadata.  Currently it is copying the entire descriptor, resulting in a new view instead of a new base table.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.CreateTableLikeDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">2268</link>
+			
+			
+			<link description="relates to" type="Reference">2086</link>
+			
+			
+			<link description="relates to" type="Reference">972</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-21 19:32:02" id="2086" opendate="2011-03-31 18:05:43" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Add test coverage for external table data loss issue</summary>
+			
+			
+			<description>Data loss when using &quot;create external table like&quot; statement. 
+1) Set up an external table S, point to location L. Populate data in S.
+2) Create another external table T, using statement like this:
+    create external table T like S location L
+   Make sure table T point to the same location as the original table S.
+3) Query table T, see the same set of data in S.
+4) drop table T.
+5) Query table S will return nothing, and location L is deleted. </description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QTestUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">1218</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-29 18:52:04" id="2080" opendate="2011-03-29 06:42:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Few code improvements in the ql and serde packages.</summary>
+			
+			
+			<description>Few code improvements in the ql and serde packages.
+1) Little performance Improvements 
+2) Null checks to avoid NPEs
+3) Effective varaible management.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.UnionOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.dynamic_type.DynamicSerDeFunction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.TableScanOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.dynamic_type.DynamicSerDeFieldType.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.ASTNode.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.CommonJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FilterOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FileSinkOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ReduceSinkOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.SelectOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.TaskFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Operator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.dynamic_type.DynamicSerDeField.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.ParseContext.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.GroupByOperator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-08-05 04:10:12" id="2298" opendate="2011-07-21 19:03:10" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix UDAFPercentile to tolerate null percentiles</summary>
+			
+			
+			<description>UDAFPercentile when passed null percentile list will throw a null pointer exception.
+Submitting a small fix for that.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.UDAFPercentile.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-08-08 17:42:45" id="1631" opendate="2010-09-11 00:44:19" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JDBC driver returns wrong precision, scale, or column size for some data types</summary>
+			
+			
+			<description>For some data types, these methods return values that do not conform to the JDBC spec:
+org.apache.hadoop.hive.jdbc.HiveResultSetMetaData.getPrecision(int)
+org.apache.hadoop.hive.jdbc.HiveResultSetMetaData.getScale(int)
+org.apache.hadoop.hive.jdbc.HiveResultSetMetaData.getColumnDisplaySize(int)
+org.apache.hadoop.hive.jdbc.JdbcColumn.getColumnSize()</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.TestJdbcDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.HiveResultSetMetaData.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.HiveDatabaseMetaData.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.JdbcColumn.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is blocked by" type="Blocker">2358</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-08-18 21:40:31" id="1573" opendate="2010-08-20 00:33:41" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>select * from partitioned table via JDBC does not return partition columns</summary>
+			
+			
+			<description>select * from partitioned table via JDBC does not return partition columns. This behavior is different from via CLI.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.TestJdbcDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.HiveDatabaseMetaData.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2315</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2315</link>
+			
+			
+			<link description="is related to" type="Reference">2315</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-10-26 04:50:03" id="1850" opendate="2010-12-14 13:18:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>alter table set serdeproperties bypasses regexps checks (leaves table in a non-recoverable state?)</summary>
+			
+			
+			<description>
+
+
+create table aa ( test STRING )
+
+  ROW FORMAT SERDE &amp;amp;apos;org.apache.hadoop.hive.contrib.serde2.RegexSerDe&amp;amp;apos;
+
+  WITH SERDEPROPERTIES (&quot;input.regex&quot; = &quot;[^\\](.*)&quot;, &quot;output.format.string&quot; = &quot;$1s&quot;);
+
+
+
+This will fail. Great!
+
+
+
+create table aa ( test STRING )
+
+  ROW FORMAT SERDE &amp;amp;apos;org.apache.hadoop.hive.contrib.serde2.RegexSerDe&amp;amp;apos;
+
+  WITH SERDEPROPERTIES (&quot;input.regex&quot; = &quot;(.*)&quot;, &quot;output.format.string&quot; = &quot;$1s&quot;);
+
+
+
+Works, no problem there.
+
+
+
+alter table aa set serdeproperties (&quot;input.regex&quot; = &quot;[^\\](.*)&quot;, &quot;output.format.string&quot; = &quot;$1s&quot;);
+
+
+
+Wups... I can set that without any problems!
+
+
+
+alter table aa set serdeproperties (&quot;input.regex&quot; = &quot;(.*)&quot;, &quot;output.format.string&quot; = &quot;$1s&quot;);
+
+FAILED: Hive Internal Error: java.util.regex.PatternSyntaxException(Unclosed character class near index 7
+
+[^\](.*)
+
+       ^)
+
+java.util.regex.PatternSyntaxException: Unclosed character class near index 7
+
+[^\](.*)
+
+       ^
+
+	at java.util.regex.Pattern.error(Pattern.java:1713)
+
+	at java.util.regex.Pattern.clazz(Pattern.java:2254)
+
+	at java.util.regex.Pattern.sequence(Pattern.java:1818)
+
+	at java.util.regex.Pattern.expr(Pattern.java:1752)
+
+	at java.util.regex.Pattern.compile(Pattern.java:1460)
+
+	at java.util.regex.Pattern.&amp;lt;init&amp;gt;(Pattern.java:1133)
+
+	at java.util.regex.Pattern.compile(Pattern.java:847)
+
+	at org.apache.hadoop.hive.contrib.serde2.RegexSerDe.initialize(RegexSerDe.java:101)
+
+	at org.apache.hadoop.hive.metastore.MetaStoreUtils.getDeserializer(MetaStoreUtils.java:199)
+
+	at org.apache.hadoop.hive.ql.metadata.Table.getDeserializer(Table.java:253)
+
+	at org.apache.hadoop.hive.ql.metadata.Table.getCols(Table.java:484)
+
+	at org.apache.hadoop.hive.ql.metadata.Table.checkValidity(Table.java:161)
+
+	at org.apache.hadoop.hive.ql.metadata.Hive.getTable(Hive.java:803)
+
+	at org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.analyzeAlterTableSerdeProps(DDLSemanticAnalyzer.java:558)
+
+	at org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.analyzeInternal(DDLSemanticAnalyzer.java:232)
+
+	at org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.analyze(BaseSemanticAnalyzer.java:238)
+
+	at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:335)
+
+	at org.apache.hadoop.hive.ql.Driver.run(Driver.java:686)
+
+	at org.apache.hadoop.hive.cli.CliDriver.processCmd(CliDriver.java:142)
+
+	at org.apache.hadoop.hive.cli.CliDriver.processLine(CliDriver.java:216)
+
+	at org.apache.hadoop.hive.cli.CliDriver.main(CliDriver.java:370)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+
+	at java.lang.reflect.Method.invoke(Method.java:597)
+
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:156)
+
+
+
+After this, all further commands on the table fails, including drop table 
+1. The alter table command should probably check the regexp just like the create table command does
+2. Even though the regexp is bad, it should be possible to do things like set the regexp again or drop the table.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Table.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-10-29 18:19:06" id="1592" opendate="2010-08-24 22:54:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ProxyFileSystem.close calls super.close twice.</summary>
+			
+			
+			<description>  public void close() throws IOException 
+{
+
+    super.close();
+
+    super.close();
+
+  }</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.fs.ProxyFileSystem.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-10 06:28:27" id="2520" opendate="2011-10-21 03:55:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>left semi join will duplicate data</summary>
+			
+			
+			<description>CREATE TABLE sales (name STRING, id INT)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY &amp;amp;apos;\t&amp;amp;apos;;
+CREATE TABLE things (id INT, name STRING)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY &amp;amp;apos;\t&amp;amp;apos;;
+The &amp;amp;apos;sales&amp;amp;apos; table has data in a file: sales.txt, and the data is
+Joe 2
+Hank 2
+The &amp;amp;apos;things&amp;amp;apos; table has data int two files: things.txt and things2.txt
+The content of things.txt is :
+2 Tie
+The content of things2.txt is :
+2 Tie
+SELECT * FROM sales LEFT SEMI JOIN things ON (sales.id = things.id);
+will output
+Joe 2
+Joe 2
+Hank 2
+Hank 2
+so the result is wrong.
+In CommonJoinOperator left semi join should use &quot; genObject(null, 0, new IntermediateObject(new ArrayList[numAliases], 0), true); &quot; to generate data.
+but now it uses &quot; genUniqueJoinObject(0, 0); &quot; to generate data.
+This patch will solve this problem.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.9.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.CommonJoinOperator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-01-29 16:35:15" id="2735" opendate="2012-01-22 22:10:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>PlanUtils.configureTableJobPropertiesForStorageHandler() is not called for partitioned table</summary>
+			
+			
+			<description>As a result, if there is a query which results in a MR job which needs to be configured via storage handler, it returns in failure.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.9.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-03-15 06:41:23" id="2748" opendate="2012-01-25 17:17:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Upgrade Hbase and ZK dependcies</summary>
+			
+			
+			<description>Both softwares have moved forward with significant improvements. Lets bump compile time dependency to keep up</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.9.0</fixedVersion>
+			
+			
+			<type>Task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.MemoryTokenStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HBaseTestSetup.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.DelegationTokenStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.TestZooKeeperTokenStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.ZooKeeperTokenStore.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">2764</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2077</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-04-16 23:34:59" id="2077" opendate="2011-03-26 03:07:24" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Allow HBaseStorageHandler to work with hbase 0.90.1</summary>
+			
+			
+			<description>Currently HBase handler works with hbase 0.89
+We should make it work with 0.90.1 and utilize new features of 0.90.1</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.MemoryTokenStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HBaseTestSetup.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.DelegationTokenStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.TestZooKeeperTokenStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.ZooKeeperTokenStore.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2748</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-04-27 00:50:31" id="2721" opendate="2012-01-17 01:31:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ability to select a view qualified by the database / schema name</summary>
+			
+			
+			<description>HIVE-1517 added support for selecting tables from different databases (aka schemas) by qualifying the tables with the database name. The feature work did not however extend this support to views. Note that this point came up in the earlier JIRA, but was not addressed. See the following two comments:
+https://issues.apache.org/jira/browse/HIVE-1517?focusedCommentId=12996641&amp;amp;page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-12996641
+https://issues.apache.org/jira/browse/HIVE-1517?focusedCommentId=12996679&amp;amp;page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-12996679</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.UnparseTranslator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-07-27 15:02:06" id="2905" opendate="2012-03-26 04:35:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Desc table can&amp;apos;t show non-ascii comments</summary>
+			
+			
+			<description>When desc a table with command line or hive jdbc way, the table&amp;amp;apos;s comment can&amp;amp;apos;t be read.
+1. I have updated javax.jdo.option.ConnectionURL parameter in hive-site.xml file.
+   jdbc:mysql://...:3306/hive?characterEncoding=UTF-8
+2. In mysql database, the comment field of COLUMNS table can be read normally.</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.formatting.TextMetaDataFormatter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">3914</link>
+			
+			
+			<link description="is related to" type="Reference">5682</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-09 19:58:04" id="1608" opendate="2010-08-31 18:52:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>use sequencefile as the default for storing intermediate results</summary>
+			
+			
+			<description>The only argument for having a text file for storing intermediate results seems to be better debuggability.
+But, tailing a sequence file is possible, and it should be more space efficient</description>
+			
+			
+			<version>0.7.0</version>
+			
+			
+			<fixedVersion>2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="Is contained by" type="Container">8591</link>
+			
+			
+			<link description="is related to" type="Reference">3065</link>
+			
+			
+			<link description="is related to" type="Reference">1598</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

@@ -1,0 +1,1 @@
+column length limit enforc hcolumndescriptor limit column length enforc 0 1 3 0 2 0 rest thrift api thought enforc earlier revis find enforc client side complic server side

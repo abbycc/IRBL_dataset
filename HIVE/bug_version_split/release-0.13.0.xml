@@ -1,0 +1,5059 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HIVE">
+	<bug fixdate="2013-10-16 15:33:09" id="5546" opendate="2013-10-15 15:06:59" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>A change in ORCInputFormat made by HIVE-4113 was reverted by HIVE-5391</summary>
+			
+			
+			<description>
+
+
+2013-10-15 10:49:49,386 INFO org.apache.hadoop.hive.ql.io.orc.OrcInputFormat: included column ids = 
+
+2013-10-15 10:49:49,386 INFO org.apache.hadoop.hive.ql.io.orc.OrcInputFormat: included columns names = 
+
+2013-10-15 10:49:49,386 INFO org.apache.hadoop.hive.ql.io.orc.OrcInputFormat: No ORC pushdown predicate
+
+2013-10-15 10:49:49,834 INFO org.apache.hadoop.hive.ql.io.HiveContextAwareRecordReader: Processing file hdfs://localhost:54310/user/hive/warehouse/web_sales_orc/000000_0
+
+2013-10-15 10:49:49,834 INFO org.apache.hadoop.mapred.MapTask: numReduceTasks: 1
+
+2013-10-15 10:49:49,840 INFO org.apache.hadoop.mapred.MapTask: io.sort.mb = 100
+
+2013-10-15 10:49:49,968 INFO org.apache.hadoop.mapred.TaskLogsTruncater: Initializing logs&amp;amp;apos; truncater with mapRetainSize=-1 and reduceRetainSize=-1
+
+2013-10-15 10:49:49,994 INFO org.apache.hadoop.io.nativeio.NativeIO: Initialized cache for UID to User mapping with a cache timeout of 14400 seconds.
+
+2013-10-15 10:49:49,994 INFO org.apache.hadoop.io.nativeio.NativeIO: Got UserName yhuai for UID 1000 from the native implementation
+
+2013-10-15 10:49:49,996 FATAL org.apache.hadoop.mapred.Child: Error running child : java.lang.OutOfMemoryError: Java heap space
+
+	at org.apache.hadoop.mapred.MapTask$MapOutputBuffer.&amp;lt;init&amp;gt;(MapTask.java:949)
+
+	at org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:428)
+
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:372)
+
+	at org.apache.hadoop.mapred.Child$4.run(Child.java:255)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1136)
+
+	at org.apache.hadoop.mapred.Child.main(Child.java:249)
+
+
+
+If includedColumnIds is an empty list, we do not need to read any column. But, right now, in OrcInputFormat.findIncludedColumns, we have ...
+
+
+
+if (ColumnProjectionUtils.isReadAllColumns(conf) ||
+
+      includedStr == null || includedStr.trim().length() == 0) {
+
+      return null;
+
+    } 
+
+
+
+If includedStr is an empty string, the code assumes that we need all columns, which is not correct.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">5563</link>
+			
+			
+			<link description="is broken by" type="Regression">5391</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-10-16 17:51:51" id="5563" opendate="2013-10-16 17:10:08" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Skip reading columns in ORC for count(*)</summary>
+			
+			
+			<description>With HIVE-4113, the semantics of ColumnProjectionUtils.getReadColumnIds was fixed so that an empty list means no columns instead of all columns. (Except the caveat of the override of ColumnProjectionUtils.isReadAllColumns.)
+However, ORC&amp;amp;apos;s reader wasn&amp;amp;apos;t updated so it still reads all columns.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5546</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-11-21 02:21:19" id="5845" opendate="2013-11-18 23:07:41" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CTAS failed on vectorized code path</summary>
+			
+			
+			<description>Following query fails:
+ create table store_sales_2 stored as orc as select * from alltypesorc;</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.TestVectorExpressionWriters.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcSerde.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.VectorizedOrcSerde.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpressionWriter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpressionWriterFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">5863</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-11-21 18:02:47" id="5863" opendate="2013-11-21 00:44:53" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>INSERT OVERWRITE TABLE fails in vectorized mode for ORC format target table</summary>
+			
+			
+			<description>create table store(s_store_key int, s_city string)
+stored as orc;
+set hive.vectorized.execution.enabled = true;
+insert overwrite table store
+select cint, cstring1
+from alltypesorc;
+Alltypesorc is a test table that is checked in to the Hive source.
+Expected result: data is added to store table.
+Actual result:
+Total MapReduce jobs = 3
+Launching Job 1 out of 3
+Number of reduce tasks is set to 0 since there&amp;amp;apos;s no reduce operator
+Starting Job = job_201311191600_0007, Tracking URL = http://localhost:50030/jobdetails.jsp?jobid=job_201311191600_0007
+Kill Command = c:\Hadoop\hadoop-1.1.0-SNAPSHOT\bin\hadoop.cmd job  -kill job_201311191600_0007
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0
+2013-11-20 16:39:53,271 Stage-1 map = 0%,  reduce = 0%
+2013-11-20 16:40:20,375 Stage-1 map = 100%,  reduce = 100%
+Ended Job = job_201311191600_0007 with errors
+Error during job, obtaining debugging information...
+Job Tracking URL: http://localhost:50030/jobdetails.jsp?jobid=job_201311191600_0007
+Examining task ID: task_201311191600_0007_m_000002 (and more) from job job_201311191600_0007
+Task with the most failures(4):
+
+Task ID:
+  task_201311191600_0007_m_000000
+URL:
+http://localhost:50030/taskdetails.jsp?jobid=job_201311191600_0007&amp;amp;tipid=task_201311191600_0007_m_000000
+
+Diagnostic Messages for this Task:
+java.lang.RuntimeException: org.apache.hadoop.hive.ql.metadata.HiveException: Hive Runtime Error while processing row
+        at org.apache.hadoop.hive.ql.exec.mr.ExecMapper.map(ExecMapper.java:181)
+        at org.apache.hadoop.mapred.MapRunner.run(MapRunner.java:50)
+        at org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:430)
+        at org.apache.hadoop.mapred.MapTask.run(MapTask.java:366)
+        at org.apache.hadoop.mapred.Child$4.run(Child.java:266)
+        at java.security.AccessController.doPrivileged(Native Method)
+        at javax.security.auth.Subject.doAs(Subject.java:396)
+        at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1136)
+        at org.apache.hadoop.mapred.Child.main(Child.java:260)
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: Hive Runtime Error while processing row
+        at org.apache.hadoop.hive.ql.exec.vector.VectorMapOperator.process(VectorMapOperator.java:45)
+        at org.apache.hadoop.hive.ql.exec.mr.ExecMapper.map(ExecMapper.java:163)
+        ... 8 more
+Caused by: java.lang.ClassCastException: org.apache.hadoop.hive.ql.io.orc.OrcStruct cannot be cast to [Ljava.lang.Object;
+        at org.apache.hadoop.hive.serde2.objectinspector.StandardStructObjectInspector.getStructFieldData(StandardStructObjectInspec
+tor.java:173)
+        at org.apache.hadoop.hive.ql.io.orc.WriterImpl$StructTreeWriter.write(WriterImpl.java:1349)
+        at org.apache.hadoop.hive.ql.io.orc.WriterImpl.addRow(WriterImpl.java:1962)
+        at org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat$OrcRecordWriter.write(OrcOutputFormat.java:78)
+        at org.apache.hadoop.hive.ql.exec.vector.VectorFileSinkOperator.processOp(VectorFileSinkOperator.java:159)
+        at org.apache.hadoop.hive.ql.exec.Operator.process(Operator.java:489)
+        at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:827)
+        at org.apache.hadoop.hive.ql.exec.vector.VectorSelectOperator.processOp(VectorSelectOperator.java:129)
+        at org.apache.hadoop.hive.ql.exec.Operator.process(Operator.java:489)
+        at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:827)
+        at org.apache.hadoop.hive.ql.exec.TableScanOperator.processOp(TableScanOperator.java:91)
+        at org.apache.hadoop.hive.ql.exec.Operator.process(Operator.java:489)
+        at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:827)
+        at org.apache.hadoop.hive.ql.exec.vector.VectorMapOperator.process(VectorMapOperator.java:43)
+        ... 9 more</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.TestVectorExpressionWriters.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcSerde.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.VectorizedOrcSerde.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpressionWriter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpressionWriterFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5845</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-12-10 21:49:43" id="5986" opendate="2013-12-09 05:59:28" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ORC SARG evaluation fails with NPE for UDFs or expressions in predicate condition</summary>
+			
+			
+			<description>
+select s from orctable where length(substr(s, 1, 2)) &amp;lt;= 2 and s like &amp;amp;apos;%&amp;amp;apos;;
+
+ kind of queries generate empty child expressions for the operator (AND in this case). When child expressions are empty evaluate(TruthValue[] leaves) functions returns null which results in NPE during orc split elimination or row group elimination. </description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.sarg.TestSearchArgumentImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.sarg.SearchArgumentImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5580</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-12-11 00:40:12" id="5580" opendate="2013-10-17 21:08:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>push down predicates with an and-operator between non-SARGable predicates will get NPE</summary>
+			
+			
+			<description>When all of the predicates in an AND-operator in a SARG expression get removed by the SARG builder, evaluation can end up with a NPE. Sub-expressions are typically removed from AND-operators because they aren&amp;amp;apos;t SARGable.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.sarg.TestSearchArgumentImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.sarg.SearchArgumentImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">5986</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-01-29 06:53:30" id="6295" opendate="2014-01-23 22:42:05" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>metadata_only test on Tez generates unoptimized plan</summary>
+			
+			
+			<description>One of the queries in the test should be a 0 stage metadata only query, but on tez it still produces a table scan.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.tez.TezTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.TaskCompilerFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.GenMapRedUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.stats.CounterStatsAggregatorTez.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.StatsTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.GenTezWork.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.TestGenTezWork.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.TezCompiler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.GenMRTableScan1.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.rcfile.stats.PartialScanMapper.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6218</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-02-12 05:21:18" id="6218" opendate="2014-01-16 22:47:35" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Stats for row-count not getting updated with Tez insert + dbclass=counter</summary>
+			
+			
+			<description>Inserting data into hive with Tez,  the stats on row-count is not getting updated when using the counter dbclass.
+To reproduce, run &quot;ANALYZE TABLE store_sales COMPUTE STATISTICS;&quot; with tez as the execution engine.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.tez.TezTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.TaskCompilerFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.GenMapRedUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.stats.CounterStatsAggregatorTez.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.StatsTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.GenTezWork.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.TestGenTezWork.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.TezCompiler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.GenMRTableScan1.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.rcfile.stats.PartialScanMapper.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6295</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-02-26 01:07:32" id="6506" opendate="2014-02-26 00:52:45" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>hcatalog should automatically work with new tableproperties in ORC</summary>
+			
+			
+			<description>HIVE-5504 has changes to handle existing table properties for ORC file format. But it does not automatically pick newly added table properties. We should refactor ORC so that its table property list can be automatically determined.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcFile.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.SpecialCases.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6507</link>
+			
+			
+			<link description="is related to" type="Reference">5504</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-01 02:17:32" id="6484" opendate="2014-02-22 00:17:04" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HiveServer2 doAs should be session aware both for secured and unsecured session implementation.</summary>
+			
+			
+			<description>Currently in unsecured case, the doAs is performed by decorating TProcessor.process method. This has been causing cleanup issues as we end up creating a new clientUgi for each request rather than for each session. This also cleans up the code.
+Thejas M Nair Probably you can add more if you&amp;amp;apos;ve seen other issues related to this.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.HiveSessionProxy.java</file>
+			
+			
+			<file type="D">org.apache.hive.service.auth.TUGIContainingProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.SessionManager.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.HiveSession.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.HiveSessionImpl.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.auth.TSetIpAddressProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.thrift.ThriftCLIService.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6312</link>
+			
+			
+			<link description="is related to" type="Reference">4501</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-04 01:31:47" id="6542" opendate="2014-03-04 00:09:30" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>build error with jdk 7</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.MapJoinEagerRowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.TestPTFRowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.SMBMapJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.PTFPartition.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.TestMapJoinEqualityTableContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.JoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.LazyFlatRowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.MapJoinRowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.RowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.TestMapJoinRowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.PTFRowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.HashTableSinkOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.CommonJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.AbstractRowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.TestMapJoinTableContainer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6530</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-04 17:56:33" id="6530" opendate="2014-03-01 05:22:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JDK 7 trunk build fails after HIVE-6418 patch</summary>
+			
+			
+			<description>JDK7 build fails with following error 
+
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.1:compile (default-compile) on project hive-exec: Compilation failure
+
+[ERROR] /home/prasadm/repos/apache/hive-trunk/ql/src/java/org/apache/hadoop/hive/ql/exec/persistence/LazyFlatRowContainer.java:[118,15] name clash: add(java.util.List&amp;lt;java.lang.Object&amp;gt;) in org.apache.hadoop.hive.ql.exec.persistence.LazyFlatRowContainer overrides a method whose erasure is the same as another method, yet neither overrides the other
+
+[ERROR] first method:  add(E) in java.util.AbstractCollection
+
+[ERROR] second method: add(ROW) in org.apache.hadoop.hive.ql.exec.persistence.AbstractRowContainer
+
+[ERROR] -&amp;gt; [Help 1]
+
+[ERROR] 
+
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+
+[ERROR] 
+
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+
+[ERROR] 
+
+[ERROR] After correcting the problems, you can resume the build with the command
+
+[ERROR]   mvn &amp;lt;goals&amp;gt; -rf :hive-exec
+
+
+
+This LazyFlatRowContainer.java is  a new file added as part of  HIVE-6418 patch. It&amp;amp;apos;s extending AbstractCollection and implements AbstractRowContainer. Looks like the both these have a add() method that&amp;amp;apos;s conflicting.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.MapJoinEagerRowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.TestPTFRowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.SMBMapJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.PTFPartition.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.TestMapJoinEqualityTableContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.JoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.LazyFlatRowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.MapJoinRowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.RowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.TestMapJoinRowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.PTFRowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.HashTableSinkOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.CommonJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.AbstractRowContainer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.persistence.TestMapJoinTableContainer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6542</link>
+			
+			
+			<link description="is related to" type="Reference">6418</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-07 19:41:38" id="6477" opendate="2014-02-20 23:11:40" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Aggregation functions for tiny/smallint broken with parquet</summary>
+			
+			
+			<description>Given the following table:
+
+CREATE TABLE IF NOT EXISTS commontypesagg (
+
+id int,
+
+bool_col boolean,
+
+tinyint_col tinyint,
+
+smallint_col smallint,
+
+int_col int,
+
+bigint_col bigint,
+
+float_col float,
+
+double_col double,
+
+date_string_col string,
+
+string_col string)
+
+PARTITIONED BY (year int, month int, day int)
+
+STORED AS PARQUET;
+
+
+
+The following queries throws ClassCastException:
+
+select count(tinyint_col), min(tinyint_col), max(tinyint_col), sum(tinyint_col) from commontypesagg;
+
+
+
+select count(smallint_col), min(smallint_col), max(smallint_col), sum(smallint_col) from commontypesagg;
+
+
+
+Exception is the following:
+
+2014-01-29 14:02:11,381 INFO org.apache.hadoop.mapred.TaskStatus: task-diagnostic-info for task attempt_201401290934_0006_m_000001_1 : java.lang.RuntimeException: org.apache.hadoop.hive.ql.metadata.HiveException: Hive Runtime Error while processing row {&quot;id&quot;:null,&quot;bool_col&quot;:null,&quot;tinyint_col&quot;:1,&quot;smallint_col&quot;:null,&quot;int_col&quot;:null,&quot;bigint_col&quot;:null,&quot;float_col&quot;:null,&quot;double_col&quot;:null,&quot;date_string_col&quot;:null,&quot;string_col&quot;:null,&quot;year&quot;:&quot;2009&quot;,&quot;month&quot;:&quot;1&quot;}
+
+at org.apache.hadoop.hive.ql.exec.mr.ExecMapper.map(ExecMapper.java:175)
+
+at org.apache.hadoop.mapred.MapRunner.run(MapRunner.java:50)
+
+at org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:417)
+
+at org.apache.hadoop.mapred.MapTask.run(MapTask.java:332)
+
+at org.apache.hadoop.mapred.Child$4.run(Child.java:268)
+
+at java.security.AccessController.doPrivileged(Native Method)
+
+at javax.security.auth.Subject.doAs(Subject.java:415)
+
+at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1548)
+
+at org.apache.hadoop.mapred.Child.main(Child.java:262)
+
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: Hive Runtime Error while processing row {&quot;id&quot;:null,&quot;bool_col&quot;:null,&quot;tinyint_col&quot;:1,&quot;smallint_col&quot;:null,&quot;int_col&quot;:null,&quot;bigint_col&quot;:null,&quot;float_col&quot;:null,&quot;double_col&quot;:null,&quot;date_string_col&quot;:null,&quot;string_col&quot;:null,&quot;year&quot;:&quot;2009&quot;,&quot;month&quot;:&quot;1&quot;}
+
+at org.apache.hadoop.hive.ql.exec.MapOperator.process(MapOperator.java:529)
+
+at org.apache.hadoop.hive.ql.exec.mr.ExecMapper.map(ExecMapper.java:157)
+
+... 8 more
+
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: java.lang.ClassCastException: org.apache.hadoop.io.IntWritable cannot be cast to java.lang.Byte
+
+at org.apache.hadoop.hive.ql.exec.GroupByOperator.processOp(GroupByOperator.java:796)
+
+at org.apache.hadoop.hive.ql.exec.Operator.process(Operator.java:504)
+
+at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:844)
+
+at org.apache.hadoop.hive.ql.exec.SelectOperator.processOp(SelectOperator.java:87)
+
+at org.apache.hadoop.hive.ql.exec.Operator.process(Operator.java:504)
+
+at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:844)
+
+at org.apache.hadoop.hive.ql.exec.TableScanOperator.processOp(TableScanOperator.java:91)
+
+at org.apache.hadoop.hive.ql.exec.Operator.process(Operator.java:504)
+
+at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:844)
+
+at org.apache.hadoop.hive.ql.exec.MapOperator.process(MapOperator.java:519)
+
+... 9 more
+
+Caused by: java.lang.ClassCastException: org.apache.hadoop.io.IntWritable cannot be cast to java.lang.Byte
+
+at org.apache.hadoop.hive.serde2.objectinspector.primitive.JavaByteObjectInspector.get(JavaByteObjectInspector.java:40)
+
+at org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils.compare(ObjectInspectorUtils.java:666)
+
+at org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils.compare(ObjectInspectorUtils.java:631)
+
+at org.apache.hadoop.hive.ql.udf.generic.GenericUDAFMin$GenericUDAFMinEvaluator.merge(GenericUDAFMin.java:109)
+
+at org.apache.hadoop.hive.ql.udf.generic.GenericUDAFMin$GenericUDAFMinEvaluator.iterate(GenericUDAFMin.java:96)
+
+at org.apache.hadoop.hive.ql.udf.generic.GenericUDAFEvaluator.aggregate(GenericUDAFEvaluator.java:183)
+
+at org.apache.hadoop.hive.ql.exec.GroupByOperator.updateAggregations(GroupByOperator.java:629)
+
+at org.apache.hadoop.hive.ql.exec.GroupByOperator.processHashAggr(GroupByOperator.java:826)
+
+at org.apache.hadoop.hive.ql.exec.GroupByOperator.processKey(GroupByOperator.java:723)
+
+at org.apache.hadoop.hive.ql.exec.GroupByOperator.processOp(GroupByOperator.java:791)
+
+... 18 more
+
+
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.parquet.serde.primitive.ParquetByteInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.parquet.serde.primitive.ParquetShortInspector.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6414</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-08 00:57:25" id="6414" opendate="2014-02-12 16:50:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ParquetInputFormat provides data values that do not match the object inspectors</summary>
+			
+			
+			<description>While working on HIVE-5998 I noticed that the ParquetRecordReader returns IntWritable for all &amp;amp;apos;int like&amp;amp;apos; types, in disaccord with the row object inspectors. I though fine, and I worked my way around it. But I see now that the issue trigger failuers in other places, eg. in aggregates:
+
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: Hive Runtime Error while processing row {&quot;cint&quot;:528534767,&quot;ctinyint&quot;:31,&quot;csmallint&quot;:4963,&quot;cfloat&quot;:31.0,&quot;cdouble&quot;:4963.0,&quot;cstring1&quot;:&quot;cvLH6Eat2yFsyy7p&quot;}
+
+        at org.apache.hadoop.hive.ql.exec.MapOperator.process(MapOperator.java:534)
+
+        at org.apache.hadoop.hive.ql.exec.mr.ExecMapper.map(ExecMapper.java:177)
+
+        ... 8 more
+
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: java.lang.ClassCastException: org.apache.hadoop.io.IntWritable cannot be cast to java.lang.Short
+
+        at org.apache.hadoop.hive.ql.exec.GroupByOperator.processOp(GroupByOperator.java:808)
+
+        at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:790)
+
+        at org.apache.hadoop.hive.ql.exec.SelectOperator.processOp(SelectOperator.java:87)
+
+        at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:790)
+
+        at org.apache.hadoop.hive.ql.exec.TableScanOperator.processOp(TableScanOperator.java:92)
+
+        at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:790)
+
+        at org.apache.hadoop.hive.ql.exec.MapOperator.process(MapOperator.java:524)
+
+        ... 9 more
+
+Caused by: java.lang.ClassCastException: org.apache.hadoop.io.IntWritable cannot be cast to java.lang.Short
+
+        at org.apache.hadoop.hive.serde2.objectinspector.primitive.JavaShortObjectInspector.get(JavaShortObjectInspector.java:41)
+
+        at org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils.compare(ObjectInspectorUtils.java:671)
+
+        at org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils.compare(ObjectInspectorUtils.java:631)
+
+        at org.apache.hadoop.hive.ql.udf.generic.GenericUDAFMin$GenericUDAFMinEvaluator.merge(GenericUDAFMin.java:109)
+
+        at org.apache.hadoop.hive.ql.udf.generic.GenericUDAFMin$GenericUDAFMinEvaluator.iterate(GenericUDAFMin.java:96)
+
+        at org.apache.hadoop.hive.ql.udf.generic.GenericUDAFEvaluator.aggregate(GenericUDAFEvaluator.java:183)
+
+        at org.apache.hadoop.hive.ql.exec.GroupByOperator.updateAggregations(GroupByOperator.java:641)
+
+        at org.apache.hadoop.hive.ql.exec.GroupByOperator.processHashAggr(GroupByOperator.java:838)
+
+        at org.apache.hadoop.hive.ql.exec.GroupByOperator.processKey(GroupByOperator.java:735)
+
+        at org.apache.hadoop.hive.ql.exec.GroupByOperator.processOp(GroupByOperator.java:803)
+
+        ... 15 more
+
+
+
+My test is (I&amp;amp;apos;m writing a test .q from HIVE-5998, but the repro does not involve vectorization):
+
+create table if not exists alltypes_parquet (
+
+  cint int,
+
+  ctinyint tinyint,
+
+  csmallint smallint,
+
+  cfloat float,
+
+  cdouble double,
+
+  cstring1 string) stored as parquet;
+
+
+
+insert overwrite table alltypes_parquet
+
+  select cint,
+
+    ctinyint,
+
+    csmallint,
+
+    cfloat,
+
+    cdouble,
+
+    cstring1
+
+  from alltypesorc;
+
+
+
+explain select * from alltypes_parquet limit 10; select * from alltypes_parquet limit 10;
+
+
+
+explain select ctinyint,
+
+  max(cint),
+
+  min(csmallint),
+
+  count(cstring1),
+
+  avg(cfloat),
+
+  stddev_pop(cdouble)
+
+  from alltypes_parquet
+
+  group by ctinyint;
+
+select ctinyint,
+
+  max(cint),
+
+  min(csmallint),
+
+  count(cstring1),
+
+  avg(cfloat),
+
+  stddev_pop(cdouble)
+
+  from alltypes_parquet
+
+  group by ctinyint;
+
+
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.parquet.serde.primitive.ParquetByteInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.parquet.serde.primitive.ParquetShortInspector.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6477</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-08 13:13:40" id="6491" opendate="2014-02-24 11:30:33" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ClassCastException in AbstractParquetMapInspector</summary>
+			
+			
+			<description>AbstractParquetMapInspector uses wrong class cast https://github.com/apache/hive/blob/trunk/ql/src/java/org/apache/hadoop/hive/ql/io/parquet/serde/AbstractParquetMapInspector.java#L144
+It should be AbstractParquetMapInspector
+
+
+
+final StandardParquetHiveMapInspector other = (StandardParquetHiveMapInspector) obj;
+
+
+
+Such conversion leads to class cast exception in case of DeepParquetHiveMapInspector.
+
+
+
+Caused by: java.lang.ClassCastException: org.apache.hadoop.hive.ql.io.parquet.serde.DeepParquetHiveMapInspector cannot be cast to org.apache.hadoop.hive.ql.io.parquet.serde.StandardParquetHiveMapInspector
+
+        at org.apache.hadoop.hive.ql.io.parquet.serde.AbstractParquetMapInspector.equals(AbstractParquetMapInspector.java:131)
+
+        at java.util.AbstractList.equals(AbstractList.java:523)
+
+        at java.util.AbstractList.equals(AbstractList.java:523)
+
+        at java.util.concurrent.ConcurrentHashMap.get(ConcurrentHashMap.java:996)
+
+        at org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorFactory.getStandardStructObjectInspector(ObjectInspectorFactory.java:281)
+
+        at org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorFactory.getStandardStructObjectInspector(ObjectInspectorFactory.java:268)
+
+        at org.apache.hadoop.hive.ql.exec.Operator.initEvaluatorsAndReturnStruct(Operator.java:1022)
+
+        at org.apache.hadoop.hive.ql.exec.SelectOperator.initializeOp(SelectOperator.java:65)
+
+        at org.apache.hadoop.hive.ql.exec.Operator.initialize(Operator.java:377)
+
+        at org.apache.hadoop.hive.ql.exec.Operator.initialize(Operator.java:453)
+
+        at org.apache.hadoop.hive.ql.exec.Operator.initializeChildren(Operator.java:409)
+
+        at org.apache.hadoop.hive.ql.exec.TableScanOperator.initializeOp(TableScanOperator.java:188)
+
+        at org.apache.hadoop.hive.ql.exec.Operator.initialize(Operator.java:377)
+
+        at org.apache.hadoop.hive.ql.exec.FetchTask.initialize(FetchTask.java:80)
+
+        ... 31 more
+
+
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.parquet.serde.AbstractParquetMapInspector.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6575</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-12 12:50:43" id="6507" opendate="2014-02-26 01:00:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>OrcFile table property names are specified as strings</summary>
+			
+			
+			<description>In HIVE-5504, we had to do some special casing in HCatalog to add a particular set of orc table properties from table properties to job properties.
+In doing so, it&amp;amp;apos;s obvious that that is a bit cumbersome, and ideally, the list of all orc file table properties should really be an enum, rather than individual loosely tied constant strings. If we were to clean this up, we can clean up other code that references this to reference the entire enum, and avoid future errors when new table properties are introduced, but other referencing code is not updated.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcFile.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.mapreduce.SpecialCases.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6506</link>
+			
+			
+			<link description="is related to" type="Reference">5504</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-12 17:48:52" id="6575" opendate="2014-03-07 01:23:53" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>select * fails on parquet table with map datatype</summary>
+			
+			
+			<description>Create parquet table with map and run select * from parquet_table, returns following exception:
+
+ FAILED: RuntimeException java.lang.ClassCastException: org.apache.hadoop.hive.ql.io.parquet.serde.DeepParquetHiveMapInspector cannot be cast to org.apache.hadoop.hive.ql.io.parquet.serde.StandardParquetHiveMapInspector
+
+
+
+However select &amp;lt;mapcol&amp;gt; from parquet_table seems to work, and thus joins will work.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.parquet.serde.AbstractParquetMapInspector.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6491</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6794</link>
+			
+			
+			<link description="incorporates" type="Incorporates">6634</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-14 18:08:26" id="6312" opendate="2014-01-27 02:08:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>doAs with plain sasl auth should be session aware</summary>
+			
+			
+			<description>TUGIContainingProcessor creates new Subject for each invocation which induces FileSystem leakage when cache is enable(true by default).</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.HiveSessionProxy.java</file>
+			
+			
+			<file type="D">org.apache.hive.service.auth.TUGIContainingProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.SessionManager.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.HiveSession.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.HiveSessionImpl.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.auth.TSetIpAddressProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.thrift.ThriftCLIService.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">6663</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">4501</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6484</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">5447</link>
+			
+			
+			<link description="relates to" type="Reference">6245</link>
+			
+			
+			<link description="is related to" type="Reference">9234</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-22 02:14:54" id="6631" opendate="2014-03-12 16:27:27" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NPE when select a field of a struct from a table stored by ORC</summary>
+			
+			
+			<description>I have a table like this ...
+
+
+
+create table lineitem_orc_cg
+
+(
+
+CG1 STRUCT&amp;lt;L_PARTKEY:INT,
+
+           L_SUPPKEY:INT,
+
+           L_COMMITDATE:STRING,
+
+           L_RECEIPTDATE:STRING,
+
+           L_SHIPINSTRUCT:STRING,
+
+           L_SHIPMODE:STRING,
+
+           L_COMMENT:STRING,
+
+           L_TAX:float,
+
+           L_RETURNFLAG:STRING,
+
+           L_LINESTATUS:STRING,
+
+           L_LINENUMBER:INT,
+
+           L_ORDERKEY:INT&amp;gt;,
+
+CG2 STRUCT&amp;lt;L_QUANTITY:float,
+
+           L_EXTENDEDPRICE:float,
+
+           L_DISCOUNT:float,
+
+           L_SHIPDATE:STRING&amp;gt;
+
+)
+
+row format serde &amp;amp;apos;org.apache.hadoop.hive.ql.io.orc.OrcSerde&amp;amp;apos;
+
+stored as orc tblproperties (&quot;orc.compress&quot;=&quot;NONE&quot;);
+
+
+
+When I want to select a field from a struct by using
+
+
+
+select cg1.l_comment from lineitem_orc_cg limit 1;
+
+
+
+I got 
+
+
+
+Caused by: java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.exec.ExprNodeFieldEvaluator.initialize(ExprNodeFieldEvaluator.java:61)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.initEvaluators(Operator.java:928)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.initEvaluatorsAndReturnStruct(Operator.java:954)
+
+	at org.apache.hadoop.hive.ql.exec.SelectOperator.initializeOp(SelectOperator.java:65)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.initialize(Operator.java:375)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.initialize(Operator.java:459)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.initializeChildren(Operator.java:415)
+
+	at org.apache.hadoop.hive.ql.exec.TableScanOperator.initializeOp(TableScanOperator.java:189)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.initialize(Operator.java:375)
+
+	at org.apache.hadoop.hive.ql.exec.MapOperator.initializeOp(MapOperator.java:409)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.initialize(Operator.java:375)
+
+	at org.apache.hadoop.hive.ql.exec.mr.ExecMapper.configure(ExecMapper.java:133)
+
+	... 22 more
+
+
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcStruct.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6716</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-24 19:18:08" id="6716" opendate="2014-03-21 02:00:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ORC struct throws NPE for tables with inner structs having null values </summary>
+			
+			
+			<description>ORCStruct should return null when object passed to getStructFieldsDataAsList(Object obj) is null.
+
+
+
+public List&amp;lt;Object&amp;gt; getStructFieldsDataAsList(Object object) {
+
+      OrcStruct struct = (OrcStruct) object;
+
+      List&amp;lt;Object&amp;gt; result = new ArrayList&amp;lt;Object&amp;gt;(struct.fields.length);
+
+
+
+In the above code struct.fields will throw NPE if struct is NULL.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcStruct.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6631</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-04-10 22:37:31" id="6877" opendate="2014-04-09 23:13:41" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestOrcRawRecordMerger is deleting test.tmp.dir</summary>
+			
+			
+			<description>TestOrcRawRecordMerger seems to be deleting the directory pointed to by test.tmp.dir.  This can cause some failures in any tests that run after this test if they need to use any files in the tmp dir such as conf files or creating Hive tables.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0, 0.13.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.TestOrcRawRecordMerger.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6953</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-04-28 07:10:46" id="6953" opendate="2014-04-22 12:37:33" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>All CompactorTest failing with Table/View &amp;apos;NEXT_TXN_ID&amp;apos; does not exist</summary>
+			
+			
+			<description>When I&amp;amp;apos;m running all tests through the command &amp;amp;apos;mvn clean install -Phadoop-1&amp;amp;apos;, all CompactorTest classes TestInitiator, TestWorker, TestCleaner fail with following exception :
+
+org.apache.hadoop.hive.metastore.api.MetaException: Unable to select from transaction database java.sql.SQLSyntaxErrorException: Table/View &amp;amp;apos;NEXT_TXN_ID&amp;amp;apos; does not exist.
+
+        at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
+
+        at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Unknown Source)
+
+        at org.apache.derby.impl.jdbc.TransactionResourceImpl.wrapInSQLException(Unknown Source)
+
+        at org.apache.derby.impl.jdbc.TransactionResourceImpl.handleException(Unknown Source)
+
+
+
+....
+
+Caused by: java.sql.SQLException: Table/View &amp;amp;apos;NEXT_TXN_ID&amp;amp;apos; does not exist.
+
+        at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
+
+        at org.apache.derby.impl.jdbc.SQLExceptionFactory40.wrapArgsForTransportAcrossDRDA(Unknown Source)
+
+
+
+
+
+This is happening on branch-0.13. Has anyone faced this problem?
+Owen O&amp;amp;apos;Malley or someone else help me solve this. Do i have to set anything?
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.TestOrcRawRecordMerger.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6877</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-05-12 22:08:01" id="7011" opendate="2014-05-03 01:33:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HiveInputFormat&amp;apos;s split generation isn&amp;apos;t thread safe</summary>
+			
+			
+			<description>Tez will do split generation in parallel. Need to protect the inputformat cache against concurrent access.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.HiveInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">7393</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-05-13 16:31:23" id="6908" opendate="2014-04-14 23:19:10" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestThriftBinaryCLIService.testExecuteStatementAsync has intermittent failures</summary>
+			
+			
+			<description>This has failed sometimes in the pre-commit tests.
+ThriftCLIServiceTest.testExecuteStatementAsync runs two statements.  They are given 100 second timeout total, not sure if its by intention.  As the first is a select query, it will take a majority of the time.  The second statement (create table) should be quicker, but it fails sometimes because timeout is already mostly used up.
+The timeout should probably be reset after the first statement.  If the operation finishes before the timeout, it wont have any effect as it&amp;amp;apos;ll break out.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.service.cli.thrift.ThriftCLIServiceTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6747</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-05-16 00:50:02" id="6626" opendate="2014-03-12 09:25:25" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive does not expand the DOWNLOADED_RESOURCES_DIR path</summary>
+			
+			
+			<description>The downloaded scratch dir is specified in HiveConf as:
+
+
+
+DOWNLOADED_RESOURCES_DIR(&quot;hive.downloaded.resources.dir&quot;, System.getProperty(&quot;java.io.tmpdir&quot;) + File.separator  + &quot;${hive.session.id}_resources&quot;),
+
+
+
+
+
+However, hive.session.id  does not get expanded.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcFile.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzerFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.TestJdbcDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.TestHiveLogging.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.TestJdbcDriver2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.processors.SetProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.TestHiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.HiveOperationType.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.TestHiveConfRestrictList.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.Operation2Privilege.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.VariableSubstitution.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.HiveOperation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.CLIService.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.DDLWork.java</file>
+			
+			
+			<file type="D">org.apache.hive.common.util.SystemVariables.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.ant.GenHiveTemplate.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.HiveUtils.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.conf.Validator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Utilities.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.ql.plan.ShowConfDesc.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6037</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-06-03 05:28:27" id="7060" opendate="2014-05-14 17:15:18" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Column stats give incorrect min and distinct_count</summary>
+			
+			
+			<description>It seems that the result from column statistics isn&amp;amp;apos;t correct on two measures for numeric columns: min (which is always 0) and distinct count. Here is an example:
+
+
+
+select count(distinct avgTimeOnSite), min(avgTimeOnSite) from UserVisits_web_text_none;
+
+...
+
+OK
+
+9	1
+
+Time taken: 9.747 seconds, Fetched: 1 row(s)
+
+
+
+The statisitics for the column:
+
+
+
+desc formatted UserVisits_web_text_none avgTimeOnSite
+
+...
+
+# col_name              data_type               min                     max                     num_nulls               distinct_count          avg_col_len             max_col_len             num_trues               num_falses              comment
+
+
+
+avgTimeOnSite           int                     0                       9                       0                       11                      null                    null                    null               
+
+
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.StatObjectConverter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.DoubleColumnStatsData.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.LongColumnStatsData.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.NumDistinctValueEstimator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ColumnStatsTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.StatsOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.DecimalColumnStatsData.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFComputeStats.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.model.MTableColumnStatistics.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.model.MPartitionColumnStatistics.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">4561</link>
+			
+			
+			<link description="is related to" type="Reference">4561</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-06-16 17:44:24" id="7200" opendate="2014-06-09 19:46:35" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Beeline output displays column heading even if --showHeader=false is set</summary>
+			
+			
+			<description>A few minor/cosmetic issues with the beeline CLI.
+1) Tool prints the column headers despite setting the --showHeader to false. This property only seems to affect the subsequent header information that gets printed based on the value of property &quot;headerInterval&quot; (default value is 100).
+2) When &quot;showHeader&quot; is true &amp;amp; &quot;headerInterval &amp;gt; 0&quot;, the header after the first interval gets printed after &amp;lt;headerInterval - 1&amp;gt; rows. The code seems to count the initial header as a row, if you will.
+3) The table footer(the line that closes the table) does not get printed if the &quot;showHeader&quot; is false. I think the table should get closed irrespective of whether it prints the header or not.
+
+
+
+0: jdbc:hive2://localhost:10000&amp;gt; select * from stringvals;
+
++------+
+
+| val  |
+
++------+
+
+| t    |
+
+| f    |
+
+| T    |
+
+| F    |
+
+| 0    |
+
+| 1    |
+
++------+
+
+6 rows selected (3.998 seconds)
+
+0: jdbc:hive2://localhost:10000&amp;gt; !set headerInterval 2
+
+0: jdbc:hive2://localhost:10000&amp;gt; select * from stringvals;
+
++------+
+
+| val  |
+
++------+
+
+| t    |
+
++------+
+
+| val  |
+
++------+
+
+| f    |
+
+| T    |
+
++------+
+
+| val  |
+
++------+
+
+| F    |
+
+| 0    |
+
++------+
+
+| val  |
+
++------+
+
+| 1    |
+
++------+
+
+6 rows selected (0.691 seconds)
+
+0: jdbc:hive2://localhost:10000&amp;gt; !set showHeader false
+
+0: jdbc:hive2://localhost:10000&amp;gt; select * from stringvals;
+
++------+
+
+| val  |
+
++------+
+
+| t    |
+
+| f    |
+
+| T    |
+
+| F    |
+
+| 0    |
+
+| 1    |
+
+6 rows selected (1.728 seconds)
+
+
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.beeline.TableOutputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">11798</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-07-12 05:04:07" id="7393" opendate="2014-07-11 23:02:50" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Tez jobs sometimes fail with NPE processing input splits</summary>
+			
+			
+			<description>Input files are either ORC or RC format.  Only occurs on occasion - if the query is repeated it is likely to complete successfully.
+
+2014-07-11 15:31:45,367 INFO [InputInitializer [Map 3] #0] org.apache.hadoop.mapred.split.TezMapredSplitsGrouper: Grouping splits in Tez
+
+2014-07-11 15:31:45,367 INFO [InputInitializer [Map 3] #0] org.apache.hadoop.mapred.split.TezMapredSplitsGrouper: Desired splits: 408 too large.  Desired splitLength: 614866 Min splitLength: 16777216 New desired splits: 15 Total length: 250865685 Original splits: 13
+
+2014-07-11 15:31:45,367 INFO [InputInitializer [Map 3] #0] org.apache.hadoop.mapred.split.TezMapredSplitsGrouper: Using original number of splits: 13 desired splits: 15
+
+2014-07-11 15:31:45,381 INFO [AsyncDispatcher event handler] org.apache.tez.dag.history.HistoryEventHandler: [HISTORY][DAG:dag_1405114778353_0004_1][Event:VERTEX_INITIALIZED]: vertexName=Reducer 4, vertexId=vertex_1405114778353_0004_1_09, initRequestedTime=1405117905313, initedTime=1405117905381, numTasks=999, processorName=org.apache.hadoop.hive.ql.exec.tez.ReduceTezProcessor, additionalInputsCount=0
+
+2014-07-11 15:31:45,381 INFO [AsyncDispatcher event handler] org.apache.tez.dag.app.dag.impl.VertexImpl: vertex_1405114778353_0004_1_09 [Reducer 4] transitioned from NEW to INITED due to event V_INIT
+
+2014-07-11 15:31:45,383 ERROR [AsyncDispatcher event handler] org.apache.tez.dag.app.dag.impl.VertexImpl: Vertex Input: csb initializer failed
+
+java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.io.HiveInputFormat.addSplitsForGroup(HiveInputFormat.java:275)
+
+	at org.apache.hadoop.hive.ql.io.HiveInputFormat.getSplits(HiveInputFormat.java:372)
+
+	at org.apache.hadoop.mapred.split.TezGroupedSplitsInputFormat.getSplits(TezGroupedSplitsInputFormat.java:68)
+
+	at org.apache.tez.mapreduce.hadoop.MRHelpers.generateOldSplits(MRHelpers.java:263)
+
+	at org.apache.tez.mapreduce.common.MRInputAMSplitGenerator.initialize(MRInputAMSplitGenerator.java:139)
+
+	at org.apache.tez.dag.app.dag.RootInputInitializerRunner$InputInitializerCallable$1.run(RootInputInitializerRunner.java:154)
+
+	at org.apache.tez.dag.app.dag.RootInputInitializerRunner$InputInitializerCallable$1.run(RootInputInitializerRunner.java:146)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1557)
+
+	at org.apache.tez.dag.app.dag.RootInputInitializerRunner$InputInitializerCallable.call(RootInputInitializerRunner.java:146)
+
+	at org.apache.tez.dag.app.dag.RootInputInitializerRunner$InputInitializerCallable.call(RootInputInitializerRunner.java:114)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+
+	at java.lang.Thread.run(Thread.java:744)
+
+
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.HiveInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">7011</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-07-13 19:00:28" id="6037" opendate="2013-12-16 07:02:13" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Synchronize HiveConf with hive-default.xml.template and support show conf</summary>
+			
+			
+			<description>see HIVE-5879</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcFile.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzerFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.TestJdbcDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.TestHiveLogging.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.TestJdbcDriver2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.processors.SetProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.TestHiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.HiveOperationType.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.TestHiveConfRestrictList.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.Operation2Privilege.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.VariableSubstitution.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.HiveOperation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.CLIService.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.DDLWork.java</file>
+			
+			
+			<file type="D">org.apache.hive.common.util.SystemVariables.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.ant.GenHiveTemplate.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.HiveUtils.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.conf.Validator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Utilities.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.ql.plan.ShowConfDesc.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6626</link>
+			
+			
+			<link description="relates to" type="Reference">7097</link>
+			
+			
+			<link description="relates to" type="Reference">7917</link>
+			
+			
+			<link description="relates to" type="Reference">5879</link>
+			
+			
+			<link description="is related to" type="Reference">7227</link>
+			
+			
+			<link description="is related to" type="Reference">6887</link>
+			
+			
+			<link description="is related to" type="Reference">6586</link>
+			
+			
+			<link description="is related to" type="Reference">8698</link>
+			
+			
+			<link description="is related to" type="Reference">2196</link>
+			
+			
+			<link description="is related to" type="Reference">7840</link>
+			
+			
+			<link description="is related to" type="Reference">7496</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-07-22 04:44:04" id="7303" opendate="2014-06-27 02:25:16" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>IllegalMonitorStateException when stmtHandle is null in HiveStatement</summary>
+			
+			
+			<description>From http://www.mail-archive.com/dev@hive.apache.org/msg75617.html
+Unlock can be called even it&amp;amp;apos;s not locked in some situation.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveStatement.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">9598</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-08-06 22:16:38" id="7583" opendate="2014-08-01 00:17:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Use FileSystem.access() if available to check file access for user</summary>
+			
+			
+			<description>Hive currently implements its own file access checks to determine if a user is allowed to perform an specified action on a file path (in StorageBasedAuthorizationProvider, also FileUtils). This can be prone to errors or inconsistencies with how file access is actually checked in Hadoop.
+HDFS-6570 adds a new FileSystem.access() API, so that we can perform the check using the actual HDFS logic rather than having to imitate that behavior in Hive. For versions of Hadoop that have this API available, we should use this API.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.TestMetastoreAuthorizationProvider.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop23Shims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.common.FileUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop20Shims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.SQLAuthorizationUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShimsSecure.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.StorageBasedAuthorizationProvider.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.TestStorageBasedMetastoreAuthorizationProvider.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShims.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">7714</link>
+			
+			
+			<link description="is related to" type="Reference">6570</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-08-13 17:24:50" id="7714" opendate="2014-08-13 15:30:45" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Implement ACL support for Storage-System Based Authorization</summary>
+			
+			
+			<description>In the Hive wiki it is stated that:
+Note: Support for HDFS ACL (introduced in Apache Hadoop 2.4) is yet to be added to this model. Which means, that it checks only the traditional rwx style permissions to determine if a user can write to the file system.
+(https://cwiki.apache.org/confluence/display/Hive/HCatalog+Authorization#HCatalogAuthorization-Storage-SystemBasedAuthorizationModel)
+but there is no JIRA associated (not in the wiki and I didn&amp;amp;apos;t find any on the JIRA too).</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.TestMetastoreAuthorizationProvider.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop23Shims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.common.FileUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop20Shims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.SQLAuthorizationUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShimsSecure.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.StorageBasedAuthorizationProvider.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.TestStorageBasedMetastoreAuthorizationProvider.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShims.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">7583</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-01 01:53:07" id="7399" opendate="2014-07-14 02:30:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Timestamp type is not copied by ObjectInspectorUtils.copyToStandardObject</summary>
+			
+			
+			<description>Most of primitive types are non-mutable, so copyToStandardObject retuns input object as-is. But for Timestamp objects, it&amp;amp;apos;s used something like wrapper and inside value changed by hive. copyToStandardObject should return real copy of them.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.primitive.JavaTimestampObjectInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.primitive.JavaBinaryObjectInspector.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">8297</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-10 06:55:01" id="6747" opendate="2014-03-25 22:24:48" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestEmbeddedThriftBinaryCLIService.testExecuteStatementAsync is failing</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.service.cli.thrift.ThriftCLIServiceTest.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6908</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-28 08:51:15" id="8246" opendate="2014-09-24 20:39:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HiveServer2 in http-kerberos mode is restrictive on client usernames</summary>
+			
+			
+			<description>Unable to use client usernames of the format:
+
+
+
+username/host@REALM
+
+username@FOREIGN_REALM
+
+
+
+The following works fine:
+
+
+
+username@REALM 
+
+
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.service.auth.HttpAuthUtils.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.thrift.ThriftHttpServlet.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6801</link>
+			
+			
+			<link description="breaks" type="Regression">8324</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-30 15:56:16" id="8298" opendate="2014-09-29 23:51:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Incorrect results for n-way join when join expressions are not in same order across joins</summary>
+			
+			
+			<description>select *  from srcpart a join srcpart b on a.key = b.key and a.hr = b.hr join srcpart c on a.hr = c.hr and a.key = c.key;
+is minimal query which reproduces it</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">9146</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">8856</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-10-24 23:05:32" id="6801" opendate="2014-03-31 23:35:14" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>beeline kerberos authentication fails if the client principal name has hostname part</summary>
+			
+			
+			<description>Kinited as guest@EXAMPLE.COM
+Connected successfully with beeline using command
+!connect jdbc:hive2://hdps.example.com:10001/default;principal=hive/hdps.example.com@EXAMPLE.COM;hive.server2.proxy.user=guest?hive.server2.transport.mode=http;hive.server2.thrift.http.path=cliservice  dummy dummy-pass org.apache.hive.jdbc.HiveDriver
+Kinited as bob/hdps.exmaple.com@EXAMPLE.COM
+!connect jdbc:hive2://hdps.example.com:10001/default;principal=hive/hdps.example.com@EXAMPLE.COM;hive.server2.proxy.user=guest?hive.server2.transport.mode=http;hive.server2.thrift.http.path=cliservice  dummy dummy-pass org.apache.hive.jdbc.HiveDriver
+Failed with stack trace
+Error: Could not establish connection to jdbc:hive2://hdps.example.com:10001/default;principal=hive/hdps.example.com@EXAMPLE.COM;hive.server2.proxy.user=guest?hive.server2.transport.mode=http;hive.server2.thrift.http.path=cliservice: org.apache.http.client.ClientProtocolException (state=08S01,code=0)
+java.sql.SQLException: Could not establish connection to jdbc:hive2://hdps.example.com:10001/default;principal=hive/hdps.example.com@EXAMPLE.COM;hive.server2.proxy.user=guest?hive.server2.transport.mode=http;hive.server2.thrift.http.path=cliservice: org.apache.http.client.ClientProtocolException
+	at org.apache.hive.jdbc.HiveConnection.openSession(HiveConnection.java:426)
+	at org.apache.hive.jdbc.HiveConnection.&amp;lt;init&amp;gt;(HiveConnection.java:193)
+	at org.apache.hive.jdbc.HiveDriver.connect(HiveDriver.java:105)
+	at java.sql.DriverManager.getConnection(DriverManager.java:582)
+	at java.sql.DriverManager.getConnection(DriverManager.java:154)
+	at org.apache.hive.beeline.DatabaseConnection.connect(DatabaseConnection.java:145)
+	at org.apache.hive.beeline.DatabaseConnection.getConnection(DatabaseConnection.java:186)
+	at org.apache.hive.beeline.Commands.connect(Commands.java:959)
+	at org.apache.hive.beeline.Commands.connect(Commands.java:880)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.hive.beeline.ReflectiveCommandHandler.execute(ReflectiveCommandHandler.java:44)
+	at org.apache.hive.beeline.BeeLine.dispatch(BeeLine.java:792)
+	at org.apache.hive.beeline.BeeLine.begin(BeeLine.java:659)
+	at org.apache.hive.beeline.BeeLine.mainWithInputRedirection(BeeLine.java:368)
+	at org.apache.hive.beeline.BeeLine.main(BeeLine.java:351)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:212)
+Caused by: org.apache.thrift.transport.TTransportException: org.apache.http.client.ClientProtocolException
+	at org.apache.thrift.transport.THttpClient.flushUsingHttpClient(THttpClient.java:281)
+	at org.apache.thrift.transport.THttpClient.flush(THttpClient.java:297)
+	at org.apache.thrift.TServiceClient.sendBase(TServiceClient.java:65)
+	at org.apache.hive.service.cli.thrift.TCLIService$Client.send_OpenSession(TCLIService.java:150)
+	at org.apache.hive.service.cli.thrift.TCLIService$Client.OpenSession(TCLIService.java:142)
+	at org.apache.hive.jdbc.HiveConnection.openSession(HiveConnection.java:415)
+	... 22 more
+Caused by: org.apache.http.client.ClientProtocolException
+	at org.apache.http.impl.client.AbstractHttpClient.execute(AbstractHttpClient.java:909)
+	at org.apache.http.impl.client.AbstractHttpClient.execute(AbstractHttpClient.java:827)
+	at org.apache.thrift.transport.THttpClient.flushUsingHttpClient(THttpClient.java:235)
+	... 27 more
+Caused by: org.apache.http.HttpException
+	at org.apache.hive.jdbc.HttpKerberosRequestInterceptor.process(HttpKerberosRequestInterceptor.java:67)
+	at org.apache.http.protocol.ImmutableHttpProcessor.process(ImmutableHttpProcessor.java:109)
+	at org.apache.http.protocol.HttpRequestExecutor.preProcess(HttpRequestExecutor.java:176)
+	at org.apache.http.impl.client.DefaultRequestDirector.execute(DefaultRequestDirector.java:518)
+	at org.apache.http.impl.client.AbstractHttpClient.execute(AbstractHttpClient.java:906)
+	... 29 more
+Caused by: java.lang.reflect.UndeclaredThrowableException
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1563)
+	at org.apache.hive.service.auth.HttpAuthUtils.getKerberosServiceTicket(HttpAuthUtils.java:94)
+	at org.apache.hive.jdbc.HttpKerberosRequestInterceptor.process(HttpKerberosRequestInterceptor.java:61)
+	... 33 more
+Caused by: GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)
+	at sun.security.jgss.krb5.Krb5InitCredential.getInstance(Krb5InitCredential.java:130)
+	at sun.security.jgss.krb5.Krb5MechFactory.getCredentialElement(Krb5MechFactory.java:106)
+	at sun.security.jgss.GSSManagerImpl.getCredentialElement(GSSManagerImpl.java:178)
+	at sun.security.jgss.GSSCredentialImpl.add(GSSCredentialImpl.java:384)
+	at sun.security.jgss.GSSCredentialImpl.&amp;lt;init&amp;gt;(GSSCredentialImpl.java:42)
+	at sun.security.jgss.GSSManagerImpl.createCredential(GSSManagerImpl.java:139)
+	at org.apache.hive.service.auth.HttpAuthUtils$HttpKerberosClientAction.run(HttpAuthUtils.java:161)
+	at org.apache.hive.service.auth.HttpAuthUtils$HttpKerberosClientAction.run(HttpAuthUtils.java:126)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:396)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1548)
+	... 35 more
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.service.auth.HttpAuthUtils.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.thrift.ThriftHttpServlet.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">8246</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-11-04 20:06:46" id="8712" opendate="2014-11-03 20:33:46" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Cross schema query fails when table has index</summary>
+			
+			
+			<description>I have two schemas, default and accesstesting. 
+I create a table in the second schema with an index.
+When I query the table using a WHERE clause from the first schema, the query fails:
+use default;
+drop table salary_hive;
+use accesstesting;
+drop table salary_hive;
+use accesstesting;
+create table salary_hive (idnum int, salary int, startdate timestamp, enddate timestamp, jobcode char(20));
+create index salary_hive_idnum_index on table salary_hive(idnum) as &amp;amp;apos;compact&amp;amp;apos; with deferred rebuild;
+select * from accesstesting.salary_hive where 0=1;
+use default;
+select * from accesstesting.salary_hive where 0=1;
+FAILED: SemanticException org.apache.hadoop.hive.ql.metadata.InvalidTableException: Table not found accesstesting_salary_hive_salary_hive_idnum_index_</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.13.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.AlterTableSimpleDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.AuthorizationUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.AlterTableAlterPartDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.ShowColumnsDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.authorization.TestHiveAuthorizationTaskFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveAlterHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.authorization.HiveAuthorizationTaskFactoryImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.ShowGrantDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.authorization.TestPrivilegesV2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.RenamePartitionDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.TestHive.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.TestQBCompact.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.hooks.CheckColumnAccessHook.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.TestHiveAuthorizerCheckInvocation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.Warehouse.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Driver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.index.RewriteGBUsingIndex.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.PrivilegeObjectDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.AlterIndexDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.IndexUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.authorization.TestPrivilegesV1.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.HiveV1Authorizer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.authorization.PrivilegesTestBase.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Utilities.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.ColumnAccessInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.IndexUpdater.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObject.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.ObjectStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">4064</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-11-13 16:12:19" id="8856" opendate="2014-11-13 14:19:44" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Multiple joins must have conditionals in same order </summary>
+			
+			
+			<description>SELECT 
+   COUNT 
+FROM 
+   TBL_A,TBL_B,TBL_C
+WHERE 
+   A.key1 = B.key1 AND A.key2 = B.key2
+AND 
+   A.key2 = C.key2 AND A.Key1 = B.key1 
+Where key1 is a string and key2 is a double. 
+Note: This effects explicit joins as well
+A look at the query plan reveals the following:
+Map Join Operator
+              condition map:
+                   Inner Join 0 to 1
+                   Inner Join 0 to 2
+              condition expressions:
+                0 
+{prdct_id} {bu_cd}
+                1 {prdct_id}
+ 
+{bu_cd}
+                2 {prdct_id} {bu_cd}
+              keys:
+                0 UDFToDouble(prdct_id) (type: double), bu_cd (type: double)
+                1 UDFToDouble(prdct_id) (type: double), bu_cd (type: double)
+                2 bu_cd (type: double), UDFToDouble(prdct_id) (type: double)
+The ordering of keys within a join should not dictate it&amp;amp;apos;s type. This is something the query optimizer should handle prior to making the plan. This way users do not have to worry about ordrering their conditionals. At the very least it should fail, instead it silently converts them to nulls and returns 0. </description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">8298</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-12-05 08:46:30" id="8870" opendate="2014-11-14 13:27:58" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>errors when selecting a struct field within an array from ORC based tables</summary>
+			
+			
+			<description>When using ORC as storage for a table, we get errors on selecting a struct field within an array. These errors do not appear with default format.
+
+
+
+CREATE  TABLE `foobar_orc`(
+
+  `uid` bigint,
+
+  `elements` array&amp;lt;struct&amp;lt;elementid:bigint,foo:struct&amp;lt;bar:string&amp;gt;&amp;gt;&amp;gt;)
+
+STORED AS ORC;
+
+
+
+When selecting from this empty table, we get a direct NPE within the Hive CLI:
+
+
+
+SELECT
+
+  elements.elementId
+
+FROM
+
+  foobar_orc;
+
+-- FAILED: RuntimeException java.lang.NullPointerException
+
+
+
+A more real-world query produces a RuntimeException / NullPointerException in the mapper:
+
+
+
+SELECT
+
+  uid,
+
+  element.elementId
+
+FROM
+
+  foobar_orc
+
+LATERAL VIEW
+
+  EXPLODE(elements) e AS element;
+
+
+
+
+
+Error: java.lang.RuntimeException: Error in configuring object
+
+	at org.apache.hadoop.util.ReflectionUtils.setJobConf(ReflectionUtils.java:109)
+
+[...]
+
+Caused by: java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.exec.ExprNodeFieldEvaluator.initialize(ExprNodeFieldEvaluator.java:61)
+
+[...]
+
+FAILED: Execution Error, return code 2 from org.apache.hadoop.hive.ql.exec.mr.MapRedTask
+
+
+
+Both queries run fine on a non-orc table:
+
+
+
+CREATE  TABLE `foobar`(
+
+  `uid` bigint,
+
+  `elements` array&amp;lt;struct&amp;lt;elementid:bigint,foo:struct&amp;lt;bar:string&amp;gt;&amp;gt;&amp;gt;);  
+
+
+
+SELECT
+
+  elements.elementId
+
+FROM
+
+  foobar;
+
+-- OK
+
+-- Time taken: 0.225 seconds
+
+
+
+SELECT
+
+  uid,
+
+  element.elementId
+
+FROM
+
+  foobar
+
+LATERAL VIEW
+
+  EXPLODE(elements) e AS element;
+
+-- Total MapReduce CPU Time Spent: 1 seconds 920 msec
+
+-- OK
+
+-- Time taken: 25.905 seconds
+
+
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcStruct.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6198</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">9107</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-12-25 03:31:23" id="8192" opendate="2014-09-19 20:25:45" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Check DDL&amp;apos;s writetype in DummyTxnManager</summary>
+			
+			
+			<description>The patch of HIVE-6734 added some DDL writetypes and checked DDL writetype in DbTxnManager.java.
+We use DummyTxnManager as the default value of hive.txn.manager in hive-site.xml. We noticed that the operation of CREATE TEMPORARY FUNCTION has a DLL_NO_LOCK writetype but it requires a EXCLUSIVE lock. If we try to create a temporary function while there&amp;amp;apos;s a SELECT is processing at the same database, then the console will print &amp;amp;apos;conflicting lock present for default mode EXCLUSIVE&amp;amp;apos; and the CREATE TEMPORARY FUNCTION operation won&amp;amp;apos;t get the lock until the SELECT is done. Maybe it&amp;amp;apos;s a good idea to check the DDL&amp;amp;apos;s writetype in DummyTxnManager too.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.lockmgr.DummyTxnManager.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">9199</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-02-12 07:33:14" id="9598" opendate="2015-02-06 18:52:50" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>java.lang.IllegalMonitorStateException/java.util.concurrent.locks.ReentrantLock$Sync.tryRelease if ResultSet.closed called after Statement.close called</summary>
+			
+			
+			<description>http://docs.oracle.com/javase/7/docs/api/java/sql/ResultSet.html#close()
+http://docs.oracle.com/javase/7/docs/api/java/sql/Statement.html#close()
+		Statement stmt;
+		try {
+			stmt = dbConnection.createStatement();
+			stmt.executeQuery(&quot;select* from t&quot;);
+			ResultSet rs = stmt.getResultSet();
+			stmt.close();
+			if (rs != null) {
+				System.out.println(&quot;IS NOT NULL&quot;);
+// Hive does not implement isClosed()
+//				if (!rs.isClosed()) 
+{
+
+//					System.out.println(&quot;IS NOT CLOSED&quot;);
+
+//				}
+				rs.close();
+			}
+		} catch (SQLException e) 
+{
+
+			// TODO Auto-generated catch block
+
+			e.printStackTrace();
+
+		}
+
+Exception in thread &quot;main&quot; java.lang.IllegalMonitorStateException
+	at java.util.concurrent.locks.ReentrantLock$Sync.tryRelease(ReentrantLock.java:166)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.release(AbstractQueuedSynchronizer.java:1271)
+	at java.util.concurrent.locks.ReentrantLock.unlock(ReentrantLock.java:471)
+	at org.apache.hive.jdbc.HiveStatement.closeClientOperation(HiveStatement.java:175)
+	at org.apache.hive.jdbc.HiveQueryResultSet.close(HiveQueryResultSet.java:293)
+/D:/JDBC/Hortonworks_Hive13/commons-configuration-1.6.jar
+/D:/JDBC/Hortonworks_Hive13/commons-logging-1.1.3.jar
+/D:/JDBC/Hortonworks_Hive13/hadoop-common-2.4.0.2.1.1.0-385.jar
+/D:/JDBC/Hortonworks_Hive13/hive-exec-0.13.0.2.1.1.0-385.jar
+/D:/JDBC/Hortonworks_Hive13/hive-jdbc-0.13.0.2.1.1.0-385.jar
+/D:/JDBC/Hortonworks_Hive13/hive-service-0.13.0.2.1.1.0-385.jar
+/D:/JDBC/Hortonworks_Hive13/httpclient-4.2.5.jar
+/D:/JDBC/Hortonworks_Hive13/httpcore-4.2.5.jar
+/D:/JDBC/Hortonworks_Hive13/libfb303-0.9.0.jar
+/D:/JDBC/Hortonworks_Hive13/libthrift-0.9.0.jar
+/D:/JDBC/Hortonworks_Hive13/log4j-1.2.16.jar
+/D:/JDBC/Hortonworks_Hive13/slf4j-api-1.7.5.jar
+/D:/JDBC/Hortonworks_Hive13/slf4j-log4j12-1.7.5.jar</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveStatement.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">7303</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-04-09 18:46:49" id="8297" opendate="2014-09-29 22:19:30" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Wrong results with JDBC direct read of TIMESTAMP column in RCFile and ORC format</summary>
+			
+			
+			<description>For the case:
+SELECT * FROM [table]
+JDBC direct reads the table backing data, versus cranking up a MR and creating a result set.  Where table format is RCFile or ORC, incorrect results are delivered by JDBC direct read for TIMESTAMP columns.  If you force a result set, correct data is returned.
+To reproduce using beeline:
+1) Create this file as follows in HDFS.
+$ cat &amp;gt; /tmp/ts.txt
+2014-09-28 00:00:00
+2014-09-29 00:00:00
+2014-09-30 00:00:00
+&amp;lt;ctrl-D&amp;gt;
+$ hadoop fs -copyFromLocal /tmp/ts.txt /tmp/ts.txt
+2) In beeline load above HDFS data to a TEXTFILE table, and verify ok:
+$ beeline
+&amp;gt; !connect jdbc:hive2://&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/&amp;lt;db&amp;gt; hive pass org.apache.hive.jdbc.HiveDriver
+&amp;gt; drop table `TIMESTAMP_TEXT`;
+&amp;gt; CREATE TABLE `TIMESTAMP_TEXT` (`ts` TIMESTAMP) ROW FORMAT DELIMITED FIELDS TERMINATED BY &amp;amp;apos;\001&amp;amp;apos;
+LINES TERMINATED BY &amp;amp;apos;\012&amp;amp;apos; STORED AS TEXTFILE;
+&amp;gt; LOAD DATA INPATH &amp;amp;apos;/tmp/ts.txt&amp;amp;apos; OVERWRITE INTO TABLE
+`TIMESTAMP_TEXT`;
+&amp;gt; select * from `TIMESTAMP_TEXT`;
+3) In beeline create and load an RCFile from the TEXTFILE:
+&amp;gt; drop table `TIMESTAMP_RCFILE`;
+&amp;gt; CREATE TABLE `TIMESTAMP_RCFILE` (`ts` TIMESTAMP) stored as rcfile;
+&amp;gt; INSERT INTO TABLE `TIMESTAMP_RCFILE` SELECT * FROM `TIMESTAMP_TEXT`;
+4) Demonstrate incorrect direct JDBC read versus good read by inducing result set creation:
+&amp;gt; SELECT * FROM `TIMESTAMP_RCFILE`;
+------------------------
+
+
+  timestamp_rcfile.ts   
+
+
+------------------------
+
+
+ 2014-09-30 00:00:00.0  
+
+
+ 2014-09-30 00:00:00.0  
+
+
+ 2014-09-30 00:00:00.0  
+
+
+------------------------
+&amp;gt;  SELECT * FROM `TIMESTAMP_RCFILE` where ts is not NULL;
+------------------------
+
+
+  timestamp_rcfile.ts   
+
+
+------------------------
+
+
+ 2014-09-28 00:00:00.0  
+
+
+ 2014-09-29 00:00:00.0  
+
+
+ 2014-09-30 00:00:00.0  
+
+
+------------------------
+Note 1: The incorrect conduct demonstrated above replicates with a standalone Java/JDBC program.
+Note 2: Don&amp;amp;apos;t know if this is an issue with any other data types, also don&amp;amp;apos;t know what releases affected, however this occurs in Hive 13.  Direct JDBC read of TEXTFILE and SEQUENCEFILE work fine.  As above for RCFile and ORC wrong results are delivered, did not test any other file types.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.primitive.JavaTimestampObjectInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.primitive.JavaBinaryObjectInspector.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">7399</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-15 19:38:30" id="10841" opendate="2015-05-27 23:05:09" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[WHERE col is not null] does not work sometimes for queries with many JOIN statements</summary>
+			
+			
+			<description>The result from the following SELECT query is 3 rows but it should be 1 row.
+I checked it in MySQL - it returned 1 row.
+To reproduce the issue in Hive
+1. prepare tables
+
+
+
+drop table if exists L;
+
+drop table if exists LA;
+
+drop table if exists FR;
+
+drop table if exists A;
+
+drop table if exists PI;
+
+drop table if exists acct;
+
+
+
+create table L as select 4436 id;
+
+create table LA as select 4436 loan_id, 4748 aid, 4415 pi_id;
+
+create table FR as select 4436 loan_id;
+
+create table A as select 4748 id;
+
+create table PI as select 4415 id;
+
+
+
+create table acct as select 4748 aid, 10 acc_n, 122 brn;
+
+insert into table acct values(4748, null, null);
+
+insert into table acct values(4748, null, null);
+
+
+
+2. run SELECT query
+
+
+
+select
+
+  acct.ACC_N,
+
+  acct.brn
+
+FROM L
+
+JOIN LA ON L.id = LA.loan_id
+
+JOIN FR ON L.id = FR.loan_id
+
+JOIN A ON LA.aid = A.id
+
+JOIN PI ON PI.id = LA.pi_id
+
+JOIN acct ON A.id = acct.aid
+
+WHERE
+
+  L.id = 4436
+
+  and acct.brn is not null;
+
+
+
+the result is 3 rows
+
+
+
+10	122
+
+NULL	NULL
+
+NULL	NULL
+
+
+
+but it should be 1 row
+
+
+
+10	122
+
+
+
+2.1 &quot;explain select ...&quot; output for hive-1.3.0 MR
+
+
+
+STAGE DEPENDENCIES:
+
+  Stage-12 is a root stage
+
+  Stage-9 depends on stages: Stage-12
+
+  Stage-0 depends on stages: Stage-9
+
+
+
+STAGE PLANS:
+
+  Stage: Stage-12
+
+    Map Reduce Local Work
+
+      Alias -&amp;gt; Map Local Tables:
+
+        a 
+
+          Fetch Operator
+
+            limit: -1
+
+        acct 
+
+          Fetch Operator
+
+            limit: -1
+
+        fr 
+
+          Fetch Operator
+
+            limit: -1
+
+        l 
+
+          Fetch Operator
+
+            limit: -1
+
+        pi 
+
+          Fetch Operator
+
+            limit: -1
+
+      Alias -&amp;gt; Map Local Operator Tree:
+
+        a 
+
+          TableScan
+
+            alias: a
+
+            Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+
+            Filter Operator
+
+              predicate: id is not null (type: boolean)
+
+              Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+
+              HashTable Sink Operator
+
+                keys:
+
+                  0 _col5 (type: int)
+
+                  1 id (type: int)
+
+                  2 aid (type: int)
+
+        acct 
+
+          TableScan
+
+            alias: acct
+
+            Statistics: Num rows: 3 Data size: 31 Basic stats: COMPLETE Column stats: NONE
+
+            Filter Operator
+
+              predicate: aid is not null (type: boolean)
+
+              Statistics: Num rows: 2 Data size: 20 Basic stats: COMPLETE Column stats: NONE
+
+              HashTable Sink Operator
+
+                keys:
+
+                  0 _col5 (type: int)
+
+                  1 id (type: int)
+
+                  2 aid (type: int)
+
+        fr 
+
+          TableScan
+
+            alias: fr
+
+            Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+
+            Filter Operator
+
+              predicate: (loan_id = 4436) (type: boolean)
+
+              Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+
+              HashTable Sink Operator
+
+                keys:
+
+                  0 4436 (type: int)
+
+                  1 4436 (type: int)
+
+                  2 4436 (type: int)
+
+        l 
+
+          TableScan
+
+            alias: l
+
+            Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+
+            Filter Operator
+
+              predicate: (id = 4436) (type: boolean)
+
+              Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+
+              HashTable Sink Operator
+
+                keys:
+
+                  0 4436 (type: int)
+
+                  1 4436 (type: int)
+
+                  2 4436 (type: int)
+
+        pi 
+
+          TableScan
+
+            alias: pi
+
+            Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+
+            Filter Operator
+
+              predicate: id is not null (type: boolean)
+
+              Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+
+              HashTable Sink Operator
+
+                keys:
+
+                  0 _col6 (type: int)
+
+                  1 id (type: int)
+
+
+
+  Stage: Stage-9
+
+    Map Reduce
+
+      Map Operator Tree:
+
+          TableScan
+
+            alias: la
+
+            Statistics: Num rows: 1 Data size: 14 Basic stats: COMPLETE Column stats: NONE
+
+            Filter Operator
+
+              predicate: (((loan_id is not null and aid is not null) and pi_id is not null) and (loan_id = 4436)) (type: boolean)
+
+              Statistics: Num rows: 1 Data size: 14 Basic stats: COMPLETE Column stats: NONE
+
+              Map Join Operator
+
+                condition map:
+
+                     Inner Join 0 to 1
+
+                     Inner Join 0 to 2
+
+                keys:
+
+                  0 4436 (type: int)
+
+                  1 4436 (type: int)
+
+                  2 4436 (type: int)
+
+                outputColumnNames: _col5, _col6
+
+                Statistics: Num rows: 2 Data size: 8 Basic stats: COMPLETE Column stats: NONE
+
+                Map Join Operator
+
+                  condition map:
+
+                       Inner Join 0 to 1
+
+                       Inner Join 1 to 2
+
+                  keys:
+
+                    0 _col5 (type: int)
+
+                    1 id (type: int)
+
+                    2 aid (type: int)
+
+                  outputColumnNames: _col6, _col19, _col20
+
+                  Statistics: Num rows: 4 Data size: 17 Basic stats: COMPLETE Column stats: NONE
+
+                  Map Join Operator
+
+                    condition map:
+
+                         Inner Join 0 to 1
+
+                    keys:
+
+                      0 _col6 (type: int)
+
+                      1 id (type: int)
+
+                    outputColumnNames: _col19, _col20
+
+                    Statistics: Num rows: 4 Data size: 18 Basic stats: COMPLETE Column stats: NONE
+
+                    Select Operator
+
+                      expressions: _col19 (type: int), _col20 (type: int)
+
+                      outputColumnNames: _col0, _col1
+
+                      Statistics: Num rows: 4 Data size: 18 Basic stats: COMPLETE Column stats: NONE
+
+                      File Output Operator
+
+                        compressed: false
+
+                        Statistics: Num rows: 4 Data size: 18 Basic stats: COMPLETE Column stats: NONE
+
+                        table:
+
+                            input format: org.apache.hadoop.mapred.TextInputFormat
+
+                            output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+
+                            serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+
+      Local Work:
+
+        Map Reduce Local Work
+
+
+
+  Stage: Stage-0
+
+    Fetch Operator
+
+      limit: -1
+
+      Processor Tree:
+
+        ListSink
+
+
+
+Time taken: 0.57 seconds, Fetched: 142 row(s)
+
+
+
+2.2. &quot;explain select...&quot; output for hive-0.13.1 Tez
+
+
+
+STAGE DEPENDENCIES:
+
+  Stage-1 is a root stage
+
+  Stage-0 is a root stage
+
+
+
+STAGE PLANS:
+
+  Stage: Stage-1
+
+    Tez
+
+      Edges:
+
+        Reducer 2 &amp;lt;- Map 1 (SIMPLE_EDGE), Map 4 (SIMPLE_EDGE), Reducer 6 (SIMPLE_EDGE)
+
+        Reducer 3 &amp;lt;- Reducer 2 (SIMPLE_EDGE), Map 9 (SIMPLE_EDGE)
+
+        Reducer 6 &amp;lt;- Map 5 (SIMPLE_EDGE), Map 7 (SIMPLE_EDGE), Map 8 (SIMPLE_EDGE)
+
+      DagName: lcapp_20150528111717_06c57a5b-8dc6-4ce9-bce7-b9e0a7818fe4:1
+
+      Vertices:
+
+        Map 1 
+
+            Map Operator Tree:
+
+                TableScan
+
+                  alias: acct
+
+                  Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+
+                  Reduce Output Operator
+
+                    key expressions: aid (type: int)
+
+                    sort order: +
+
+                    Map-reduce partition columns: aid (type: int)
+
+                    Statistics: Num rows: 1 Data size: 4 Basic stats: COMPLETE Column stats: NONE
+
+                    value expressions: acc_n (type: int), brn (type: int)
+
+        Map 4 
+
+            Map Operator Tree:
+
+                TableScan
+
+                  alias: a
+
+                  Statistics: Num rows: 46 Data size: 187 Basic stats: COMPLETE Column stats: NONE
+
+                  Reduce Output Operator
+
+                    key expressions: id (type: int)
+
+                    sort order: +
+
+                    Map-reduce partition columns: id (type: int)
+
+                    Statistics: Num rows: 46 Data size: 187 Basic stats: COMPLETE Column stats: NONE
+
+        Map 5 
+
+            Map Operator Tree:
+
+                TableScan
+
+                  alias: la
+
+                  Statistics: Num rows: 28 Data size: 347 Basic stats: COMPLETE Column stats: NONE
+
+                  Filter Operator
+
+                    predicate: (loan_id = 4436) (type: boolean)
+
+                    Statistics: Num rows: 14 Data size: 173 Basic stats: COMPLETE Column stats: NONE
+
+                    Reduce Output Operator
+
+                      key expressions: loan_id (type: int)
+
+                      sort order: +
+
+                      Map-reduce partition columns: loan_id (type: int)
+
+                      Statistics: Num rows: 14 Data size: 173 Basic stats: COMPLETE Column stats: NONE
+
+                      value expressions: aid (type: int), pi_id (type: int)
+
+        Map 7 
+
+            Map Operator Tree:
+
+                TableScan
+
+                  alias: fr
+
+                  Statistics: Num rows: 46 Data size: 187 Basic stats: COMPLETE Column stats: NONE
+
+                  Filter Operator
+
+                    predicate: (loan_id = 4436) (type: boolean)
+
+                    Statistics: Num rows: 23 Data size: 93 Basic stats: COMPLETE Column stats: NONE
+
+                    Reduce Output Operator
+
+                      key expressions: loan_id (type: int)
+
+                      sort order: +
+
+                      Map-reduce partition columns: loan_id (type: int)
+
+                      Statistics: Num rows: 23 Data size: 93 Basic stats: COMPLETE Column stats: NONE
+
+        Map 8 
+
+            Map Operator Tree:
+
+                TableScan
+
+                  alias: l
+
+                  Statistics: Num rows: 46 Data size: 187 Basic stats: COMPLETE Column stats: NONE
+
+                  Filter Operator
+
+                    predicate: (id = 4436) (type: boolean)
+
+                    Statistics: Num rows: 23 Data size: 93 Basic stats: COMPLETE Column stats: NONE
+
+                    Reduce Output Operator
+
+                      key expressions: id (type: int)
+
+                      sort order: +
+
+                      Map-reduce partition columns: id (type: int)
+
+                      Statistics: Num rows: 23 Data size: 93 Basic stats: COMPLETE Column stats: NONE
+
+        Map 9 
+
+            Map Operator Tree:
+
+                TableScan
+
+                  alias: pi
+
+                  Statistics: Num rows: 46 Data size: 187 Basic stats: COMPLETE Column stats: NONE
+
+                  Reduce Output Operator
+
+                    key expressions: id (type: int)
+
+                    sort order: +
+
+                    Map-reduce partition columns: id (type: int)
+
+                    Statistics: Num rows: 46 Data size: 187 Basic stats: COMPLETE Column stats: NONE
+
+        Reducer 2 
+
+            Reduce Operator Tree:
+
+              Join Operator
+
+                condition map:
+
+                     Inner Join 0 to 1
+
+                     Inner Join 1 to 2
+
+                condition expressions:
+
+                  0 {VALUE._col2}
+
+                  1 
+
+                  2 {VALUE._col1} {VALUE._col2}
+
+                outputColumnNames: _col2, _col15, _col16
+
+                Statistics: Num rows: 110 Data size: 448 Basic stats: COMPLETE Column stats: NONE
+
+                Reduce Output Operator
+
+                  key expressions: _col2 (type: int)
+
+                  sort order: +
+
+                  Map-reduce partition columns: _col2 (type: int)
+
+                  Statistics: Num rows: 110 Data size: 448 Basic stats: COMPLETE Column stats: NONE
+
+                  value expressions: _col15 (type: int), _col16 (type: int)
+
+        Reducer 3 
+
+            Reduce Operator Tree:
+
+              Join Operator
+
+                condition map:
+
+                     Inner Join 0 to 1
+
+                condition expressions:
+
+                  0 {VALUE._col1} {VALUE._col2}
+
+                  1 
+
+                outputColumnNames: _col1, _col2
+
+                Statistics: Num rows: 121 Data size: 492 Basic stats: COMPLETE Column stats: NONE
+
+                Select Operator
+
+                  expressions: _col1 (type: int), _col2 (type: int)
+
+                  outputColumnNames: _col0, _col1
+
+                  Statistics: Num rows: 121 Data size: 492 Basic stats: COMPLETE Column stats: NONE
+
+                  File Output Operator
+
+                    compressed: false
+
+                    Statistics: Num rows: 121 Data size: 492 Basic stats: COMPLETE Column stats: NONE
+
+                    table:
+
+                        input format: org.apache.hadoop.mapred.TextInputFormat
+
+                        output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+
+                        serde: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+
+        Reducer 6 
+
+            Reduce Operator Tree:
+
+              Join Operator
+
+                condition map:
+
+                     Inner Join 0 to 1
+
+                     Inner Join 0 to 2
+
+                condition expressions:
+
+                  0 
+
+                  1 {VALUE._col1} {VALUE._col2}
+
+                  2 
+
+                outputColumnNames: _col4, _col5
+
+                Statistics: Num rows: 50 Data size: 204 Basic stats: COMPLETE Column stats: NONE
+
+                Reduce Output Operator
+
+                  key expressions: _col4 (type: int)
+
+                  sort order: +
+
+                  Map-reduce partition columns: _col4 (type: int)
+
+                  Statistics: Num rows: 50 Data size: 204 Basic stats: COMPLETE Column stats: NONE
+
+                  value expressions: _col5 (type: int)
+
+
+
+  Stage: Stage-0
+
+    Fetch Operator
+
+      limit: -1
+
+
+
+Time taken: 1.377 seconds, Fetched: 146 row(s)
+
+
+
+3. The workaround is to put &quot;acct.brn is not null&quot; to join condition
+
+
+
+select
+
+  acct.ACC_N,
+
+  acct.brn
+
+FROM L
+
+JOIN LA ON L.id = LA.loan_id
+
+JOIN FR ON L.id = FR.loan_id
+
+JOIN A ON LA.aid = A.id
+
+JOIN PI ON PI.id = LA.pi_id
+
+JOIN acct ON A.id = acct.aid and acct.brn is not null
+
+WHERE
+
+  L.id = 4436;
+
+
+
+OK
+
+10	122
+
+Time taken: 23.479 seconds, Fetched: 1 row(s)
+
+
+
+I tried it on hive-1.3.0 (MR) and hive-0.13.1 (MR and Tez) - all combinations have the issue</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>1.3.0, 1.2.1, 2.0.0, 1.0.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">11034</link>
+			
+			
+			<link description="relates to" type="Reference">4293</link>
+			
+			
+			<link description="is related to" type="Reference">3847</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-19 18:34:50" id="11034" opendate="2015-06-17 02:42:20" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Joining multiple tables producing different results with different order of join</summary>
+			
+			
+			<description>
+Join between tables with different join columns from main table yielding wrong results in hive. 
+Changing the order of the joins between main table and other tables is producing different results.
+
+Please see below for the steps to reproduce the issue:
+1. Create tables as follows:
+    create table p(ck string, email string);
+    create table a1(ck string, flag string);
+    create table a2(email string, flag string);
+    create table a3(ck string, flag string);
+2. Load data into the tables as follows:
+    P
+
+
+ck
+email
+
+
+10
+e10
+
+
+20
+e20
+
+
+30
+e30
+
+
+40
+e40
+
+
+    A1
+
+
+ck
+flag
+
+
+10
+N
+
+
+20
+Y
+
+
+30
+Y
+
+
+40
+Y
+
+
+    A2
+
+
+email
+flag
+
+
+e10
+Y
+
+
+e20
+N
+
+
+e30
+Y
+
+
+e40
+Y
+
+
+    A3
+
+
+ck
+flag
+
+
+10
+Y
+
+
+20
+Y
+
+
+30
+N
+
+
+40
+Y
+
+
+ 3. Good query:
+
+select p.ck 
+from p 
+left outer join a1 on p.ck = a1.ck 
+left outer join a3 on p.ck = a3.ck 
+left outer join a2 on p.email = a2.email 
+where a1.flag = &amp;amp;apos;Y&amp;amp;apos;
+  and a3.flag = &amp;amp;apos;Y&amp;amp;apos;
+  and a2.flag = &amp;amp;apos;Y&amp;amp;apos;
+;
+
+and results are
+  40
+4. Bad query
+
+select p.ck 
+from p 
+left outer join a1 on p.ck = a1.ck 
+left outer join a2 on p.email = a2.email 
+left outer join a3 on p.ck = a3.ck 
+where a1.flag = &amp;amp;apos;Y&amp;amp;apos;
+  and a2.flag = &amp;amp;apos;Y&amp;amp;apos;
+  and a3.flag = &amp;amp;apos;Y&amp;amp;apos;
+;
+
+ Producing results as:
+ 30
+ 40
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">10841</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-08-06 16:44:18" id="7566" opendate="2014-07-31 02:16:10" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HIVE can&amp;apos;t count hbase NULL column value properly</summary>
+			
+			
+			<description>HBase table structure is like this:
+table name : &amp;amp;apos;testtable&amp;amp;apos;
+column family : &amp;amp;apos;data&amp;amp;apos;
+column 1 : &amp;amp;apos;name&amp;amp;apos;
+column 2 : &amp;amp;apos;color&amp;amp;apos;
+HIVE mapping table is structure is like this:
+table name : &amp;amp;apos;hb_testtable&amp;amp;apos;
+column 1 : &amp;amp;apos;name&amp;amp;apos;
+column 2 : &amp;amp;apos;color&amp;amp;apos;
+in hbase, put two rows
+James, blue
+May
+then do select in hive
+select * from hb_testtable where color is null
+the result is 
+May, NULL
+then try count 
+select count from hb_testtable where color is null
+the result is 0, which should be 1</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HiveHBaseInputFormatUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">5277</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-09 18:46:07" id="11798" opendate="2015-09-11 06:21:53" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>The Beeline report should not display the header when --showHeader is set to false.</summary>
+			
+			
+			<description>In Beeline tool User sets the --showheader option as false.
+In command line interface user inputs the command bin/beeline -u jdbc:hive2://10.19.92.183:10000  --showHeader=false
+Actual Result : The Beeline report displays the column name.
+Expected Result : The Beeline report should not display the header when --showHeader is set to false.</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.beeline.TableOutputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">7200</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-05 16:55:57" id="12566" opendate="2015-12-02 15:54:13" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Incorrect result returns when using COALESCE in WHERE condition with LEFT JOIN</summary>
+			
+			
+			<description>The left join query with on/where clause returns incorrect result (more rows are returned). See the reproducible sample below.
+Left table with data:
+
+
+
+CREATE TABLE ltable (i int, la int, lk1 string, lk2 string) ROW FORMAT DELIMITED FIELDS TERMINATED BY &amp;amp;apos;,&amp;amp;apos;;
+
+---
+
+1,\N,CD5415192314304,00071
+
+2,\N,CD5415192225530,00071
+
+
+
+Right  table with data:
+
+
+
+CREATE TABLE rtable (ra int, rk1 string, rk2 string) ROW FORMAT DELIMITED FIELDS TERMINATED BY &amp;amp;apos;,&amp;amp;apos;;
+
+---
+
+1,CD5415192314304,00071
+
+45,CD5415192314304,00072
+
+
+
+Query:
+
+
+
+SELECT * FROM ltable l LEFT OUTER JOIN rtable r on (l.lk1 = r.rk1 AND l.lk2 = r.rk2) WHERE COALESCE(l.la,&amp;amp;apos;EMPTY&amp;amp;apos;)=COALESCE(r.ra,&amp;amp;apos;EMPTY&amp;amp;apos;);
+
+
+
+Result returns:
+
+
+
+1	NULL	CD5415192314304	00071	NULL	NULL	NULL
+
+2	NULL	CD5415192225530	00071	NULL	NULL	NULL
+
+
+
+The correct result should be
+
+
+
+2	NULL	CD5415192225530	00071	NULL	NULL	NULL
+
+
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-07 21:09:36" id="13083" opendate="2016-02-18 06:33:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Writing HiveDecimal to ORC can wrongly suppress present stream</summary>
+			
+			
+			<description>HIVE-3976 can cause ORC file to be unreadable. The changes introduced in HIVE-3976 for DecimalTreeWriter can create null values after updating the isPresent stream. https://github.com/apache/hive/blob/branch-0.13/ql/src/java/org/apache/hadoop/hive/ql/io/orc/WriterImpl.java#L1337
+As result of the above return statement, isPresent stream state can become wrong. The isPresent stream thinks all values are non-null and hence suppressed. But the data stream will be of 0 length. When reading such files we will get the following exception
+
+
+
+Caused by: java.io.EOFException: Reading BigInteger past EOF from compressed stream Stream for column 3 kind DATA position: 0 length: 0 range: 0 offset: 0 limit: 0
+
+        at org.apache.hadoop.hive.ql.io.orc.SerializationUtils.readBigInteger(SerializationUtils.java:176)
+
+        at org.apache.hadoop.hive.ql.io.orc.TreeReaderFactory$DecimalTreeReader.next(TreeReaderFactory.java:1264)
+
+        at org.apache.hadoop.hive.ql.io.orc.TreeReaderFactory$StructTreeReader.next(TreeReaderFactory.java:2004)
+
+        at org.apache.hadoop.hive.ql.io.orc.RecordReaderImpl.next(RecordReaderImpl.java:1039)
+
+        ... 24 more
+
+
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.1.0, 2.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.orc.OrcProto.java</file>
+			
+			
+			<file type="M">org.apache.orc.OrcFile.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.DecimalColumnVector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.TestOrcFile.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is depended upon by" type="dependent">13220</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-05-02 15:19:45" id="6712" opendate="2014-03-20 20:18:43" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HS2 JDBC driver is inconsistent w.r.t. auto commit</summary>
+			
+			
+			<description>I see an inconsistency in HS2 JDBC driver code:
+
+
+
+  @Override
+
+  public void setAutoCommit(boolean autoCommit) throws SQLException {
+
+    if (autoCommit) {
+
+      throw new SQLException(&quot;enabling autocommit is not supported&quot;);
+
+    }
+
+  }
+
+
+
+From above, it seems that auto commit is not supported. However, 
+
+
+
+  @Override
+
+  public boolean getAutoCommit() throws SQLException {
+
+    return true;
+
+  }
+
+
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveConnection.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.TestJdbcDriver2.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6705</link>
+			
+			
+			<link description="duplicates" type="Duplicate">11293</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-10-18 04:47:13" id="14989" opendate="2016-10-17 20:45:53" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FIELDS TERMINATED BY parsing broken when delimiter is more than 1 byte</summary>
+			
+			
+			<description>FIELDS TERMINATED BY parsing broken when delimiter is more than 1 byte. Delimiter starting from 2nd character becomes part of returned data. No parsed properly.
+Test case:
+
+CREATE external TABLE test_muldelim
+
+(  string1 STRING,
+
+   string2 STRING,
+
+   string3 STRING
+
+)
+
+ ROW FORMAT 
+
+       DELIMITED FIELDS TERMINATED BY &amp;amp;apos;&amp;lt;&amp;gt;&amp;amp;apos;
+
+      LINES TERMINATED BY &amp;amp;apos;\n&amp;amp;apos;
+
+ STORED AS TEXTFILE
+
+  location &amp;amp;apos;/user/hive/test_muldelim&amp;amp;apos;
+
+
+
+Create a text file under /user/hive/test_muldelim with following 2 lines:
+
+data1&amp;lt;&amp;gt;data2&amp;lt;&amp;gt;data3
+
+aa&amp;lt;&amp;gt;bb&amp;lt;&amp;gt;cc
+
+
+
+Now notice that two-character delimiter wasn&amp;amp;apos;t parsed properly:
+
+jdbc:hive2://host.domain.com:1&amp;gt; select * from ruslan_test.test_muldelim ;
+
++------------------------+------------------------+------------------------+--+
+
+| test_muldelim.string1  | test_muldelim.string2  | test_muldelim.string3  |
+
++------------------------+------------------------+------------------------+--+
+
+| data1                  | &amp;gt;data2                 | &amp;gt;data3                 |
+
+| aa                     | &amp;gt;bb                    | &amp;gt;cc                    |
+
++------------------------+------------------------+------------------------+--+
+
+2 rows selected (0.453 seconds)
+
+
+
+The second delimiter&amp;amp;apos;s character (&amp;amp;apos;&amp;gt;&amp;amp;apos;) became part of the columns to the right (`string2` and `string3`).
+Table DDL:
+
+0: jdbc:hive2://host.domain.com:1&amp;gt; show create table dafault.test_muldelim ;
+
++-----------------------------------------------------------------+--+
+
+|                         createtab_stmt                          |
+
++-----------------------------------------------------------------+--+
+
+| CREATE EXTERNAL TABLE `default.test_muldelim`(              |
+
+|   `string1` string,                                             |
+
+|   `string2` string,                                             |
+
+|   `string3` string)                                             |
+
+| ROW FORMAT DELIMITED                                            |
+
+|   FIELDS TERMINATED BY &amp;amp;apos;&amp;lt;&amp;gt;&amp;amp;apos;                                     |
+
+|   LINES TERMINATED BY &amp;amp;apos;\n&amp;amp;apos;                                      |
+
+| STORED AS INPUTFORMAT                                           |
+
+|   &amp;amp;apos;org.apache.hadoop.mapred.TextInputFormat&amp;amp;apos;                    |
+
+| OUTPUTFORMAT                                                    |
+
+|   &amp;amp;apos;org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat&amp;amp;apos;  |
+
+| LOCATION                                                        |
+
+|   &amp;amp;apos;hdfs://epsdatalake/user/hive/test_muldelim&amp;amp;apos;              |
+
+| TBLPROPERTIES (                                                 |
+
+|   &amp;amp;apos;transient_lastDdlTime&amp;amp;apos;=&amp;amp;apos;1476727100&amp;amp;apos;)                         |
+
++-----------------------------------------------------------------+--+
+
+15 rows selected (0.286 seconds)
+
+
+</description>
+			
+			
+			<version>0.13.0</version>
+			
+			
+			<fixedVersion>0.14.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyStruct.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyBinary.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.TestLazyPrimitive.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5871</link>
+			
+			
+			<link description="relates to" type="Reference">5871</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

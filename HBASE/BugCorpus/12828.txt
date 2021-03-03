@@ -1,0 +1,1 @@
+add gettableattribut api hbaseadmin class present api function tabl attribut nice function return tabl attribut tabl

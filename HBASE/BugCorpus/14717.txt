@@ -1,0 +1,1 @@
+enabl tabl replic command creat tabl peer cluster peer user tabl creat enabl tabl replic command honour peer1 t1 cf1 t2 creat amp apo t3 amp apo amp apo amp apo enabl tabl replic amp apo t3 amp apo gt creat t3 peer1

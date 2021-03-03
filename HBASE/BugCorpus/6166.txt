@@ -1,0 +1,1 @@
+thrift start wih server type config thrift server type command line amp apo config shouldn amp apo

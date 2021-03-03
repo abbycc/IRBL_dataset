@@ -1,0 +1,1 @@
+remov annot deprec method hregioninfo method deprec 1 0 move metatableaccessor remov 2 0 branch convert metatableaccessor hregioninfo getcompar mark deprec 1 0 remain hbase 13501

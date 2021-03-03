@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HBASE">
+	<bug fixdate="2008-05-07 17:01:10" id="618" opendate="2008-05-07 04:26:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>We always compact if 2 files, regardless of the compaction threshold setting</summary>
+			
+			
+			<description>We will always compact if there are two files in a store.  Here is an illustration from a loading run against 0.1.2 candidate:
+
+2008-05-06 18:25:42,255 INFO org.apache.hadoop.hbase.HRegion: starting compaction on region category_rule_pricebin_statistics,,1210116131965
+2008-05-06 18:25:42,259 DEBUG org.apache.hadoop.hbase.HStore: started compaction of 2 files [329657396/confidence_interval/1251369679869294899, 329657396/confidence_interval/5238351815319958452] into /hbase/category_rule_pricebin_statistics/compaction.dir/329657396/confidence_interval/mapfiles/6688946093979715350
+2008-05-06 18:25:46,223 DEBUG org.apache.hadoop.hbase.HStore: moving /hbase/category_rule_pricebin_statistics/compaction.dir/329657396/confidence_interval/mapfiles/6688946093979715350 to /hbase/category_rule_pricebin_statistics/329657396/confidence_interval/mapfiles/6019580165435904305
+2008-05-06 18:25:46,329 DEBUG org.apache.hadoop.hbase.HStore: started compaction of 2 files [329657396/rule_id/4877828519309794708, 329657396/rule_id/3736239181369788409] into /hbase/category_rule_pricebin_statistics/compaction.dir/329657396/rule_id/mapfiles/6451418039787481756
+2008-05-06 18:25:50,273 DEBUG org.apache.hadoop.hbase.HStore: moving /hbase/category_rule_pricebin_statistics/compaction.dir/329657396/rule_id/mapfiles/6451418039787481756 to /hbase/category_rule_pricebin_statistics/329657396/rule_id/mapfiles/1365174520347083269
+2008-05-06 18:25:50,338 DEBUG org.apache.hadoop.hbase.HStore: started compaction of 2 files [329657396/hidden_variable/7348598912095388790, 329657396/hidden_variable/1402264537929464657] into /hbase/category_rule_pricebin_statistics/compaction.dir/329657396/hidden_variable/mapfiles/7895992615693344978
+2008-05-06 18:25:54,103 DEBUG org.apache.hadoop.hbase.HStore: moving /hbase/category_rule_pricebin_statistics/compaction.dir/329657396/hidden_variable/mapfiles/7895992615693344978 to /hbase/category_rule_pricebin_statistics/329657396/hidden_variable/mapfiles/4450886729060218942
+2008-05-06 18:25:54,155 DEBUG org.apache.hadoop.hbase.HStore: started compaction of 2 files [329657396/category_id/6976628214412388959, 329657396/category_id/8426537623290869905] into /hbase/category_rule_pricebin_statistics/compaction.dir/329657396/category_id/mapfiles/4017716533879305176
+2008-05-06 18:25:57,698 DEBUG org.apache.hadoop.hbase.HStore: moving /hbase/category_rule_pricebin_statistics/compaction.dir/329657396/category_id/mapfiles/4017716533879305176 to /hbase/category_rule_pricebin_statistics/329657396/category_id/mapfiles/657561173732096591
+2008-05-06 18:25:57,747 DEBUG org.apache.hadoop.hbase.HStore: started compaction of 2 files [329657396/price_bin_id/165701488423589566, 329657396/price_bin_id/5537046322320665760] into /hbase/category_rule_pricebin_statistics/compaction.dir/329657396/price_bin_id/mapfiles/3214618236668106036
+2008-05-06 18:26:01,135 DEBUG org.apache.hadoop.hbase.HStore: moving /hbase/category_rule_pricebin_statistics/compaction.dir/329657396/price_bin_id/mapfiles/3214618236668106036 to /hbase/category_rule_pricebin_statistics/329657396/price_bin_id/mapfiles/8727588456978537416
+2008-05-06 18:26:01,181 INFO org.apache.hadoop.hbase.HRegion: compaction completed on region category_rule_pricebin_statistics,,1210116131965 in 18sec
+
+
+In the above, the region has 6 families, each of which is being loaded fairly evenly.   Every time through we&amp;amp;apos;ll compact a store if two files, which just so happens to be most of the time in this case.</description>
+			
+			
+			<version>0.1.2</version>
+			
+			
+			<fixedVersion>0.1.2, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-05-07 17:25:54" id="619" opendate="2008-05-07 17:23:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix &amp;apos;logs&amp;apos; link in UI</summary>
+			
+			
+			<description>Clicking on the &amp;amp;apos;local logs&amp;amp;apos; link in UI gives 404</description>
+			
+			
+			<version>0.1.2</version>
+			
+			
+			<fixedVersion>0.1.2, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.InfoServer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-05-07 23:49:19" id="620" opendate="2008-05-07 23:20:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>testmergetool failing in branch and trunk since hbase-618 went in</summary>
+			
+			
+			<description>The hbase-618 fix revealed that testmergetool depends on compactions running.</description>
+			
+			
+			<version>0.1.2</version>
+			
+			
+			<fixedVersion>0.1.2, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-01 05:21:37" id="659" opendate="2008-05-30 20:35:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HLog#cacheFlushLock not cleared; hangs a region</summary>
+			
+			
+			<description>I have a region that is stuck in a close that was ordained by a split.  Here is what I have from the log pertaining to the stuck region:
+
+4    6416 2008-05-29 22:29:03,433 INFO org.apache.hadoop.hbase.HRegion: checking compaction completed on region enwiki,IK9sWdHJe6ffGZgFPsqIvk==,1212092907061 in 12sec
+5    6417 2008-05-29 22:29:03,439 INFO org.apache.hadoop.hbase.HRegion: Splitting enwiki,IK9sWdHJe6ffGZgFPsqIvk==,1212092907061 because largest aggregate size is 288.3m and desired size is 256.0m                                                                    
+6    6418 2008-05-29 22:29:03,443 DEBUG org.apache.hadoop.hbase.HRegion: compactions and cache flushes disabled for region enwiki,IK9sWdHJe6ffGZgFPsqIvk==,1212092907061
+7    6419 2008-05-29 22:29:03,443 DEBUG org.apache.hadoop.hbase.HRegion: new updates and scanners for region enwiki,IK9sWdHJe6ffGZgFPsqIvk==,1212092907061 disabled                                                                                                    
+8    6420 2008-05-29 22:29:03,443 DEBUG org.apache.hadoop.hbase.HRegion: no more active scanners for region enwiki,IK9sWdHJe6ffGZgFPsqIvk==,1212092907061
+9    6421 2008-05-29 22:29:03,443 DEBUG org.apache.hadoop.hbase.HRegion: no more row locks outstanding on region enwiki,IK9sWdHJe6ffGZgFPsqIvk==,1212092907061                                                                                                        
+10   6422 2008-05-29 22:29:03,443 DEBUG org.apache.hadoop.hbase.HRegionServer: enwiki,IK9sWdHJe6ffGZgFPsqIvk==,1212092907061 closing (Adding to retiringRegions)
+11   6423 2008-05-29 22:29:03,443 DEBUG org.apache.hadoop.hbase.HRegion: Started memcache flush for region enwiki,IK9sWdHJe6ffGZgFPsqIvk==,1212092907061. Current region memcache size 2.1m                                                                           
+12    6424 2008-05-29 22:29:03,561 INFO org.apache.hadoop.ipc.Server: IPC Server handler 0 on 60020, call batchUpdate(enwiki,IK9sWdHJe6ffGZgFPsqIvk==,1212092907061, 1171081390000, org.apache.hadoop.hbase.io.BatchUpdate@2eeb0275) from 208.76.44.139:49358: err        or: org.        apache.hadoop.hbase.NotServingRegionException: enwiki,IK9sWdHJe6ffGZgFPsqIvk==,1212092907061                                                                                                                                                        
+13   6425 org.apache.hadoop.hbase.NotServingRegionException: enwiki,IK9sWdHJe6ffGZgFPsqIvk==,1212092907061
+14   6434 2008-05-29 22:29:03,982 INFO org.apache.hadoop.ipc.Server: IPC Server handler 9 on 60020, call batchUpdate(enwiki,IK9sWdHJe6ffGZgFPsqIvk==,1212092907061, 1202595259000, org.apache.hadoop.hbase.io.BatchUpdate@46ee6763) from 208.76.44.139:49358: err        or: org.        apache.hadoop.hbase.NotServingRegionException: enwiki,IK9sWdHJe6ffGZgFPsqIvk==,1212092907061
+15   6435 org.apache.hadoop.hbase.NotServingRegionException: enwiki,IK9sWdHJe6ffGZgFPsqIvk==,1212092907061
+
+
+Then in thread dump, I have two threads blocked on the HLog#cacheFlushLock but looking in code, there is no obvious code path that would get a situation where a lock is held and then not released.
+
+&quot;regionserver/0:0:0:0:0:0:0:0:60020.compactor&quot; daemon prio=1 tid=0x00002aab381e5fd0 nid=0x6195 waiting on condition [0x0000000041c6c000..0x0000000041c6ce00]
+        at sun.misc.Unsafe.park(Native Method)
+        at java.util.concurrent.locks.LockSupport.park(Unknown Source)
+        at java.util.concurrent.locks.AbstractQueuedSynchronizer.parkAndCheckInterrupt(Unknown Source)
+        at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireQueued(Unknown Source)
+        at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquire(Unknown Source)
+        at java.util.concurrent.locks.ReentrantLock$NonfairSync.lock(Unknown Source)
+        at java.util.concurrent.locks.ReentrantLock.lock(Unknown Source)
+        at org.apache.hadoop.hbase.HLog.startCacheFlush(HLog.java:459)
+        at org.apache.hadoop.hbase.HRegion.internalFlushcache(HRegion.java:1089)
+        at org.apache.hadoop.hbase.HRegion.close(HRegion.java:594)
+        - locked &amp;lt;0x00002aaab70bf3a0&amp;gt; (a java.lang.Integer)
+        at org.apache.hadoop.hbase.HRegion.splitRegion(HRegion.java:759)
+        - locked &amp;lt;0x00002aaab70bf3a0&amp;gt; (a java.lang.Integer)
+        at org.apache.hadoop.hbase.HRegionServer$CompactSplitThread.split(HRegionServer.java:248)
+        at org.apache.hadoop.hbase.HRegionServer$CompactSplitThread.run(HRegionServer.java:204)
+
+...
+
+
+&quot;regionserver/0:0:0:0:0:0:0:0:60020.logRoller&quot; daemon prio=1 tid=0x00002aab38181d70 nid=0x6193 waiting on condition [0x0000000041a6a000..0x0000000041a6ab00]
+        at sun.misc.Unsafe.park(Native Method)
+        at java.util.concurrent.locks.LockSupport.park(Unknown Source)
+        at java.util.concurrent.locks.AbstractQueuedSynchronizer.parkAndCheckInterrupt(Unknown Source)
+        at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireQueued(Unknown Source)
+        at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquire(Unknown Source)
+        at java.util.concurrent.locks.ReentrantLock$NonfairSync.lock(Unknown Source)
+        at java.util.concurrent.locks.ReentrantLock.lock(Unknown Source)
+        at org.apache.hadoop.hbase.HLog.rollWriter(HLog.java:219)
+        at org.apache.hadoop.hbase.HRegionServer$LogRoller.run(HRegionServer.java:615)
+        - locked &amp;lt;0x00002aaab69ccf00&amp;gt; (a java.lang.Integer)
+...
+
+</description>
+			
+			
+			<version>0.1.2</version>
+			
+			
+			<fixedVersion>0.1.3, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.TableOperation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.TableDelete.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ChangeTableState.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ColumnOperation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.MetaUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.StoreFileScanner.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-03 19:28:07" id="663" opendate="2008-06-03 18:32:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Incorrect sequence number for cache flush</summary>
+			
+			
+			<description>An HRegion asks each HStore to flush its cache with a sequence number X. The assumption is that all the updates before X will be flushed. So during the startup reconstruction, the updates before X are skipped.
+The use of updatesLock should guarantee that all the updates before X will be flushed when HStore flushes with X - snapshots are taken after the write lock on updatesLock is acquired, while all the updates are written to the log and to the cache with the read lock on updatesLock is acquired. However, because the sequence number X is obtained without the write lock on updatesLock, some updates with sequence number &amp;lt;= X may not have been written to the cache which will be flushed.</description>
+			
+			
+			<version>0.1.2</version>
+			
+			
+			<fixedVersion>0.1.3, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-12 17:00:18" id="680" opendate="2008-06-12 06:13:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>config parameter hbase.io.index.interval  should be hbase.index.interval, accroding to HBaseMapFile.HbaseWriter</summary>
+			
+			
+			<description>in conf/hbase-default.xml and FAQ, there has a  performance tuning parameter &quot;hbase.io.index.interval&quot;, but can&amp;amp;apos;t find any usage in sources. instead, HStoreFile.java #585 using &quot;hbase.index.interval&quot; to set mapfile index interval (setIndexInterval). so i think  HStoreFile.java mistyped the parameter name.
+this mistake will make users thinkgs &quot;hbase.io.index.interval&quot; useless. </description>
+			
+			
+			<version>0.1.2</version>
+			
+			
+			<fixedVersion>0.1.3, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStoreFile.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-16 19:00:01" id="681" opendate="2008-06-12 21:06:55" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NPE in Memcache</summary>
+			
+			
+			<description>java.io.IOException: java.io.IOException: java.lang.NullPointerException
+	at org.apache.hadoop.hbase.regionserver.Memcache.internalGetKeys(Memcache.java:585)
+	at org.apache.hadoop.hbase.regionserver.Memcache.getKeys(Memcache.java:551)
+	at org.apache.hadoop.hbase.regionserver.HStore.getKeys(HStore.java:1437)
+	at org.apache.hadoop.hbase.regionserver.HRegion.getKeys(HRegion.java:1243)
+	at org.apache.hadoop.hbase.regionserver.HRegion.deleteMultiple(HRegion.java:1498)
+	at org.apache.hadoop.hbase.regionserver.HRegion.deleteAll(HRegion.java:1424)
+	at org.apache.hadoop.hbase.regionserver.HRegionServer.deleteAll(HRegionServer.java:1266)
+	at sun.reflect.GeneratedMethodAccessor6.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.hadoop.hbase.ipc.HbaseRPC$Server.call(HbaseRPC.java:424)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:867)
+</description>
+			
+			
+			<version>0.1.2</version>
+			
+			
+			<fixedVersion>0.1.3, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.MultiRegionTable.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HBaseTestCase.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HAbstractScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.AbstractMergeTestBase.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.TestMergeTool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.Memcache.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.StoreFileScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestRegionRebalancing.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is part of" type="Incorporates">613</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-17 20:52:04" id="686" opendate="2008-06-14 08:12:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MemcacheScanner didn&amp;apos;t return the first row(if it exists), cause HScannerInterface&amp;apos;s output incorrect</summary>
+			
+			
+			<description>HTable.obtainScanner methods should return the start row if it exists, although HTable&amp;amp;apos;s javadoc didn&amp;amp;apos;t clearly desc. but i found the result of htable scanners sometimes contain the start row, sometimes not.
+after more testing and code review, i found it should be a bug in HStore.Memcache.MemcacheScanner. in the constructor it set this.currentRow = firstRow, but when doing next(), there&amp;amp;apos;s a this.currentRow = getNextRow(this.currentRow) before fetch result.</description>
+			
+			
+			<version>0.1.2</version>
+			
+			
+			<fixedVersion>0.1.3, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestHMemcache.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.Memcache.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-04 19:16:56" id="674" opendate="2008-06-09 20:54:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>memcache size unreliable</summary>
+			
+			
+			<description>Multiple updates against same row/column/ts will be seen as increments to cache size on insert but when we then play the memcache at flush time, we&amp;amp;apos;ll only see the most recent entry and decrement the memcache size by whatever its size; memcache will be off.</description>
+			
+			
+			<version>0.1.2</version>
+			
+			
+			<fixedVersion>0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.Memcache.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-07-14 16:49:11" id="698" opendate="2008-06-19 00:36:10" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HLog recovery is not performed after master failure</summary>
+			
+			
+			<description>I have a local cluster running, and its logging to
+&amp;lt;hbase&amp;gt;/log_X.X.X.X_1213228101021_60020/
+Then I kill both master and regionserver, and restart. Looking through
+the logs I don&amp;amp;apos;t see anything about trying to recover from this hlog,
+it just creates a new hlog alongside the existing one (with a new
+startcode).  The older hlog seems to be ignored, and the tables
+created in the inital session are all gone.</description>
+			
+			
+			<version>0.1.2</version>
+			
+			
+			<fixedVersion>0.20.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.BaseScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMaster.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is blocked by" type="Blocker">728</link>
+			
+			
+			<link description="is blocked by" type="Blocker">546</link>
+			
+			
+			<link description="is blocked by" type="Blocker">1302</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

@@ -1,0 +1,1 @@
+disabl enabl tabl region assign 1 2 region server disabl enabl small tabl 20 region master assign region 1 2 region server tabl extens random read kill rs hold region fix restart hbase

@@ -1,0 +1,1 @@
+thriftserv version 1 crash oom thriftserv gatewai php amp applic found easi crash oom analyz jprof file found thriftserv 1 2g size byte arrai crash memori leak check huge byte arrai realiz http request string request protocol thrift memori alloc cound easili recur bug wget curl thriftserv check memori usag infom top command

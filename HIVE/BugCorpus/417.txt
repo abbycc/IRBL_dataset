@@ -1,0 +1,1 @@
+Implement Indexing in Hive Implement indexing on Hive so that lookup and range queries are efficient.

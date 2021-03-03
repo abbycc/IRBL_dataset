@@ -1,0 +1,809 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HBASE">
+	<bug fixdate="2015-01-29 04:55:16" id="12942" opendate="2015-01-29 04:40:30" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>After disabling the hfile block cache, Regionserver UI is throwing java.lang.NullPointerException</summary>
+			
+			
+			<description>Regionserver UI throws java.lang.NullPointerException
+if hfile.block.cache.size is disabled
+
+
+
+java.lang.NullPointerException
+
+        at org.apache.hadoop.hbase.tmpl.regionserver.BlockCacheTmplImpl.__jamon_innerUnit__bc_stats(BlockCacheTmplImpl.java:121)
+
+        at org.apache.hadoop.hbase.tmpl.regionserver.BlockCacheTmplImpl.renderNoFlush(BlockCacheTmplImpl.java:84)
+
+        at org.apache.hadoop.hbase.tmpl.regionserver.BlockCacheTmpl.renderNoFlush(BlockCacheTmpl.java:140)
+
+        at org.apache.hadoop.hbase.tmpl.regionserver.RSStatusTmplImpl.renderNoFlush(RSStatusTmplImpl.java:146)
+
+        at org.apache.hadoop.hbase.tmpl.regionserver.RSStatusTmpl.renderNoFlush(RSStatusTmpl.java:220)
+
+        at org.apache.hadoop.hbase.tmpl.regionserver.RSStatusTmpl.render(RSStatusTmpl.java:211)
+
+        at org.apache.hadoop.hbase.regionserver.RSStatusServlet.doGet(RSStatusServlet.java:58)
+
+        at javax.servlet.http.HttpServlet.service(HttpServlet.java:707)
+
+        at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+
+        at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:511)
+
+        at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1221)
+
+        at org.apache.hadoop.hbase.http.lib.StaticUserWebFilter$StaticUserFilter.doFilter(StaticUserWebFilter.java:113)
+
+        at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1212)
+
+        at org.apache.hadoop.hbase.http.HttpServer$QuotingInputFilter.doFilter(HttpServer.java:1351)
+
+        at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1212)
+
+        at org.apache.hadoop.hbase.http.NoCacheFilter.doFilter(NoCacheFilter.java:49)
+
+        at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1212)
+
+        at org.apache.hadoop.hbase.http.NoCacheFilter.doFilter(NoCacheFilter.java:49)
+
+        at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1212)
+
+        at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:399)
+
+        at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+
+        at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:182)
+
+        at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:766)
+
+        at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:450)
+
+        at org.mortbay.jetty.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:230)
+
+        at org.mortbay.jetty.handler.HandlerWrapper.handle(HandlerWrapper.java:152)
+
+        at org.mortbay.jetty.Server.handle(Server.java:326)
+
+        at org.mortbay.jetty.HttpConnection.handleRequest(HttpConnection.java:542)
+
+        at org.mortbay.jetty.HttpConnection$RequestHandler.headerComplete(HttpConnection.java:928)
+
+        at org.mortbay.jetty.HttpParser.parseNext(HttpParser.java:549)
+
+        at org.mortbay.jetty.HttpParser.parseAvailable(HttpParser.java:212)
+
+        at org.mortbay.jetty.HttpConnection.handle(HttpConnection.java:404)
+
+        at org.mortbay.io.nio.SelectChannelEndPoint.run(SelectChannelEndPoint.java:410)
+
+        at org.mortbay.thread.QueuedThreadPool$PoolThread.run(QueuedThreadPool.java:582)
+
+
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.0, 2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestRSStatusServlet.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">12393</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-11 22:27:01" id="13635" opendate="2015-05-06 16:33:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Regions stuck in transition because master is incorrectly assumed dead</summary>
+			
+			
+			<description>On master I see:
+
+
+
+15/05/05 20:56:38 INFO master.HMaster: balance hri=hbase:meta,,1.1588230740, src=hbase1375.prn2.facebook.com,16020,1430858968368, dest=hbase1377.prn2.facebook.com,16020,1430884264554
+
+15/05/05 20:56:38 INFO master.RegionStates: Transition {1588230740 state=OPEN, ts=1430876450098, server=hbase1375.prn2.facebook.com,16020,1430858968368} to {1588230740 state=PENDING_CLOSE, ts=1430884598277, server=hbase1375.prn2.facebook.com,16020,1430858968368}
+
+Tue May 05 21:01:54 PDT 2015, null, java.net.SocketTimeoutException: callTimeout=60000, callDuration=60724: row &amp;amp;apos;&amp;amp;apos; on table &amp;amp;apos;hbase:meta&amp;amp;apos; at region=hbase:meta,,1.1588230740, hostname=hbase1375.prn2.facebook.com,16020,1430858968368, seqNum=0
+
+Caused by: java.net.SocketTimeoutException: callTimeout=60000, callDuration=60724: row &amp;amp;apos;&amp;amp;apos; on table &amp;amp;apos;hbase:meta&amp;amp;apos; at region=hbase:meta,,1.1588230740, hostname=hbase1375.prn2.facebook.com,16020,1430858968368, seqNum=0
+
+
+
+On the regionserver I see the following log spew:
+
+
+
+15/05/06 09:30:11 INFO regionserver.HRegionServer: Failed to report region transition, will retry
+
+org.apache.hadoop.hbase.ipc.FailedServerException: This server is in the failed servers list: hbasectrl054.prn2.facebook.com/10.104.157.28:16020
+
+	at org.apache.hadoop.hbase.ipc.RpcClientImpl$Connection.setupIOstreams(RpcClientImpl.java:694)
+
+	at org.apache.hadoop.hbase.ipc.RpcClientImpl$Connection.writeRequest(RpcClientImpl.java:880)
+
+	at or^Cg.apache.hadoop.hbase.ipc.RpcClientImpl$Connection.tracedWriteRequest(RpcClientImpl.java:849)
+
+	at org.apache.hadoop.hbase.ipc.RpcClientImpl.call(RpcClientImpl.java:1173)
+
+	at org.apache.hadoop.hbase.ipc.AbstractRpcClient.callBlockingMethod(AbstractRpcClient.java:216)
+
+	at org.apache.hadoop.hbase.ipc.AbstractRpcClient$BlockingRpcChannelImplementation.callBlockingMethod(AbstractRpcClient.java:300)
+
+	at org.apache.hadoop.hbase.protobuf.generated.RegionServerStatusProtos$RegionServerStatusService$BlockingStub.reportRegionStateTransition(RegionServerStatusProtos.java:8325)
+
+	at org.apache.hadoop.hbase.regionserver.HRegionServer.reportRegionStateTransition(HRegionServer.java:1863)
+
+	at org.apache.hadoop.hbase.regionserver.HRegionServer.reportRegionStateTransition(HRegionServer.java:1837)
+
+	at org.apache.hadoop.hbase.regionserver.handler.CloseRegionHandler.process(CloseRegionHandler.java:157)
+
+	at org.apache.hadoop.hbase.executor.EventHandler.run(EventHandler.java:128)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.13, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestQosFunction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.AnnotationReadingPriorityFunction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RWQueueRpcExecutor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-06 02:55:55" id="13834" opendate="2015-06-04 00:12:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Evict count not properly passed to HeapMemoryTuner.</summary>
+			
+			
+			<description>Evict count calculated inside the HeapMemoryManager class in tune function that is passed to HeapMemoryTuner via TunerContext is miscalculated. It is supposed to be Evict count between two intervals but its not. </description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HeapMemoryManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-09 03:40:10" id="13847" opendate="2015-06-04 19:52:13" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>getWriteRequestCount function in HRegionServer uses int variable to return the count.</summary>
+			
+			
+			<description>Variable used to return the value of getWriteRequestCount is int, must be long. I think it causes cluster UI to show negative Write Request Count.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.0.1, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-16 02:31:59" id="13821" opendate="2015-06-01 17:58:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>WARN if hbase.bucketcache.percentage.in.combinedcache is set</summary>
+			
+			
+			<description>HBASE-11520 improved configuration of bucket cache to no longer require hbase.bucketcache.percentage.in.combinedcache. This was done rather aggressively, with this previously mandatory configuration being ignored. This can result in RS crashes for unsuspecting users. We should add a WARN when hbase.bucketcache.percentage.in.combinedcache is set to make debugging the crash more straight forward.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.hfile.CacheConfig.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-26 15:53:16" id="13863" opendate="2015-06-08 19:30:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Multi-wal feature breaks reported number and size of HLogs</summary>
+			
+			
+			<description>When multi-wal is enabled the number and size of retained HLogs is always reported as zero.
+We should fix this so that the numbers are the sum of all retained logs.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.0.2, 1.2.0, 1.1.2, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.wal.BoundedRegionGroupingProvider.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.MetricsRegionServerWrapperImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.wal.DefaultWALProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-08-07 16:14:02" id="13825" opendate="2015-06-02 13:48:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Use ProtobufUtil#mergeFrom and ProtobufUtil#mergeDelimitedFrom in place of builder methods of same name</summary>
+			
+			
+			<description>When performing a get operation on a column family with more than 64MB of data, the operation fails with:
+Caused by: Portable(java.io.IOException): Call to host:port failed on local exception: com.google.protobuf.InvalidProtocolBufferException: Protocol message was too large.  May be malicious.  Use CodedInputStream.setSizeLimit() to increase the size limit.
+        at org.apache.hadoop.hbase.ipc.RpcClient.wrapException(RpcClient.java:1481)
+        at org.apache.hadoop.hbase.ipc.RpcClient.call(RpcClient.java:1453)
+        at org.apache.hadoop.hbase.ipc.RpcClient.callBlockingMethod(RpcClient.java:1653)
+        at org.apache.hadoop.hbase.ipc.RpcClient$BlockingRpcChannelImplementation.callBlockingMethod(RpcClient.java:1711)
+        at org.apache.hadoop.hbase.protobuf.generated.ClientProtos$ClientService$BlockingStub.get(ClientProtos.java:27308)
+        at org.apache.hadoop.hbase.protobuf.ProtobufUtil.get(ProtobufUtil.java:1381)
+        at org.apache.hadoop.hbase.client.HTable$3.call(HTable.java:753)
+        at org.apache.hadoop.hbase.client.HTable$3.call(HTable.java:751)
+        at org.apache.hadoop.hbase.client.RpcRetryingCaller.callWithRetries(RpcRetryingCaller.java:120)
+        at org.apache.hadoop.hbase.client.HTable.get(HTable.java:756)
+        at org.apache.hadoop.hbase.client.HTable.get(HTable.java:765)
+        at org.apache.hadoop.hbase.client.HTablePool$PooledHTable.get(HTablePool.java:395)
+This may be related to https://issues.apache.org/jira/browse/HBASE-11747 but that issue is related to cluster status. 
+Scan and put operations on the same data work fine
+Tested on a 1.0.0 cluster with both 1.0.1 and 1.0.0 clients.
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.14, 1.0.2, 1.2.0, 1.1.2, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.model.ScannerModel.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HTableDescriptor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.model.CellModel.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.ReplicationPeersZKImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.MasterCoprocessorRpcChannel.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ClusterId.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HTable.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.model.TableInfoModel.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.model.TableSchemaModel.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.MasterRpcServices.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HColumnDescriptor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.ZKDataMigrator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.AccessController.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.model.StorageClusterStatusModel.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.model.CellSetModel.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.types.PBCell.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.zookeeper.RegionServerTracker.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.AccessControlLists.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.FSUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.token.AuthenticationTokenIdentifier.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.zookeeper.ZKUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RegionServerCoprocessorRpcChannel.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.visibility.VisibilityUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.ProtobufLogReader.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.HbaseObjectWritableFor96Migration.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TableDescriptor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.ReplicationPeerZKImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.zookeeper.LoadBalancerTracker.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HRegionInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.TableLockManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.ProtobufUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RpcServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.SplitLogTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.model.VersionModel.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.model.TableListModel.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RegionCoprocessorRpcChannel.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">11747</link>
+			
+			
+			<link description="is related to" type="Reference">11747</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-22 05:00:36" id="14663" opendate="2015-10-21 18:28:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HStore::close does not honor config hbase.rs.evictblocksonclose</summary>
+			
+			
+			<description>I noticed moving regions was slow and due to the wait for the bucket cache to clear.  I tried setting hbase.rs.evictblocksonclose and it did not help.
+I see the HStore::close method has evictonclose hard coded to true instead of letting the config dictate:
+// close each store file in parallel
+CompletionService&amp;lt;Void&amp;gt; completionService =
+   new ExecutorCompletionService&amp;lt;Void&amp;gt;(storeFileCloserThreadPool);
+for (final StoreFile f : result) {
+   completionService.submit(new Callable&amp;lt;Void&amp;gt;() {
+     @Override
+     public Void call() throws IOException 
+{
+
+       f.closeReader(true);
+
+       return null;
+
+     }
+   });
+}</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 1.0.3, 1.1.3, 0.98.16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStore.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-25 01:54:30" id="14624" opendate="2015-10-15 21:54:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BucketCache.freeBlock is too expensive</summary>
+			
+			
+			<description>Moving regions is unacceptably slow when using bucket cache, as it takes too long to free all the blocks.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 1.0.3, 1.1.3, 0.98.16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.hfile.bucket.BucketAllocator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-11 02:42:22" id="14788" opendate="2015-11-09 16:33:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Splitting a region does not support the hbase.rs.evictblocksonclose config when closing source region</summary>
+			
+			
+			<description>i have a table with bucket cache turned on and hbase.rs.evictblocksonclose set to false.  I split a region and watched that the closing of the source region did not complete until the bucketcache was flushed for that region.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 0.98.17</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionFileSystem.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.StoreFile.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-22 03:06:16" id="15152" opendate="2016-01-21 15:24:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Automatically include prefix-tree module in MR jobs if present</summary>
+			
+			
+			<description>I was running some MR jobs tests and ended up with PrefixTreeCodec class not found in the YarnChildren processes.  
+
+
+
+2016-01-21 06:24:26,844 WARN  [main] mapreduce.TableMapReduceUtil(785): The  hbase-prefix-tree module jar containing PrefixTreeCodec is not present.
+
+java.lang.ClassNotFoundException: org.apache.hadoop.hbase.code.prefixtree.PrefixTreeCodec
+
+        at java.net.URLClassLoader$1.run(URLClassLoader.java:366)
+
+        at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
+
+
+
+This is related to HBASE-7434 and HBASE-7936 which address compile time concerns.  This fix makes it so that jar inclusion is done at run time, and continues if it is not present (for mr unit tests that don&amp;amp;apos;t depend on it)</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 1.1.4, 1.0.4, 0.98.18</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-03 22:58:56" id="15955" opendate="2016-06-03 18:35:51" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Disable action in CatalogJanitor#setEnabled should wait for active cleanup scan to finish</summary>
+			
+			
+			<description>When user calls Admin.enableCatalogJanitor(false) to disable the catalog janitor, it expects that the janitor would stop working once the API returns.  It is not true, the janitor could have an active scan going on and clean up unused region.  The &amp;amp;apos;false&amp;amp;apos; state would be enforced during the next background runs.  
+To avoid confusing, if &amp;amp;apos;CatalogJanitor.enabled&amp;amp;apos; is true and we want to set to false in CatalogJanitor#setEnabled, the function should wait for the on-going active scan to complete.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.2.2, 1.1.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.CatalogJanitor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-10-17 21:32:06" id="16721" opendate="2016-09-28 00:33:17" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Concurrency issue in WAL unflushed seqId tracking</summary>
+			
+			
+			<description>I&amp;amp;apos;m inspecting an interesting case where in a production cluster, some regionservers ends up accumulating hundreds of WAL files, even with force flushes going on due to max logs. This happened multiple times on the cluster, but not on other clusters. The cluster has periodic memstore flusher disabled, however, this still does not explain why the force flush of regions due to max limit is not working. I think the periodic memstore flusher just masks the underlying problem, which is why we do not see this in other clusters. 
+The problem starts like this: 
+
+
+
+2016-09-21 17:49:18,272 INFO  [regionserver//10.2.0.55:16020.logRoller] wal.FSHLog: Too many wals: logs=33, maxlogs=32; forcing flush of 1 regions(s): d4cf39dc40ea79f5da4d0cf66d03cb1f
+
+2016-09-21 17:49:18,273 WARN  [regionserver//10.2.0.55:16020.logRoller] regionserver.LogRoller: Failed to schedule flush of d4cf39dc40ea79f5da4d0cf66d03cb1f, region=null, requester=null
+
+
+
+then, it continues until the RS is restarted: 
+
+
+
+2016-09-23 17:43:49,356 INFO  [regionserver//10.2.0.55:16020.logRoller] wal.FSHLog: Too many wals: logs=721, maxlogs=32; forcing flush of 1 regions(s): d4cf39dc40ea79f5da4d0cf66d03cb1f
+
+2016-09-23 17:43:49,357 WARN  [regionserver//10.2.0.55:16020.logRoller] regionserver.LogRoller: Failed to schedule flush of d4cf39dc40ea79f5da4d0cf66d03cb1f, region=null, requester=null
+
+
+
+The problem is that region d4cf39dc40ea79f5da4d0cf66d03cb1f is already split some time ago, and was able to flush its data and split without any problems. However, the FSHLog still thinks that there is some unflushed data for this region. 
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0, 1.2.4, 1.1.8</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.wal.WAL.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.TestFSHLog.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.AbstractTestFSWAL.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">16820</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

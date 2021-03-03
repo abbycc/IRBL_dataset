@@ -1,0 +1,1 @@
+fix resourc leak hmastercommandlin hmastercommandlin stopmast admin close hmastercommandlin java connect connect connectionfactori createconnect conf admin admin connect getadmin connect getadmin shutdown catch throwabl log error fail stop master return 1

@@ -1,0 +1,2 @@
+StrBuilder does not implement clone() As reported by FindBugs.
+Does StrBuilder need to be Cloneable?

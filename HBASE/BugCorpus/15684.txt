@@ -1,0 +1,1 @@
+fix broken log file size account long oldfilelen 0l doreplacewrit oldpath newpath nextwrit long oldfilelen doreplacewrit oldpath newpath nextwrit

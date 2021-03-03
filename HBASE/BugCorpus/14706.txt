@@ -1,0 +1,1 @@
+regionlocationfind return multipl servernam top host multipl rs run host regionlocationfind maphostnametoservernam map host server make localitycostfunct wrong local region creat map hostnam servernam fast lookup hashmap lt string servernam gt hosttoservernam hashmap lt string servernam gt servernam sn regionserv hosttoservernam put sn gethostnam sn

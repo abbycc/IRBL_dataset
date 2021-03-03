@@ -1,0 +1,813 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HBASE">
+	<bug fixdate="2015-05-16 23:47:27" id="13668" opendate="2015-05-12 02:06:53" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestFlushRegionEntry is flaky</summary>
+			
+			
+			<description>
+Flaked tests: 
+
+org.apache.hadoop.hbase.regionserver.TestFlushRegionEntry.test
+
+    (org.apache.hadoop.hbase.regionserver.TestFlushRegionEntry)
+
+  Run 1: TestFlushRegionEntry.test:41 expected:
+
+       org.apache.hadoop.hbase.regionserver.MemStoreFlusher$FlushRegionEntry&amp;lt;[flush region null]&amp;gt;
+
+     but was:
+
+       org.apache.hadoop.hbase.regionserver.MemStoreFlusher$FlushRegionEntry&amp;lt;[flush region null]&amp;gt;
+
+  Run 2: PASS
+
+
+</description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.13, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestFlushRegionEntry.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-02 10:04:59" id="13647" opendate="2015-05-08 10:41:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Default value for hbase.client.operation.timeout is too high</summary>
+			
+			
+			<description>Default value for hbase.client.operation.timeout is too high, it is LONG.Max.
+That value will block any service calls to coprocessor endpoints indefinitely.
+Should we introduce better default value for that?</description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.13, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HConstants.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-03 05:44:33" id="13826" opendate="2015-06-02 22:52:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Unable to create table when group acls are appropriately set.</summary>
+			
+			
+			<description>Steps for reproducing the issue.
+
+Create user &amp;amp;apos;test&amp;amp;apos; and group &amp;amp;apos;hbase-admin&amp;amp;apos;.
+Grant global create permissions to &amp;amp;apos;hbase-admin&amp;amp;apos;.
+Add user &amp;amp;apos;test&amp;amp;apos; to &amp;amp;apos;hbase-admin&amp;amp;apos; group.
+Create table operation for &amp;amp;apos;test&amp;amp;apos; user will throw ADE.
+
+</description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.13, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.TestAccessController2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.TableAuthManager.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">13828</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-05 19:40:57" id="13789" opendate="2015-05-28 00:10:42" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ForeignException should not be sent to the client</summary>
+			
+			
+			<description>ForeignException is in hbase-server so the client will not be able to deserialize it, and also it will hide the DoNotRetryException of the cause.
+I haven&amp;amp;apos;t found an easy way to test it, aside manually looking at the logs. and this stuff will go away with proc-v2. so for now the easy workaround is catch the ForeignException in the master which are just the few places related to proc-v1 and throw the cause to the client</description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.13, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.MasterRpcServices.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-10 14:37:35" id="13873" opendate="2015-06-09 14:47:19" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>LoadTestTool addAuthInfoToConf throws UnsupportedOperationException</summary>
+			
+			
+			<description>When run IntegrationTestIngestWithACL on distributed clusters with kerberos security enabled, the method addAuthInfoToConf() in LoadTestTool will be invoked and throws UnsupportedOperationException, stack as follows:
+
+
+
+2015-06-09 22:15:33,605 ERROR [main] util.AbstractHBaseTool: Error running command-line tool
+
+java.lang.UnsupportedOperationException
+
+        at java.util.AbstractList.add(AbstractList.java:148)
+
+        at java.util.AbstractList.add(AbstractList.java:108)
+
+        at org.apache.hadoop.hbase.util.LoadTestTool.addAuthInfoToConf(LoadTestTool.java:811)
+
+        at org.apache.hadoop.hbase.util.LoadTestTool.loadTable(LoadTestTool.java:516)
+
+        at org.apache.hadoop.hbase.util.LoadTestTool.doWork(LoadTestTool.java:479)
+
+        at org.apache.hadoop.hbase.util.AbstractHBaseTool.run(AbstractHBaseTool.java:112)
+
+        at org.apache.hadoop.hbase.IntegrationTestIngest.runIngestTest(IntegrationTestIngest.java:151)
+
+        at org.apache.hadoop.hbase.IntegrationTestIngest.internalRunIngestTest(IntegrationTestIngest.java:114)
+
+        at org.apache.hadoop.hbase.IntegrationTestIngest.runTestFromCommandLine(IntegrationTestIngest.java:97)
+
+        at org.apache.hadoop.hbase.IntegrationTestBase.doWork(IntegrationTestBase.java:115)
+
+        at org.apache.hadoop.hbase.util.AbstractHBaseTool.run(AbstractHBaseTool.java:112)
+
+        at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:70)
+
+        at org.apache.hadoop.hbase.IntegrationTestIngestWithACL.main(IntegrationTestIngestWithACL.java:136)
+
+
+
+The corresponding code is below and the reason is obvious. Arrays.asList return a java.util.Arrays$ArrayList but not java.util.ArrayList. Both of them are inherited from java.util.AbstractList, but the former didn&amp;amp;apos;t override the method add(), so the parent method java.util.AbstractList.add() will be invoked and the exception threw.
+
+
+
+private void addAuthInfoToConf(Properties authConfig, Configuration conf, String owner,
+
+      String userList) throws IOException {
+
+    List&amp;lt;String&amp;gt; users = Arrays.asList(userList.split(&quot;,&quot;));
+
+    users.add(owner);
+
+    ...
+
+  }
+
+
+
+Does anyone occurred on this? I think it&amp;amp;apos;s an obvious bug but no one report it, so please tell me if I misunderstanding it. If it&amp;amp;apos;s actually a bug here, then it can be fixed very easy as below:
+
+
+
+ List&amp;lt;String&amp;gt; users = new ArrayList&amp;lt;String&amp;gt;(Arrays.asList(userList.split(&quot;,&quot;)));
+
+
+</description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.13, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.LoadTestTool.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-22 05:42:21" id="13933" opendate="2015-06-18 12:26:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DBE&amp;apos;s seekBefore with tags corrupts the tag&amp;apos;s offset information thus leading to incorrect results</summary>
+			
+			
+			<description>The problem occurs with moveToPrevious() case and incase of tags we copy the previous pointer&amp;amp;apos;s tag info to the current because already decoded the tags.
+Will check once again before I post other details.  I have a test case to reproduce the problem. Found this while working with MultibyteBuffers and verified if this is present in trunk - it is in all branches where we have tags compression (I suppose) will verify</description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.14, 1.0.2, 1.2.0, 1.1.1, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.hfile.TestSeekTo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.encoding.BufferedDataBlockEncoder.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-26 00:47:58" id="13969" opendate="2015-06-25 08:29:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>AuthenticationTokenSecretManager is never stopped in RPCServer</summary>
+			
+			
+			<description>AuthenticationTokenSecretManager is never stopped in RPCServer.
+
+
+
+    AuthenticationTokenSecretManager mgr = createSecretManager();
+
+    if (mgr != null) {
+
+      setSecretManager(mgr);
+
+      mgr.start();
+
+    }
+
+
+
+It should be stopped during exit.</description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.14, 1.0.2, 1.2.0, 1.1.2, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RpcServer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-02 13:45:56" id="13970" opendate="2015-06-25 10:28:02" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NPE during compaction in trunk</summary>
+			
+			
+			<description>Updated the trunk.. Loaded the table with PE tool.  Trigger a flush to ensure all data is flushed out to disk. When the first compaction is triggered we get an NPE and this is very easy to reproduce
+
+
+
+015-06-25 21:33:46,041 INFO  [main-EventThread] procedure.ZKProcedureMemberRpcs: Received procedure start children changed event: /hbase/flush-table-proc/acquired
+
+2015-06-25 21:33:46,051 INFO  [rs(stobdtserver3,16040,1435248182301)-flush-proc-pool3-thread-1] regionserver.HRegion: Flushing 1/1 column families, memstore=76.91 MB
+
+2015-06-25 21:33:46,159 ERROR [regionserver/stobdtserver3/10.224.54.70:16040-longCompactions-1435248183945] regionserver.CompactSplitThread: Compaction failed Request = regionName=TestTable,00000000000000000000283887,1435248198798.028fb0324cd6eb03d5022eb8c147b7c4., storeName=info, fileCount=3, fileSize=343.4 M (114.5 M, 114.5 M, 114.5 M), priority=3, time=7536968291719985
+
+java.lang.NullPointerException
+
+        at org.apache.hadoop.hbase.regionserver.compactions.PressureAwareCompactionThroughputController$ActiveCompaction.access$700(PressureAwareCompactionThroughputController.java:79)
+
+        at org.apache.hadoop.hbase.regionserver.compactions.PressureAwareCompactionThroughputController.finish(PressureAwareCompactionThroughputController.java:238)
+
+        at org.apache.hadoop.hbase.regionserver.compactions.Compactor.performCompaction(Compactor.java:306)
+
+        at org.apache.hadoop.hbase.regionserver.compactions.DefaultCompactor.compact(DefaultCompactor.java:106)
+
+        at org.apache.hadoop.hbase.regionserver.DefaultStoreEngine$DefaultCompactionContext.compact(DefaultStoreEngine.java:112)
+
+        at org.apache.hadoop.hbase.regionserver.HStore.compact(HStore.java:1202)
+
+        at org.apache.hadoop.hbase.regionserver.HRegion.compact(HRegion.java:1792)
+
+        at org.apache.hadoop.hbase.regionserver.CompactSplitThread$CompactionRunner.run(CompactSplitThread.java:524)
+
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+
+        at java.lang.Thread.run(Thread.java:745)
+
+2015-06-25 21:33:46,745 INFO  [rs(stobdtserver3,16040,1435248182301)-flush-proc-pool3-thread-1] regionserver.DefaultStoreFlusher: Flushed, sequenceid=1534, memsize=76.9 M, hasBloomFilter=true, into tmp file hdfs://stobdtserver3:9010/hbase/data/default/TestTable/028fb0324cd6eb03d5022eb8c147b7c4/.tmp/942ba0831a0047a08987439e34361a0c
+
+2015-06-25 21:33:46,772 INFO  [rs(stobdtserver3,16040,1435248182301)-flush-proc-pool3-thread-1] regionserver.HStore: Added hdfs://stobdtserver3:9010/hbase/data/default/TestTable/028fb0324cd6eb03d5022eb8c147b7c4/info/942ba0831a0047a08987439e34361a0c, entries=68116, sequenceid=1534, filesize=68.7 M
+
+2015-06-25 21:33:46,773 INFO  [rs(stobdtserver3,16040,1435248182301)-flush-proc-pool3-thread-1] regionserver.HRegion: Finished memstore flush of ~76.91 MB/80649344, currentsize=0 B/0 for region TestTable,00000000000000000000283887,1435248198798.028fb0324cd6eb03d5022eb8c147b7c4. in 723ms, sequenceid=1534, compaction requested=true
+
+2015-06-25 21:33:46,780 INFO  [main-EventThread] procedure.ZKProcedureMemberRpcs: Received created event:/hbase/flush-table-proc/reached/TestTable
+
+2015-06-25 21:33:46,790 INFO  [main-EventThread] procedure.ZKProcedureMemberRpcs: Received created event:/hbase/flush-table-proc/abort/TestTable
+
+2015-06-25 21:33:46,791 INFO  [main-EventThread] procedure.ZKProcedureMemberRpcs: Received procedure abort children changed event: /hbase/flush-table-proc/abort
+
+2015-06-25 21:33:46,803 INFO  [main-EventThread] procedure.ZKProcedureMemberRpcs: Received procedure start children changed event: /hbase/flush-table-proc/acquired
+
+2015-06-25 21:33:46,818 INFO  [main-EventThread] procedure.ZKProcedureMemberRpcs: Received procedure abort children changed event: /hbase/flush-table-proc/abort
+
+
+
+Will check this on what is the reason behind it. </description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.14, 1.2.0, 1.1.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.compactions.Compactor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-09 00:49:27" id="14042" opendate="2015-07-08 16:58:35" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix FATAL level logging in FSHLog where logged for non fatal exceptions</summary>
+			
+			
+			<description>We have FATAL level logging in FSHLog where an IOException causes a log roll to be requested. It isn&amp;amp;apos;t a fatal event. Drop the log level to WARN. (Could even be INFO.)</description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.14, 1.0.2, 1.2.0, 1.1.2, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.FSHLog.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-14 23:50:45" id="13897" opendate="2015-06-13 17:12:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>OOM may occur when Import imports a row with too many KeyValues</summary>
+			
+			
+			<description>When importing a row with too many KeyValues (may have too many columns or versions)KeyValueReducer will incur OOM.</description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.14, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.Import.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">7743</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-08-13 00:39:54" id="14196" opendate="2015-08-07 18:29:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Thrift server idle connection timeout issue</summary>
+			
+			
+			<description>When idle connection get cleaned from Thrift server, underlying table instances are still cached in a thread local cache.
+This is the antipattern. Table objects are lightweight and should not be cached, besides this, underlying connections can be closed by periodic connection cleaner chore (ConnectionCache) and cached table instances may become invalid. This is Thrift1 specific issue. Thrift2 is OK.</description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.14, 1.0.2, 1.2.0, 1.1.2, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.thrift.IncrementCoalescer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.thrift.ThriftServerRunner.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">14195</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-09-02 21:00:55" id="14229" opendate="2015-08-17 04:22:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Flushing canceled by coprocessor still leads to memstoreSize set down</summary>
+			
+			
+			<description>A Coprocessor override &quot;public InternalScanner preFlush(final Store store, final InternalScanner scanner)&quot; and return NULL when calling this method, will cancel flush request, leaving snapshot un-flushed, and no new storefile created. But the HRegion.internalFlushCache still set down memstoreSize to 0 by totalFlushableSize. 
+If there&amp;amp;apos;s no write requests anymore, the memstoreSize will remaining as 0, and no more flush quests will be processed because of the checking of memstoreSize.get() &amp;lt;=0 at the beginning of internalFlushCache.
+This issue may not cause data loss, but it will confuse coprocessor users. If we argree with this, I&amp;amp;apos;ll apply a patch later.</description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 0.98.15, 1.1.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestHRegion.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-03 01:14:41" id="13770" opendate="2015-05-25 17:10:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Programmatic JAAS configuration option for secure zookeeper may be broken</summary>
+			
+			
+			<description>While verifying the patch fix for HBASE-13768 we were unable to successfully test the programmatic JAAS configuration option for secure ZooKeeper integration. Unclear if that was due to a bug or incorrect test configuration.
+Update the security section of the online book with clear instructions for setting up the programmatic JAAS configuration option for secure ZooKeeper integration.
+Verify it works.
+Fix as necessary.</description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 0.98.15, 1.0.3, 1.1.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HConstants.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.zookeeper.HQuorumPeer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.zookeeper.ZKUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.zookeeper.TestZooKeeperACL.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMasterCommandLine.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-05 18:37:00" id="15218" opendate="2016-02-05 07:00:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>On RS crash and replay of WAL, loosing all Tags in Cells</summary>
+			
+			
+			<description>The KeyValueCodec&amp;amp;apos;s Decoder makes NoTagsKeyValue. The WalCellCodec also makes this Decoder and so while reading Cells after RS crash, we will loose all tags in Cells.  (While writing to WAL using WALCellCodec, we are preserving Cell tags.)
+In case of SecureWALCellCodec, we are not even writing Cell tags to WAL.</description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 1.1.4, 1.0.4, 0.98.18</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.visibility.TestVisibilityLabelsWithDefaultVisLabelService.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.SecureWALCellCodec.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.WALCellCodec.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">13579</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-10 20:36:49" id="14192" opendate="2015-08-06 19:01:41" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix REST Cluster constructor with String List</summary>
+			
+			
+			<description>The HBase REST Cluster which takes a list of hostname colon port numbers is not setting the internal list of nodes correctly.
+Existing method:
+public Cluster(List&amp;lt;String&amp;gt; nodes) 
+{
+
+   nodes.addAll(nodes)
+
+}
+
+Corrected method:
+public Cluster(List&amp;lt;String&amp;gt; nodes) 
+{
+
+   this.nodes.addAll(nodes)
+
+}
+</description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 1.1.4, 0.98.18</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.client.Cluster.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-28 14:04:11" id="15676" opendate="2016-04-19 03:54:10" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FuzzyRowFilter fails and matches all the rows in the table if the mask consists of all 0s</summary>
+			
+			
+			<description>While using FuzzyRowFilter we noticed that if the mask array consists of all 0s (fixed) the FuzzyRowFilter matches all the rows in the table. We noticed this on HBase 1.1, 1.2 and higher.
+After some digging we suspect that this is because of isPreprocessedMask() check which is used in preprocessMask() which was added here: https://issues.apache.org/jira/browse/HBASE-13761
+If the mask consists of all 0s then the isPreprocessedMask() returns true and the preprocessing which responsible for changing 0s to -1 doesn&amp;amp;apos;t happen and hence all rows are matched in scan.
+This scenario can be tested in TestFuzzyRowFilterEndToEnd#testHBASE14782() If we change the 
+byte[] fuzzyKey = Bytes.toBytesBinary(&quot;\\x00\\x00x044&quot;);
+byte[] mask = new byte[] 
+{1,0,0,0}
+;
+to 
+byte[] fuzzyKey = Bytes.toBytesBinary(&quot;\\x9B\\x00x044e&quot;);
+byte[] mask = new byte[] 
+{0,0,0,0,0}
+;
+We expect one match but this will match all the rows in the table. </description>
+			
+			
+			<version>0.98.13</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0, 1.1.5, 1.2.2, 0.98.20</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.FuzzyRowFilter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.TestFuzzyRowFilterEndToEnd.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

@@ -1,0 +1,1055 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HBASE">
+	<bug fixdate="2008-09-22 22:01:21" id="892" opendate="2008-09-20 18:20:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Cell iteration is broken</summary>
+			
+			
+			<description>Cell implements Iterable&amp;lt;Cell&amp;gt; but its iteration is broken since it will always go one past the edge and throw an ArrayIndexOutOfBoundsException</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.Cell.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-10-22 23:49:10" id="950" opendate="2008-10-22 21:59:43" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HTable.commit no longer works with existing RowLocks though it&amp;apos;s still in API</summary>
+			
+			
+			<description>Introduced by HBASE-748, the RowLock passed into HTable.commit is now ignored.
+This causes the update the hang until that rowlock expires, and then it proceeds with getting a new row lock.</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.BatchUpdate.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HTable.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-11-04 21:40:29" id="982" opendate="2008-11-04 20:56:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Deleting a column in MapReduce fails</summary>
+			
+			
+			<description>In latest trunk, deleting a column in BatchUpdate causes exception because BatchUpdate&amp;amp;apos;s copy constructor (or whatever they are called in java) directly calls BatchUpdate#put even in delete-s thus causing put to throw IllegalArgumentException(&quot;Passed value cannot be null&quot;).</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.BatchUpdate.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-11-11 23:02:39" id="984" opendate="2008-11-07 04:15:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix javadoc warnings</summary>
+			
+			
+			<description>There are a number of javadoc warnings: @see pointing to the wrong place, etc. These need to be fixed before 0.19 is released.</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.HalfMapFileReader.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.InfoServer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-12-26 20:21:58" id="1087" opendate="2008-12-23 18:36:46" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DFS failures did not shutdown regionserver</summary>
+			
+			
+			<description>I lost three Datanodes, reasons of which are still being investigated, but it has left a number of regions unable to be written to.
+Relevant logs:
+2008-12-23 02:35:59,591 WARN org.apache.hadoop.hdfs.DFSClient: DataStreamer Exception: java.io.IOException: Connection reset by peer
+        at sun.nio.ch.FileDispatcher.write0(Native Method)
+        at sun.nio.ch.SocketDispatcher.write(SocketDispatcher.java:47)
+        at sun.nio.ch.IOUtil.writeFromNativeBuffer(IOUtil.java:122)
+        at sun.nio.ch.IOUtil.write(IOUtil.java:93)
+        at sun.nio.ch.SocketChannelImpl.write(SocketChannelImpl.java:352)
+        at org.apache.hadoop.net.SocketOutputStream$Writer.performIO(SocketOutputStream.java:55)
+        at org.apache.hadoop.net.SocketIOWithTimeout.doIO(SocketIOWithTimeout.java:140)
+        at org.apache.hadoop.net.SocketOutputStream.write(SocketOutputStream.java:146)
+        at org.apache.hadoop.net.SocketOutputStream.write(SocketOutputStream.java:107)
+        at java.io.BufferedOutputStream.write(BufferedOutputStream.java:122)
+        at java.io.DataOutputStream.write(DataOutputStream.java:107)
+        at org.apache.hadoop.hdfs.DFSClient$DFSOutputStream$DataStreamer.run(DFSClient.java:2209)
+2008-12-23 02:35:59,591 WARN org.apache.hadoop.hdfs.DFSClient: DFSOutputStream ResponseProcessor exception  for block blk_3615512604618056881_86411java.io.EOFException
+        at java.io.DataInputStream.readFully(DataInputStream.java:197)
+        at java.io.DataInputStream.readLong(DataInputStream.java:416)
+        at org.apache.hadoop.hdfs.DFSClient$DFSOutputStream$ResponseProcessor.run(DFSClient.java:2318)
+2008-12-23 02:35:59,591 WARN org.apache.hadoop.hdfs.DFSClient: Error Recovery for block blk_3615512604618056881_86411 bad datanode[0] 72.34.249.214:50010
+2008-12-23 02:35:59,595 WARN org.apache.hadoop.hdfs.DFSClient: Error Recovery for block blk_3615512604618056881_86411 in pipeline 72.34.249.214:50010, 72.34.249.213:50010, 72.34.249.219:50010: bad datanode 72.34.249.214:50010
+2008-12-23 02:38:27,698 INFO org.apache.hadoop.hdfs.DFSClient: Exception in createBlockOutputStream java.net.ConnectException: Connection refused
+2008-12-23 02:38:27,698 INFO org.apache.hadoop.hdfs.DFSClient: Abandoning block blk_-3678518999439029831_86910
+2008-12-23 02:38:27,711 DEBUG org.apache.hadoop.hbase.regionserver.HRegionServer: Row lock 5392007859847346106 has been explicitly released by client
+2008-12-23 02:38:30,048 DEBUG org.apache.hadoop.hbase.regionserver.HRegionServer: Row lock -5905479324505886709 explicitly acquired by client
+2008-12-23 02:38:33,700 INFO org.apache.hadoop.hdfs.DFSClient: Exception in createBlockOutputStream java.net.ConnectException: Connection refused
+2008-12-23 02:38:33,700 INFO org.apache.hadoop.hdfs.DFSClient: Abandoning block blk_-226119866881174578_86911
+2008-12-23 02:38:34,908 DEBUG org.apache.hadoop.hbase.regionserver.HRegionServer: Row lock 346704317670569896 explicitly acquired by client
+2008-12-23 02:38:39,702 INFO org.apache.hadoop.hdfs.DFSClient: Exception in createBlockOutputStream java.net.ConnectException: Connection refused
+2008-12-23 02:38:39,702 INFO org.apache.hadoop.hdfs.DFSClient: Abandoning block blk_1719395740576248920_86913
+2008-12-23 02:38:40,945 DEBUG org.apache.hadoop.hbase.regionserver.HRegionServer: Row lock 3819942931078736534 explicitly acquired by client
+2008-12-23 02:38:45,572 DEBUG org.apache.hadoop.hbase.regionserver.HRegionServer: Row lock 254119037927296402 explicitly acquired by client
+2008-12-23 02:38:45,703 INFO org.apache.hadoop.hdfs.DFSClient: Exception in createBlockOutputStream java.net.ConnectException: Connection refused
+2008-12-23 02:38:45,703 INFO org.apache.hadoop.hdfs.DFSClient: Abandoning block blk_2443399503093377808_86915
+2008-12-23 02:38:49,092 DEBUG org.apache.hadoop.hbase.regionserver.HRegionServer: Row lock 8573046623144113301 explicitly acquired by client
+2008-12-23 02:38:49,385 DEBUG org.apache.hadoop.hbase.regionserver.HRegionServer: Row lock 7686739650257547105 explicitly acquired by client
+2008-12-23 02:38:49,512 DEBUG org.apache.hadoop.hbase.regionserver.HRegionServer: Row lock 5582966798894532276 explicitly acquired by client
+2008-12-23 02:38:51,704 WARN org.apache.hadoop.hdfs.DFSClient: DataStreamer Exception: java.io.IOException: Unable to create new block.
+        at org.apache.hadoop.hdfs.DFSClient$DFSOutputStream.nextBlockOutputStream(DFSClient.java:2723)
+        at org.apache.hadoop.hdfs.DFSClient$DFSOutputStream.access$2000(DFSClient.java:1997)
+        at org.apache.hadoop.hdfs.DFSClient$DFSOutputStream$DataStreamer.run(DFSClient.java:2183)
+2008-12-23 02:38:51,704 WARN org.apache.hadoop.hdfs.DFSClient: Error Recovery for block blk_2443399503093377808_86915 bad datanode[0] nodes == null
+2008-12-23 02:38:51,704 WARN org.apache.hadoop.hdfs.DFSClient: Could not get block locations. Aborting...
+2008-12-23 02:38:51,704 FATAL org.apache.hadoop.hbase.regionserver.HLog: Could not append. Requesting close of log
+java.net.ConnectException: Connection refused
+        at sun.nio.ch.SocketChannelImpl.checkConnect(Native Method)
+        at sun.nio.ch.SocketChannelImpl.finishConnect(SocketChannelImpl.java:592)
+        at sun.nio.ch.SocketAdaptor.connect(SocketAdaptor.java:118)
+        at org.apache.hadoop.hdfs.DFSClient$DFSOutputStream.createBlockOutputStream(DFSClient.java:2748)
+        at org.apache.hadoop.hdfs.DFSClient$DFSOutputStream.nextBlockOutputStream(DFSClient.java:2704)
+        at org.apache.hadoop.hdfs.DFSClient$DFSOutputStream.access$2000(DFSClient.java:1997)
+        at org.apache.hadoop.hdfs.DFSClient$DFSOutputStream$DataStreamer.run(DFSClient.java:2183)
+2008-12-23 02:38:51,706 ERROR org.apache.hadoop.hbase.regionserver.LogRoller: Log rolling failed with ioe:
+java.net.ConnectException: Connection refused
+        at sun.nio.ch.SocketChannelImpl.checkConnect(Native Method)
+        at sun.nio.ch.SocketChannelImpl.finishConnect(SocketChannelImpl.java:592)
+        at sun.nio.ch.SocketAdaptor.connect(SocketAdaptor.java:118)
+        at org.apache.hadoop.hdfs.DFSClient$DFSOutputStream.createBlockOutputStream(DFSClient.java:2748)
+        at org.apache.hadoop.hdfs.DFSClient$DFSOutputStream.nextBlockOutputStream(DFSClient.java:2704)
+        at org.apache.hadoop.hdfs.DFSClient$DFSOutputStream.access$2000(DFSClient.java:1997)
+        at org.apache.hadoop.hdfs.DFSClient$DFSOutputStream$DataStreamer.run(DFSClient.java:2183)
+2008-12-23 02:38:51,706 ERROR org.apache.hadoop.hbase.regionserver.HRegionServer: java.net.ConnectException: Connection refused</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.LogRoller.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-01-23 23:11:27" id="1148" opendate="2009-01-23 01:50:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Always flush HLog on root or meta region updates</summary>
+			
+			
+			<description>Flushing an HLog does not currently guarantee that the updates will be visible (see HADOOP-4379), however in the case of root or meta region updates, this is critical.
+I was able to create a situation by killing both the root and meta region servers, from which the cluster recovered, but because of the missed edits, clients found the old parent region rather than the new child regions because the fact that the parent region had split was not in the HLog of the crashed region servers (the master knew because of the MSG_REGION_SPLIT message it received) but the clients read the meta table and because that change was lost, clients were trying to find the parent region.
+So, when a SequenceFile.Writer.sync() guarantees that what has been written will be visible to new readers, we need to modify HLog so that if it is writing an update to the root or meta regions, that it immediately flushes (syncs) the log file so that the changes will be visible when the log file is recovered.
+</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.1, 0.20.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HLog.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestHLog.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is blocked by" type="Blocker">200</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-02-05 05:56:08" id="1175" opendate="2009-02-02 23:54:43" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HBA administrative tools do not work when specifying regionName</summary>
+			
+			
+			<description>HBaseAdmin administrative functions allow tableName or regionName through the API.  Things are okay if we pass tableName, but when using regionName the code in HMaster is incorrect.  It is expecting to be passed tableName and startRow, but we are passing null and regionName.  Patch will fix master to handle this case properly.
+Log for good measure:
+
+[hbase@mb0 StyBase]$ java TableMaintenance chunks
+Running maintenance on table &amp;amp;apos;chunks&amp;amp;apos;
+Table contains 2 regions
+  &amp;gt; Flushing region {chunks,,1229390225893}
+EXCEPTION FLUSHING REGION! [org.apache.hadoop.ipc.RemoteException: java.io.IOException: Invalid arguments to openScanner
+        at org.apache.hadoop.hbase.regionserver.HRegionServer.openScanner(HRegionServer.java:1695)
+        at sun.reflect.GeneratedMethodAccessor16.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.lang.reflect.Method.invoke(Method.java:616)
+        at org.apache.hadoop.hbase.ipc.HBaseRPC$Server.call(HBaseRPC.java:632)
+        at org.apache.hadoop.hbase.ipc.HBaseServer$Handler.run(HBaseServer.java:895)
+Caused by: java.lang.NullPointerException: firstRow for scanner is null
+        at org.apache.hadoop.hbase.regionserver.HRegionServer.openScanner(HRegionServer.java:1692)
+        ... 5 more
+
+        at org.apache.hadoop.hbase.ipc.HBaseClient.call(HBaseClient.java:701)
+        at org.apache.hadoop.hbase.ipc.HBaseRPC$Invoker.invoke(HBaseRPC.java:321)
+        at $Proxy2.openScanner(Unknown Source)
+        at org.apache.hadoop.hbase.master.HMaster.getTableRegionClosest(HMaster.java:725)
+        at org.apache.hadoop.hbase.master.HMaster.modifyTable(HMaster.java:804)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.lang.reflect.Method.invoke(Method.java:616)
+        at org.apache.hadoop.hbase.ipc.HBaseRPC$Server.call(HBaseRPC.java:632)
+        at org.apache.hadoop.hbase.ipc.HBaseServer$Handler.run(HBaseServer.java:895)
+]
+
+</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.1, 0.20.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HRegionInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMaster.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-02-08 18:38:34" id="1191" opendate="2009-02-08 05:19:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ZooKeeper ensureParentExists calls fail on absolute path</summary>
+			
+			
+			<description>If user specifies absolute path for one of the files in ZooKeeper, the following will not do what it&amp;amp;apos;s supposed to:
+if (!ensureZNodeExists(parentZNode)) {
+  ...
+Because the user specified path is not a child of parentZNode, all operations on it will fail.</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.20.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestZooKeeper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.zookeeper.ZooKeeperWrapper.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-02-08 18:48:06" id="1187" opendate="2009-02-06 20:43:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>After disabling/enabling a table, the regions seems to be assigned to only 1-2 region servers</summary>
+			
+			
+			<description>After disabling/enabling a small table (20 regions), we see that the master tend to assign the regions to only 1-2 region servers. Unfortunately, that table is extensively used in random reads which really kills those RS when they hold those regions. As a fix, we have to restart HBase...</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.1, 0.20.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestZooKeeper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.zookeeper.ZooKeeperWrapper.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-02-08 19:39:00" id="1190" opendate="2009-02-08 01:51:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TableInputFormatBase with row filters scan too far </summary>
+			
+			
+			<description>When TableInputFormatBase has a non-null RowFilterInterface to apply, it creates combines the row filter with a StopRowFilter to get a scanner for each input split.  However, the StopRowFilter never indicates that fitlerAllRemaining is true, so each input split will end up scanning to the end of the table.  (Contrast with HTable.getScanner(byte[][] columns, byte[] starRow, byte[] stopRow, long timestamp) which uses a StopRowFilter wrapped in a WhileMatchRowFilter to ensure that scanning ends at the stop row.</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.1, 0.20.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapred.TableInputFormatBase.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-05 14:10:12" id="1185" opendate="2009-02-05 17:29:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>wrong request/sec in the gui reporting wrong</summary>
+			
+			
+			<description>I am seeing lower number of request in the masters gui then I have seen in 0.18.0 while scanning.
+I thank part of it is we moved to report per sec request not per 3 secs so the request should be 1/3 of the old numbers I was getting.
+hbase.client.scanner.caching is not the reason the request are under reported.
+I set hbase.client.scanner.caching = 1 and still get about 2K request a sec in the gui
+but when the job is done I take records / job time and get 36,324/ records /sec. So
+there must be some caching out side of the hbase.client.scanner.caching making the
+request per sec lower then it should be. I know it running faster then reported just thought
+it might give some new users the wrong impression that request/sec = read/write /sec.</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.1, 0.20.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-06 20:01:40" id="1238" opendate="2009-03-04 18:56:55" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Under upload, region servers are unable to compact when loaded with hundreds of regions</summary>
+			
+			
+			<description>We have a situation where each region server is loaded with 100+ regions, most of them in the same table. During a long upload of webpages, each memcache gets filled near equally fast so that the global memcache limit is usually triggered before the max memcache size. Since that emergency flush does not trigger compactions, the number of store files just keeps growing until it fails on all kinds of errors.
+We need a better story for this as this is a &quot;normal&quot; situation.</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.1, 0.20.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.MemcacheFlusher.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-06 21:30:53" id="1243" opendate="2009-03-06 00:29:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>oldlogfile.dat is screwed, so is it&amp;apos;s region</summary>
+			
+			
+			<description>Getting this when a node dies (happens frequently lately):
+
+2009-03-05 04:15:03,251 INFO org.apache.hadoop.hbase.master.RegionManager: assigning region web_pages,http://fortcollins.gaymonkey.com/,1235836722125 to server 192.168.1.106:62020
+2009-03-05 04:15:15,263 INFO org.apache.hadoop.hbase.master.ServerManager: Received MSG_REPORT_CLOSE: web_pages,http://fortcollins.gaymonkey.com/,1235836722125: java.io.IOException: Could not obtain block: blk_5568212401457404905_251597 file=/hbase/amsterdam_factory/web_pages/1263377107/oldlogfile.log
+        at org.apache.hadoop.hdfs.DFSClient$DFSInputStream.chooseDataNode(DFSClient.java:1708)
+        at org.apache.hadoop.hdfs.DFSClient$DFSInputStream.blockSeekTo(DFSClient.java:1536)
+        at org.apache.hadoop.hdfs.DFSClient$DFSInputStream.read(DFSClient.java:1663)
+        at java.io.DataInputStream.readFully(DataInputStream.java:178)
+        at java.io.DataInputStream.readFully(DataInputStream.java:152)
+        at org.apache.hadoop.hbase.io.SequenceFile$Reader.init(SequenceFile.java:1464)
+        at org.apache.hadoop.hbase.io.SequenceFile$Reader.&amp;lt;init&amp;gt;(SequenceFile.java:1442)
+        at org.apache.hadoop.hbase.io.SequenceFile$Reader.&amp;lt;init&amp;gt;(SequenceFile.java:1431)
+        at org.apache.hadoop.hbase.io.SequenceFile$Reader.&amp;lt;init&amp;gt;(SequenceFile.java:1426)
+        at org.apache.hadoop.hbase.regionserver.HStore.doReconstructionLog(HStore.java:342)
+        at org.apache.hadoop.hbase.regionserver.HStore.runReconstructionLog(HStore.java:297)
+        at org.apache.hadoop.hbase.regionserver.HStore.&amp;lt;init&amp;gt;(HStore.java:237)
+        at org.apache.hadoop.hbase.regionserver.HRegion.instantiateHStore(HRegion.java:1764)
+        at org.apache.hadoop.hbase.regionserver.HRegion.initialize(HRegion.java:276)
+        at org.apache.hadoop.hbase.regionserver.HRegionServer.instantiateRegion(HRegionServer.java:1367)
+        at org.apache.hadoop.hbase.regionserver.HRegionServer.openRegion(HRegionServer.java:1338)
+        at org.apache.hadoop.hbase.regionserver.HRegionServer$Worker.run(HRegionServer.java:1253)
+        at java.lang.Thread.run(Thread.java:619)
+ from 192.168.1.106:62020
+2009-03-05 04:15:18,266 INFO org.apache.hadoop.hbase.master.RegionManager: assigning region web_pages,http://fortcollins.gaymonkey.com/,1235836722125 to server 192.168.1.106:62020
+2009-03-05 04:15:30,150 INFO org.apache.hadoop.hbase.master.BaseScanner: RegionManager.metaScanner scanning meta region {regionname: .META.,,1, startKey: &amp;lt;&amp;gt;, server: 192.168.1.106:62020}
+2009-03-05 04:15:30,276 INFO org.apache.hadoop.hbase.master.ServerManager: Received MSG_REPORT_CLOSE: web_pages,http://fortcollins.gaymonkey.com/,1235836722125: java.io.IOException: Could not obtain block: blk_5568212401457404905_251597 file=/hbase/amsterdam_factory/web_pages/1263377107/oldlogfile.log
+...
+
+
+It does not recover, I have to manually delete the file.</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.Store.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-07 02:23:24" id="1169" opendate="2009-01-31 18:41:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>When a shutdown is requested, stop scanning META regions immediately</summary>
+			
+			
+			<description>During shutdown of cluster, half way through quiescing servers there is a META scan in the master.  The regions from servers whose leases are already canceled show up as invalid.  (72.34.249.208 is hosting META)
+
+2009-01-31 10:25:42,571 INFO org.apache.hadoop.hbase.master.HMaster: Cluster shutdown requested. Starting to quiesce servers
+2009-01-31 10:25:45,868 INFO org.apache.hadoop.hbase.master.ServerManager: Cancelling lease for 72.34.249.211:60020
+2009-01-31 10:25:45,868 INFO org.apache.hadoop.hbase.master.ServerManager: Region server 72.34.249.211:60020: MSG_REPORT_EXITING -- lease cancelled
+2009-01-31 10:25:47,480 INFO org.apache.hadoop.hbase.master.ServerManager: Cancelling lease for 72.34.249.216:60020
+2009-01-31 10:25:47,480 INFO org.apache.hadoop.hbase.master.ServerManager: Region server 72.34.249.216:60020: MSG_REPORT_EXITING -- lease cancelled
+2009-01-31 10:25:47,840 INFO org.apache.hadoop.hbase.master.ServerManager: Region server 72.34.249.210:60020 quiesced
+2009-01-31 10:25:47,944 INFO org.apache.hadoop.hbase.master.ServerManager: Cancelling lease for 72.34.249.215:60020
+2009-01-31 10:25:47,944 INFO org.apache.hadoop.hbase.master.ServerManager: Region server 72.34.249.215:60020: MSG_REPORT_EXITING -- lease cancelled
+2009-01-31 10:25:48,403 INFO org.apache.hadoop.hbase.master.ServerManager: Cancelling lease for 72.34.249.213:60020
+2009-01-31 10:25:48,403 INFO org.apache.hadoop.hbase.master.ServerManager: Region server 72.34.249.213:60020: MSG_REPORT_EXITING -- lease cancelled
+2009-01-31 10:25:49,378 INFO org.apache.hadoop.hbase.master.ServerManager: Region server 72.34.249.218:60020 quiesced
+2009-01-31 10:25:50,465 INFO org.apache.hadoop.hbase.master.ServerManager: Cancelling lease for 72.34.249.214:60020
+2009-01-31 10:25:50,465 INFO org.apache.hadoop.hbase.master.ServerManager: Region server 72.34.249.214:60020: MSG_REPORT_EXITING -- lease cancelled
+2009-01-31 10:25:59,531 INFO org.apache.hadoop.hbase.master.BaseScanner: RegionManager.metaScanner scanning meta region {regionname: .META.,,1, startKey: &amp;lt;&amp;gt;, server: 72.34.249.218:60020}
+2009-01-31 10:25:59,544 DEBUG org.apache.hadoop.hbase.master.BaseScanner: Current assignment of activitydupehash,,1229364212541 is not valid;  Server &amp;amp;apos;72.34.249.214:60020&amp;amp;apos; unknown.
+2009-01-31 10:25:59,545 DEBUG org.apache.hadoop.hbase.master.BaseScanner: Current assignment of api,,1229364235220 is not valid;  Server &amp;amp;apos;72.34.249.216:60020&amp;amp;apos; unknown.
+2009-01-31 10:25:59,552 DEBUG org.apache.hadoop.hbase.master.BaseScanner: Current assignment of apps,,1229364222879 is not valid;  Server &amp;amp;apos;72.34.249.215:60020&amp;amp;apos; unknown.
+2009-01-31 10:25:59,552 DEBUG org.apache.hadoop.hbase.master.BaseScanner: Current assignment of assigners,,1229364037757 is not valid;  Server &amp;amp;apos;72.34.249.214:60020&amp;amp;apos; unknown.
+2009-01-31 10:25:59,554 DEBUG org.apache.hadoop.hbase.master.BaseScanner: Current assignment of canoncache,,1229364041955 is not valid;  Server &amp;amp;apos;72.34.249.215:60020&amp;amp;apos; unknown.
+2009-01-31 10:25:59,555 DEBUG org.apache.hadoop.hbase.master.BaseScanner: Current assignment of chunks,,1229390225893 is not valid;  Server &amp;amp;apos;72.34.249.211:60020&amp;amp;apos; unknown.
+
+
+Shutdown then continues as the last servers are quiesced, but at the same time the Master expires the lease on the regionserver that was hosting META and that it just scanned.  It then starts to replay the logs for that regionserver in the middle of the shutdown.
+
+2009-01-31 10:25:59,799 INFO org.apache.hadoop.hbase.master.BaseScanner: RegionManager.metaScanner scan of 512 row(s) of meta region {regionname: .META.,,1, startKey: &amp;lt;&amp;gt;, server: 72.34.249.218:60020}
+ complete
+2009-01-31 10:25:59,799 INFO org.apache.hadoop.hbase.master.BaseScanner: All 1 .META. region(s) scanned
+2009-01-31 10:26:59,530 INFO org.apache.hadoop.hbase.master.BaseScanner: RegionManager.metaScanner scanning meta region {regionname: .META.,,1, startKey: &amp;lt;&amp;gt;, server: 72.34.249.218:60020}
+2009-01-31 10:26:59,720 INFO org.apache.hadoop.hbase.master.BaseScanner: RegionManager.metaScanner scan of 512 row(s) of meta region {regionname: .META.,,1, startKey: &amp;lt;&amp;gt;, server: 72.34.249.218:60020}
+ complete
+2009-01-31 10:26:59,720 INFO org.apache.hadoop.hbase.master.BaseScanner: All 1 .META. region(s) scanned
+2009-01-31 10:27:40,374 INFO org.apache.hadoop.hbase.master.ServerManager: 72.34.249.218:60020 lease expired
+2009-01-31 10:27:40,375 DEBUG org.apache.hadoop.hbase.master.HMaster: Processing todo: ProcessServerShutdown of 72.34.249.218:60020
+2009-01-31 10:27:40,375 INFO org.apache.hadoop.hbase.master.RegionServerOperation: process shutdown of server 72.34.249.218:60020: logSplit: false, rootRescanned: false, numberOfMetaRegions: 1, onlin
+eMetaRegions.size(): 1
+2009-01-31 10:27:40,387 INFO org.apache.hadoop.hbase.regionserver.HLog: Splitting 44 log(s) in hdfs://mb0:9000/hbase/log_72.34.249.218_1232996040351_60020
+2009-01-31 10:27:40,387 DEBUG org.apache.hadoop.hbase.regionserver.HLog: Splitting 1 of 44: hdfs://mb0:9000/hbase/log_72.34.249.218_1232996040351_60020/hlog.dat.1232996040603
+2009-01-31 10:27:40,443 DEBUG org.apache.hadoop.hbase.regionserver.HLog: Creating new log file writer for path hdfs://mb0:9000/hbase/.META./1028785192/oldlogfile.log and region .META.,,1
+2009-01-31 10:27:40,575 DEBUG org.apache.hadoop.hbase.regionserver.HLog: Creating new log file writer for path hdfs://mb0:9000/hbase/sources/671225115/oldlogfile.log and region sources,,1229364117966
+2009-01-31 10:27:41,171 DEBUG org.apache.hadoop.hbase.regionserver.HLog: Applied 100003 total edits from hdfs://mb0:9000/hbase/log_72.34.249.218_1232996040351_60020/hlog.dat.1232996040603
+2009-01-31 10:27:41,173 DEBUG org.apache.hadoop.hbase.regionserver.HLog: Splitting 2 of 44: hdfs://mb0:9000/hbase/log_72.34.249.218_1232996040351_60020/hlog.dat.1233093726382
+2009-01-31 10:27:41,429 DEBUG org.apache.hadoop.hbase.regionserver.HLog: Creating new log file writer for path hdfs://mb0:9000/hbase/dupehash/1607532582/oldlogfile.log and region dupehash,O&amp;lt;L;h,12
+31779694744
+2009-01-31 10:27:41,462 INFO org.apache.hadoop.hbase.master.ServerManager: 72.34.249.217:60020 lease expired
+2009-01-31 10:27:41,499 INFO org.apache.hadoop.hbase.master.ServerManager: All user tables quiesced. Proceeding with shutdown
+2009-01-31 10:27:41,499 DEBUG org.apache.hadoop.hbase.master.RegionManager: telling root scanner to stop
+2009-01-31 10:27:41,499 DEBUG org.apache.hadoop.hbase.master.RegionManager: telling meta scanner to stop
+2009-01-31 10:27:41,499 DEBUG org.apache.hadoop.hbase.master.RegionManager: meta and root scanners notified
+2009-01-31 10:27:41,499 INFO org.apache.hadoop.hbase.master.RootScanner: RegionManager.rootScanner exiting
+2009-01-31 10:27:41,499 INFO org.apache.hadoop.hbase.master.MetaScanner: RegionManager.metaScanner exiting
+2009-01-31 10:27:41,780 DEBUG org.apache.hadoop.hbase.regionserver.HLog: Applied 100001 total edits from hdfs://mb0:9000/hbase/log_72.34.249.218_1232996040351_60020/hlog.dat.1233093726382
+2009-01-31 10:27:41,781 DEBUG org.apache.hadoop.hbase.regionserver.HLog: Splitting 3 of 44: hdfs://mb0:9000/hbase/log_72.34.249.218_1232996040351_60020/hlog.dat.1233101015153
+2009-01-31 10:27:41,838 INFO org.apache.hadoop.hbase.master.ServerManager: 72.34.249.210:60020 lease expired
+2009-01-31 10:27:41,866 INFO org.apache.hadoop.hbase.master.ServerManager: All user tables quiesced. Proceeding with shutdown
+2009-01-31 10:27:41,866 DEBUG org.apache.hadoop.hbase.master.RegionManager: telling root scanner to stop
+2009-01-31 10:27:41,866 DEBUG org.apache.hadoop.hbase.master.RegionManager: telling meta scanner to stop
+2009-01-31 10:27:41,866 DEBUG org.apache.hadoop.hbase.master.RegionManager: meta and root scanners notified
+2009-01-31 10:27:42,557 INFO org.apache.hadoop.hbase.master.ServerManager: 72.34.249.212:60020 lease expired
+2009-01-31 10:27:42,581 INFO org.apache.hadoop.hbase.master.ServerManager: All user tables quiesced. Proceeding with shutdown
+2009-01-31 10:27:42,581 DEBUG org.apache.hadoop.hbase.master.RegionManager: telling root scanner to stop
+2009-01-31 10:27:42,581 DEBUG org.apache.hadoop.hbase.master.RegionManager: telling meta scanner to stop
+2009-01-31 10:27:42,581 DEBUG org.apache.hadoop.hbase.master.RegionManager: meta and root scanners notified
+2009-01-31 10:27:42,615 DEBUG org.apache.hadoop.hbase.regionserver.HLog: Applied 100002 total edits from hdfs://mb0:9000/hbase/log_72.34.249.218_1232996040351_60020/hlog.dat.1233101015153
+2009-01-31 10:27:42,618 DEBUG org.apache.hadoop.hbase.regionserver.HLog: Splitting 4 of 44: hdfs://mb0:9000/hbase/log_72.34.249.218_1232996040351_60020/hlog.dat.1233111791302
+2009-01-31 10:27:43,356 DEBUG org.apache.hadoop.hbase.regionserver.HLog: Applied 100001 total edits from hdfs://mb0:9000/hbase/log_72.34.249.218_1232996040351_60020/hlog.dat.1233111791302
+2009-01-31 10:27:43,359 DEBUG org.apache.hadoop.hbase.regionserver.HLog: Splitting 5 of 44: hdfs://mb0:9000/hbase/log_72.34.249.218_1232996040351_60020/hlog.dat.1233122447841
+2009-01-31 10:27:43,404 INFO org.apache.hadoop.hbase.master.ServerManager: All user tables quiesced. Proceeding with shutdown
+2009-01-31 10:27:43,404 DEBUG org.apache.hadoop.hbase.master.RegionManager: telling root scanner to stop
+2009-01-31 10:27:43,404 DEBUG org.apache.hadoop.hbase.master.RegionManager: telling meta scanner to stop
+2009-01-31 10:27:43,404 DEBUG org.apache.hadoop.hbase.master.RegionManager: meta and root scanners notified
+2009-01-31 10:27:43,991 DEBUG org.apache.hadoop.hbase.regionserver.HLog: Applied 100001 total edits from hdfs://mb0:9000/hbase/log_72.34.249.218_1232996040351_60020/hlog.dat.1233122447841
+
+
+During the log replay, a log file was missing from HDFS.  Not sure why, there was a Datanode crash that could be related.  More importantly, once it trips on the missing file it stops the replay (even though there&amp;amp;apos;s another 37 logs).
+
+2009-01-31 10:27:43,992 DEBUG org.apache.hadoop.hbase.regionserver.HLog: Splitting 6 of 44: hdfs://mb0:9000/hbase/log_72.34.249.218_1232996040351_60020/hlog.dat.1233132556827
+2009-01-31 10:27:44,022 WARN org.apache.hadoop.hbase.master.HMaster: Processing pending operations: ProcessServerShutdown of 72.34.249.218:60020
+java.io.FileNotFoundException: File does not exist: hdfs://mb0:9000/hbase/log_72.34.249.218_1232996040351_60020/hlog.dat.1233132556827
+        at org.apache.hadoop.hdfs.DistributedFileSystem.getFileStatus(DistributedFileSystem.java:394)
+        at org.apache.hadoop.fs.FileSystem.getLength(FileSystem.java:679)
+        at org.apache.hadoop.io.SequenceFile$Reader.&amp;lt;init&amp;gt;(SequenceFile.java:1417)
+        at org.apache.hadoop.io.SequenceFile$Reader.&amp;lt;init&amp;gt;(SequenceFile.java:1412)
+        at org.apache.hadoop.hbase.regionserver.HLog.splitLog(HLog.java:742)
+        at org.apache.hadoop.hbase.regionserver.HLog.splitLog(HLog.java:705)
+        at org.apache.hadoop.hbase.master.ProcessServerShutdown.process(ProcessServerShutdown.java:249)
+        at org.apache.hadoop.hbase.master.HMaster.processToDoQueue(HMaster.java:427)
+        at org.apache.hadoop.hbase.master.HMaster.run(HMaster.java:360)
+2009-01-31 10:27:44,022 DEBUG org.apache.hadoop.hbase.master.RegionManager: telling root scanner to stop
+2009-01-31 10:27:44,022 DEBUG org.apache.hadoop.hbase.master.RegionManager: telling meta scanner to stop
+2009-01-31 10:27:44,022 DEBUG org.apache.hadoop.hbase.master.RegionManager: meta and root scanners notified
+2009-01-31 10:27:44,023 DEBUG org.apache.hadoop.hbase.RegionHistorian: Offlined
+2009-01-31 10:27:44,023 INFO org.apache.hadoop.hbase.master.HMaster: Stopping infoServer
+2009-01-31 10:27:44,023 INFO org.mortbay.util.ThreadedServer: Stopping Acceptor ServerSocket[addr=0.0.0.0/0.0.0.0,port=0,localport=60010]
+2009-01-31 10:27:44,026 INFO org.mortbay.http.SocketListener: Stopped SocketListener on 0.0.0.0:60010
+
+</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.1, 0.20.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.MetaScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.RegionManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.RootScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ServerManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMaster.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-13 16:07:59" id="1251" opendate="2009-03-10 13:29:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HConnectionManager.getConnection(HBaseConfiguration) returns same HConnection for different HBaseConfigurations </summary>
+			
+			
+			<description>This occurs when the following happens:
+1. Consider a client that invokes HBaseAdmin.checkHBaseAvailable(config) before doing anything. Although this method copies the HBaseConfiguration object and sets hbase.client.retries.number to 1 (see HBaseAdmin, line 751), it creates an HBaseAdmin object, which invokes HConnectionManager.getConnection(conf). Please notice that this conf is that with hbase.client.retries.number equals to 1. 
+2. HConnectionManager.getConnection then creates a HConnection using this conf and puts it into a static map (see HConnectionManager, line 93) indexed by hbase.rootdir. 
+3. Then, if the same client now creates a HTable object (using, for instance, a HBaseConfiguration with  hbase.client.retries.number equals to 10 but the same hbase.rootdir), it will invoke HConnectionManager.getConnection(conf) again (see HTable, line 109). However, when it checks the static map for a HConnection it finds one - the one previously created by the HBaseAdmin object and using hbase.client.retries.number 1 - and returns it without creating a new one with the correct HBaseConfiguration.
+However, the expected behavior is: HConnectionManager must return different HConnections for different HBaseConfigurations.  </description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.20.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HConnectionManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HBaseConfiguration.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">2027</link>
+			
+			
+			<link description="relates to" type="Reference">2925</link>
+			
+			
+			<link description="is related to" type="Reference">1976</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-14 06:05:53" id="1258" opendate="2009-03-12 00:19:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ganglia metrics for &amp;apos;requests&amp;apos; is confusing</summary>
+			
+			
+			<description>the &amp;amp;apos;requests&amp;amp;apos; metric is incremented for every request, but it is reset and published every interval.  Which means the number is actually &amp;amp;apos;requests per interval&amp;amp;apos; which is a config value in hbase.  
+HBase should export &amp;amp;apos;requests/second&amp;amp;apos; instead.
+</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.1, 0.20.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.metrics.RegionServerMetrics.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-04-10 20:00:08" id="1202" opendate="2009-02-17 04:12:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>getRow does not always work when specifying number of versions</summary>
+			
+			
+			<description>When a cell that exists is updated, getRow specifying number of versions does not work.
+What is returned is the original value at that timestamp, instead of the updated value.
+Note that this only applies when more than one version is specified. getRow with (implied) timestamp = latest does work.</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.2, 0.20.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.Cell.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-04-23 16:20:56" id="1301" opendate="2009-03-31 10:10:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HTable.getRow() returns null if the row does no exist</summary>
+			
+			
+			<description>The HBase API docs says when the row does not exist, getRow() returns
+    RowResult is empty if row does not exist. 
+However, in regionserver/HRegionServer.java&amp;amp;apos;s getRow():
+      if (result == null || result.isEmpty())
+        return null;
+      return new RowResult(row, result);
+It actually returns null. Either fix the code or the document.</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.2, 0.20.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HTable.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">1028</link>
+			
+			
+			<link description="is related to" type="Reference">1292</link>
+			
+			
+			<link description="is related to" type="Reference">1837</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-04-23 20:39:39" id="1292" opendate="2009-03-27 14:17:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>php thrift&amp;apos;s getRow() would throw an exception if the row does not exist</summary>
+			
+			
+			<description>I&amp;amp;apos;ve been played with thrift recently, and observed an unexpected behavior: when getRow() encounters an non-existent row key, it throws an exception like this:
+PHP Fatal error:  Uncaught exception &amp;amp;apos;Exception&amp;amp;apos; with message &amp;amp;apos;getRow failed: unknown result&amp;amp;apos; in pear/thrift/packages/Hbase/Hbase.php:715
+Stack trace:
+#0 pear/thrift/packages/Hbase/Hbase.php(666): HbaseClient-&amp;gt;recv_getRow()
+#1 htdocs/hbase/DemoClient.php(174): HbaseClient-&amp;gt;getRow(&amp;amp;apos;demo_table&amp;amp;apos;, &amp;amp;apos;00100-XXXX&amp;amp;apos;)
+#2 
+{main}
+ thrown in pear/thrift/packages/Hbase/Hbase.php on line 715
+I would expect when we pass a non-existent key, it can throw something like NotFound (as in scanner) or one can test with RowResult.isEmpty() just like in java api.</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.19.2, 0.20.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.thrift.ThriftServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.thrift.generated.Hbase.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.thrift.DisabledTestThriftServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.thrift.ThriftUtilities.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">1301</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-05-20 21:47:50" id="1162" opendate="2009-01-28 22:45:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CME in Master in RegionManager.applyActions</summary>
+			
+			
+			<description>CME in Master in RegionManager.applyActions
+I believe a region server reported during while a manual compaction request was being processed.
+hbase&amp;gt; compact &amp;amp;apos;content&amp;amp;apos;
+followed within seconds by...
+2009-01-28 22:41:00,822 INFO org.apache.hadoop.ipc.HBaseServer: IPC Server handler 7 on 60000, call regionServerReport(address: 10.30.94.34:60020, startcode: 1233137135818, load: (requests=11, regions=257, usedHeap=1013, maxHeap=1774), [Lorg.apache.hadoop.hbase.HMsg;@6cf8f20d, [Lorg.apache.hadoop.hbase.HRegionInfo;@4bdb6b5f) from 10.30.94.34:58823: error: java.io.IOException: java.util.ConcurrentModificationException
+java.io.IOException: java.util.ConcurrentModificationException
+        at java.util.TreeMap$PrivateEntryIterator.nextEntry(TreeMap.java:1100)
+        at java.util.TreeMap$ValueIterator.next(TreeMap.java:1145)
+        at org.apache.hadoop.hbase.master.RegionManager.applyActions(RegionManager.java:1015)
+        at org.apache.hadoop.hbase.master.RegionManager.applyActions(RegionManager.java:996)
+        at org.apache.hadoop.hbase.master.ServerManager.processMsgs(ServerManager.java:452)
+        at org.apache.hadoop.hbase.master.ServerManager.processRegionServerAllsWell(ServerManager.java:388)
+        at org.apache.hadoop.hbase.master.ServerManager.regionServerReport(ServerManager.java:292)
+        at org.apache.hadoop.hbase.master.HMaster.regionServerReport(HMaster.java:569)
+        at sun.reflect.GeneratedMethodAccessor3.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:597)
+        at org.apache.hadoop.hbase.ipc.HBaseRPC$Server.call(HBaseRPC.java:632)
+        at org.apache.hadoop.hbase.ipc.HBaseServer$Handler.run(HBaseServer.java:895)</description>
+			
+			
+			<version>0.19.0</version>
+			
+			
+			<fixedVersion>0.20.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.RegionManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

@@ -1,0 +1,3409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HIVE">
+	<bug fixdate="2011-11-03 17:17:22" id="2465" opendate="2011-09-23 08:28:10" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Primitive Data Types returning null if the data is out of range of the data type.</summary>
+			
+			
+			<description>Primitive Data Types returning null if the input data is out of range of the data type. In this case it is better to log the message with the proper message and actual data then user get to know some data is missing.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyDouble.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyInteger.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyPrimitive.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyBoolean.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyShort.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyLong.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyByte.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyTimestamp.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyBinary.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyFloat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.TestLazyPrimitive.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-01 20:28:05" id="2253" opendate="2011-07-04 07:45:19" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Merge failing of join tree in exceptional case</summary>
+			
+			
+			<description>In some very exceptional cases, SemanticAnayzer fails to merge join tree. Example is below.
+create table a (val1 int, val2 int)
+create table b (val1 int, val2 int)
+create table c (val1 int, val2 int)
+create table d (val1 int, val2 int)
+create table e (val1 int, val2 int)
+1. all same(single) join key --&amp;gt; one MR, good
+select * from a join b on a.val1=b.val1 join c on a.val1=c.val1 join d on a.val1=d.val1 join e on a.val1=e.val1
+2. two join keys --&amp;gt; expected to have two MR, but resulted to three MR
+select * from a join b on a.val1=b.val1 join c on a.val1=c.val1 join d on a.val1=d.val1 join e on a.val2=e.val2
+3. by changing the join order, we could attain two MR as first-expectation.
+select * from a join e on a.val2=e.val2 join c on a.val1=c.val1 join d on a.val1=d.val1 join b on a.val1=b.val1</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-03-10 17:11:32" id="2857" opendate="2012-03-09 03:33:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>QTestUtil.cleanUp() fails with FileNotException on 0.23</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.9.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QTestUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-03-16 01:50:42" id="2778" opendate="2012-02-06 02:36:13" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fail on table sampling </summary>
+			
+			
+			<description>Trying table sampling on any non-empty table throws NPE. This does not occur by test on mini-MR.
+
+select count(*) from emp tablesample (0.1 percent);     
+
+Total MapReduce jobs = 1
+
+Launching Job 1 out of 1
+
+Number of reduce tasks determined at compile time: 1
+
+In order to change the average load for a reducer (in bytes):
+
+  set hive.exec.reducers.bytes.per.reducer=&amp;lt;number&amp;gt;
+
+In order to limit the maximum number of reducers:
+
+  set hive.exec.reducers.max=&amp;lt;number&amp;gt;
+
+In order to set a constant number of reducers:
+
+  set mapred.reduce.tasks=&amp;lt;number&amp;gt;
+
+java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.io.CombineHiveInputFormat.sampleSplits(CombineHiveInputFormat.java:450)
+
+	at org.apache.hadoop.hive.ql.io.CombineHiveInputFormat.getSplits(CombineHiveInputFormat.java:403)
+
+	at org.apache.hadoop.mapred.JobClient.writeOldSplits(JobClient.java:971)
+
+	at org.apache.hadoop.mapred.JobClient.writeSplits(JobClient.java:963)
+
+	at org.apache.hadoop.mapred.JobClient.access$500(JobClient.java:170)
+
+	at org.apache.hadoop.mapred.JobClient$2.run(JobClient.java:880)
+
+	at org.apache.hadoop.mapred.JobClient$2.run(JobClient.java:833)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:396)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1127)
+
+	at org.apache.hadoop.mapred.JobClient.submitJobInternal(JobClient.java:833)
+
+	at org.apache.hadoop.mapred.JobClient.submitJob(JobClient.java:807)
+
+	at org.apache.hadoop.hive.ql.exec.ExecDriver.execute(ExecDriver.java:432)
+
+	at org.apache.hadoop.hive.ql.exec.MapRedTask.execute(MapRedTask.java:136)
+
+	at org.apache.hadoop.hive.ql.exec.Task.executeTask(Task.java:134)
+
+	at org.apache.hadoop.hive.ql.exec.TaskRunner.runSequential(TaskRunner.java:57)
+
+	at org.apache.hadoop.hive.ql.Driver.launchTask(Driver.java:1332)
+
+	at org.apache.hadoop.hive.ql.Driver.execute(Driver.java:1123)
+
+	at org.apache.hadoop.hive.ql.Driver.run(Driver.java:931)
+
+	at org.apache.hadoop.hive.cli.CliDriver.processLocalCmd(CliDriver.java:255)
+
+	at org.apache.hadoop.hive.cli.CliDriver.processCmd(CliDriver.java:212)
+
+	at org.apache.hadoop.hive.cli.CliDriver.processLine(CliDriver.java:403)
+
+	at org.apache.hadoop.hive.cli.CliDriver.run(CliDriver.java:671)
+
+	at org.apache.hadoop.hive.cli.CliDriver.main(CliDriver.java:554)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+
+	at java.lang.reflect.Method.invoke(Method.java:597)
+
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:186)
+
+Job Submission failed with exception &amp;amp;apos;java.lang.NullPointerException(null)&amp;amp;apos;
+
+FAILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.MapRedTask
+
+
+
+
+</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.9.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.CombineHiveInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2784</link>
+			
+			
+			<link description="relates to" type="Reference">2737</link>
+			
+			
+			<link description="is related to" type="Reference">3257</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-03-16 14:58:39" id="2503" opendate="2011-10-13 02:01:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HiveServer should provide per session configuration</summary>
+			
+			
+			<description>Currently ThriftHiveProcessorFactory returns same HiveConf instance to HiveServerHandler, making impossible to use per sesssion configuration. Just wrapping &amp;amp;apos;conf&amp;amp;apos; -&amp;gt; &amp;amp;apos;new HiveConf(conf)&amp;amp;apos; seemed to solve this problem.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.9.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.service.HiveServer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">2573</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-03-16 23:04:46" id="2784" opendate="2012-02-08 01:17:39" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Integrating with MapReduce2 get NPE throwed when executing a query with a &quot;TABLESAMPLE(x percent)&quot; clause</summary>
+			
+			
+			<description>the following TestCliDriver testcases fail:
+sample_islocalmode_hook
+split_sample
+[junit] java.lang.NullPointerException
+[junit] 	at org.apache.hadoop.hive.ql.io.CombineHiveInputFormat.sampleSplits(CombineHiveInputFormat.java:450)
+[junit] 	at org.apache.hadoop.hive.ql.io.CombineHiveInputFormat.getSplits(CombineHiveInputFormat.java:403)
+[junit] 	at org.apache.hadoop.mapreduce.JobSubmitter.writeOldSplits(JobSubmitter.java:472)
+[junit] 	at org.apache.hadoop.mapreduce.JobSubmitter.writeSplits(JobSubmitter.java:464)
+[junit] 	at org.apache.hadoop.mapreduce.JobSubmitter.submitJobInternal(JobSubmitter.java:360)
+[junit] 	at org.apache.hadoop.mapreduce.Job$11.run(Job.java:1215)
+[junit] 	at org.apache.hadoop.mapreduce.Job$11.run(Job.java:1212)
+[junit] 	at java.security.AccessController.doPrivileged(Native Method)
+[junit] 	at javax.security.auth.Subject.doAs(Subject.java:396)
+[junit] 	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1157)
+[junit] 	at org.apache.hadoop.mapreduce.Job.submit(Job.java:1212)
+[junit] 	at org.apache.hadoop.mapred.JobClient$1.run(JobClient.java:592)
+[junit] 	at org.apache.hadoop.mapred.JobClient$1.run(JobClient.java:587)
+[junit] 	at java.security.AccessController.doPrivileged(Native Method)
+[junit] 	at javax.security.auth.Subject.doAs(Subject.java:396)
+[junit] 	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1157)
+[junit] 	at org.apache.hadoop.mapred.JobClient.submitJob(JobClient.java:587)
+[junit] 	at org.apache.hadoop.hive.ql.exec.ExecDriver.execute(ExecDriver.java:452)
+[junit] 	at org.apache.hadoop.hive.ql.exec.ExecDriver.main(ExecDriver.java:710)
+[junit] 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[junit] 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+[junit] 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+[junit] 	at java.lang.reflect.Method.invoke(Method.java:597)
+[junit] 	at org.apache.hadoop.util.RunJar.main(RunJar.java:200)
+There are other qfiles which pass which use TABLESAMPLE without specifying a percent</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.CombineHiveInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2778</link>
+			
+			
+			<link description="is related to" type="Reference">3257</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-04-06 15:44:56" id="2923" opendate="2012-04-03 00:40:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>testAclPositive in TestZooKeeperTokenStore failing in clean checkout when run on Mac</summary>
+			
+			
+			<description>When running testAclPositive in TestZooKeeperTokenStore in a clean checkout, it fails with the error:
+Failed to validate token path. 
+org.apache.hadoop.hive.thrift.DelegationTokenStore$TokenStoreException: Failed to validate token path.
+at org.apache.hadoop.hive.thrift.ZooKeeperTokenStore.init(ZooKeeperTokenStore.java:207)
+at org.apache.hadoop.hive.thrift.ZooKeeperTokenStore.setConf(ZooKeeperTokenStore.java:225)
+at org.apache.hadoop.hive.thrift.TestZooKeeperTokenStore.testAclPositive(TestZooKeeperTokenStore.java:170)
+at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+at java.lang.reflect.Method.invoke(Method.java:597)
+at junit.framework.TestCase.runTest(TestCase.java:168)
+at junit.framework.TestCase.runBare(TestCase.java:134)
+at junit.framework.TestResult$1.protect(TestResult.java:110)
+at junit.framework.TestResult.runProtected(TestResult.java:128)
+at junit.framework.TestResult.run(TestResult.java:113)
+at junit.framework.TestCase.run(TestCase.java:124)
+at junit.framework.TestSuite.runTest(TestSuite.java:232)
+at junit.framework.TestSuite.run(TestSuite.java:227)
+at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:518)
+at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.launch(JUnitTestRunner.java:1052)
+at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:906)
+Caused by: org.apache.zookeeper.KeeperException$ConnectionLossException: KeeperErrorCode = ConnectionLoss for /zktokenstore-testAcl
+at org.apache.zookeeper.KeeperException.create(KeeperException.java:99)
+at org.apache.zookeeper.KeeperException.create(KeeperException.java:51)
+at org.apache.zookeeper.ZooKeeper.create(ZooKeeper.java:778)
+at org.apache.hadoop.hive.thrift.ZooKeeperTokenStore.ensurePath(ZooKeeperTokenStore.java:119)
+at org.apache.hadoop.hive.thrift.ZooKeeperTokenStore.init(ZooKeeperTokenStore.java:204)
+... 17 more
+This message is also printed to standard out:
+Unable to load realm mapping info from SCDynamicStore
+The test seems to run fine in Linux, but more than one developer has reported this on a Mac.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.9.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge20S.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.TestZooKeeperTokenStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.ZooKeeperTokenStore.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-04-10 16:56:37" id="2907" opendate="2012-03-26 18:18:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive error when dropping a table with large number of partitions</summary>
+			
+			
+			<description>Running into an &quot;Out Of Memory&quot; error when trying to drop a table with 128K partitions.
+The methods dropTable in metastore/src/java/org/apache/hadoop/hive/metastore/ObjectStore.java 
+and dropTable in ql/src/java/org/apache/hadoop/hive/ql/exec/DDLTask.java encounter out of memory errors 
+when dropping tables with lots of partitions because they try to load the metadata for every partition into memory.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.TestHiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.ObjectStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveAlterHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-04-20 00:51:15" id="2958" opendate="2012-04-17 15:02:38" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>GROUP BY causing ClassCastException [LazyDioInteger cannot be cast LazyInteger]</summary>
+			
+			
+			<description>This relates to https://issues.apache.org/jira/browse/HIVE-1634.
+The following work fine:
+
+
+
+CREATE EXTERNAL TABLE tim_hbase_occurrence ( 
+
+  id int,
+
+  scientific_name string,
+
+  data_resource_id int
+
+) STORED BY &amp;amp;apos;org.apache.hadoop.hive.hbase.HBaseStorageHandler&amp;amp;apos; WITH SERDEPROPERTIES (
+
+  &quot;hbase.columns.mapping&quot; = &quot;:key#b,v:scientific_name#s,v:data_resource_id#b&quot;
+
+) TBLPROPERTIES(
+
+  &quot;hbase.table.name&quot; = &quot;mini_occurrences&quot;, 
+
+  &quot;hbase.table.default.storage.type&quot; = &quot;binary&quot;
+
+);
+
+SELECT * FROM tim_hbase_occurrence LIMIT 3;
+
+SELECT * FROM tim_hbase_occurrence WHERE data_resource_id=1081 LIMIT 3;
+
+
+
+However, the following fails:
+
+
+
+SELECT data_resource_id, count(*) FROM tim_hbase_occurrence GROUP BY data_resource_id;
+
+
+
+The error given:
+
+
+
+0 TS
+
+2012-04-17 16:58:45,693 INFO org.apache.hadoop.hive.ql.exec.MapOperator: Initialization Done 7 MAP
+
+2012-04-17 16:58:45,714 INFO org.apache.hadoop.hive.ql.exec.MapOperator: Processing alias tim_hbase_occurrence for file hdfs://c1n2.gbif.org/user/hive/warehouse/tim_hbase_occurrence
+
+2012-04-17 16:58:45,714 INFO org.apache.hadoop.hive.ql.exec.MapOperator: 7 forwarding 1 rows
+
+2012-04-17 16:58:45,714 INFO org.apache.hadoop.hive.ql.exec.TableScanOperator: 0 forwarding 1 rows
+
+2012-04-17 16:58:45,716 INFO org.apache.hadoop.hive.ql.exec.SelectOperator: 1 forwarding 1 rows
+
+2012-04-17 16:58:45,723 FATAL ExecMapper: org.apache.hadoop.hive.ql.metadata.HiveException: Hive Runtime Error while processing row {&quot;id&quot;:1444,&quot;scientific_name&quot;:null,&quot;data_resource_id&quot;:1081}
+
+	at org.apache.hadoop.hive.ql.exec.MapOperator.process(MapOperator.java:548)
+
+	at org.apache.hadoop.hive.ql.exec.ExecMapper.map(ExecMapper.java:143)
+
+	at org.apache.hadoop.mapred.MapRunner.run(MapRunner.java:50)
+
+	at org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:391)
+
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:325)
+
+	at org.apache.hadoop.mapred.Child$4.run(Child.java:270)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:396)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1157)
+
+	at org.apache.hadoop.mapred.Child.main(Child.java:264)
+
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: java.lang.ClassCastException: org.apache.hadoop.hive.serde2.lazydio.LazyDioInteger cannot be cast to org.apache.hadoop.hive.serde2.lazy.LazyInteger
+
+	at org.apache.hadoop.hive.ql.exec.GroupByOperator.processOp(GroupByOperator.java:737)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.process(Operator.java:471)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:762)
+
+	at org.apache.hadoop.hive.ql.exec.SelectOperator.processOp(SelectOperator.java:84)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.process(Operator.java:471)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:762)
+
+	at org.apache.hadoop.hive.ql.exec.TableScanOperator.processOp(TableScanOperator.java:83)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.process(Operator.java:471)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:762)
+
+	at org.apache.hadoop.hive.ql.exec.MapOperator.process(MapOperator.java:529)
+
+	... 9 more
+
+Caused by: java.lang.ClassCastException: org.apache.hadoop.hive.serde2.lazydio.LazyDioInteger cannot be cast to org.apache.hadoop.hive.serde2.lazy.LazyInteger
+
+	at org.apache.hadoop.hive.serde2.lazy.objectinspector.primitive.LazyIntObjectInspector.copyObject(LazyIntObjectInspector.java:43)
+
+	at org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils.copyToStandardObject(ObjectInspectorUtils.java:239)
+
+	at org.apache.hadoop.hive.ql.exec.KeyWrapperFactory$ListKeyWrapper.deepCopyElements(KeyWrapperFactory.java:150)
+
+	at org.apache.hadoop.hive.ql.exec.KeyWrapperFactory$ListKeyWrapper.deepCopyElements(KeyWrapperFactory.java:142)
+
+	at org.apache.hadoop.hive.ql.exec.KeyWrapperFactory$ListKeyWrapper.copyKey(KeyWrapperFactory.java:119)
+
+	at org.apache.hadoop.hive.ql.exec.GroupByOperator.processHashAggr(GroupByOperator.java:750)
+
+	at org.apache.hadoop.hive.ql.exec.GroupByOperator.processOp(GroupByOperator.java:722)
+
+	... 18 more
+
+
+
+</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.9.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazydio.LazyDioInteger.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazydio.LazyDioFloat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazydio.LazyDioDouble.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazydio.LazyDioByte.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazydio.LazyDioBoolean.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazydio.LazyDioLong.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazydio.LazyDioShort.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-04-24 19:30:31" id="2883" opendate="2012-03-20 17:59:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Metastore client doesnt close connection properly</summary>
+			
+			
+			<description>While closing connection, it always fail with following trace. Seemingly, it doesnt have any harmful effects.
+
+
+
+12/03/20 10:55:02 ERROR hive.metastore: Unable to shutdown local metastore client
+
+org.apache.thrift.transport.TTransportException: Cannot write to null outputStream
+
+	at org.apache.thrift.transport.TIOStreamTransport.write(TIOStreamTransport.java:142)
+
+	at org.apache.thrift.protocol.TBinaryProtocol.writeI32(TBinaryProtocol.java:163)
+
+	at org.apache.thrift.protocol.TBinaryProtocol.writeMessageBegin(TBinaryProtocol.java:91)
+
+	at org.apache.thrift.TServiceClient.sendBase(TServiceClient.java:62)
+
+	at com.facebook.fb303.FacebookService$Client.send_shutdown(FacebookService.java:421)
+
+	at com.facebook.fb303.FacebookService$Client.shutdown(FacebookService.java:415)
+
+	at org.apache.hadoop.hive.metastore.HiveMetaStoreClient.close(HiveMetaStoreClient.java:310)
+
+
+</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStoreClient.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">236</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-05-07 16:37:59" id="3000" opendate="2012-05-03 00:53:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Potential infinite loop / log spew in ZookeeperHiveLockManager</summary>
+			
+			
+			<description>See ZookeeperHiveLockManger.lock()
+If Zookeeper is in a bad state, it&amp;amp;apos;s possible to get an exception (e.g. org.apache.zookeeper.KeeperException$SessionExpiredException) when we call lockPrimitive(). There is a bug in the exception handler where the loop does not exit because the break in the switch statement gets out the switch, not the do..while loop. Because tryNum was not incremented due to the exception, lockPrimitive() will be called in an infinite loop, as fast as possible. Since the exception is printed for each call, Hive will produce significant log spew.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.lockmgr.zookeeper.ZooKeeperHiveLockManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-06-07 14:56:36" id="2736" opendate="2012-01-23 14:22:05" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive UDFs cannot emit binary constants</summary>
+			
+			
+			<description>I recently wrote a UDF which emits BINARY values (as implemented in HIVE-2380). When testing this, I encountered the following exception (because I was evaluating f(g(constant string))) and g() was emitting a BytesWritable type.
+FAILED: Hive Internal Error: java.lang.RuntimeException(Internal error: Cannot find ConstantObjectInspector for BINARY)
+java.lang.RuntimeException: Internal error: Cannot find ConstantObjectInspector for BINARY
+	at org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory.getPrimitiveWritableConstantObjectInspector(PrimitiveObjectInspectorFactory.java:196)
+	at org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils.getConstantObjectInspector(ObjectInspectorUtils.java:899)
+	at org.apache.hadoop.hive.ql.udf.generic.GenericUDF.initializeAndFoldConstants(GenericUDF.java:128)
+	at org.apache.hadoop.hive.ql.plan.ExprNodeGenericFuncDesc.newInstance(ExprNodeGenericFuncDesc.java:214)
+	at org.apache.hadoop.hive.ql.parse.TypeCheckProcFactory$DefaultExprProcessor.getXpathOrFuncExprNodeDesc(TypeCheckProcFactory.java:684)
+	at org.apache.hadoop.hive.ql.parse.TypeCheckProcFactory$DefaultExprProcessor.process(TypeCheckProcFactory.java:805)
+	at org.apache.hadoop.hive.ql.lib.DefaultRuleDispatcher.dispatch(DefaultRuleDispatcher.java:89)
+	at org.apache.hadoop.hive.ql.lib.DefaultGraphWalker.dispatch(DefaultGraphWalker.java:88)
+	at org.apache.hadoop.hive.ql.lib.DefaultGraphWalker.walk(DefaultGraphWalker.java:125)
+	at org.apache.hadoop.hive.ql.lib.DefaultGraphWalker.startWalking(DefaultGraphWalker.java:102)
+	at org.apache.hadoop.hive.ql.parse.TypeCheckProcFactory.genExprNode(TypeCheckProcFactory.java:161)
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genExprNodeDesc(SemanticAnalyzer.java:7708)
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genSelectPlan(SemanticAnalyzer.java:2301)
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genSelectPlan(SemanticAnalyzer.java:2103)
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genPostGroupByBodyPlan(SemanticAnalyzer.java:6126)
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genBodyPlan(SemanticAnalyzer.java:6097)
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genPlan(SemanticAnalyzer.java:6723)
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.analyzeInternal(SemanticAnalyzer.java:7484)
+	at org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.analyze(BaseSemanticAnalyzer.java:243)
+	at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:430)
+	at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:337)
+	at org.apache.hadoop.hive.ql.Driver.run(Driver.java:889)
+	at org.apache.hadoop.hive.cli.CliDriver.processLocalCmd(CliDriver.java:255)
+	at org.apache.hadoop.hive.cli.CliDriver.processCmd(CliDriver.java:212)
+	at org.apache.hadoop.hive.cli.CliDriver.processLine(CliDriver.java:403)
+	at org.apache.hadoop.hive.cli.CliDriver.run(CliDriver.java:671)
+	at org.apache.hadoop.hive.cli.CliDriver.main(CliDriver.java:554)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:156)
+It looks like a pretty simple fix - add a case for BINARY in PrimitiveObjectInspectorFactory.getPrimitiveWritableConstantObjectInspector() and implement a WritableConstantByteArrayObjectInspector class (almost identical to the others). I&amp;amp;apos;m happy to do this, although this is my first foray into the world of contributing to FOSS so I might end up asking a few stupid questions.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-06-10 01:30:20" id="3099" opendate="2012-06-07 07:27:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>add findbugs in build.xml</summary>
+			
+			
+			<description>see HIVE-1172 and HIVE-2169 
+it was used default rules.
+exclude filter file is in findbugs\findbugs-exclude.xml
+the result of xml files to html file is not added because no style files.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreDirectSql.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2169</link>
+			
+			
+			<link description="duplicates" type="Duplicate">1172</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-06-12 23:13:00" id="3081" opendate="2012-06-04 03:09:02" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ROFL Moment. Numberator and denaminator typos</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.ErrorMsg.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-06-23 21:34:12" id="3125" opendate="2012-06-13 11:06:43" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>sort_array doesn&amp;apos;t work with LazyPrimitive</summary>
+			
+			
+			<description>The sort_array function doesn&amp;amp;apos;t work against data that&amp;amp;apos;s actually come out of a table. The test suite only covers constants given in the query.
+If you try and use sort_array on an array from a table, then you get a ClassCastException that you can&amp;amp;apos;t convert LazyX to Comparable.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDFSortArray.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-06-28 00:44:59" id="3127" opendate="2012-06-13 17:52:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Pass hconf values as XML instead of command line arguments to child JVM</summary>
+			
+			
+			<description>The maximum length of the DOS command string is 8191 characters (in Windows latest versions http://support.microsoft.com/kb/830473). This limit will be exceeded easily when it appends individual hconf values to the command string. To work around this problem, Write all changed hconf values to a temp file and pass the temp file path to the child jvm to read and initialize the -hconf parameters from file.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.rcfile.merge.BlockMergeTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapRedTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapredLocalTask.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is part of" type="Incorporates">2998</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-12 16:53:41" id="3168" opendate="2012-06-21 02:53:16" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>LazyBinaryObjectInspector.getPrimitiveJavaObject copies beyond length of underlying BytesWritable</summary>
+			
+			
+			<description>LazyBinaryObjectInspector.getPrimitiveJavaObject copies the full capacity of the LazyBinary&amp;amp;apos;s underlying BytesWritable object, which can be greater than the size of the actual contents. 
+This leads to additional characters at the end of the ByteArrayRef returned. When the LazyBinary object gets re-used, there can be remnants of the later portion of previous entry. 
+This was not seen while reading through hive queries, which I think is because a copy elsewhere seems to create LazyBinary with length == capacity. (probably LazyBinary copy constructor). This was seen when MR or pig used Hcatalog to read the data.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazybinary.TestLazyBinarySerDe.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.objectinspector.primitive.LazyBinaryObjectInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableBinaryObjectInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.primitive.JavaBinaryObjectInspector.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">430</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-17 04:55:02" id="3248" opendate="2012-07-10 12:24:46" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>lack of semi-colon in .q file leads to missing the next statement</summary>
+			
+			
+			<description>set hive.check.par=1
+select count(1) from src;
+select count(1) from src;
+If the above .q file is executed, the first statement is lost.
+Found this while reviewing https://issues.apache.org/jira/browse/HIVE-2848</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.processors.SetProcessor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-17 06:12:30" id="2544" opendate="2011-11-02 16:44:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Nullpointer on registering udfs.</summary>
+			
+			
+			<description>Currently the Function registry can throw NullPointers when multiple threads are trying to register the same function. The normal put() will replace the existing registered function object even if it&amp;amp;apos;s exactly the same function.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FunctionRegistry.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">3263</link>
+			
+			
+			<link description="is related to" type="Reference">2573</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-19 17:13:22" id="3246" opendate="2012-07-09 21:30:42" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>java primitive type for binary datatype should be byte[]</summary>
+			
+			
+			<description>PrimitiveObjectInspector.getPrimitiveJavaObject is supposed to return a java object. But in case of binary datatype, it returns ByteArrayRef (not java standard type). The suitable java object for it would be byte[]. </description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorConverter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.binarysortable.TestBinarySortableSerDe.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.objectinspector.primitive.LazyBinaryObjectInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableConstantBinaryObjectInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.TestStatsSerde.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.TestStandardObjectInspectors.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazybinary.MyTestClassBigger.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.primitive.WritableBinaryObjectInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.primitive.JavaBinaryObjectInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.primitive.BinaryObjectInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazybinary.TestLazyBinarySerDe.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.columnar.TestLazyBinaryColumnarSerDe.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.binarysortable.MyTestClass.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.primitive.SettableBinaryObjectInspector.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">3266</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-24 00:25:39" id="3225" opendate="2012-07-03 02:29:46" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NPE on a join query with authorization enabled</summary>
+			
+			
+			<description>when performing a join query which filters by a non-existent partition in the where clause (ie):
+select t1.a as a1, t2.a as a2 from t1 join t2 on t1.a=t2.a where t2.part=&quot;non-existent&quot;;
+It returns an NPE. It seems that the partition since non-existent is not part of the list of inputs (or maybe optimized out?). But the TableScanOperator still has a reference to it which causes an NPE after tableUsePartLevelAuth.get() returns null.
+FAILED: Hive Internal Error: java.lang.NullPointerException(null)java.lang.NullPointerException        at org.apache.hadoop.hive.ql.Driver.doAuthorization(Driver.java:617)
+        at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:486)
+        at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:336)        at org.apache.hadoop.hive.ql.Driver.run(Driver.java:909)
+        at org.apache.hadoop.hive.cli.CliDriver.processLocalCmd(CliDriver.java:258)        at org.apache.hadoop.hive.cli.CliDriver.processCmd(CliDriver.java:215)
+        at org.apache.hadoop.hive.cli.CliDriver.processLine(CliDriver.java:406)
+        at org.apache.hadoop.hive.cli.CliDriver.run(CliDriver.java:689)
+        at org.apache.hadoop.hive.cli.CliDriver.main(CliDriver.java:557)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:597)
+        at org.apache.hadoop.util.RunJar.main(RunJar.java:156)</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Driver.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-25 06:48:39" id="3126" opendate="2012-06-13 17:41:16" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Generate &amp; build the velocity based Hive tests on windows by fixing the path issues</summary>
+			
+			
+			<description>1)Escape the backward slash in Canonical Path if unit test runs on windows.
+2)Diff comparison  
+     a.	Ignore the extra spacing on windows
+     b.	Ignore the different line endings on windows &amp;amp; Unix
+     c.	Convert the file paths to windows specific. (Handle spaces etc..)
+3)Set the right file scheme &amp;amp; class path separators while invoking the junit task from </description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.contrib.mr.TestGenericMR.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QTestUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ant.QTestGenTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.fs.ProxyFileSystem.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.fs.ProxyLocalFileSystem.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.LoadSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Context.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is part of" type="Incorporates">2998</link>
+			
+			
+			<link description="requires" type="Required">3172</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-09-07 14:23:08" id="3098" opendate="2012-06-06 18:34:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Memory leak from large number of FileSystem instances in FileSystem.CACHE</summary>
+			
+			
+			<description>The problem manifested from stress-testing HCatalog 0.4.1 (as part of testing the Oracle backend).
+The HCatalog server ran out of memory (-Xmx2048m) when pounded by 60-threads, in under 24 hours. The heap-dump indicates that hadoop::FileSystem.CACHE had 1000000 instances of FileSystem, whose combined retained-mem consumed the entire heap.
+It boiled down to hadoop::UserGroupInformation::equals() being implemented such that the &quot;Subject&quot; member is compared for equality (&quot;==&quot;), and not equivalence (&quot;.equals()&quot;). This causes equivalent UGI instances to compare as unequal, and causes a new FileSystem instance to be created and cached.
+The UGI.equals() is so implemented, incidentally, as a fix for yet another problem (HADOOP-6670); so it is unlikely that that implementation can be modified.
+The solution for this is to check for UGI equivalence in HCatalog (i.e. in the Hive metastore), using an cache for UGI instances in the shims.
+I have a patch to fix this. I&amp;amp;apos;ll upload it shortly. I just ran an overnight test to confirm that the memory-leak has been arrested.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.9.1, 0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.TUGIBasedProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShimsSecure.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop20Shims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge20S.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">3545</link>
+			
+			
+			<link description="relates to" type="Reference">4501</link>
+			
+			
+			<link description="relates to" type="Reference">5296</link>
+			
+			
+			<link description="relates to" type="Reference">3513</link>
+			
+			
+			<link description="is related to" type="Reference">9234</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-11-13 16:03:12" id="3243" opendate="2012-07-09 03:24:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ignore white space between entries of hive/hbase table mapping</summary>
+			
+			
+			<description>In hive/hbase integration, when creating a hive/hbase table, white space is not ignored in hbase.columns.mapping. 
+e.g. &quot;cf:foo, cf:bar&quot; will create two column families &quot;cf&quot; and &quot; cf&quot; in the underlying hbase table, which is certainly not what the user want and make them confused.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HBaseSerDe.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-01-16 16:16:52" id="2820" opendate="2012-02-24 01:40:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Invalid tag is used for MapJoinProcessor</summary>
+			
+			
+			<description>Testing HIVE-2810, I&amp;amp;apos;ve found tag and alias are used in very confusing manner. For example, query below fails..
+
+
+
+hive&amp;gt; set hive.auto.convert.join=true;                                                                                     
+
+hive&amp;gt; select /*+ STREAMTABLE(a) */ * from myinput1 a join myinput1 b on a.key=b.key join myinput1 c on a.key=c.key;        
+
+Total MapReduce jobs = 4
+
+Ended Job = 1667415037, job is filtered out (removed at runtime).
+
+Ended Job = 1739566906, job is filtered out (removed at runtime).
+
+Ended Job = 1113337780, job is filtered out (removed at runtime).
+
+12/02/24 10:27:14 WARN conf.HiveConf: DEPRECATED: Ignoring hive-default.xml found on the CLASSPATH at /home/navis/hive/conf/hive-default.xml
+
+Execution log at: /tmp/navis/navis_20120224102727_cafe0d8d-9b21-441d-bd4e-b83303b31cdc.log
+
+2012-02-24 10:27:14	Starting to launch local task to process map join;	maximum memory = 932118528
+
+java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.exec.HashTableSinkOperator.processOp(HashTableSinkOperator.java:312)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.process(Operator.java:471)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:762)
+
+	at org.apache.hadoop.hive.ql.exec.TableScanOperator.processOp(TableScanOperator.java:83)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.process(Operator.java:471)
+
+	at org.apache.hadoop.hive.ql.exec.MapredLocalTask.startForward(MapredLocalTask.java:325)
+
+	at org.apache.hadoop.hive.ql.exec.MapredLocalTask.executeFromChildJVM(MapredLocalTask.java:272)
+
+	at org.apache.hadoop.hive.ql.exec.ExecDriver.main(ExecDriver.java:685)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+
+	at java.lang.reflect.Method.invoke(Method.java:597)
+
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:186)
+
+Execution failed with exit status: 2
+
+Obtaining error information
+
+
+
+Failed task has a plan which doesn&amp;amp;apos;t make sense.
+
+  Stage: Stage-8
+
+    Map Reduce Local Work
+
+      Alias -&amp;gt; Map Local Tables:
+
+        b 
+
+          Fetch Operator
+
+            limit: -1
+
+        c 
+
+          Fetch Operator
+
+            limit: -1
+
+      Alias -&amp;gt; Map Local Operator Tree:
+
+        b 
+
+          TableScan
+
+            alias: b
+
+            HashTable Sink Operator
+
+              condition expressions:
+
+                0 {key} {value}
+
+                1 {key} {value}
+
+                2 {key} {value}
+
+              handleSkewJoin: false
+
+              keys:
+
+                0 [Column[key]]
+
+                1 [Column[key]]
+
+                2 [Column[key]]
+
+              Position of Big Table: 0
+
+        c 
+
+          TableScan
+
+            alias: c
+
+            Map Join Operator
+
+              condition map:
+
+                   Inner Join 0 to 1
+
+                   Inner Join 0 to 2
+
+              condition expressions:
+
+                0 {key} {value}
+
+                1 {key} {value}
+
+                2 {key} {value}
+
+              handleSkewJoin: false
+
+              keys:
+
+                0 [Column[key]]
+
+                1 [Column[key]]
+
+                2 [Column[key]]
+
+              outputColumnNames: _col0, _col1, _col4, _col5, _col8, _col9
+
+              Position of Big Table: 0
+
+              Select Operator
+
+                expressions:
+
+                      expr: _col0
+
+                      type: int
+
+                      expr: _col1
+
+                      type: int
+
+                      expr: _col4
+
+                      type: int
+
+                      expr: _col5
+
+                      type: int
+
+                      expr: _col8
+
+                      type: int
+
+                      expr: _col9
+
+                      type: int
+
+                outputColumnNames: _col0, _col1, _col2, _col3, _col4, _col5
+
+                File Output Operator
+
+                  compressed: false
+
+                  GlobalTableId: 0
+
+                  table:
+
+                      input format: org.apache.hadoop.mapred.TextInputFormat
+
+                      output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+
+
+
+  Stage: Stage-4
+
+    Map Reduce
+
+      Alias -&amp;gt; Map Operator Tree:
+
+        a 
+
+          TableScan
+
+            alias: a
+
+            HashTable Sink Operator
+
+              condition expressions:
+
+                0 {key} {value}
+
+                1 {key} {value}
+
+                2 {key} {value}
+
+              handleSkewJoin: false
+
+              keys:
+
+                0 [Column[key]]
+
+                1 [Column[key]]
+
+                2 [Column[key]]
+
+              Position of Big Table: 0
+
+      Local Work:
+
+        Map Reduce Local Work
+
+
+</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.11.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.SMBMapJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.JoinDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.physical.LocalMapJoinProcFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.AbstractMapJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.CommonJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ConditionalTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.JoinUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.MapJoinProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.HashTableSinkOperator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-01-20 07:10:58" id="2332" opendate="2011-08-02 05:58:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>If all of the parameters of distinct functions are exists in group by columns, query fails in runtime</summary>
+			
+			
+			<description>select sum(key_int1), sum(distinct key_int1) from t1 group by key_int1;
+fails with message..
+
+
+
+FAILED: Execution Error, return code 2 from org.apache.hadoop.hive.ql.exec.MapRedTask
+
+
+
+hadoop says..
+
+
+
+Caused by: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
+
+	at java.util.ArrayList.RangeCheck(ArrayList.java:547)
+
+	at java.util.ArrayList.get(ArrayList.java:322)
+
+	at org.apache.hadoop.hive.serde2.objectinspector.StandardStructObjectInspector.init(StandardStructObjectInspector.java:95)
+
+	at org.apache.hadoop.hive.serde2.objectinspector.StandardStructObjectInspector.(StandardStructObjectInspector.java:86)
+
+	at org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorFactory.getStandardStructObjectInspector(ObjectInspectorFactory.java:252)
+
+	at org.apache.hadoop.hive.ql.exec.ReduceSinkOperator.initEvaluatorsAndReturnStruct(ReduceSinkOperator.java:188)
+
+	at org.apache.hadoop.hive.ql.exec.ReduceSinkOperator.processOp(ReduceSinkOperator.java:197)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.process(Operator.java:471)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:744)
+
+	at org.apache.hadoop.hive.ql.exec.TableScanOperator.processOp(TableScanOperator.java:85)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.process(Operator.java:471)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:744)
+
+	at org.apache.hadoop.hive.ql.exec.MapOperator.process(MapOperator.java:532)
+
+
+
+I think the deficient number of key expression, compared to number of key column, is the problem, which should be equal or more. 
+Would it be solved if add some key expression? I&amp;amp;apos;ll try.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.11.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ReduceSinkOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.PlanUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-02-18 02:20:43" id="4000" opendate="2013-02-08 00:14:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive client goes into infinite loop at 100% cpu</summary>
+			
+			
+			<description>The Hive client starts multiple threads to track the progress of the MapReduce jobs. Unfortunately those threads access several static HashMaps that are not protected by locks. When the HashMaps are modified, they sometimes cause race conditions that lead to the client threads getting stuck in infinite loops.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.11.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.history.HiveHistory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QueryPlan.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">3408</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-02-28 17:27:41" id="3628" opendate="2012-10-27 11:46:43" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Provide a way to use counters in Hive through UDF</summary>
+			
+			
+			<description>Currently it is not possible to generate counters through UDF. We should support this. 
+Pig currently allows this.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.11.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExprNodeGenericFuncEvaluator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.GroupByOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDF.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFEvaluator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDTF.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecReducer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecMapper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.UDTFOperator.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1016</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2261</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-03-08 02:24:43" id="2261" opendate="2011-07-06 07:44:52" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Add cleanup stages for UDFs</summary>
+			
+			
+			<description>In some cases, we bind values at last stage of big SQL from other sources, especially from memcached. I made that kind of UDFs for internal-use.
+I found &amp;amp;apos;initialize&amp;amp;apos; method of GenericUDF class is good place for making connections to memcached cluster, but failed to find  somewhere to close/cleanup the connections. If there is cleaup method in GenericUDF class, things can be more neat. If initializing entity like map/reduce/fetch could be also providable to life-cycles(init/close), that makes perfect.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Wish</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExprNodeGenericFuncEvaluator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.GroupByOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDF.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFEvaluator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDTF.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecReducer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecMapper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.UDTFOperator.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">3628</link>
+			
+			
+			<link description="relates to" type="Reference">1016</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-03-12 18:24:13" id="2935" opendate="2012-04-09 18:59:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Implement HiveServer2</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.11.0</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShimsSecure.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QTestUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge20S.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Driver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop20Shims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ant.QTestGenTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.processors.SetProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShims.java</file>
+			
+			
+			<file type="D">org.apache.hive.jdbc.beeline.OptionsProcessor.java</file>
+			
+			
+			<file type="D">org.apache.hive.jdbc.beeline.HiveBeeline.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.CopyTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="contains" type="Container">3905</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">3122</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">3545</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">3546</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">3547</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">3548</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">3785</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">3217</link>
+			
+			
+			<link description="relates to" type="Reference">4239</link>
+			
+			
+			<link description="relates to" type="Reference">1869</link>
+			
+			
+			<link description="is related to" type="Reference">3785</link>
+			
+			
+			<link description="is related to" type="Reference">4356</link>
+			
+			
+			<link description="is related to" type="Reference">7676</link>
+			
+			
+			<link description="is related to" type="Reference">9158</link>
+			
+			
+			<link description="is related to" type="Reference">80</link>
+			
+			
+			<link description="breaks" type="Regression">4188</link>
+			
+			
+			<link description="is required by" type="Required">3805</link>
+			
+			
+			<link description="depends upon" type="dependent">2264</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-03-12 18:51:01" id="3122" opendate="2012-06-12 22:09:05" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Implement JDBC driver for HiveServer2 API</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShimsSecure.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QTestUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge20S.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Driver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop20Shims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ant.QTestGenTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.processors.SetProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShims.java</file>
+			
+			
+			<file type="D">org.apache.hive.jdbc.beeline.OptionsProcessor.java</file>
+			
+			
+			<file type="D">org.apache.hive.jdbc.beeline.HiveBeeline.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.CopyTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2935</link>
+			
+			
+			<link description="relates to" type="Reference">3100</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-03-12 18:51:38" id="3546" opendate="2012-10-07 22:06:00" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Implement TestBeeLineDriver</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShimsSecure.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QTestUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge20S.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Driver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop20Shims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ant.QTestGenTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.processors.SetProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShims.java</file>
+			
+			
+			<file type="D">org.apache.hive.jdbc.beeline.OptionsProcessor.java</file>
+			
+			
+			<file type="D">org.apache.hive.jdbc.beeline.HiveBeeline.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.CopyTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2935</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-03-29 05:49:23" id="2264" opendate="2011-07-06 14:05:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive server is SHUTTING DOWN when invalid queries beeing executed.</summary>
+			
+			
+			<description>When invalid query is beeing executed, Hive server is shutting down.
+
+&quot;CREATE TABLE SAMPLETABLE(IP STRING , showtime BIGINT ) partitioned by (ds string,ipz int) ROW FORMAT DELIMITED FIELDS TERMINATED BY &amp;amp;apos;\040&amp;amp;apos;&quot;
+
+
+
+&quot;ALTER TABLE SAMPLETABLE add Partition(ds=&amp;amp;apos;sf&amp;amp;apos;) location &amp;amp;apos;/user/hive/warehouse&amp;amp;apos; Partition(ipz=100) location &amp;amp;apos;/user/hive/warehouse&amp;amp;apos;&quot;
+
+
+</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.11.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Driver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Task.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapRedTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapredLocalTask.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">1872</link>
+			
+			
+			<link description="is related to" type="Reference">2017</link>
+			
+			
+			<link description="is depended upon by" type="dependent">2935</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-04-15 07:10:44" id="3179" opendate="2012-06-22 12:25:47" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HBase Handler doesn&amp;apos;t handle NULLs properly</summary>
+			
+			
+			<description>We found a quite severe issue in the HBase Handler which actually means that Hive potentially returns incorrect data if a column has NULL values in HBase (which means the cell doesn&amp;amp;apos;t even exist)
+In HBase Shell:
+
+create &amp;amp;apos;hive_hbase_test&amp;amp;apos;, &amp;amp;apos;test&amp;amp;apos;
+
+put &amp;amp;apos;hive_hbase_test&amp;amp;apos;, &amp;amp;apos;1&amp;amp;apos;, &amp;amp;apos;test:c1&amp;amp;apos;, &amp;amp;apos;c1-1&amp;amp;apos;
+
+put &amp;amp;apos;hive_hbase_test&amp;amp;apos;, &amp;amp;apos;1&amp;amp;apos;, &amp;amp;apos;test:c2&amp;amp;apos;, &amp;amp;apos;c2-1&amp;amp;apos;
+
+put &amp;amp;apos;hive_hbase_test&amp;amp;apos;, &amp;amp;apos;1&amp;amp;apos;, &amp;amp;apos;test:c3&amp;amp;apos;, &amp;amp;apos;c3-1&amp;amp;apos;
+
+put &amp;amp;apos;hive_hbase_test&amp;amp;apos;, &amp;amp;apos;2&amp;amp;apos;, &amp;amp;apos;test:c1&amp;amp;apos;, &amp;amp;apos;c1-2&amp;amp;apos;
+
+
+
+In Hive:
+
+DROP TABLE IF EXISTS hive_hbase_test;
+
+CREATE EXTERNAL TABLE hive_hbase_test (
+
+  id int,
+
+  c1 string,
+
+  c2 string,
+
+  c3 string
+
+)
+
+STORED BY &amp;amp;apos;org.apache.hadoop.hive.hbase.HBaseStorageHandler&amp;amp;apos;
+
+WITH SERDEPROPERTIES (&quot;hbase.columns.mapping&quot; =
+
+&quot;:key#s,test:c1#s,test:c2#s,test:c3#s&quot;)
+
+TBLPROPERTIES(&quot;hbase.table.name&quot; = &quot;hive_hbase_test&quot;);
+
+
+
+hive&amp;gt; select * from hive_hbase_test;
+
+OK
+
+1	c1-1	c2-1	c3-1
+
+2	c1-2	NULL	NULL
+
+
+
+hive&amp;gt; select c1 from hive_hbase_test;
+
+c1-1
+
+c1-2
+
+
+
+hive&amp;gt; select c1, c2 from hive_hbase_test;
+
+c1-1	c2-1
+
+c1-2	NULL
+
+
+
+So far everything is correct but now:
+
+hive&amp;gt; select c1, c2, c2 from hive_hbase_test;
+
+c1-1	c2-1	c2-1
+
+c1-2	NULL	c2-1
+
+
+
+Selecting c2 twice works the first time but the second time we
+actually get the value from the previous row.
+
+hive&amp;gt; select c1, c3, c2, c2, c3, c3, c1 from hive_hbase_test;
+
+c1-1	c3-1	c2-1	c2-1	c3-1	c3-1	c1-1
+
+c1-2	NULL	NULL	c2-1	c3-1	c3-1	c1-2
+
+
+
+We&amp;amp;apos;ve narrowed this down to an early initialization of fieldsInited[fieldID] = true in LazyHBaseRow#uncheckedGetField and we&amp;amp;apos;ll try to provide a patch which surely needs review.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.11.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.TestLazyHBaseObject.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.LazyHBaseRow.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">4057</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-04-24 11:55:39" id="1016" opendate="2009-12-28 20:34:33" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Ability to access DistributedCache from UDFs</summary>
+			
+			
+			<description>There have been several requests on the mailing list for
+information about how to access the DistributedCache from UDFs, e.g.:
+http://www.mail-archive.com/hive-user@hadoop.apache.org/msg01650.html
+http://www.mail-archive.com/hive-user@hadoop.apache.org/msg01926.html
+While responses to these emails suggested several workarounds, the only correct
+way of accessing the distributed cache is via the static methods of Hadoop&amp;amp;apos;s
+DistributedCache class, and all of these methods require that the JobConf be passed
+in as a parameter. Hence, giving UDFs access to the distributed cache
+reduces to giving UDFs access to the JobConf.
+I propose the following changes to GenericUDF/UDAF/UDTF:
+
+Add an exec_init(Configuration conf) method that is called during Operator initialization at runtime.
+Change the name of the &quot;initialize&quot; method to &quot;compile_init&quot; to make it clear that this method is called at compile-time.
+
+</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExprNodeGenericFuncEvaluator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.GroupByOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDF.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFEvaluator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDTF.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecReducer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecMapper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.UDTFOperator.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">2312</link>
+			
+			
+			<link description="duplicates" type="Duplicate">3628</link>
+			
+			
+			<link description="relates to" type="Reference">1360</link>
+			
+			
+			<link description="is related to" type="Reference">2261</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-07-03 15:53:46" id="3253" opendate="2012-07-12 13:26:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ArrayIndexOutOfBounds exception for deeply nested structs</summary>
+			
+			
+			<description>It was observed that while creating table with deeply nested structs might throw this exception:
+
+
+
+java.lang.ArrayIndexOutOfBoundsException: 9
+
+        at org.apache.hadoop.hive.serde2.lazy.LazyFactory.createLazyObjectInspector(LazyFactory.java:281)
+
+	at org.apache.hadoop.hive.serde2.lazy.LazyFactory.createLazyObjectInspector(LazyFactory.java:263)
+
+	at org.apache.hadoop.hive.serde2.lazy.LazyFactory.createLazyObjectInspector(LazyFactory.java:276)
+
+	at org.apache.hadoop.hive.serde2.lazy.LazyFactory.createLazyObjectInspector(LazyFactory.java:263)
+
+	at org.apache.hadoop.hive.serde2.lazy.LazyFactory.createLazyObjectInspector(LazyFactory.java:276)
+
+	at org.apache.hadoop.hive.serde2.lazy.LazyFactory.createLazyObjectInspector(LazyFactory.java:263)
+
+	at org.apache.hadoop.hive.serde2.lazy.LazyFactory.createLazyObjectInspector(LazyFactory.java:276)
+
+	at org.apache.hadoop.hive.serde2.lazy.LazyFactory.createLazyObjectInspector(LazyFactory.java:263)
+
+	at org.apache.hadoop.hive.serde2.lazy.LazyFactory.createLazyObjectInspector(LazyFactory.java:276)
+
+	at org.apache.hadoop.hive.serde2.lazy.LazyFactory.createLazyStructInspector(LazyFactory.java:354)
+
+
+
+The reason being that currently the separators array has been hardcoded to be of size 8 in the LazySimpleSerde.
+
+
+
+// Read the separators: We use 8 levels of separators by default, but we
+
+// should change this when we allow users to specify more than 10 levels
+
+// of separators through DDL.
+
+serdeParams.separators = new byte[8];
+
+
+
+If possible, we should increase this size or at least make it configurable to properly handle deeply nested structs.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.TestLazyHBaseObject.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.TestLazyArrayMapStruct.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.PlanUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">4571</link>
+			
+			
+			<link description="is related to" type="Reference">9500</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-07-04 01:07:34" id="3094" opendate="2012-06-06 16:19:38" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>new partition files and directories should inherit file permissions from parent partition/table dir</summary>
+			
+			
+			<description>In HIVE-2936 changes were made for warehouse table sub directories to inherit the permissions from parent directory. But this applies only to directories created by metastore. 
+When directories (in case of dynamic partitioning) or files are created from the MR job, it uses the default 
+But new partition files or directories created from the MR jobs don&amp;amp;apos;t inherit the permissions. 
+This means that even if the permissions have been granted on table directory for a group, the group will not have permissions on the new partitions. </description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">3756</link>
+			
+			
+			<link description="relates to" type="Reference">3756</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-07-25 02:40:30" id="4222" opendate="2013-03-23 08:37:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Timestamp type constants cannot be deserialized in JDK 1.6 or less</summary>
+			
+			
+			<description>For example,
+
+ExprNodeConstantDesc constant = new ExprNodeConstantDesc(TypeInfoFactory.timestampTypeInfo, new Timestamp(100));
+
+String serialized = Utilities.serializeExpression(constant);
+
+ExprNodeConstantDesc deserilized = (ExprNodeConstantDesc) Utilities.deserializeExpression(serialized, new Configuration());
+
+
+
+logs error message
+
+java.lang.InstantiationException: java.sql.Timestamp
+
+Continuing ...
+
+java.lang.RuntimeException: failed to evaluate: &amp;lt;unbound&amp;gt;=Class.new();
+
+Continuing ...
+
+
+
+and makes NPE in final.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.TestUtilities.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Utilities.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">3739</link>
+			
+			
+			<link description="relates to" type="Reference">5263</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-07-26 04:39:40" id="3756" opendate="2012-11-29 18:11:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&quot;LOAD DATA&quot; does not honor permission inheritence</summary>
+			
+			
+			<description>When a &quot;LOAD DATA&quot; operation is performed the resulting data in hdfs for the table does not maintain permission inheritance. This remains true even with the &quot;hive.warehouse.subdir.inherit.perms&quot; set to true.
+The issue is easily reproducible by creating a table and loading some data into it. After the load is complete just do a &quot;dfs -ls -R&quot; on the warehouse directory and you will see that the inheritance of permissions worked for the table directory but not for the data. </description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">3094</link>
+			
+			
+			<link description="is part of" type="Incorporates">6892</link>
+			
+			
+			<link description="is related to" type="Reference">3094</link>
+			
+			
+			<link description="breaks" type="Regression">6209</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-22 08:17:06" id="3420" opendate="2012-08-31 07:10:55" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Inefficiency in hbase handler when process query including rowkey range scan</summary>
+			
+			
+			<description>When query hive with hbase rowkey range, hive map tasks do not leverage startrow, endrow information in tablesplit. For example, if the rowkeys fit into 5 hbase files, then where will be 5 map tasks. Ideally, each task will process 1 file. But in current implementation, each task processes 5 files repeatedly. The behavior not only waste network bandwidth, but also worse the lock contention in HBase block cache as each task have to access the same block. The problem code is in HiveHBaseTableInputFormat.convertFilte as below:
+
+    if (tableSplit != null) 
+{
+
+      tableSplit = new TableSplit(
+
+        tableSplit.getTableName(),
+
+        startRow,
+
+        stopRow,
+
+        tableSplit.getRegionLocation());
+
+    }
+    scan.setStartRow(startRow);
+    scan.setStopRow(stopRow);
+
+As tableSplit already include startRow, endRow information of file, the better implementation will be:
+        
+        byte[] splitStart = startRow;
+        byte[] splitStop = stopRow;
+    if (tableSplit != null) {
+           if(tableSplit.getStartRow() != null)
+{
+
+                        splitStart = startRow.length == 0 ||
+
+          Bytes.compareTo(tableSplit.getStartRow(), startRow) &amp;gt;= 0 ?
+
+            tableSplit.getStartRow() : startRow;
+
+                }
+                if(tableSplit.getEndRow() != null)
+{
+
+                        splitStop = (stopRow.length == 0 ||
+
+          Bytes.compareTo(tableSplit.getEndRow(), stopRow) &amp;lt;= 0) &amp;amp;&amp;amp;
+
+          tableSplit.getEndRow().length &amp;gt; 0 ?
+
+            tableSplit.getEndRow() : stopRow;
+
+                }
+ 
+      tableSplit = new TableSplit(
+        tableSplit.getTableName(),
+        splitStart,
+        splitStop,
+        tableSplit.getRegionLocation());
+    }
+    scan.setStartRow(splitStart);
+    scan.setStopRow(splitStop);
+        
+In my test, the changed code will improve performance more than 30%.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HiveHBaseTableInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">4247</link>
+			
+			
+			<link description="is related to" type="Reference">11609</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-22 08:23:39" id="4247" opendate="2013-03-28 20:06:28" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Filtering on a hbase row key duplicates results across multiple mappers</summary>
+			
+			
+			<description>Steps to reproduce
+1. Create a Hive external table with HiveHbaseHandler with enough data in the hbase table to spawn multiple mappers for the hive query.
+2. Write a query which has a filter (in the where clause) based on the hbase row key. 
+3. Running the map reduce job leads to each mapper querying the entire data set.  duplicating the data for each mapper. Each mapper processes the entire filtered range and the results get multiplied as the number of mappers run.
+Expected behavior:
+Each mapper should process a different part of the data and should not duplicate.
+Cause:
+The cause seems to be the convertFilter method in HiveHBaseTableInputFormat. convertFilter has this piece of code which rewrites the start and the stop row for each split which leads each mapper to process the entire range
+ if (tableSplit != null) 
+{
+
+      tableSplit = new TableSplit(
+
+        tableSplit.getTableName(),
+
+        startRow,
+
+        stopRow,
+
+        tableSplit.getRegionLocation());
+
+    }
+
+The scan already has the start and stop row set when the splits are created. So this piece of code is probably redundant.
+</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HiveHBaseTableInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">3420</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-01-05 13:10:47" id="3739" opendate="2012-11-22 07:53:55" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive auto convert join result error: java.lang.InstantiationException: org.antlr.runtime.CommonToken</summary>
+			
+			
+			<description>After I set hive.auto.convert.join=true. Any HiveQL with a join executed in hive result a error as this:
+-------------
+java.lang.InstantiationException: org.antlr.runtime.CommonToken
+ Continuing ...
+ java.lang.RuntimeException: failed to evaluate: &amp;lt;unbound&amp;gt;=Class.new();
+ Continuing ...
+ java.lang.InstantiationException: org.antlr.runtime.CommonToken
+ Continuing ...
+ java.lang.RuntimeException: failed to evaluate: &amp;lt;unbound&amp;gt;=Class.new();
+ Continuing ...
+ java.lang.InstantiationException: org.antlr.runtime.CommonToken
+ Continuing ...
+ java.lang.RuntimeException: failed to evaluate: &amp;lt;unbound&amp;gt;=Class.new();
+ Continuing ...
+ java.lang.InstantiationException: org.antlr.runtime.CommonToken
+ Continuing ...
+ java.lang.RuntimeException: failed to evaluate: &amp;lt;unbound&amp;gt;=Class.new();
+ Continuing ...
+-----------------------
+can anyone tell why?</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.TestUtilities.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Utilities.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">4222</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-27 15:31:25" id="2752" opendate="2012-01-26 11:29:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Index names are case sensitive</summary>
+			
+			
+			<description>The following script:
+DROP TABLE IF EXISTS TestTable;
+CREATE TABLE TestTable (a INT);
+DROP INDEX IF EXISTS TestTableA_IDX ON TestTable;
+CREATE INDEX TestTableA_IDX ON TABLE TestTable (a) AS &amp;amp;apos;org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler&amp;amp;apos; WITH DEFERRED REBUILD;
+ALTER INDEX TestTableA_IDX ON TestTable REBUILD;
+results in the following exception:
+MetaException(message:index testtablea_idx doesn&amp;amp;apos;t exist)
+	at org.apache.hadoop.hive.metastore.ObjectStore.alterIndex(ObjectStore.java:1880)
+	at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler$30.run(HiveMetaStore.java:1930)
+	at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler$30.run(HiveMetaStore.java:1927)
+	at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler.executeWithRetry(HiveMetaStore.java:356)
+	at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler.alter_index(HiveMetaStore.java:1927)
+	at org.apache.hadoop.hive.metastore.HiveMetaStoreClient.alter_index(HiveMetaStoreClient.java:868)
+	at org.apache.hadoop.hive.ql.metadata.Hive.alterIndex(Hive.java:398)
+	at org.apache.hadoop.hive.ql.exec.DDLTask.alterIndex(DDLTask.java:902)
+	at org.apache.hadoop.hive.ql.exec.DDLTask.execute(DDLTask.java:236)
+	at org.apache.hadoop.hive.ql.exec.Task.executeTask(Task.java:134)
+	at org.apache.hadoop.hive.ql.exec.TaskRunner.runSequential(TaskRunner.java:57)
+	at org.apache.hadoop.hive.ql.Driver.launchTask(Driver.java:1332)
+	at org.apache.hadoop.hive.ql.Driver.execute(Driver.java:1123)
+	at org.apache.hadoop.hive.ql.Driver.run(Driver.java:931)
+	at org.apache.hadoop.hive.cli.CliDriver.processLocalCmd(CliDriver.java:255)
+	at org.apache.hadoop.hive.cli.CliDriver.processCmd(CliDriver.java:212)
+	at org.apache.hadoop.hive.cli.CliDriver.processLine(CliDriver.java:403)
+	at org.apache.hadoop.hive.cli.CliDriver.processLine(CliDriver.java:338)
+	at org.apache.hadoop.hive.cli.CliDriver.processReader(CliDriver.java:436)
+	at org.apache.hadoop.hive.cli.CliDriver.processFile(CliDriver.java:446)
+	at org.apache.hadoop.hive.cli.CliDriver.run(CliDriver.java:642)
+	at org.apache.hadoop.hive.cli.CliDriver.main(CliDriver.java:554)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:156)
+When you execute: &quot;SHOW INDEXES ON TestTable;&quot;, you get:
+TestTableA_IDX      	testtable           	a                   	default_testtable_testtablea_idx_	compact
+so it looks like things don&amp;amp;apos;t get lower cased when they go into the metastore, but they do when the rebuild op is trying to execute.</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>0.13.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.ObjectStore.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-01-19 19:44:50" id="9357" opendate="2015-01-13 03:41:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Create ADD_MONTHS UDF</summary>
+			
+			
+			<description>ADD_MONTHS adds a number of months to startdate: 
+add_months(&amp;amp;apos;2015-01-14&amp;amp;apos;, 1) = &amp;amp;apos;2015-02-14&amp;amp;apos;
+add_months(&amp;amp;apos;2015-01-31&amp;amp;apos;, 1) = &amp;amp;apos;2015-02-28&amp;amp;apos;
+add_months(&amp;amp;apos;2015-02-28&amp;amp;apos;, 2) = &amp;amp;apos;2015-04-30&amp;amp;apos;
+add_months(&amp;amp;apos;2015-02-28&amp;amp;apos;, 12) = &amp;amp;apos;2016-02-29&amp;amp;apos;</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FunctionRegistry.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">3942</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-18 20:45:39" id="3942" opendate="2013-01-25 06:54:14" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Add UDF month_add and month_sub </summary>
+			
+			
+			<description>hive (default)&amp;gt; desc function extended month_add;
+month_add(start_date, num_months) - Returns the date that is num_months after start_date.
+Synonyms: month_sub
+start_date is a string in the format &amp;amp;apos;yyyy-MM-dd HH:mm:ss&amp;amp;apos; or &amp;amp;apos;yyyy-MM-dd&amp;amp;apos;. num_months is a number. The time part of start_date is ignored.
+Example:
+   SELECT month_add(&amp;amp;apos;2012-04-12&amp;amp;apos;, 1) FROM src LIMIT 1; --Return 2012-05-12
+  SELECT month_add(&amp;amp;apos;2012-04-12 11:22:31&amp;amp;apos;, 1) FROM src LIMIT 1; --Return 2012-05-12
+  SELECT month_add(cast(&amp;amp;apos;2012-04-12 11:22:31&amp;amp;apos; as timestamp), 1) FROM src LIMIT 1; --Return 2012-05-12
+hive (default)&amp;gt; desc function extended month_sub;
+month_sub(start_date, num_months) - Returns the date that is num_months after start_date.
+Synonyms: month_add
+start_date is a string in the format &amp;amp;apos;yyyy-MM-dd HH:mm:ss&amp;amp;apos; or &amp;amp;apos;yyyy-MM-dd&amp;amp;apos;. num_months is a number. The time part of start_date is ignored.
+Example:
+   SELECT month_sub(&amp;amp;apos;2012-04-12&amp;amp;apos;, 1) FROM src LIMIT 1; --Return 2012-05-12
+  SELECT month_sub(&amp;amp;apos;2012-04-12 11:22:31&amp;amp;apos;, 1) FROM src LIMIT 1; --Return 2012-05-12
+  SELECT month_sub(cast(&amp;amp;apos;2012-04-12 11:22:31&amp;amp;apos; as timestamp), 1) FROM src LIMIT 1; --Return 2012-05-12</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FunctionRegistry.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">9357</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-03 23:04:22" id="3217" opendate="2012-06-30 00:13:57" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Implement HiveDatabaseMetaData.getFunctions() to retrieve registered UDFs. </summary>
+			
+			
+			<description>Hive JDBC support currently throws UnsupportedException when getFunctions() is called. Hive CL provides a SHOW FUNCTIONS command to return the names of all registered UDFs. By getting a SQL Statement from the connection, getFunctions can execute( &quot;SHOW FUNCTIONS&quot;) to retrieve all the registered functions (including those registered through create temporary function).</description>
+			
+			
+			<version>0.9.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShimsSecure.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QTestUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge20S.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Driver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop20Shims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ant.QTestGenTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.processors.SetProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.HadoopShims.java</file>
+			
+			
+			<file type="D">org.apache.hive.jdbc.beeline.OptionsProcessor.java</file>
+			
+			
+			<file type="D">org.apache.hive.jdbc.beeline.HiveBeeline.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.CopyTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">11516</link>
+			
+			
+			<link description="duplicates" type="Duplicate">2935</link>
+			
+			
+			<link description="relates to" type="Reference">7676</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

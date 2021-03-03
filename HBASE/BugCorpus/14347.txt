@@ -1,0 +1,1 @@
+add switch dynamicclassload disabl hbase 1936 option load jar dynam default hdf local filesystem hbase dynam jar dir point directori world writabl potenti open secur problem client side rs switch enabl disabl option default

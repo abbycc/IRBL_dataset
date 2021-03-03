@@ -1,0 +1,1 @@
+read datablock throw invalid hfile block magic switch hdf checksum hbase checksum call readblockdataintern hfileblock java file corrupt switch hdf checksum inputstream till validateblockchecksum datablock amp apo header corrupt hfileblock throw invalid hfile block magic rpc call fail

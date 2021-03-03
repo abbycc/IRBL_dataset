@@ -1,0 +1,1 @@
+readonli transact gener wal activ write start entri wal time transact start commit abort end transact read transact unnecessarili gener wal entri region avoid remov start entri wal implicit trx op entri write commit abort transact write

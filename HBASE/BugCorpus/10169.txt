@@ -1,0 +1,1 @@
+batch coprocessor design improv coprocessor invoc client side coprocessor invoc send call region region server 100 region locat server coprocessor invoc send 100 call call singl thread client side thread run coprocessor invoc heavi design call region server group singl coprocessor invoc call spread region server side

@@ -1,0 +1,1 @@
+authenticationtokensecretmanag stop rpcserver authenticationtokensecretmanag stop rpcserver authenticationtokensecretmanag mgr createsecretmanag mgr null setsecretmanag mgr mgr start stop exit

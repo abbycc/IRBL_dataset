@@ -1,0 +1,1 @@
+Change datanucleus.fixedDatastore config to true Much safer in production environment to have this as true.

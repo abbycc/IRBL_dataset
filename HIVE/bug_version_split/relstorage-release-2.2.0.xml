@@ -1,0 +1,3896 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HIVE">
+	<bug fixdate="2016-06-08 13:55:47" id="13540" opendate="2016-04-18 21:58:02" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Casts to numeric types don&amp;apos;t seem to work in hplsql</summary>
+			
+			
+			<description>Maybe I&amp;amp;apos;m doing this wrong? But it seems to be broken.
+Casts to string types seem to work fine, but not numbers.
+This code:
+
+
+
+temp_int     = CAST(&amp;amp;apos;1&amp;amp;apos; AS int);
+
+print temp_int
+
+temp_float   = CAST(&amp;amp;apos;1.2&amp;amp;apos; AS float);
+
+print temp_float
+
+temp_double  = CAST(&amp;amp;apos;1.2&amp;amp;apos; AS double);
+
+print temp_double
+
+temp_decimal = CAST(&amp;amp;apos;1.2&amp;amp;apos; AS decimal(10, 4));
+
+print temp_decimal
+
+temp_string = CAST(&amp;amp;apos;1.2&amp;amp;apos; AS string);
+
+print temp_string
+
+
+
+Produces this output:
+
+
+
+[vagrant@hdp250 hplsql]$ hplsql -f temp2.hplsql
+
+which: no hbase in (/usr/lib64/qt-3.3/bin:/usr/lib/jvm/java/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/puppetlabs/bin:/usr/local/share/jmeter/bin:/home/vagrant/bin)
+
+WARNING: Use &quot;yarn jar&quot; to launch YARN applications.
+
+null
+
+null
+
+null
+
+null
+
+1.2
+
+
+
+The software I&amp;amp;apos;m using is not anything released but is pretty close to the trunk, 2 weeks old at most.</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.hplsql.Stmt.java</file>
+			
+			
+			<file type="M">org.apache.hive.hplsql.Ftp.java</file>
+			
+			
+			<file type="M">org.apache.hive.hplsql.TestHplsqlOffline.java</file>
+			
+			
+			<file type="M">org.apache.hive.hplsql.TestHplsqlLocal.java</file>
+			
+			
+			<file type="M">org.apache.hive.hplsql.Var.java</file>
+			
+			
+			<file type="M">org.apache.hive.hplsql.Utils.java</file>
+			
+			
+			<file type="M">org.apache.hive.hplsql.Copy.java</file>
+			
+			
+			<file type="M">org.apache.hive.hplsql.Select.java</file>
+			
+			
+			<file type="M">org.apache.hive.hplsql.Package.java</file>
+			
+			
+			<file type="M">org.apache.hive.hplsql.Exec.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">14804</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-13 18:47:20" id="13900" opendate="2016-05-31 15:42:55" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HiveStatement.executeAsync() may not work properly when hive.server2.async.exec.async.compile is turned on</summary>
+			
+			
+			<description>HIVE-13882 handles HiveStatement.executeQuery() when hive.server2.async.exec.async.compile is turned on. Notice we may also have similar issue when executeAsync() is called. Investigate what would be the good approach for it.</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.jdbc.TestJdbcDriver2.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveStatement.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-17 16:20:03" id="14022" opendate="2016-06-15 18:59:23" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>left semi join should throw SemanticException if where clause contains columnname from right table</summary>
+			
+			
+			<description>Left semi join throws following error if where clause contains column name with table alias
+
+select * from src_emptybucket_partitioned_1 e1 left semi join src_emptybucket_partitioned_3 e3 on e1.age =  e3.age where e1.year = 2015 and e3.year1=2016;
+
+16/06/10 22:37:37 [main]: INFO log.PerfLogger: &amp;lt;PERFLOG method=Driver.run from=org.apache.hadoop.hive.ql.Driver&amp;gt;
+
+16/06/10 22:37:37 [main]: INFO log.PerfLogger: &amp;lt;PERFLOG method=TimeToSubmit from=org.apache.hadoop.hive.ql.Driver&amp;gt;
+
+16/06/10 22:37:37 [main]: INFO log.PerfLogger: &amp;lt;PERFLOG method=compile from=org.apache.hadoop.hive.ql.Driver&amp;gt;
+
+16/06/10 22:37:37 [main]: INFO ql.Driver: We are setting the hadoop caller context from  to hrt_qa_20160610223737_c3821398-d8df-44d8-9dd5-e66c9b7ed7c7
+
+16/06/10 22:37:37 [main]: DEBUG parse.VariableSubstitution: Substitution is on: select * from src_emptybucket_partitioned_1 e1 left semi join src_emptybucket_partitioned_3 e3 on e1.age =  e3.age where e1.year = 2015 and e3.year1=2016
+
+16/06/10 22:37:37 [main]: INFO log.PerfLogger: &amp;lt;PERFLOG method=parse from=org.apache.hadoop.hive.ql.Driver&amp;gt;
+
+16/06/10 22:37:37 [main]: INFO parse.ParseDriver: Parsing command: select * from src_emptybucket_partitioned_1 e1 left semi join src_emptybucket_partitioned_3 e3 on e1.age =  e3.age where e1.year = 2015 and e3.year1=2016
+
+16/06/10 22:37:37 [main]: INFO parse.ParseDriver: Parse Completed
+
+16/06/10 22:37:37 [main]: INFO log.PerfLogger: &amp;lt;/PERFLOG method=parse start=1465598257393 end=1465598257397 duration=4 from=org.apache.hadoop.hive.ql.Driver&amp;gt;
+
+16/06/10 22:37:37 [main]: DEBUG ql.Driver: Encoding valid txns info 9223372036854775807:
+
+16/06/10 22:37:37 [main]: INFO log.PerfLogger: &amp;lt;PERFLOG method=semanticAnalyze from=org.apache.hadoop.hive.ql.Driver&amp;gt;
+
+16/06/10 22:37:37 [main]: INFO parse.CalcitePlanner: Starting Semantic Analysis
+
+16/06/10 22:37:37 [main]: INFO parse.CalcitePlanner: Completed phase 1 of Semantic Analysis
+
+16/06/10 22:37:37 [main]: INFO parse.CalcitePlanner: Get metadata for source tables
+
+16/06/10 22:37:37 [main]: INFO parse.CalcitePlanner: Get metadata for subqueries
+
+16/06/10 22:37:37 [main]: INFO parse.CalcitePlanner: Get metadata for destination tables
+
+16/06/10 22:37:37 [IPC Parameter Sending Thread #0]: DEBUG ipc.Client: IPC Client (147022238) connection to jvaria-hive2-440-5.openstacklocal/172.22.126.47:8020 from hrt_qa sending #194
+
+16/06/10 22:37:37 [IPC Client (147022238) connection to jvaria-hive2-440-5.openstacklocal/172.22.126.47:8020 from hrt_qa]: DEBUG ipc.Client: IPC Client (147022238) connection to jvaria-hive2-440-5.openstacklocal/172.22.126.47:8020 from hrt_qa got value #194
+
+16/06/10 22:37:37 [main]: DEBUG ipc.ProtobufRpcEngine: Call: getEZForPath took 2ms
+
+16/06/10 22:37:37 [IPC Parameter Sending Thread #0]: DEBUG ipc.Client: IPC Client (147022238) connection to jvaria-hive2-440-5.openstacklocal/172.22.126.47:8020 from hrt_qa sending #195
+
+16/06/10 22:37:37 [IPC Client (147022238) connection to jvaria-hive2-440-5.openstacklocal/172.22.126.47:8020 from hrt_qa]: DEBUG ipc.Client: IPC Client (147022238) connection to jvaria-hive2-440-5.openstacklocal/172.22.126.47:8020 from hrt_qa got value #195
+
+16/06/10 22:37:37 [main]: DEBUG ipc.ProtobufRpcEngine: Call: getEZForPath took 1ms
+
+16/06/10 22:37:37 [main]: DEBUG hdfs.DFSClient: /tmp/hive/hrt_qa/d2568b75-6399-46df-82b9-34ec445e8f64/hive_2016-06-10_22-37-37_392_2780828105665881901-1: masked=rwx------
+
+16/06/10 22:37:37 [IPC Parameter Sending Thread #0]: DEBUG ipc.Client: IPC Client (147022238) connection to jvaria-hive2-440-5.openstacklocal/172.22.126.47:8020 from hrt_qa sending #196
+
+16/06/10 22:37:37 [IPC Client (147022238) connection to jvaria-hive2-440-5.openstacklocal/172.22.126.47:8020 from hrt_qa]: DEBUG ipc.Client: IPC Client (147022238) connection to jvaria-hive2-440-5.openstacklocal/172.22.126.47:8020 from hrt_qa got value #196
+
+16/06/10 22:37:37 [main]: DEBUG ipc.ProtobufRpcEngine: Call: mkdirs took 2ms
+
+16/06/10 22:37:37 [IPC Parameter Sending Thread #0]: DEBUG ipc.Client: IPC Client (147022238) connection to jvaria-hive2-440-5.openstacklocal/172.22.126.47:8020 from hrt_qa sending #197
+
+16/06/10 22:37:37 [IPC Client (147022238) connection to jvaria-hive2-440-5.openstacklocal/172.22.126.47:8020 from hrt_qa]: DEBUG ipc.Client: IPC Client (147022238) connection to jvaria-hive2-440-5.openstacklocal/172.22.126.47:8020 from hrt_qa got value #197
+
+16/06/10 22:37:37 [main]: DEBUG ipc.ProtobufRpcEngine: Call: getFileInfo took 1ms
+
+16/06/10 22:37:37 [main]: INFO ql.Context: New scratch dir is hdfs://jvaria-hive2-440-5.openstacklocal:8020/tmp/hive/hrt_qa/d2568b75-6399-46df-82b9-34ec445e8f64/hive_2016-06-10_22-37-37_392_2780828105665881901-1
+
+16/06/10 22:37:37 [main]: INFO parse.CalcitePlanner: Completed getting MetaData in Semantic Analysis
+
+16/06/10 22:37:37 [main]: INFO parse.BaseSemanticAnalyzer: Not invoking CBO because the statement has too few joins
+
+16/06/10 22:37:37 [main]: DEBUG hive.log: DDL: struct src_emptybucket_partitioned_1 { string name, i32 age, double gpa}
+
+16/06/10 22:37:37 [main]: DEBUG parse.CalcitePlanner: Created Table Plan for e1 TS[0]
+
+16/06/10 22:37:37 [main]: DEBUG hive.log: DDL: struct src_emptybucket_partitioned_3 { varchar(50) name1, i64 age1, decimal(38,18) gpa1}
+
+16/06/10 22:37:37 [main]: DEBUG parse.CalcitePlanner: Created Table Plan for e3 TS[1]
+
+16/06/10 22:37:37 [main]: DEBUG parse.TypeCheckCtx: Setting error: [Line 1:111 Invalid column reference &amp;amp;apos;age&amp;amp;apos;] from (. (TOK_TABLE_OR_COL e3) age)
+
+java.lang.Exception
+
+	at org.apache.hadoop.hive.ql.parse.TypeCheckCtx.setError(TypeCheckCtx.java:159)
+
+	at org.apache.hadoop.hive.ql.parse.TypeCheckProcFactory$DefaultExprProcessor.processQualifiedColRef(TypeCheckProcFactory.java:1149)
+
+	at org.apache.hadoop.hive.ql.parse.TypeCheckProcFactory$DefaultExprProcessor.process(TypeCheckProcFactory.java:1257)
+
+	at org.apache.hadoop.hive.ql.lib.DefaultRuleDispatcher.dispatch(DefaultRuleDispatcher.java:90)
+
+	at org.apache.hadoop.hive.ql.lib.DefaultGraphWalker.dispatchAndReturn(DefaultGraphWalker.java:95)
+
+	at org.apache.hadoop.hive.ql.lib.DefaultGraphWalker.dispatch(DefaultGraphWalker.java:79)
+
+	at org.apache.hadoop.hive.ql.lib.DefaultGraphWalker.walk(DefaultGraphWalker.java:133)
+
+	at org.apache.hadoop.hive.ql.lib.DefaultGraphWalker.startWalking(DefaultGraphWalker.java:110)
+
+	at org.apache.hadoop.hive.ql.parse.TypeCheckProcFactory.genExprNode(TypeCheckProcFactory.java:213)
+
+	at org.apache.hadoop.hive.ql.parse.TypeCheckProcFactory.genExprNode(TypeCheckProcFactory.java:157)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genAllExprNodeDesc(SemanticAnalyzer.java:10756)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genExprNodeDesc(SemanticAnalyzer.java:10712)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genExprNodeDesc(SemanticAnalyzer.java:10680)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genExprNodeDesc(SemanticAnalyzer.java:10674)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.insertSelectForSemijoin(SemanticAnalyzer.java:7704)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genJoinOperator(SemanticAnalyzer.java:7644)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genJoinPlan(SemanticAnalyzer.java:7821)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genPlan(SemanticAnalyzer.java:9821)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genPlan(SemanticAnalyzer.java:9710)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genOPTree(SemanticAnalyzer.java:10353)
+
+	at org.apache.hadoop.hive.ql.parse.CalcitePlanner.genOPTree(CalcitePlanner.java:329)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.analyzeInternal(SemanticAnalyzer.java:10364)
+
+	at org.apache.hadoop.hive.ql.parse.CalcitePlanner.analyzeInternal(CalcitePlanner.java:211)
+
+	at org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.analyze(BaseSemanticAnalyzer.java:227)
+
+	at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:462)
+
+	at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:318)
+
+	at org.apache.hadoop.hive.ql.Driver.compileInternal(Driver.java:1197)
+
+	at org.apache.hadoop.hive.ql.Driver.runInternal(Driver.java:1245)
+
+	at org.apache.hadoop.hive.ql.Driver.run(Driver.java:1134)
+
+	at org.apache.hadoop.hive.ql.Driver.run(Driver.java:1124)
+
+	at org.apache.hadoop.hive.cli.CliDriver.processLocalCmd(CliDriver.java:216)
+
+	at org.apache.hadoop.hive.cli.CliDriver.processCmd(CliDriver.java:168)
+
+	at org.apache.hadoop.hive.cli.CliDriver.processLine(CliDriver.java:379)
+
+	at org.apache.hadoop.hive.cli.CliDriver.executeDriver(CliDriver.java:739)
+
+	at org.apache.hadoop.hive.cli.CliDriver.run(CliDriver.java:684)
+
+	at org.apache.hadoop.hive.cli.CliDriver.main(CliDriver.java:624)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+	at java.lang.reflect.Method.invoke(Method.java:498)
+
+	at org.apache.hadoop.util.RunJar.run(RunJar.java:221)
+
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:136)
+
+FAILED: SemanticException [Error 10002]: Line 1:111 Invalid column reference &amp;amp;apos;age&amp;amp;apos;
+
+16/06/10 22:37:37 [main]: ERROR ql.Driver: FAILED: SemanticException [Error 10002]: Line 1:111 Invalid column reference &amp;amp;apos;age&amp;amp;apos;
+
+org.apache.hadoop.hive.ql.parse.SemanticException: Line 1:111 Invalid column reference &amp;amp;apos;age&amp;amp;apos;
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genAllExprNodeDesc(SemanticAnalyzer.java:10764)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genExprNodeDesc(SemanticAnalyzer.java:10712)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genExprNodeDesc(SemanticAnalyzer.java:10680)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genExprNodeDesc(SemanticAnalyzer.java:10674)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.insertSelectForSemijoin(SemanticAnalyzer.java:7704)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genJoinOperator(SemanticAnalyzer.java:7644)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genJoinPlan(SemanticAnalyzer.java:7821)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genPlan(SemanticAnalyzer.java:9821)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genPlan(SemanticAnalyzer.java:9710)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genOPTree(SemanticAnalyzer.java:10353)
+
+	at org.apache.hadoop.hive.ql.parse.CalcitePlanner.genOPTree(CalcitePlanner.java:329)
+
+	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.analyzeInternal(SemanticAnalyzer.java:10364)
+
+	at org.apache.hadoop.hive.ql.parse.CalcitePlanner.analyzeInternal(CalcitePlanner.java:211)
+
+	at org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.analyze(BaseSemanticAnalyzer.java:227)
+
+	at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:462)
+
+	at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:318)
+
+	at org.apache.hadoop.hive.ql.Driver.compileInternal(Driver.java:1197)
+
+	at org.apache.hadoop.hive.ql.Driver.runInternal(Driver.java:1245)
+
+	at org.apache.hadoop.hive.ql.Driver.run(Driver.java:1134)
+
+	at org.apache.hadoop.hive.ql.Driver.run(Driver.java:1124)
+
+	at org.apache.hadoop.hive.cli.CliDriver.processLocalCmd(CliDriver.java:216)
+
+	at org.apache.hadoop.hive.cli.CliDriver.processCmd(CliDriver.java:168)
+
+	at org.apache.hadoop.hive.cli.CliDriver.processLine(CliDriver.java:379)
+
+	at org.apache.hadoop.hive.cli.CliDriver.executeDriver(CliDriver.java:739)
+
+	at org.apache.hadoop.hive.cli.CliDriver.run(CliDriver.java:684)
+
+	at org.apache.hadoop.hive.cli.CliDriver.main(CliDriver.java:624)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+	at java.lang.reflect.Method.invoke(Method.java:498)
+
+	at org.apache.hadoop.util.RunJar.run(RunJar.java:221)
+
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:136)
+
+
+
+Similar inner join query works without any issues
+
+select * from src_emptybucket_partitioned_1 e1 inner join src_emptybucket_partitioned_3 e3 on e1.age =  e3.age1 where e1.year = 2015 and e3.year1 = 2016;
+
+Query ID = hrt_qa_20160610224945_9e5b40b7-8faf-4ef0-b1e1-741754fe2786
+
+Total jobs = 1
+
+Launching Job 1 out of 1
+
+
+
+
+
+Status: Running (Executing on YARN cluster with App id application_1464125086069_0317)
+
+
+
+--------------------------------------------------------------------------------
+
+        VERTICES      STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED
+
+--------------------------------------------------------------------------------
+
+Map 1 ..........   SUCCEEDED      1          1        0        0       0       0
+
+Map 2 ..........   SUCCEEDED      1          1        0        0       0       0
+
+--------------------------------------------------------------------------------
+
+VERTICES: 02/02  [==========================&amp;gt;&amp;gt;] 100%  ELAPSED TIME: 6.92 s     
+
+--------------------------------------------------------------------------------
+
+OK
+
+Time taken: 8.761 seconds
+
+
+
+Source Tables Schema
+
+desc src_emptybucket_partitioned_1;
+
+OK
+
+name                	string              	                    
+
+age                 	int                 	                    
+
+gpa                 	double              	                    
+
+year                	int                 	                    
+
+	 	 
+
+# Partition Information	 	 
+
+# col_name            	data_type           	comment             
+
+	 	 
+
+year                	int                 	                    
+
+Time taken: 1.115 seconds, Fetched: 9 row(s)
+
+hive&amp;gt; name1               	varchar(50)         	                    
+
+age1                	bigint              	                    
+
+gpa1                	decimal(38,18)      	                    
+
+year1               	int                 	                    
+
+	 	 
+
+# Partition Information	 	 
+
+# col_name            	data_type           	comment             
+
+	 	 
+
+year1               	int     
+
+
+
+Left semi join query would work fine if I remove table alias from the query
+
+hive&amp;gt; select * from src_emptybucket_partitioned_1  left semi join src_emptybucket_partitioned_3 on age =  age1 where year = 2015 and year1=2016;
+
+Query ID = hrt_qa_20160610223932_4bf61489-b0eb-4533-9a24-77060aef417b
+
+Total jobs = 1
+
+Launching Job 1 out of 1
+
+
+
+
+
+Status: Running (Executing on YARN cluster with App id application_1464125086069_0317)
+
+
+
+--------------------------------------------------------------------------------
+
+        VERTICES      STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED
+
+--------------------------------------------------------------------------------
+
+Map 1 ..........   SUCCEEDED      1          1        0        0       0       0
+
+Map 2 ..........   SUCCEEDED      1          1        0        0       0       0
+
+--------------------------------------------------------------------------------
+
+VERTICES: 02/02  [==========================&amp;gt;&amp;gt;] 100%  ELAPSED TIME: 8.33 s     
+
+--------------------------------------------------------------------------------
+
+OK
+
+Time taken: 14.794 seconds
+
+
+
+Left semi join query would also work if I keep column name in where clause from the table on left side of the join
+
+hive&amp;gt; select * from src_emptybucket_partitioned_1 e1 left semi join src_emptybucket_partitioned_3 e3 on e1.age =  e3.age1 where e1.year = 2015;
+
+Query ID = hrt_qa_20160610224621_25158eb4-ca9a-47ea-b33d-ee06f9979dec
+
+Total jobs = 1
+
+Launching Job 1 out of 1
+
+
+
+
+
+Status: Running (Executing on YARN cluster with App id application_1464125086069_0317)
+
+
+
+--------------------------------------------------------------------------------
+
+        VERTICES      STATUS  TOTAL  COMPLETED  RUNNING  PENDING  FAILED  KILLED
+
+--------------------------------------------------------------------------------
+
+Map 1 ..........   SUCCEEDED      1          1        0        0       0       0
+
+Map 2 ..........   SUCCEEDED      1          1        0        0       0       0
+
+--------------------------------------------------------------------------------
+
+VERTICES: 02/02  [==========================&amp;gt;&amp;gt;] 100%  ELAPSED TIME: 8.60 s     
+
+--------------------------------------------------------------------------------
+
+OK
+
+Time taken: 10.404 seconds
+
+hive&amp;gt; select * from src_emptybucket_partitioned_1 e1 left semi join src_emptybucket_partitioned_3 e3 on e1.age =  e3.age1 where e3.year1 = 2016;
+
+FAILED: SemanticException [Error 10004]: Line 1:122 Invalid table alias or column reference &amp;amp;apos;e3&amp;amp;apos;: (possible column names are: name, age, gpa, year)
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-20 17:19:37" id="14054" opendate="2016-06-18 00:48:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestHiveMetaStoreChecker fails on master </summary>
+			
+			
+			<description/>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.HiveMetaStoreChecker.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">14290</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-22 18:18:05" id="13744" opendate="2016-05-12 00:18:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>LLAP IO - add complex types support</summary>
+			
+			
+			<description>Recently, complex type column vectors were added to Hive. We should use them in IO elevator.
+Vectorization itself doesn&amp;amp;apos;t support complex types (yet), but this would be useful when it does, also it will enable LLAP IO elevator to be used in non-vectorized context with complex types after HIVE-13617</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.io.decode.OrcEncodedDataConsumer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-23 16:50:36" id="14076" opendate="2016-06-22 18:25:49" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Vectorization is not supported for datatype:VOID error while inserting data into specific columns</summary>
+			
+			
+			<description>Insert into specific columns fails due to following error:
+
+Vertex failed, vertexName=Reducer 2, vertexId=vertex_1465261180142_0160_1_01, diagnostics=[Task failed, taskId=task_1465261180142_0160_1_01_000000, diagnostics=[TaskAttempt 0 failed, info=[Error: Error while running task ( failure ) : attempt_1465261180142_0160_1_01_000000_0:java.lang.RuntimeException: java.lang.RuntimeException: Reduce operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:198)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.run(TezProcessor.java:160)
+
+	at org.apache.tez.runtime.LogicalIOProcessorRuntimeTask.run(LogicalIOProcessorRuntimeTask.java:370)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:73)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:61)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1724)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:61)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:37)
+
+	at org.apache.tez.common.CallableWithNdc.call(CallableWithNdc.java:36)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+Caused by: java.lang.RuntimeException: Reduce operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.ReduceRecordSource.init(ReduceRecordSource.java:221)
+
+	at org.apache.hadoop.hive.ql.exec.tez.ReduceRecordProcessor.initializeSourceForTag(ReduceRecordProcessor.java:245)
+
+	at org.apache.hadoop.hive.ql.exec.tez.ReduceRecordProcessor.init(ReduceRecordProcessor.java:163)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:171)
+
+	... 14 more
+
+Caused by: java.lang.RuntimeException: Vectorizaton is not supported for datatype:VOID
+
+	at org.apache.hadoop.hive.ql.exec.vector.VectorizedBatchUtil.createColumnVector(VectorizedBatchUtil.java:172)
+
+	at org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatchCtx.createVectorizedRowBatch(VectorizedRowBatchCtx.java:194)
+
+	at org.apache.hadoop.hive.ql.exec.tez.ReduceRecordSource.init(ReduceRecordSource.java:177)
+
+	... 17 more
+
+], TaskAttempt 1 failed, info=[Error: Error while running task ( failure ) : attempt_1465261180142_0160_1_01_000000_1:java.lang.RuntimeException: java.lang.RuntimeException: Reduce operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:198)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.run(TezProcessor.java:160)
+
+	at org.apache.tez.runtime.LogicalIOProcessorRuntimeTask.run(LogicalIOProcessorRuntimeTask.java:370)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:73)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:61)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1724)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:61)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:37)
+
+	at org.apache.tez.common.CallableWithNdc.call(CallableWithNdc.java:36)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+Caused by: java.lang.RuntimeException: Reduce operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.ReduceRecordSource.init(ReduceRecordSource.java:221)
+
+	at org.apache.hadoop.hive.ql.exec.tez.ReduceRecordProcessor.initializeSourceForTag(ReduceRecordProcessor.java:245)
+
+	at org.apache.hadoop.hive.ql.exec.tez.ReduceRecordProcessor.init(ReduceRecordProcessor.java:163)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:171)
+
+	... 14 more
+
+Caused by: java.lang.RuntimeException: Vectorizaton is not supported for datatype:VOID
+
+	at org.apache.hadoop.hive.ql.exec.vector.VectorizedBatchUtil.createColumnVector(VectorizedBatchUtil.java:172)
+
+	at org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatchCtx.createVectorizedRowBatch(VectorizedRowBatchCtx.java:194)
+
+	at org.apache.hadoop.hive.ql.exec.tez.ReduceRecordSource.init(ReduceRecordSource.java:177)
+
+	... 17 more
+
+
+
+Steps to reproduce the issue:
+
+set hive.vectorized.execution.enabled=true;
+
+set hive.support.concurrency=true;
+
+set hive.txn.manager=org.apache.hadoop.hive.ql.lockmgr.DbTxnManager;
+
+
+
+drop table if exists newtable;
+
+create external table newtable(
+
+            a string,
+
+            b int,
+
+            c double)
+
+row format delimited
+
+fields terminated by &amp;amp;apos;\t&amp;amp;apos;
+
+stored as textfile;
+
+
+
+drop table if exists newtable_acid;
+
+create table newtable_acid (b int, a varchar(50),c decimal(3,2), d int)
+
+clustered by (b) into 2 buckets
+
+stored as orc
+
+tblproperties (&amp;amp;apos;transactional&amp;amp;apos;=&amp;amp;apos;true&amp;amp;apos;);
+
+
+
+insert into newtable_acid(a,b,c)
+
+select * from newtable;
+
+
+
+select a, b, c from newtable_acid;
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-27 18:11:08" id="14092" opendate="2016-06-24 21:19:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Kryo exception when deserializing VectorFileSinkOperator</summary>
+			
+			
+			<description>Following exception is thrown for queries using VectorFileSinkOperator
+
+
+
+Caused by: java.lang.IllegalArgumentException: Unable to create serializer &quot;org.apache.hive.com.esotericsoftware.kryo.serializers.FieldSerializer&quot; for class: org.apache.hadoop.hive.ql.exec.vector.VectorFileSinkOperator
+
+	at org.apache.hive.com.esotericsoftware.kryo.factories.ReflectionSerializerFactory.makeSerializer(ReflectionSerializerFactory.java:67)
+
+	at org.apache.hive.com.esotericsoftware.kryo.factories.ReflectionSerializerFactory.makeSerializer(ReflectionSerializerFactory.java:45)
+
+	at org.apache.hive.com.esotericsoftware.kryo.Kryo.newDefaultSerializer(Kryo.java:380)
+
+	at org.apache.hive.com.esotericsoftware.kryo.Kryo.getDefaultSerializer(Kryo.java:364)
+
+	at org.apache.hive.com.esotericsoftware.kryo.util.DefaultClassResolver.registerImplicit(DefaultClassResolver.java:74)
+
+	at org.apache.hive.com.esotericsoftware.kryo.Kryo.getRegistration(Kryo.java:490)
+
+	at org.apache.hive.com.esotericsoftware.kryo.util.DefaultClassResolver.readName(DefaultClassResolver.java:166)
+
+	at org.apache.hive.com.esotericsoftware.kryo.util.DefaultClassResolver.readClass(DefaultClassResolver.java:133)
+
+	at org.apache.hive.com.esotericsoftware.kryo.Kryo.readClass(Kryo.java:670)
+
+	at org.apache.hadoop.hive.ql.exec.SerializationUtilities$KryoWithHooks.readClass(SerializationUtilities.java:180)
+
+	at org.apache.hive.com.esotericsoftware.kryo.Kryo.readClassAndObject(Kryo.java:781)
+
+	at org.apache.hadoop.hive.ql.exec.SerializationUtilities$KryoWithHooks.readClassAndObject(SerializationUtilities.java:175)
+
+	at org.apache.hive.com.esotericsoftware.kryo.serializers.CollectionSerializer.read(CollectionSerializer.java:134)
+
+	at org.apache.hive.com.esotericsoftware.kryo.serializers.CollectionSerializer.read(CollectionSerializer.java:40)
+
+	at org.apache.hive.com.esotericsoftware.kryo.Kryo.readObject(Kryo.java:708)
+
+	at org.apache.hadoop.hive.ql.exec.SerializationUtilities$KryoWithHooks.readObject(SerializationUtilities.java:213)
+
+	at org.apache.hive.com.esotericsoftware.kryo.serializers.ObjectField.read(ObjectField.java:125)
+
+	... 46 more
+
+Caused by: java.lang.reflect.InvocationTargetException
+
+	at sun.reflect.GeneratedConstructorAccessor6.newInstance(Unknown Source)
+
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+
+	at org.apache.hive.com.esotericsoftware.kryo.factories.ReflectionSerializerFactory.makeSerializer(ReflectionSerializerFactory.java:54)
+
+	... 62 more
+
+Caused by: java.lang.StackOverflowError
+
+	at java.util.HashMap.hash(HashMap.java:338)
+
+	at java.util.HashMap.get(HashMap.java:556)
+
+	at org.apache.hive.com.esotericsoftware.kryo.Generics.getConcreteClass(Generics.java:61)
+
+	at org.apache.hive.com.esotericsoftware.kryo.Generics.getConcreteClass(Generics.java:62)
+
+	at org.apache.hive.com.esotericsoftware.kryo.Generics.getConcreteClass(Generics.java:62)
+
+	at org.apache.hive.com.esotericsoftware.kryo.Generics.getConcreteClass(Generics.java:62)
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.SerializationUtilities.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-28 17:25:20" id="14013" opendate="2016-06-14 19:06:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Describe table doesn&amp;apos;t show unicode properly</summary>
+			
+			
+			<description>Describe table output will show comments incorrectly rather than the unicode itself.
+
+hive&amp;gt; desc formatted t1;
+
+
+
+# Detailed Table Information             
+
+Table Type:             MANAGED_TABLE            
+
+Table Parameters:                
+
+        COLUMN_STATS_ACCURATE   {\&quot;BASIC_STATS\&quot;:\&quot;true\&quot;}
+
+        comment                 \u8868\u4E2D\u6587\u6D4B\u8BD5
+
+        numFiles                0                   
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.common.util.HiveStringUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.formatting.MetaDataFormatUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="Dependent" type="Dependent">14146</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-29 19:26:19" id="14083" opendate="2016-06-23 19:05:51" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ALTER INDEX in Tez causes NullPointerException</summary>
+			
+			
+			<description>ALTER INDEX causes a NullPointerException when run under TEZ execution engine. Query runs without issue when submitted using MR execution mode.
+To reproduce:
+1. CREATE INDEX sample_08_index ON TABLE sample_08 (code) AS &amp;amp;apos;COMPACT&amp;amp;apos; WITH DEFERRED REBUILD; 
+2. ALTER INDEX sample_08_index ON sample_08 REBUILD; 
+Stacktrace from Hive 1.2.1
+
+
+
+ERROR : Vertex failed, vertexName=Map 1, vertexId=vertex_1460577396252_0005_1_00, diagnostics=[Task failed, taskId=task_1460577396252_0005_1_00_000000, diagnostics=[TaskAttempt 0 failed, info=[Error: Failure while running task:java.lang.RuntimeException: java.lang.RuntimeException: java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:171)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.run(TezProcessor.java:137)
+
+	at org.apache.tez.runtime.LogicalIOProcessorRuntimeTask.run(LogicalIOProcessorRuntimeTask.java:344)
+
+	at org.apache.tez.runtime.task.TezTaskRunner$TaskRunnerCallable$1.run(TezTaskRunner.java:179)
+
+	at org.apache.tez.runtime.task.TezTaskRunner$TaskRunnerCallable$1.run(TezTaskRunner.java:171)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1657)
+
+	at org.apache.tez.runtime.task.TezTaskRunner$TaskRunnerCallable.callInternal(TezTaskRunner.java:171)
+
+	at org.apache.tez.runtime.task.TezTaskRunner$TaskRunnerCallable.callInternal(TezTaskRunner.java:167)
+
+	at org.apache.tez.common.CallableWithNdc.call(CallableWithNdc.java:36)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+Caused by: java.lang.RuntimeException: java.lang.NullPointerException
+
+	at org.apache.hadoop.mapred.split.TezGroupedSplitsInputFormat$TezGroupedSplitsRecordReader.initNextRecordReader(TezGroupedSplitsInputFormat.java:196)
+
+	at org.apache.hadoop.mapred.split.TezGroupedSplitsInputFormat$TezGroupedSplitsRecordReader.&amp;lt;init&amp;gt;(TezGroupedSplitsInputFormat.java:135)
+
+	at org.apache.hadoop.mapred.split.TezGroupedSplitsInputFormat.getRecordReader(TezGroupedSplitsInputFormat.java:101)
+
+	at org.apache.tez.mapreduce.lib.MRReaderMapred.setupOldRecordReader(MRReaderMapred.java:149)
+
+	at org.apache.tez.mapreduce.lib.MRReaderMapred.setSplit(MRReaderMapred.java:80)
+
+	at org.apache.tez.mapreduce.input.MRInput.initFromEventInternal(MRInput.java:650)
+
+	at org.apache.tez.mapreduce.input.MRInput.initFromEvent(MRInput.java:621)
+
+	at org.apache.tez.mapreduce.input.MRInputLegacy.checkAndAwaitRecordReaderInitialization(MRInputLegacy.java:145)
+
+	at org.apache.tez.mapreduce.input.MRInputLegacy.init(MRInputLegacy.java:109)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.getMRInput(MapRecordProcessor.java:390)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:128)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:147)
+
+	... 14 more
+
+Caused by: java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.io.HiveInputFormat.init(HiveInputFormat.java:269)
+
+	at org.apache.hadoop.hive.ql.io.HiveInputFormat.getRecordReader(HiveInputFormat.java:233)
+
+	at org.apache.hadoop.mapred.split.TezGroupedSplitsInputFormat$TezGroupedSplitsRecordReader.initNextRecordReader(TezGroupedSplitsInputFormat.java:193)
+
+	... 25 more
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-04 15:26:33" id="14109" opendate="2016-06-27 21:26:47" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>query execuction throws NPE when hive.exec.submitviachild is set to true</summary>
+			
+			
+			<description>If we set hive.exec.submitviachild to true and execute select count from src, the following exception is thrown.
+Seems queryState is not initialized when ExecDriver is called from main() in ExecDriver.
+
+java.lang.NullPointerException
+
+        at org.apache.hadoop.hive.ql.exec.mr.HadoopJobExecHelper.progress(HadoopJobExecHelper.java:262)
+
+        at org.apache.hadoop.hive.ql.exec.mr.HadoopJobExecHelper.progress(HadoopJobExecHelper.java:555)
+
+        at org.apache.hadoop.hive.ql.exec.mr.ExecDriver.execute(ExecDriver.java:436)
+
+        at org.apache.hadoop.hive.ql.exec.mr.ExecDriver.main(ExecDriver.java:756)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+        at java.lang.reflect.Method.invoke(Method.java:606)
+
+        at org.apache.hadoop.util.RunJar.run(RunJar.java:221)
+
+        at org.apache.hadoop.util.RunJar.main(RunJar.java:136)
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.rcfile.truncate.ColumnTruncateTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.mr.ExecDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.mr.HadoopJobExecHelper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.merge.MergeFileTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.mr.MapredLocalTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.rcfile.stats.PartialScanTask.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is required by" type="Required">13424</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-05 13:29:28" id="14142" opendate="2016-07-01 02:27:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>java.lang.ClassNotFoundException for the jar in hive.reloadable.aux.jars.path for Hive on Spark</summary>
+			
+			
+			<description>Similar to HIVE-14037, seems HOS also has the same issue. The jars in hive.reloadable.aux.jars.path are not available during runtime.
+
+java.lang.RuntimeException: Reduce operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.spark.SparkReduceRecordHandler.init(SparkReduceRecordHandler.java:232)
+
+	at org.apache.hadoop.hive.ql.exec.spark.HiveReduceFunction.call(HiveReduceFunction.java:46)
+
+	at org.apache.hadoop.hive.ql.exec.spark.HiveReduceFunction.call(HiveReduceFunction.java:28)
+
+	at org.apache.spark.api.java.JavaRDDLike$$anonfun$fn$7$1.apply(JavaRDDLike.scala:192)
+
+	at org.apache.spark.api.java.JavaRDDLike$$anonfun$fn$7$1.apply(JavaRDDLike.scala:192)
+
+	at org.apache.spark.rdd.RDD$$anonfun$mapPartitions$1$$anonfun$apply$20.apply(RDD.scala:710)
+
+	at org.apache.spark.rdd.RDD$$anonfun$mapPartitions$1$$anonfun$apply$20.apply(RDD.scala:710)
+
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:38)
+
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:306)
+
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:270)
+
+	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:66)
+
+	at org.apache.spark.scheduler.Task.run(Task.scala:89)
+
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:214)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+Caused by: java.lang.RuntimeException: java.lang.ClassNotFoundException: xudf.XAdd
+
+	at org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge.getUdfClass(GenericUDFBridge.java:134)
+
+	at org.apache.hadoop.hive.ql.exec.FunctionRegistry.isStateful(FunctionRegistry.java:1365)
+
+	at org.apache.hadoop.hive.ql.exec.FunctionRegistry.isDeterministic(FunctionRegistry.java:1328)
+
+	at org.apache.hadoop.hive.ql.exec.ExprNodeGenericFuncEvaluator.isDeterministic(ExprNodeGenericFuncEvaluator.java:153)
+
+	at org.apache.hadoop.hive.ql.exec.ExprNodeEvaluatorFactory.iterate(ExprNodeEvaluatorFactory.java:100)
+
+	at org.apache.hadoop.hive.ql.exec.ExprNodeEvaluatorFactory.toCachedEvals(ExprNodeEvaluatorFactory.java:74)
+
+	at org.apache.hadoop.hive.ql.exec.SelectOperator.initializeOp(SelectOperator.java:59)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.initialize(Operator.java:385)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.initialize(Operator.java:469)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.initializeChildren(Operator.java:425)
+
+	at org.apache.hadoop.hive.ql.exec.GroupByOperator.initializeOp(GroupByOperator.java:406)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.initialize(Operator.java:385)
+
+	at org.apache.hadoop.hive.ql.exec.spark.SparkReduceRecordHandler.init(SparkReduceRecordHandler.java:217)
+
+	... 15 more
+
+Caused by: java.lang.ClassNotFoundException: xudf.XAdd
+
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:366)
+
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:354)
+
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:425)
+
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:358)
+
+	at java.lang.Class.forName0(Native Method)
+
+	at java.lang.Class.forName(Class.java:270)
+
+	at org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge.getUdfClass(GenericUDFBridge.java:132)
+
+	... 27 more
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.spark.RemoteHiveSparkClient.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-08 19:40:54" id="14147" opendate="2016-07-01 15:41:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive PPD might remove predicates when they are defined as a simple expr e.g. WHERE &amp;apos;a&amp;apos;</summary>
+			
+			
+			<description/>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.ppd.ExprWalkerInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.ppd.OpProcFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.ppd.ExprWalkerProcFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-13 04:38:17" id="14195" opendate="2016-07-08 15:50:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HiveMetaStoreClient getFunction() does not throw NoSuchObjectException</summary>
+			
+			
+			<description>HiveMetaStoreClient getFunction(dbName, funcName) does not throw NoSuchObjectException when no function with funcName exists in the db. Instead, I need to search the MetaException message for &amp;amp;apos;NoSuchObjectException&amp;amp;apos;.</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.TestHiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-14 16:28:34" id="14215" opendate="2016-07-12 11:47:08" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Displaying inconsistent CPU usage data with MR execution engine</summary>
+			
+			
+			<description>If the MR task is finished after printing the cumulative CPU time then there is the possibility to print inconsistent CPU usage information.
+Correct one:
+
+2016-07-12 11:31:42,961 Stage-3 map = 0%,  reduce = 0%
+
+2016-07-12 11:31:48,237 Stage-3 map = 100%,  reduce = 0%, Cumulative CPU 2.5 sec
+
+MapReduce Total cumulative CPU time: 2 seconds 500 msec
+
+Ended Job = job_1468321038188_0003
+
+MapReduce Jobs Launched: 
+
+Stage-Stage-3: Map: 1   Cumulative CPU: 2.5 sec   HDFS Read: 5864 HDFS Write: 103 SUCCESS
+
+Total MapReduce CPU Time Spent: 2 seconds 500 msec
+
+
+
+One type of inconsistent data (easily reproducible one):
+
+2016-07-12 11:39:00,540 Stage-3 map = 0%,  reduce = 0%
+
+Ended Job = job_1468321038188_0004
+
+MapReduce Jobs Launched: 
+
+Stage-Stage-3: Map: 1   Cumulative CPU: 2.51 sec   HDFS Read: 5864 HDFS Write: 103 SUCCESS
+
+Total MapReduce CPU Time Spent: 2 seconds 510 msec
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.mr.HadoopJobExecHelper.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-18 16:13:56" id="14135" opendate="2016-06-29 23:59:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>beeline output not formatted correctly for large column widths</summary>
+			
+			
+			<description>If the column width is too large then beeline uses the maximum column width when normalizing all the column widths. In order to reproduce the issue, run set -v; 
+Once the configuration variables is classpath which can be extremely large width (41k characters in my environment).</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.beeline.BufferedRows.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.BeeLineOpts.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-22 18:29:21" id="14268" opendate="2016-07-18 15:43:09" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>INSERT-OVERWRITE is not generating an INSERT event during hive replication</summary>
+			
+			
+			<description>During Hive replication invoked from falcon, the source cluster did not generate appropriate INSERT events associated with the INSERT OVERWRITE, generating only an ALTER PARTITION event. However, an ALTER PARTITION is a metadata-only event, and thus, only metadata changes were replicated across, modifying the metadata of the destination, while not updating the data. </description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.listener.TestDbNotificationListener.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">12907</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-27 17:14:34" id="14313" opendate="2016-07-22 19:02:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Test failure TestMetaStoreMetrics.testConnections</summary>
+			
+			
+			<description>Looks like this test has been failing for the past 84 builds prior to
+https://builds.apache.org/job/PreCommit-HIVE-MASTER-Build/597/testReport/org.apache.hadoop.hive.metastore/TestMetaStoreMetrics/testConnections/
+org.apache.hadoop.hive.metastore.TestMetaStoreMetrics.testConnections
+Failing for the past 84 builds (Since #514 )
+Took 28 ms.
+Error Message
+expected:&amp;lt;[1]&amp;gt; but was:&amp;lt;[2]&amp;gt;
+Stacktrace
+org.junit.ComparisonFailure: expected:&amp;lt;[1]&amp;gt; but was:&amp;lt;[2]&amp;gt;
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	at org.junit.Assert.assertEquals(Assert.java:144)
+	at org.apache.hadoop.hive.common.metrics.MetricsTestUtils.verifyMetricsJson(MetricsTestUtils.java:50)
+	at org.apache.hadoop.hive.metastore.TestMetaStoreMetrics.testConnections(TestMetaStoreMetrics.java:146)</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.common.metrics.MetricsTestUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.TestMetaStoreMetrics.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-31 05:27:44" id="14363" opendate="2016-07-27 21:44:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>bucketmap inner join query fails due to NullPointerException in some cases</summary>
+			
+			
+			<description>Bucketmap inner join query between bucketed tables throws following exception when one table contains all the empty buckets while other has all the non-empty buckets.
+
+Vertex failed, vertexName=Map 2, vertexId=vertex_1466710232033_0432_4_01, diagnostics=[Task failed, taskId=task_1466710232033_0432_4_01_000000, diagnostics=[TaskAttempt 0 failed, info=[Error: Error while running task ( failure ) : attempt_1466710232033_0432_4_01_000000_0:java.lang.RuntimeException: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:211)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.run(TezProcessor.java:168)
+
+	at org.apache.tez.runtime.LogicalIOProcessorRuntimeTask.run(LogicalIOProcessorRuntimeTask.java:370)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:73)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:61)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1724)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:61)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:37)
+
+	at org.apache.tez.common.CallableWithNdc.call(CallableWithNdc.java:36)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+Caused by: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:330)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:184)
+
+	... 14 more
+
+Caused by: java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.getKeyValueReader(MapRecordProcessor.java:372)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.initializeMapRecordSources(MapRecordProcessor.java:344)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:292)
+
+	... 15 more
+
+], TaskAttempt 1 failed, info=[Error: Error while running task ( failure ) : attempt_1466710232033_0432_4_01_000000_1:java.lang.RuntimeException: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:211)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.run(TezProcessor.java:168)
+
+	at org.apache.tez.runtime.LogicalIOProcessorRuntimeTask.run(LogicalIOProcessorRuntimeTask.java:370)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:73)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:61)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1724)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:61)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:37)
+
+	at org.apache.tez.common.CallableWithNdc.call(CallableWithNdc.java:36)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+Caused by: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:330)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:184)
+
+	... 14 more
+
+Caused by: java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.getKeyValueReader(MapRecordProcessor.java:372)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.initializeMapRecordSources(MapRecordProcessor.java:344)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:292)
+
+	... 15 more
+
+], TaskAttempt 2 failed, info=[Error: Error while running task ( failure ) : attempt_1466710232033_0432_4_01_000000_2:java.lang.RuntimeException: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:211)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.run(TezProcessor.java:168)
+
+	at org.apache.tez.runtime.LogicalIOProcessorRuntimeTask.run(LogicalIOProcessorRuntimeTask.java:370)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:73)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:61)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1724)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:61)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:37)
+
+	at org.apache.tez.common.CallableWithNdc.call(CallableWithNdc.java:36)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+Caused by: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:330)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:184)
+
+	... 14 more
+
+Caused by: java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.getKeyValueReader(MapRecordProcessor.java:372)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.initializeMapRecordSources(MapRecordProcessor.java:344)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:292)
+
+	... 15 more
+
+], TaskAttempt 3 failed, info=[Error: Error while running task ( failure ) : attempt_1466710232033_0432_4_01_000000_3:java.lang.RuntimeException: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:211)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.run(TezProcessor.java:168)
+
+	at org.apache.tez.runtime.LogicalIOProcessorRuntimeTask.run(LogicalIOProcessorRuntimeTask.java:370)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:73)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:61)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1724)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:61)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:37)
+
+	at org.apache.tez.common.CallableWithNdc.call(CallableWithNdc.java:36)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+Caused by: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:330)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:184)
+
+	... 14 more
+
+Caused by: java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.getKeyValueReader(MapRecordProcessor.java:372)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.initializeMapRecordSources(MapRecordProcessor.java:344)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:292)
+
+	... 15 more
+
+]], Vertex did not succeed due to OWN_TASK_FAILURE, failedTasks:1 killedTasks:59, Vertex vertex_1466710232033_0432_4_01 [Map 2] killed/failed due to:OWN_TASK_FAILURE]
+
+DAG did not succeed due to VERTEX_FAILURE. failedVertices:1 killedVertices:0
+
+FAILED: Execution Error, return code 2 from org.apache.hadoop.hive.ql.exec.tez.TezTask. Vertex failed, vertexName=Map 2, vertexId=vertex_1466710232033_0432_4_01, diagnostics=[Task failed, taskId=task_1466710232033_0432_4_01_000000, diagnostics=[TaskAttempt 0 failed, info=[Error: Error while running task ( failure ) : attempt_1466710232033_0432_4_01_000000_0:java.lang.RuntimeException: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:211)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.run(TezProcessor.java:168)
+
+	at org.apache.tez.runtime.LogicalIOProcessorRuntimeTask.run(LogicalIOProcessorRuntimeTask.java:370)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:73)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:61)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1724)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:61)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:37)
+
+	at org.apache.tez.common.CallableWithNdc.call(CallableWithNdc.java:36)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+Caused by: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:330)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:184)
+
+	... 14 more
+
+Caused by: java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.getKeyValueReader(MapRecordProcessor.java:372)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.initializeMapRecordSources(MapRecordProcessor.java:344)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:292)
+
+	... 15 more
+
+], TaskAttempt 1 failed, info=[Error: Error while running task ( failure ) : attempt_1466710232033_0432_4_01_000000_1:java.lang.RuntimeException: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:211)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.run(TezProcessor.java:168)
+
+	at org.apache.tez.runtime.LogicalIOProcessorRuntimeTask.run(LogicalIOProcessorRuntimeTask.java:370)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:73)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:61)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1724)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:61)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:37)
+
+	at org.apache.tez.common.CallableWithNdc.call(CallableWithNdc.java:36)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+Caused by: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:330)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:184)
+
+	... 14 more
+
+Caused by: java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.getKeyValueReader(MapRecordProcessor.java:372)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.initializeMapRecordSources(MapRecordProcessor.java:344)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:292)
+
+	... 15 more
+
+], TaskAttempt 2 failed, info=[Error: Error while running task ( failure ) : attempt_1466710232033_0432_4_01_000000_2:java.lang.RuntimeException: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:211)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.run(TezProcessor.java:168)
+
+	at org.apache.tez.runtime.LogicalIOProcessorRuntimeTask.run(LogicalIOProcessorRuntimeTask.java:370)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:73)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:61)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1724)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:61)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:37)
+
+	at org.apache.tez.common.CallableWithNdc.call(CallableWithNdc.java:36)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+Caused by: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:330)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:184)
+
+	... 14 more
+
+Caused by: java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.getKeyValueReader(MapRecordProcessor.java:372)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.initializeMapRecordSources(MapRecordProcessor.java:344)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:292)
+
+	... 15 more
+
+], TaskAttempt 3 failed, info=[Error: Error while running task ( failure ) : attempt_1466710232033_0432_4_01_000000_3:java.lang.RuntimeException: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:211)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.run(TezProcessor.java:168)
+
+	at org.apache.tez.runtime.LogicalIOProcessorRuntimeTask.run(LogicalIOProcessorRuntimeTask.java:370)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:73)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable$1.run(TaskRunner2Callable.java:61)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1724)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:61)
+
+	at org.apache.tez.runtime.task.TaskRunner2Callable.callInternal(TaskRunner2Callable.java:37)
+
+	at org.apache.tez.common.CallableWithNdc.call(CallableWithNdc.java:36)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+Caused by: java.lang.RuntimeException: Map operator initialization failed
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:330)
+
+	at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:184)
+
+	... 14 more
+
+Caused by: java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.getKeyValueReader(MapRecordProcessor.java:372)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.initializeMapRecordSources(MapRecordProcessor.java:344)
+
+	at org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.init(MapRecordProcessor.java:292)
+
+	... 15 more
+
+
+
+Steps to reproduce the issue:
+
+set hive.execution.engine=tez;
+
+set hive.exeucution.mode=container;
+
+drop table if exists src_emptybucket;
+
+create table src_emptybucket (name string, age int, gpa double)
+
+clustered by (age)
+
+into 30 buckets
+
+stored as orc;
+
+insert into table src_emptybucket
+
+select * from studenttab10k limit 0;
+
+
+
+drop table if exists src_nonemptybucket;
+
+create table src_nonemptybucket (name varchar(50), age int, gpa decimal(38,18))
+
+clustered by (age)
+
+into 60 buckets
+
+stored as orc;
+
+insert into table src_nonemptybucket
+
+select * from studenttab10k 
+
+where age in (
+
+select distinct(age) from studenttab10k 
+
+limit 60);
+
+
+
+set hive.optimize.bucketmapjoin=true;
+
+set hive.convert.join.bucket.mapjoin.tez=true;
+
+
+
+select e1.name as e1_name, e1.age as e1_age, e1.gpa as e1_gpa, e2.name as e2_name, e2.age as e2_age, e2.gpa as e2_gpa from src_emptybucket e1 inner join src_nonemptybucket e2 on e1.age = e2.age;
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-02 00:49:43" id="14278" opendate="2016-07-19 08:48:02" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Migrate TestHadoop23SAuthBridge.java from Unit3 to Unit4</summary>
+			
+			
+			<description>Migrate TestHadoop23SAuthBridge.java from unit3 to unit4</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.TestHadoopAuthBridge23.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-02 16:27:42" id="14346" opendate="2016-07-26 21:18:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Change the default value for hive.mapred.mode to null</summary>
+			
+			
+			<description>HIVE-12727 introduces three new configurations to replace the existing hive.mapred.mode, which is deprecated. However, the default value for the latter is &amp;amp;apos;nonstrict&amp;amp;apos;, which prevent the new configurations from being used (see comments in that JIRA for more details).
+This proposes to change the default value for hive.mapred.mode to null. Users can then set the three new configurations to get more fine-grained control over the strict checking. If user want to use the old configuration, they can set hive.mapred.mode to strict/nonstrict.
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">12727</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-03 03:00:13" id="14400" opendate="2016-08-02 00:13:38" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Handle concurrent insert with dynamic partition</summary>
+			
+			
+			<description>With multiple users concurrently issuing insert statements on the same partition has a side effect that some queries may not see a partition at the time when they&amp;amp;apos;re issued, but will realize the partition is actually there when it is trying to add such partition to the metastore and thus get AlreadyExistsException, because some earlier query just created it (race condition).
+For example, imagine such a table is created:
+
+
+
+create table T (name char(50)) partitioned by (ds string);
+
+
+
+and the following two queries are launched at the same time, from different sessions:
+
+
+
+insert into table T partition (ds) values (&amp;amp;apos;Bob&amp;amp;apos;, &amp;amp;apos;today&amp;amp;apos;); -- creates the partition &amp;amp;apos;today&amp;amp;apos;
+
+insert into table T partition (ds) values (&amp;amp;apos;Joe&amp;amp;apos;, &amp;amp;apos;today&amp;amp;apos;); -- will fail with AlreadyExistsException
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">8797</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-12 21:28:07" id="14479" opendate="2016-08-08 22:56:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Add some join tests for acid table</summary>
+			
+			
+			<description/>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestAcidOnTez.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestTxnCommands2.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is required by" type="Required">14534</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-13 06:24:05" id="14448" opendate="2016-08-05 23:50:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Queries with predicate fail when ETL split strategy is chosen for ACID tables</summary>
+			
+			
+			<description>When ETL split strategy is applied to ACID tables with predicate pushdown (SARG enabled), split generation fails for ACID. This bug will be usually exposed when working with data at scale, because in most otherwise cases only BI split strategy is chosen. My guess is that this is happening because the correct readerSchema is not being picked up when we try to extract SARG column names.
+Quickest way to reproduce is to add the following unit test to ql/src/test/org/apache/hadoop/hive/ql/TestTxnCommands2.java
+ql/src/test/org/apache/hadoop/hive/ql/TestTxnCommands2.java
+
+
+ @Test
+
+public void testETLSplitStrategyForACID() throws Exception {
+
+hiveConf.setVar(HiveConf.ConfVars.HIVE_ORC_SPLIT_STRATEGY, &quot;ETL&quot;);
+
+hiveConf.setBoolVar(HiveConf.ConfVars.HIVEOPTINDEXFILTER, true);
+
+runStatementOnDriver(&quot;insert into &quot; + Table.ACIDTBL + &quot; values(1,2)&quot;);
+
+runStatementOnDriver(&quot;alter table &quot; + Table.ACIDTBL + &quot; compact &amp;amp;apos;MAJOR&amp;amp;apos;&quot;);
+
+runWorker(hiveConf);
+
+List&amp;lt;String&amp;gt; rs = runStatementOnDriver(&quot;select * from &quot; +Table.ACIDTBL+ &quot; where a = 1&quot;);
+
+int[][] resultData = new int[][] {{1,2}};
+
+Assert.assertEquals(stringifyValues(resultData), rs);
+
+}
+
+
+
+Back-trace for this failed test is as follows:
+
+
+
+exec.Task: Job Submission failed with exception &amp;amp;apos;java.lang.RuntimeException(ORC split generation failed with exception: java.lang.NegativeArraySizeException)&amp;amp;apos;
+
+java.lang.RuntimeException: ORC split generation failed with exception: java.lang.NegativeArraySizeException
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.generateSplitsInfo(OrcInputFormat.java:1570)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.getSplits(OrcInputFormat.java:1656)
+
+	at org.apache.hadoop.hive.ql.io.HiveInputFormat.addSplitsForGroup(HiveInputFormat.java:370)
+
+	at org.apache.hadoop.hive.ql.io.HiveInputFormat.getSplits(HiveInputFormat.java:488)
+
+	at org.apache.hadoop.mapreduce.JobSubmitter.writeOldSplits(JobSubmitter.java:329)
+
+	at org.apache.hadoop.mapreduce.JobSubmitter.writeSplits(JobSubmitter.java:321)
+
+	at org.apache.hadoop.mapreduce.JobSubmitter.submitJobInternal(JobSubmitter.java:197)
+
+	at org.apache.hadoop.mapreduce.Job$10.run(Job.java:1297)
+
+	at org.apache.hadoop.mapreduce.Job$10.run(Job.java:1294)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1656)
+
+	at org.apache.hadoop.mapreduce.Job.submit(Job.java:1294)
+
+	at org.apache.hadoop.mapred.JobClient$1.run(JobClient.java:562)
+
+	at org.apache.hadoop.mapred.JobClient$1.run(JobClient.java:557)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1656)
+
+	at org.apache.hadoop.mapred.JobClient.submitJobInternal(JobClient.java:557)
+
+	at org.apache.hadoop.mapred.JobClient.submitJob(JobClient.java:548)
+
+	at org.apache.hadoop.hive.ql.exec.mr.ExecDriver.execute(ExecDriver.java:417)
+
+	at org.apache.hadoop.hive.ql.exec.mr.MapRedTask.execute(MapRedTask.java:141)
+
+	at org.apache.hadoop.hive.ql.exec.Task.executeTask(Task.java:197)
+
+	at org.apache.hadoop.hive.ql.exec.TaskRunner.runSequential(TaskRunner.java:100)
+
+	at org.apache.hadoop.hive.ql.Driver.launchTask(Driver.java:1962)
+
+	at org.apache.hadoop.hive.ql.Driver.execute(Driver.java:1653)
+
+	at org.apache.hadoop.hive.ql.Driver.runInternal(Driver.java:1389)
+
+	at org.apache.hadoop.hive.ql.Driver.run(Driver.java:1131)
+
+	at org.apache.hadoop.hive.ql.Driver.run(Driver.java:1119)
+
+	at org.apache.hadoop.hive.ql.TestTxnCommands2.runStatementOnDriver(TestTxnCommands2.java:1292)
+
+	at org.apache.hadoop.hive.ql.TestTxnCommands2.testETLSplitStrategyForACID(TestTxnCommands2.java:280)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+	at java.lang.reflect.Method.invoke(Method.java:498)
+
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)
+
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)
+
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+
+	at org.junit.rules.TestWatcher$1.evaluate(TestWatcher.java:55)
+
+	at org.junit.rules.RunRules.evaluate(RunRules.java:20)
+
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)
+
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)
+
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:254)
+
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:149)
+
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:124)
+
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:200)
+
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)
+
+Caused by: java.util.concurrent.ExecutionException: java.lang.NegativeArraySizeException
+
+	at java.util.concurrent.FutureTask.report(FutureTask.java:122)
+
+	at java.util.concurrent.FutureTask.get(FutureTask.java:192)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.generateSplitsInfo(OrcInputFormat.java:1560)
+
+	... 57 more
+
+Caused by: java.lang.NegativeArraySizeException
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.getSargColumnNames(OrcInputFormat.java:378)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.extractNeededColNames(OrcInputFormat.java:444)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.extractNeededColNames(OrcInputFormat.java:439)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.access$2800(OrcInputFormat.java:146)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$SplitGenerator.callInternal(OrcInputFormat.java:1274)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$SplitGenerator.access$2600(OrcInputFormat.java:1068)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$SplitGenerator$1.run(OrcInputFormat.java:1248)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$SplitGenerator$1.run(OrcInputFormat.java:1245)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1656)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$SplitGenerator.call(OrcInputFormat.java:1245)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$ETLSplitStrategy.runGetSplitsSync(OrcInputFormat.java:883)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$ETLSplitStrategy.access$1300(OrcInputFormat.java:700)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$ETLSplitStrategy$1.run(OrcInputFormat.java:857)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$ETLSplitStrategy$1.run(OrcInputFormat.java:854)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1656)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$ETLSplitStrategy.call(OrcInputFormat.java:854)
+
+	at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$ETLSplitStrategy.call(OrcInputFormat.java:700)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestTxnCommands2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">14035</link>
+			
+			
+			<link description="is required by" type="Required">14607</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-19 23:39:00" id="14435" opendate="2016-08-05 09:47:42" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Vectorization: missed vectorization for const varchar()</summary>
+			
+			
+			<description>
+
+
+2016-08-05T09:45:16,488  INFO [main] physical.Vectorizer: Failed to vectorize
+
+2016-08-05T09:45:16,488  INFO [main] physical.Vectorizer: Cannot vectorize select expression: Const varchar(1) f
+
+
+
+The constant throws an illegal argument because the varchar precision is lost in the pipeline.</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.VectorizationContext.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.ConstantVectorExpression.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-26 15:11:17" id="14360" opendate="2016-07-27 16:16:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Starting BeeLine after using !save, there is an error logged: &quot;Error setting configuration: conf&quot;</summary>
+			
+			
+			<description>When saving the configuration in BeeLine the conf attribute is persisted, which should not. When loading the configuration this causes an error message to be printed:
+
+Error setting configuration: conf: java.lang.IllegalArgumentException: No method matching &quot;setconf&quot; was found in org.apache.hive.beeline.BeeLineOpts.
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.beeline.BeeLineOpts.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-27 08:26:13" id="14155" opendate="2016-07-02 18:25:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Vectorization: Custom UDF Vectorization annotations are ignored</summary>
+			
+			
+			<description>
+
+
+@VectorizedExpressions(value = { VectorStringRot13.class })
+
+
+
+in a custom UDF Is ignored because the check for annotations happens after custom UDF detection.
+The custom UDF codepath is on the fail-over track of annotation lookups, so the detection during validation of SEL is sufficient, instead of during expression creation.</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.VectorizationContext.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-27 08:39:07" id="14648" opendate="2016-08-25 22:47:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>LLAP: Avoid private pages in the SSD cache</summary>
+			
+			
+			<description>There&amp;amp;apos;s no reason for the SSD cache to have private mappings to the cache file, there&amp;amp;apos;s only one reader and the memory overheads aren&amp;amp;apos;t worth it.</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.cache.BuddyAllocator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-03 02:56:28" id="14607" opendate="2016-08-22 23:04:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary> ORC split generation failed with exception: java.lang.ArrayIndexOutOfBoundsException: 1</summary>
+			
+			
+			<description>Steps to repro: 
+in TestTxnCommands2WithSplitUpdate remove the overridden method testOrcPPD().
+Then run:
+mvn test -Dtest=TestTxnCommands2WithSplitUpdate#testOrcPPD
+it will fail with ArrayIndexOutOfBounds.  HIVE-14448 was supposed to have fixed it....
+
+2016-08-22T15:54:17,654  INFO [main] mapreduce.JobSubmitter: Cleaning up the staging area file:/Users/ekoifman/dev/hiverwgit/ql/target/tmp/hadoop-tmp/mapred/staging/ekoifman99742506\
+
+0/.staging/job_local997425060_0002
+
+2016-08-22T15:54:17,663 ERROR [main] exec.Task: Job Submission failed with exception &amp;amp;apos;java.lang.RuntimeException(ORC split generation failed with exception: java.lang.ArrayIndexOutO\
+
+fBoundsException: 1)&amp;amp;apos;
+
+java.lang.RuntimeException: ORC split generation failed with exception: java.lang.ArrayIndexOutOfBoundsException: 1
+
+        at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.generateSplitsInfo(OrcInputFormat.java:1670)
+
+        at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.getSplits(OrcInputFormat.java:1756)
+
+        at org.apache.hadoop.hive.ql.io.HiveInputFormat.addSplitsForGroup(HiveInputFormat.java:370)
+
+        at org.apache.hadoop.hive.ql.io.HiveInputFormat.getSplits(HiveInputFormat.java:488)
+
+        at org.apache.hadoop.mapreduce.JobSubmitter.writeOldSplits(JobSubmitter.java:329)
+
+        at org.apache.hadoop.mapreduce.JobSubmitter.writeSplits(JobSubmitter.java:321)
+
+        at org.apache.hadoop.mapreduce.JobSubmitter.submitJobInternal(JobSubmitter.java:197)
+
+        at org.apache.hadoop.mapreduce.Job$10.run(Job.java:1297)
+
+        at org.apache.hadoop.mapreduce.Job$10.run(Job.java:1294)
+
+        at java.security.AccessController.doPrivileged(Native Method)
+
+        at javax.security.auth.Subject.doAs(Subject.java:422)
+
+        at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1656)
+
+        at org.apache.hadoop.mapreduce.Job.submit(Job.java:1294)
+
+        at org.apache.hadoop.mapred.JobClient$1.run(JobClient.java:562)
+
+        at org.apache.hadoop.mapred.JobClient$1.run(JobClient.java:557)
+
+        at java.security.AccessController.doPrivileged(Native Method)
+
+        at javax.security.auth.Subject.doAs(Subject.java:422)
+
+        at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1656)
+
+        at org.apache.hadoop.mapred.JobClient.submitJobInternal(JobClient.java:557)
+
+        at org.apache.hadoop.mapred.JobClient.submitJob(JobClient.java:548)
+
+        at org.apache.hadoop.hive.ql.exec.mr.ExecDriver.execute(ExecDriver.java:417)
+
+        at org.apache.hadoop.hive.ql.exec.mr.MapRedTask.execute(MapRedTask.java:141)
+
+	at org.apache.hadoop.hive.ql.exec.Task.executeTask(Task.java:197)
+
+        at org.apache.hadoop.hive.ql.exec.TaskRunner.runSequential(TaskRunner.java:100)
+
+        at org.apache.hadoop.hive.ql.Driver.launchTask(Driver.java:1983)
+
+        at org.apache.hadoop.hive.ql.Driver.execute(Driver.java:1674)
+
+        at org.apache.hadoop.hive.ql.Driver.runInternal(Driver.java:1410)
+
+        at org.apache.hadoop.hive.ql.Driver.run(Driver.java:1134)
+
+        at org.apache.hadoop.hive.ql.Driver.run(Driver.java:1122)
+
+        at org.apache.hadoop.hive.ql.TestTxnCommands2.runStatementOnDriver(TestTxnCommands2.java:1392)
+
+        at org.apache.hadoop.hive.ql.TestTxnCommands2.testOrcPPD(TestTxnCommands2.java:195)
+
+        at org.apache.hadoop.hive.ql.TestTxnCommands2.testOrcPPD(TestTxnCommands2.java:157)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+        at java.lang.reflect.Method.invoke(Method.java:483)
+
+        at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)
+
+        at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+
+        at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:44)
+
+        at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+
+        at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+
+        at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+
+        at org.junit.rules.ExpectedException$ExpectedExceptionStatement.evaluate(ExpectedException.java:168)
+
+        at org.junit.rules.TestWatcher$1.evaluate(TestWatcher.java:55)
+
+        at org.junit.rules.RunRules.evaluate(RunRules.java:20)
+
+        at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:271)
+
+        at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:70)
+
+        at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:50)
+
+        at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+
+        at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+
+        at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+
+        at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+
+        at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+
+        at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+
+        at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:367)
+
+        at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:274)
+
+        at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+
+        at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:161)
+
+        at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:290)
+
+        at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:242)
+
+        at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:121)
+
+Caused by: java.util.concurrent.ExecutionException: java.lang.ArrayIndexOutOfBoundsException: 1
+
+        at java.util.concurrent.FutureTask.report(FutureTask.java:122)
+
+        at java.util.concurrent.FutureTask.get(FutureTask.java:192)
+
+        at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.generateSplitsInfo(OrcInputFormat.java:1664)
+
+        ... 60 more
+
+Caused by: java.lang.ArrayIndexOutOfBoundsException: 1
+
+        at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.getSargColumnNames(OrcInputFormat.java:394)
+
+        at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.extractNeededColNames(OrcInputFormat.java:447)
+
+        at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.extractNeededColNames(OrcInputFormat.java:442)
+
+        at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.access$2900(OrcInputFormat.java:149)
+
+        at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$SplitGenerator.callInternal(OrcInputFormat.java:1360)
+
+        at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$SplitGenerator.access$2700(OrcInputFormat.java:1154)
+
+        at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$SplitGenerator$1.run(OrcInputFormat.java:1334)
+
+        at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$SplitGenerator$1.run(OrcInputFormat.java:1331)
+
+        at java.security.AccessController.doPrivileged(Native Method)
+
+        at javax.security.auth.Subject.doAs(Subject.java:422)
+
+        at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1656)
+
+        at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$SplitGenerator.call(OrcInputFormat.java:1331)
+
+        at org.apache.hadoop.hive.ql.io.orc.OrcInputFormat$SplitGenerator.call(OrcInputFormat.java:1154)
+
+        at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+        at java.lang.Thread.run(Thread.java:745)
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestTxnCommands2WithSplitUpdate.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">14516</link>
+			
+			
+			<link description="requires" type="Required">14448</link>
+			
+			
+			<link description="requires" type="Required">14035</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-06 17:34:21" id="14694" opendate="2016-09-02 08:34:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>UDF rand throws NPE when input data is NULL</summary>
+			
+			
+			<description>When use rand function with null, HiveServer throws NPE:
+
+
+
+0: jdbc:hive2://10.64.35.144:21066/&amp;gt; desc foo1;
+
++-----------+------------+----------+--+
+
+| col_name  | data_type  | comment  |
+
++-----------+------------+----------+--+
+
+| c1        | bigint     |          |
+
++-----------+------------+----------+--+
+
+1 row selected (0.075 seconds)
+
+0: jdbc:hive2://10.64.35.144:21066/&amp;gt; select * from foo1;
+
++----------+--+
+
+| foo1.c1  |
+
++----------+--+
+
+| NULL     |
+
+| 1        |
+
+| 2        |
+
++----------+--+
+
+3 rows selected (0.124 seconds)
+
+0: jdbc:hive2://10.64.35.144:21066/&amp;gt; select rand(c1) from foo1;
+
+Error: java.io.IOException: org.apache.hadoop.hive.ql.metadata.HiveException: Unable to execute method public org.apache.hadoop.hive.serde2.io.DoubleWritable org.apache.hadoop.hive.ql.udf.UDFRand.evaluate(org.apache.hadoop.io.LongWritable)  on object org.apache.hadoop.hive.ql.udf.UDFRand@37a2b47b of class org.apache.hadoop.hive.ql.udf.UDFRand with arguments {null} of size 1 (state=,code=0)
+
+
+
+Stack trace:
+
+
+
+Caused by: java.lang.reflect.InvocationTargetException
+
+        at sun.reflect.GeneratedMethodAccessor79.invoke(Unknown Source)
+
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+        at java.lang.reflect.Method.invoke(Method.java:498)
+
+        at org.apache.hadoop.hive.ql.exec.FunctionRegistry.invoke(FunctionRegistry.java:1010)
+
+        ... 36 more
+
+Caused by: java.lang.NullPointerException
+
+        at org.apache.hadoop.hive.ql.udf.UDFRand.evaluate(UDFRand.java:57)
+
+        ... 40 more
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.UDFRand.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-12 19:53:59" id="14727" opendate="2016-09-09 09:04:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>llap-server may case file descriptor leak in BuddyAllocator class</summary>
+			
+			
+			<description>llap-server,the method preallocate(int) of  BuddyAllocator may case file descriptor leak when FileChannel map allocate memory error.
+the code:
+        //here if failed
+         ByteBuffer rwbuf = rwf.getChannel().map(MapMode.READ_WRITE, 0, arenaSize);
+        // A mapping, once established, is not dependent upon the file channel that was used to
+        // create it. delete file and hold onto the map
+       //can not close() and delete file
+        rwf.close();
+        rf.delete();</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.cache.BuddyAllocator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-13 21:50:21" id="14739" opendate="2016-09-12 21:33:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Replace runnables directly added to runtime shutdown hooks to avoid deadlock</summary>
+			
+			
+			<description>Deepesh Khandelwal reported that a deadlock can occur when running queries through hive cli. Chris Nauroth analyzed it and reported that hive adds shutdown hooks directly to java Runtime which may execute in non-deterministic order causing deadlocks with hadoop&amp;amp;apos;s shutdown hooks. In one case, hadoop shutdown locked FileSystem#Cache and FileSystem.close whereas hive shutdown hook locked FileSystem.close and FileSystem#Cache order causing a deadlock. 
+Hive and Hadoop has ShutdownHookManager that runs the shutdown hooks in deterministic order based on priority. We should use that to avoid deadlock throughout the code.</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.spark.session.SparkSessionManagerImpl.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.common.HiveClientCache.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.mr.HadoopJobExecHelper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.lockmgr.zookeeper.CuratorFrameworkSingleton.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.hooks.ATSHook.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.tez.TezJobMonitor.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.server.HiveServer2.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.BeeLine.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.cli.CliDriver.java</file>
+			
+			
+			<file type="M">org.apache.hive.common.util.ShutdownHookManager.java</file>
+			
+			
+			<file type="M">org.apache.hive.common.util.TestShutdownHookManager.java</file>
+			
+			
+			<file type="M">org.apache.hive.ptest.api.server.ExecutionController.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-20 18:32:06" id="14624" opendate="2016-08-24 21:10:23" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>LLAP: Use FQDN when submitting work to LLAP </summary>
+			
+			
+			<description>
+
+
+llap-client/src/java/org/apache/hadoop/hive/llap/registry/impl/LlapFixedRegistryImpl.java:                + socketAddress.getHostName());
+
+llap-client/src/java/org/apache/hadoop/hive/llap/registry/impl/LlapFixedRegistryImpl.java:            host = socketAddress.getHostName();
+
+llap-common/src/java/org/apache/hadoop/hive/llap/metrics/MetricsUtils.java:  public static String getHostName() {
+
+llap-common/src/java/org/apache/hadoop/hive/llap/metrics/MetricsUtils.java:      return InetAddress.getLocalHost().getHostName();
+
+llap-ext-client/src/java/org/apache/hadoop/hive/llap/LlapBaseInputFormat.java:    String name = address.getHostName();
+
+llap-ext-client/src/java/org/apache/hadoop/hive/llap/LlapBaseInputFormat.java:    builder.setAmHost(address.getHostName());
+
+llap-server/src/java/org/apache/hadoop/hive/llap/daemon/impl/AMReporter.java:    nodeId = LlapNodeId.getInstance(localAddress.get().getHostName(), localAddress.get().getPort());
+
+llap-server/src/java/org/apache/hadoop/hive/llap/daemon/impl/ContainerRunnerImpl.java:        localAddress.get().getHostName(), vertex.getDagName(), qIdProto.getDagIndex(),
+
+llap-server/src/java/org/apache/hadoop/hive/llap/daemon/impl/ContainerRunnerImpl.java:          new ExecutionContextImpl(localAddress.get().getHostName()), env,
+
+llap-server/src/java/org/apache/hadoop/hive/llap/daemon/impl/LlapDaemon.java:    String hostName = MetricsUtils.getHostName();
+
+llap-server/src/java/org/apache/hadoop/hive/llap/daemon/impl/LlapProtocolServerImpl.java:        .setBindAddress(addr.getHostName())
+
+llap-server/src/java/org/apache/hadoop/hive/llap/daemon/impl/TaskRunnerCallable.java:          request.getContainerIdString(), executionContext.getHostName(), vertex.getDagName(),
+
+llap-server/src/java/org/apache/hadoop/hive/llap/io/api/impl/LlapIoImpl.java:    String displayName = &quot;LlapDaemonCacheMetrics-&quot; + MetricsUtils.getHostName();
+
+llap-server/src/java/org/apache/hadoop/hive/llap/io/api/impl/LlapIoImpl.java:    displayName = &quot;LlapDaemonIOMetrics-&quot; + MetricsUtils.getHostName();
+
+llap-server/src/test/org/apache/hadoop/hive/llap/daemon/impl/TestLlapDaemonProtocolServerImpl.java:          new LlapProtocolClientImpl(new Configuration(), serverAddr.getHostName(),
+
+llap-tez/src/java/org/apache/hadoop/hive/llap/tezplugins/LlapTaskCommunicator.java:    builder.setAmHost(getAddress().getHostName());
+
+llap-tez/src/java/org/apache/hadoop/hive/llap/tezplugins/LlapTaskSchedulerService.java:      String displayName = &quot;LlapTaskSchedulerMetrics-&quot; + MetricsUtils.getHostName();
+
+
+
+In systems where the hostnames do not match FQDN, calling the getCanonicalHostName() will allow for resolution of the hostname when accessing from a different base domain.</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.tezplugins.TestLlapTaskCommunicator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.tezplugins.LlapTaskCommunicator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.LlapBaseInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.LlapUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is cloned by" type="Cloners">14791</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-21 22:20:27" id="14783" opendate="2016-09-17 01:15:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>bucketing column should be part of sorting for delete/update operation when spdo is on</summary>
+			
+			
+			<description/>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ReduceSinkOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.SortedDynPartitionOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FileSinkOperator.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">14726</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-27 05:36:23" id="14751" opendate="2016-09-14 07:27:16" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Add support for date truncation</summary>
+			
+			
+			<description>Add support for floor (&amp;lt;time&amp;gt; to &amp;lt;timeunit&amp;gt;), which is equivalent to date_trunc(&amp;lt;timeunit&amp;gt;, &amp;lt;time&amp;gt;).
+https://www.postgresql.org/docs/9.1/static/functions-datetime.html#FUNCTIONS-DATETIME-TRUNC</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.TestUDFDateFormatGranularity.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.UDFDateFloor.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">14579</link>
+			
+			
+			<link description="is related to" type="Reference">14832</link>
+			
+			
+			<link description="is related to" type="Reference">14833</link>
+			
+			
+			<link description="breaks" type="Regression">14843</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-10-10 14:18:07" id="14146" opendate="2016-07-01 13:22:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Column comments with &quot;\n&quot; character &quot;corrupts&quot; table metadata</summary>
+			
+			
+			<description>Create a table with the following(noting the \n in the COMMENT):
+
+CREATE TABLE commtest(first_nm string COMMENT &amp;amp;apos;Indicates First name\nof an individual);
+
+
+
+Describe shows that now the metadata is messed up:
+
+beeline&amp;gt; describe commtest;
+
++-------------------+------------+-----------------------+--+
+
+|     col_name      | data_type  |        comment        |
+
++-------------------+------------+-----------------------+--+
+
+| first_nm             | string       | Indicates First name  |
+
+| of an individual  | NULL       | NULL                  |
+
++-------------------+------------+-----------------------+--+
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.common.util.HiveStringUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.formatting.TextMetaDataFormatter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.formatting.MetaDataFormatUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="Dependent" type="Dependent">14013</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-10-17 21:09:53" id="14991" opendate="2016-10-17 21:03:46" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JDBC result set iterator has useless DEBUG log</summary>
+			
+			
+			<description>Result set iterator prints the following debug lines for every row. The row string is always empty as per code.
+
+
+
+2016-10-17T11:49:52,792 DEBUG [main] jdbc.HiveQueryResultSet: Fetched row string: 
+
+2016-10-17T11:49:52,792 DEBUG [main] jdbc.HiveQueryResultSet: Fetched row string: 
+
+2016-10-17T11:49:52,792 DEBUG [main] jdbc.HiveQueryResultSet: Fetched row string: 
+
+2016-10-17T11:49:52,793 DEBUG [main] jdbc.HiveQueryResultSet: Fetched row string: 
+
+2016-10-17T11:49:52,793 DEBUG [main] jdbc.HiveQueryResultSet: Fetched row string: 
+
+2016-10-17T11:49:52,793 DEBUG [main] jdbc.HiveQueryResultSet: Fetched row string: 
+
+2016-10-17T11:49:52,793 DEBUG [main] jdbc.HiveQueryResultSet: Fetched row string: 
+
+
+
+NO PRECOMMIT TESTS</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveQueryResultSet.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-10-27 11:11:17" id="15046" opendate="2016-10-24 21:16:19" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Multiple fixes for Druid handler</summary>
+			
+			
+			<description>
+Druid query type not recognized after Calcite upgrade; introduced by HIVE-13316.
+Fix handling of NULL values for GroupBy queries.
+Fix handling of dimension/metrics names, as those names in Druid are case sensitive.
+Select Druid query to effectively return no rows when the result is empty (previously returning a single row).
+When it is split, each of the parts of a Select query might return more results than threshold; set threshold to max integer in query so we do not face this problem.
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.druid.HiveDruidQueryBasedInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.StandardStructObjectInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.druid.serde.DruidSelectQueryRecordReader.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.CalcitePlanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.calcite.translator.ASTBuilder.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.druid.serde.DruidGroupByQueryRecordReader.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.druid.serde.DruidTopNQueryRecordReader.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-10-27 21:23:33" id="15065" opendate="2016-10-26 01:10:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SimpleFetchOptimizer should decide based on metastore stats when available</summary>
+			
+			
+			<description>Currently the decision to use fetch optimizer or not is based on scanning the filesystem for file lengths and see if the aggregated size is less the fetch task threshold. This can be very expensive for cloud environment. This issue is mitigated to some extent by HIVE-14920 but still that requires file system scan. We can make decision based on the stats from metastore and falling back when stats is not available. Since fast stats (numRows and fileSize) is always available this should work most of the time. </description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.SimpleFetchOptimizer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-11-09 19:44:38" id="14975" opendate="2016-10-15 06:19:33" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Flaky Test: TestBeelineArgParsing.testAddLocalJarWithoutAddDriverClazz</summary>
+			
+			
+			<description>
+
+
+2016-10-14T22:51:32,947  INFO [main] beeline.TestBeelineArgParsing: Add /home/hiveptest/104.155.175.228-hiveptest-0/maven/postgresql/postgresql/9.1-901.jdbc4/postgresql-9.1-901.jdbc4.jar for the driver class org.postgresql.Driver
+
+Fail to add local jar due to the exception:java.util.zip.ZipException: error in opening zip file
+
+error in opening zip file
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.beeline.TestBeelineArgParsing.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.ClassNameCompleter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">14964</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-11-10 20:22:55" id="15143" opendate="2016-11-07 20:56:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>add logging for HIVE-15024</summary>
+			
+			
+			<description>
+
+
+Caused by: java.io.IOException: java.lang.ClassCastException: org.apache.hadoop.hive.common.io.DiskRangeList cannot be cast to org.apache.orc.impl.BufferChunk
+
+        at org.apache.hadoop.hive.llap.io.api.impl.LlapInputFormat$LlapRecordReader.rethrowErrorIfAny(LlapInputFormat.java:383)
+
+        at org.apache.hadoop.hive.llap.io.api.impl.LlapInputFormat$LlapRecordReader.nextCvb(LlapInputFormat.java:338)
+
+        at org.apache.hadoop.hive.llap.io.api.impl.LlapInputFormat$LlapRecordReader.next(LlapInputFormat.java:278)
+
+        at org.apache.hadoop.hive.llap.io.api.impl.LlapInputFormat$LlapRecordReader.next(LlapInputFormat.java:167)
+
+        at org.apache.hadoop.hive.ql.io.HiveContextAwareRecordReader.doNext(HiveContextAwareRecordReader.java:350)
+
+        ... 23 more
+
+Caused by: java.lang.ClassCastException: org.apache.hadoop.hive.common.io.DiskRangeList cannot be cast to org.apache.orc.impl.BufferChunk
+
+        at org.apache.hadoop.hive.ql.io.orc.encoded.EncodedReaderImpl.prepareRangesForCompressedRead(EncodedReaderImpl.java:728)
+
+        at org.apache.hadoop.hive.ql.io.orc.encoded.EncodedReaderImpl.readEncodedStream(EncodedReaderImpl.java:616)
+
+        at org.apache.hadoop.hive.ql.io.orc.encoded.EncodedReaderImpl.readEncodedColumns(EncodedReaderImpl.java:397)
+
+        at org.apache.hadoop.hive.llap.io.encoded.OrcEncodedDataReader.performDataRead(OrcEncodedDataReader.java:424)
+
+        at org.apache.hadoop.hive.llap.io.encoded.OrcEncodedDataReader$4.run(OrcEncodedDataReader.java:227)
+
+        at org.apache.hadoop.hive.llap.io.encoded.OrcEncodedDataReader$4.run(OrcEncodedDataReader.java:224)
+
+        at java.security.AccessController.doPrivileged(Native Method)
+
+        at javax.security.auth.Subject.doAs(Subject.java:422)
+
+        at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1724)
+
+        at org.apache.hadoop.hive.llap.io.encoded.OrcEncodedDataReader.callInternal(OrcEncodedDataReader.java:224)
+
+        at org.apache.hadoop.hive.llap.io.encoded.OrcEncodedDataReader.callInternal(OrcEncodedDataReader.java:93)
+
+        ... 6 more
+
+
+
+2016-10-20T00:48:45,354 WARN  [TezTaskRunner (1475017598908_0410_15_00_000020_0)] org.apache.tez.runtime.LogicalIOProcessorRuntimeTask: Ignoring exception when closing input part(cleanup). Exception class
+
+=java.io.IOException, message=java.lang.ClassCastException: org.apache.hadoop.hive.common.io.DiskRangeList cannot be cast to org.apache.orc.impl.BufferChunk
+
+2016-10-20T00:48:45,416 WARN  [TaskHeartbeatThread (1475017598908_0410_15_00_000020_0)] org.apache.hadoop.hive.llap.daemon.impl.LlapTaskReporter: Exiting TaskReporter thread with pending queue size=2
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.encoded.EncodedReaderImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is a clone of" type="Cloners">15024</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-11-18 17:25:33" id="15233" opendate="2016-11-17 19:54:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>UDF UUID() should be non-deterministic</summary>
+			
+			
+			<description>The UUID() function should be non-deterministic.</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.TestUDFUUID.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.UDFUUID.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">12721</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-11-18 19:08:26" id="14089" opendate="2016-06-24 08:17:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>complex type support in LLAP IO is broken </summary>
+			
+			
+			<description>HIVE-13617 is causing MiniLlapCliDriver following test failures
+
+
+
+org.apache.hadoop.hive.cli.TestMiniLlapCliDriver.testCliDriver_vector_complex_all
+
+org.apache.hadoop.hive.cli.TestMiniLlapCliDriver.testCliDriver_vector_complex_join
+
+
+
+</description>
+			
+			
+			<version>2.2.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.encoded.EncodedReaderImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.encoded.EncodedReader.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.io.encoded.OrcEncodedDataReader.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.io.decode.OrcEncodedDataConsumer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.MapWork.java</file>
+			
+			
+			<file type="M">org.apache.orc.impl.TreeReaderFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.encoded.EncodedTreeReaderFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Utilities.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.encoded.Reader.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.io.metadata.OrcFileMetadata.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.common.io.encoded.EncodedColumnBatch.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.io.api.impl.LlapInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.orc.impl.ConvertTreeReaderFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

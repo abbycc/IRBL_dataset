@@ -1,0 +1,1 @@
+tablemapreduceutil inittablereducerjob broken due setconf method tableoutputformat setconf method tableoutputformat call replac hbase zookeep quorum address job conf xml run copyt job cluster conf set peer addr make job read write peer cluster read origin cluster write peer due http issu apach org jira brows hbase 3111

@@ -1,0 +1,1 @@
+zkaclreset set clear zk acl zkaclreset tool clear zk acl migrat secur unsecur cluster setup make znode acl correct set acl option enforc proper acl znode secur setup

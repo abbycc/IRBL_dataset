@@ -1,0 +1,801 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HBASE">
+	<bug fixdate="2015-04-01 06:06:29" id="13317" opendate="2015-03-23 16:42:19" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Region server reportForDuty stuck looping if there is a master change</summary>
+			
+			
+			<description>During cluster startup, region server reportForDuty gets stuck looping if there is a master change.
+
+2015-03-22 11:15:16,186 INFO  [regionserver60020] regionserver.HRegionServer: reportForDuty to master=bigaperf274,60000,1427045883965 with port=60020, startcode=1427048115174
+
+2015-03-22 11:15:16,272 WARN  [regionserver60020] regionserver.HRegionServer: error telling master we are up
+
+com.google.protobuf.ServiceException: java.net.ConnectException: Connection refused
+
+	at org.apache.hadoop.hbase.ipc.RpcClient.callBlockingMethod(RpcClient.java:1678)
+
+	at org.apache.hadoop.hbase.ipc.RpcClient$BlockingRpcChannelImplementation.callBlockingMethod(RpcClient.java:1719)
+
+	at org.apache.hadoop.hbase.protobuf.generated.RegionServerStatusProtos$RegionServerStatusService$BlockingStub.regionServerStartup(RegionServerStatusProtos.java:8277)
+
+	at org.apache.hadoop.hbase.regionserver.HRegionServer.reportForDuty(HRegionServer.java:2137)
+
+	at org.apache.hadoop.hbase.regionserver.HRegionServer.run(HRegionServer.java:896)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+2015-03-22 11:15:16,274 WARN  [regionserver60020] regionserver.HRegionServer: reportForDuty failed; sleeping and then retrying.
+
+2015-03-22 11:15:19,274 INFO  [regionserver60020] regionserver.HRegionServer: reportForDuty to master=bigaperf273,60000,1427048108439 with port=60020, startcode=1427048115174
+
+2015-03-22 11:15:19,275 WARN  [regionserver60020] regionserver.HRegionServer: error telling master we are up
+
+com.google.protobuf.ServiceException: java.net.ConnectException: Connection refused
+
+	at org.apache.hadoop.hbase.ipc.RpcClient.callBlockingMethod(RpcClient.java:1678)
+
+	at org.apache.hadoop.hbase.ipc.RpcClient$BlockingRpcChannelImplementation.callBlockingMethod(RpcClient.java:1719)
+
+	at org.apache.hadoop.hbase.protobuf.generated.RegionServerStatusProtos$RegionServerStatusService$BlockingStub.regionServerStartup(RegionServerStatusProtos.java:8277)
+
+	at org.apache.hadoop.hbase.regionserver.HRegionServer.reportForDuty(HRegionServer.java:2137)
+
+	at org.apache.hadoop.hbase.regionserver.HRegionServer.run(HRegionServer.java:896)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+2015-03-22 11:15:19,276 WARN  [regionserver60020] regionserver.HRegionServer: reportForDuty failed; sleeping and then retrying.
+
+2015-03-22 11:15:22,276 INFO  [regionserver60020] regionserver.HRegionServer: reportForDuty to master=bigaperf273,60000,1427048108439 with port=60020, startcode=1427048115174
+
+2015-03-22 11:15:22,296 DEBUG [regionserver60020] regionserver.HRegionServer: Master is not running yet
+
+2015-03-22 11:15:22,296 WARN  [regionserver60020] regionserver.HRegionServer: reportForDuty failed; sleeping and then retrying.
+
+2015-03-22 11:15:25,296 INFO  [regionserver60020] regionserver.HRegionServer: reportForDuty to master=bigaperf273,60000,1427048108439 with port=60020, startcode=1427048115174
+
+2015-03-22 11:15:25,299 DEBUG [regionserver60020] regionserver.HRegionServer: Master is not running yet
+
+2015-03-22 11:15:25,299 WARN  [regionserver60020] regionserver.HRegionServer: reportForDuty failed; sleeping and then retrying.
+
+2015-03-22 11:15:28,299 INFO  [regionserver60020] regionserver.HRegionServer: reportForDuty to master=bigaperf273,60000,1427048108439 with port=60020, startcode=1427048115174
+
+2015-03-22 11:15:28,302 DEBUG [regionserver60020] regionserver.HRegionServer: Master is not running yet
+
+2015-03-22 11:15:28,302 WARN  [regionserver60020] regionserver.HRegionServer: reportForDuty failed; sleeping and then retrying.
+
+
+
+What happended is the region server first got master=bigaperf274,60000,1427045883965.  Before it was able to report successfully, the maser changed to bigaperf273,60000,1427048108439.
+We were supposed to open a new connection to the new master. But we never did, looping and trying to old address forever.</description>
+			
+			
+			<version>0.98.12</version>
+			
+			
+			<fixedVersion>2.0.0, 1.0.1, 1.1.0, 0.98.12</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.LocalHBaseCluster.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">12813</link>
+			
+			
+			<link description="relates to" type="Reference">13345</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-04-01 16:23:29" id="12813" opendate="2015-01-07 00:22:22" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Reporting region in transition shouldn&amp;apos;t loop forever</summary>
+			
+			
+			<description>We had an issue where a region server wasn&amp;amp;apos;t able to send the report region in transition request. Well after failing it just retries forever.
+At some point it would have been better to just abort the region server if it can&amp;amp;apos;t talk to master.</description>
+			
+			
+			<version>0.98.12</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.LocalHBaseCluster.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">13317</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-01 21:32:21" id="13608" opendate="2015-05-01 18:25:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>413 Error with Stargate through Knox, using AD, SPNEGO, and Pre-Auth</summary>
+			
+			
+			<description>Jody Steadman reported that attempts to access Stargate via Apache Knox using curl ends with 413 error when the following conditions are met:
+AD is being used directly for Kerberos
+The knox principal is configured to require Kerberos pre-auth
+Stargate is using SPNEGO
+Pre-auth errors exist in Kerberos debug log output
+Sumit Gupta found that the gateway logs in the environment provided by Jody Steadman has the following error:
+
+
+
+2015-04-20 14:24:21,660 DEBUG http.headers (DefaultClientConnection.java:sendRequestHeader(273)) - &amp;gt;&amp;gt; GET /version?doAs=jsteadman HTTP/1.1
+
+2015-04-20 14:24:21,661 DEBUG http.headers (DefaultClientConnection.java:sendRequestHeader(276)) - &amp;gt;&amp;gt; Host: node1.jodylaptop.net:60080
+
+2015-04-20 14:24:21,661 DEBUG http.headers (DefaultClientConnection.java:sendRequestHeader(276)) - &amp;gt;&amp;gt; Connection: Keep-Alive
+
+2015-04-20 14:24:21,661 DEBUG http.headers (DefaultClientConnection.java:sendRequestHeader(276)) - &amp;gt;&amp;gt; User-Agent: Apache-HttpClient/4.2.5 (java 1.5)
+
+2015-04-20 14:24:21,661 DEBUG http.headers (DefaultClientConnection.java:sendRequestHeader(276)) - &amp;gt;&amp;gt; Authorization: Negotiate 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
+
+2015-04-20 14:24:21,664 DEBUG http.wire (Wire.java:wire(63)) - &amp;lt;&amp;lt; &quot;HTTP/1.1 413 FULL head[\r][\n]&quot;
+
+2015-04-20 14:24:21,665 DEBUG http.wire (Wire.java:wire(63)) - &amp;lt;&amp;lt; &quot;Connection: close[\r][\n]&quot;
+
+2015-04-20 14:24:21,666 DEBUG http.wire (Wire.java:wire(63)) - &amp;lt;&amp;lt; &quot;[\r][\n]&quot;
+
+
+
+Sumit suggested using large buffer size in hbase REST Server to get rid of the &quot;FULL Head&quot; error</description>
+			
+			
+			<version>0.98.12</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.13, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.RESTServer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-19 16:26:21" id="13694" opendate="2015-05-15 07:55:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CallQueueSize is incorrectly decremented until the response is sent</summary>
+			
+			
+			<description>We should decrement the CallQueueSize as soon as we no longer need the call around, e.g. after RpcServer.CurCall.set(null) otherwise we will be only pushing back other client requests while we send the response back to the client that originated the call.</description>
+			
+			
+			<version>0.98.12</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.CallRunner.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-28 06:28:53" id="13778" opendate="2015-05-26 16:50:35" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BoundedByteBufferPool incorrectly increasing runningAverage buffer length</summary>
+			
+			
+			<description>I was testing HBASE-13158 and noticed this. In BoundedByteBufferPool, we are having an intial value for &amp;amp;apos;runningAverage&amp;amp;apos; which defaults to 16K. So the pool will make initial buffers of this size. This buffer may grow while used in ByteBufferOuputStream as the data has to be written is getting more. On return back the BB to the pool, we try to adjust this &amp;amp;apos;runningAverage&amp;amp;apos; size by considering the capacity of the returned BB. We lack proper synchronization here and this makes this runningAverage to grow till its max (1 MB)
+I am testing with PE tool with randomRead and having 20 client threads. So each get op returns one cell with almost like 1KB data. The default size of the BB created by Pool is 16K and ideally there is no room for getting this resized.
+
+
+
+2015-05-26 20:12:21,965 INFO  [PriorityRpcServer.handler=5,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=2
+
+2015-05-26 20:12:21,966 INFO  [PriorityRpcServer.handler=2,queue=0,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=4
+
+2015-05-26 20:12:21,966 INFO  [PriorityRpcServer.handler=8,queue=0,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=6
+
+2015-05-26 20:12:21,966 INFO  [PriorityRpcServer.handler=12,queue=0,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=9
+
+2015-05-26 20:12:21,966 INFO  [PriorityRpcServer.handler=13,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=10
+
+2015-05-26 20:12:21,966 INFO  [PriorityRpcServer.handler=18,queue=0,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=12
+
+2015-05-26 20:12:21,966 INFO  [PriorityRpcServer.handler=16,queue=0,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=14
+
+2015-05-26 20:12:21,966 INFO  [PriorityRpcServer.handler=7,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=5
+
+2015-05-26 20:12:21,966 INFO  [PriorityRpcServer.handler=19,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=15
+
+2015-05-26 20:12:21,966 INFO  [PriorityRpcServer.handler=1,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=4
+
+2015-05-26 20:12:21,965 INFO  [PriorityRpcServer.handler=11,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=2
+
+2015-05-26 20:12:21,966 INFO  [PriorityRpcServer.handler=3,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=13
+
+2015-05-26 20:12:21,966 INFO  [PriorityRpcServer.handler=9,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=11
+
+2015-05-26 20:12:21,966 INFO  [PriorityRpcServer.handler=6,queue=0,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=8
+
+2015-05-26 20:12:21,966 INFO  [PriorityRpcServer.handler=15,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=7
+
+2015-05-26 20:12:21,966 INFO  [PriorityRpcServer.handler=4,queue=0,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=16
+
+2015-05-26 20:12:21,967 INFO  [PriorityRpcServer.handler=10,queue=0,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=17
+
+2015-05-26 20:12:21,967 INFO  [PriorityRpcServer.handler=14,queue=0,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=19
+
+2015-05-26 20:12:21,967 INFO  [PriorityRpcServer.handler=17,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=0, count=0, alloctions=18
+
+2015-05-26 20:12:22,146 INFO  [PriorityRpcServer.handler=18,queue=0,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=16384, totalCapacity=-16384, count=2, alloctions=20
+
+2015-05-26 20:12:22,707 INFO  [PriorityRpcServer.handler=9,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=212992, totalCapacity=-32768, count=4, alloctions=21
+
+2015-05-26 20:12:23,208 INFO  [PriorityRpcServer.handler=3,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=212992, totalCapacity=-81920, count=1, alloctions=22
+
+2015-05-26 20:12:29,567 INFO  [PriorityRpcServer.handler=0,queue=0,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=234837, totalCapacity=-49152, count=6, alloctions=23
+
+2015-05-26 20:12:29,974 INFO  [PriorityRpcServer.handler=0,queue=0,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=311296, totalCapacity=442368, count=6, alloctions=24
+
+2015-05-26 20:12:31,356 INFO  [PriorityRpcServer.handler=7,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=606208, totalCapacity=1054037, count=9, alloctions=25
+
+2015-05-26 20:12:31,894 INFO  [PriorityRpcServer.handler=3,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=901120, totalCapacity=742741, count=1, alloctions=26
+
+2015-05-26 20:12:32,961 INFO  [PriorityRpcServer.handler=11,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=920234, totalCapacity=2479445, count=12, alloctions=27
+
+2015-05-26 20:12:36,965 INFO  [PriorityRpcServer.handler=2,queue=0,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=1037653, totalCapacity=3836586, count=18, alloctions=28
+
+2015-05-26 20:12:42,212 INFO  [PriorityRpcServer.handler=6,queue=0,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=1048120, totalCapacity=11203921, count=12, alloctions=29
+
+2015-05-26 20:12:45,387 INFO  [PriorityRpcServer.handler=13,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=1048302, totalCapacity=10174915, count=1, alloctions=30
+
+2015-05-26 20:12:46,171 INFO  [PriorityRpcServer.handler=1,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=1048302, totalCapacity=14177342, count=7, alloctions=31
+
+2015-05-26 20:12:52,401 INFO  [PriorityRpcServer.handler=13,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=1048495, totalCapacity=19454171, count=8, alloctions=32
+
+2015-05-26 20:12:52,541 INFO  [PriorityRpcServer.handler=2,queue=0,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=1048495, totalCapacity=16778574, count=1, alloctions=33
+
+2015-05-26 20:12:56,631 INFO  [PriorityRpcServer.handler=5,queue=1,port=16020] io.BoundedByteBufferPool: Allocated new BB runningAverage=1048495, totalCapacity=28925990, count=2, alloctions=34
+
+...
+
+..
+
+
+
+getBuffer()  on 1st line removes the BB from the Queue. putBuffer() put it back 1st and then in next line checks the size of the buffer. During this time period many other threads might have taken buffers. 
+putBuffer(ByteBuffer bb)
+
+
+
+	int size = this.buffers.size(); // This size may be inexact.
+
+	this.totalReservoirCapacity += bb.capacity();
+
+	int average = 0;
+
+	if (size != 0) {
+
+	  average = this.totalReservoirCapacity / size;
+
+	}
+
+	if (average &amp;gt; this.runningAverage &amp;amp;&amp;amp; average &amp;lt; this.maxByteBufferSizeToCache) {
+
+	  this.runningAverage = average;
+
+	}
+
+
+
+getBuffer() 
+
+
+
+	ByteBuffer bb = this.buffers.poll();
+
+    if (bb != null) {
+
+      // Clear sets limit == capacity.  Postion == 0.
+
+      bb.clear();
+
+      this.totalReservoirCapacity -= bb.capacity();
+
+    } 
+
+
+
+totalReservoirCapacity might not have reduced while do above division for calc avg.  From above log lines it is clear.
+As a result we will create much bigger sized buffers and we will not allow GC it as we keep them in pool.</description>
+			
+			
+			<version>0.98.12</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.13, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.BoundedByteBufferPool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.TestBoundedByteBufferPool.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">13142</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-16 19:29:59" id="13885" opendate="2015-06-10 06:57:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ZK watches leaks during snapshots</summary>
+			
+			
+			<description>When taking snapshot of a table a watcher over /hbase/online-snapshot/abort/snapshot-name is created which is never cleared when the snapshot is successful. If we use snapshots to take backups daily we accumulate a lot of watches.
+Steps to reproduce -
+1) Take snapshot of a table - snapshot &amp;amp;apos;table_1&amp;amp;apos;, &amp;amp;apos;abc&amp;amp;apos;
+2) Run the following on zk node or alternatively observe zk watches metric
+ echo &quot;wchc&quot; | nc localhost 2181
+/hbase/online-snapshot/abort/abc can be found.</description>
+			
+			
+			<version>0.98.12</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.14, 1.0.2, 1.2.0, 1.1.1, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure.ZKProcedureCoordinatorRpcs.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure.ZKProcedureUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.procedure.ZKProcedureMemberRpcs.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-30 01:25:54" id="13959" opendate="2015-06-24 04:04:47" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Region splitting uses a single thread in most common cases</summary>
+			
+			
+			<description>When storefiles need to be split as part of a region split, the current logic uses a threadpool with the size set to the size of the number of stores. Since most common table setup involves only a single column family, this translates to having a single store and so the threadpool is run with a single thread. However, in a write heavy workload, there could be several tens of storefiles in a store at the time of splitting, and with a threadpool size of one, these files end up getting split sequentially.
+With a bit of tracing, I noticed that it takes on an average of 350ms to create a single reference file, and splitting each storefile involves creating two of these, so with a storefile count of 20, it takes about 14s just to get through this phase alone (2 reference files for each storefile), pushing the total time the region is offline to 18s or more. For environments that are setup to fail fast, this makes the client exhaust all retries and fail with NotServingRegionException.
+The fix should increase the concurrency of this operation.</description>
+			
+			
+			<version>0.98.12</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.14, 1.0.2, 1.2.0, 1.1.2, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.SplitTransactionImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HConstants.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-08-13 18:40:39" id="13706" opendate="2015-05-18 17:21:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CoprocessorClassLoader should not exempt Hive classes</summary>
+			
+			
+			<description>CoprocessorClassLoader is used to load classes from the coprocessor jar.
+Certain classes are exempt from being loaded by this ClassLoader, which means they will be ignored in the coprocessor jar, but loaded from parent classpath instead.
+One problem is that we categorically exempt &quot;org.apache.hadoop&quot;.
+But it happens that Hive packages start with &quot;org.apache.hadoop&quot;.
+There is no reason to exclude hive classes from theCoprocessorClassLoader.
+HBase does not even include Hive jars.</description>
+			
+			
+			<version>0.98.12</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.14, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.CoprocessorClassLoader.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">5070</link>
+			
+			
+			<link description="relates to" type="Reference">15686</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-14 20:15:55" id="14598" opendate="2015-10-13 18:10:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ByteBufferOutputStream grows its HeapByteBuffer beyond JVM limitations</summary>
+			
+			
+			<description>We noticed that in returning a Scan against a region containing particularly large (wide) rows that it is possible during ByteBufferOutputStream.checkSizeAndGrow() to attempt to create a new ByteBuffer larger than the JVM allows which then throws a OutOfMemoryError. The code currently caps it at Integer.MAX_VALUE which is actually larger than the JVM allows. This lead to us dealing with cascading region server death as the RegionServer hosting the region died, opened on a new server, the client retried the scan, and the new RS died as well. 
+I believe ByteBufferOutputStream should not try to create ByteBuffers that large and instead throw an exception back up if it needs to grow any bigger. The limit should probably be something like Integer.MAX_VALUE-8, as that is what ArrayList uses. ref: http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/8-b132/java/util/ArrayList.java#221</description>
+			
+			
+			<version>0.98.12</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 1.0.3, 1.1.3, 0.98.16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.IPCUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.ByteBufferOutputStream.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-12 09:17:05" id="15085" opendate="2016-01-09 14:14:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>IllegalStateException was thrown when scanning on bulkloaded HFiles</summary>
+			
+			
+			<description>IllegalStateException was thrown when we scanned from an HFile which was bulk loaded several minutes ago, as shown below:
+
+
+
+2015-12-16 22:20:54,456 ERROR com.taobao.kart.coprocessor.server.KartCoprocessor: icbu_ae_ws_product,/0055,1450275490479.6a6a700f465ad074287fed720c950f7c. batchNotify exception
+
+java.lang.IllegalStateException: EncodedScanner works only on encoded data blocks
+
+        at org.apache.hadoop.hbase.io.hfile.HFileReaderV2$EncodedScannerV2.updateCurrentBlock(HFileReaderV2.java:1042)
+
+        at org.apache.hadoop.hbase.io.hfile.HFileReaderV2$EncodedScannerV2.seekTo(HFileReaderV2.java:1093)
+
+        at org.apache.hadoop.hbase.regionserver.StoreFileScanner.seekAtOrAfter(StoreFileScanner.java:244)
+
+        at org.apache.hadoop.hbase.regionserver.StoreFileScanner.seek(StoreFileScanner.java:152)
+
+        at org.apache.hadoop.hbase.regionserver.StoreScanner.seekScanners(StoreScanner.java:329)
+
+        at org.apache.hadoop.hbase.regionserver.StoreScanner.&amp;lt;init&amp;gt;(StoreScanner.java:188)
+
+        at org.apache.hadoop.hbase.regionserver.HStore.getScanner(HStore.java:1879)
+
+        at org.apache.hadoop.hbase.regionserver.HRegion$RegionScannerImpl.&amp;lt;init&amp;gt;(HRegion.java:4068)
+
+        at org.apache.hadoop.hbase.regionserver.HRegion.instantiateRegionScanner(HRegion.java:2029)
+
+        at org.apache.hadoop.hbase.regionserver.HRegion.getScanner(HRegion.java:2015)
+
+        at org.apache.hadoop.hbase.regionserver.HRegion.getScanner(HRegion.java:1992)
+
+
+
+I used &amp;amp;apos;hbase hfile&amp;amp;apos; command to analyse the meta and block info of the hfile, finding that even through the DATA_BLOCK_ENCODING was &amp;amp;apos;DIFF&amp;amp;apos; in FileInfo, the actual data blocks was written without any encoding algorithms(BlockType was &amp;amp;apos;DATA&amp;amp;apos;, not &amp;amp;apos;ENCODED_DATA&amp;amp;apos;):
+
+
+
+Fileinfo:
+
+    BLOOM_FILTER_TYPE = ROW
+
+    BULKLOAD_SOURCE_TASK = attempt_1442077249005_606706_r_000012_0
+
+    BULKLOAD_TIMESTAMP = \x00\x00\x01R\x12$\x13\x12
+
+    DATA_BLOCK_ENCODING = DIFF
+
+...
+
+DataBlock Header:
+
+HFileBlock [ fileOffset=0 headerSize()=33 blockType=DATA onDiskSizeWithoutHeader=65591 uncompressedSizeWithoutHeader=65571 prevBlockOffset=-1 isUseHBaseChecksum()=true checksumType=CRC32 bytesPerChecksum=16384 onDiskDataSizeWithHeader=65604 getOnDiskSizeWithHeader()=65624 totalChecksumBytes()=20 isUnpacked()=true buf=[ java.nio.HeapByteBuffer[pos=0 lim=65624 cap=65657], array().length=65657, arrayOffset()=0 ] dataBeginsWith=\x00\x00\x003\x00\x00\x00\x0A\x00\x10/0008:1000000008\x01dprod fileContext=HFileContext [ usesHBaseChecksum=true checksumType=CRC32 bytesPerChecksum=16384 blocksize=65536 encoding=NONE includesMvcc=true includesTags=false compressAlgo=NONE compressTags=false cryptoContext=[ cipher=NONE keyHash=NONE ] ] ]
+
+
+
+The data block encoding in file info was not consistent with the one in data block, which means there must be something wrong with the bulkload process.
+After debugging on each step of bulkload, I found that LoadIncrementalHFiles had a bug when loading hfile into a splitted region. 
+
+
+
+/**
+
+   * Copy half of an HFile into a new HFile.
+
+   */
+
+  private static void copyHFileHalf(
+
+      Configuration conf, Path inFile, Path outFile, Reference reference,
+
+      HColumnDescriptor familyDescriptor)
+
+  throws IOException {
+
+    FileSystem fs = inFile.getFileSystem(conf);
+
+    CacheConfig cacheConf = new CacheConfig(conf);
+
+    HalfStoreFileReader halfReader = null;
+
+    StoreFile.Writer halfWriter = null;
+
+    try {
+
+      halfReader = new HalfStoreFileReader(fs, inFile, cacheConf, reference, conf);
+
+      Map&amp;lt;byte[], byte[]&amp;gt; fileInfo = halfReader.loadFileInfo();
+
+
+
+      int blocksize = familyDescriptor.getBlocksize();
+
+      Algorithm compression = familyDescriptor.getCompression();
+
+      BloomType bloomFilterType = familyDescriptor.getBloomFilterType();
+
+// use CF&amp;amp;apos;s DATA_BLOCK_ENCODING to initialize HFile writer
+
+      HFileContext hFileContext = new HFileContextBuilder()
+
+                                  .withCompression(compression)
+
+                                  .withChecksumType(HStore.getChecksumType(conf))
+
+                                  .withBytesPerCheckSum(HStore.getBytesPerChecksum(conf))
+
+                                  .withBlockSize(blocksize)
+
+                                  .withDataBlockEncoding(familyDescriptor.getDataBlockEncoding())
+
+                                  .build();
+
+      halfWriter = new StoreFile.WriterBuilder(conf, cacheConf,
+
+          fs)
+
+              .withFilePath(outFile)
+
+              .withBloomType(bloomFilterType)
+
+              .withFileContext(hFileContext)
+
+              .build();
+
+      HFileScanner scanner = halfReader.getScanner(false, false, false);
+
+      scanner.seekTo();
+
+      do {
+
+        KeyValue kv = KeyValueUtil.ensureKeyValue(scanner.getKeyValue());
+
+        halfWriter.append(kv);
+
+      } while (scanner.next());
+
+
+
+// force encoding setting with the original HFile&amp;amp;apos;s file info
+
+      for (Map.Entry&amp;lt;byte[],byte[]&amp;gt; entry : fileInfo.entrySet()) {
+
+        if (shouldCopyHFileMetaKey(entry.getKey())) {
+
+          halfWriter.appendFileInfo(entry.getKey(), entry.getValue());
+
+        }
+
+      }
+
+    } finally {
+
+      if (halfWriter != null) halfWriter.close();
+
+      if (halfReader != null) halfReader.close(cacheConf.shouldEvictOnClose());
+
+    }
+
+  }
+
+
+
+As shown above, when an HFile which has a DIFF encoding is bulkloaded into a splitted region whose CF&amp;amp;apos;s DATA_BLOCK_ENCODING is NONE, the two new HFiles would have inconsistent encodings.
+Besides, it would be OK if splitting region&amp;amp;apos;s DATA_BLOCK_ENCODING is DIFF and bulk loaded HFile has NONE, because the initial bulkloaded HFile would not write the encoding info into its meta (NoOpDataBlockEncoder.saveMetadata() is empty), and It then would not rewrite encoding in two generated Files in copyHFileHalf(). Two new HFiles&amp;amp;apos; meta info would be consistent with their block headers, which would all be DIFF. So, no Exception would be thrown when scanning these files.</description>
+			
+			
+			<version>0.98.12</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 1.0.3, 1.1.3, 0.98.17</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestLoadIncrementalHFiles.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.HFileTestUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

@@ -1,0 +1,940 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HBASE">
+	<bug fixdate="2011-05-25 04:50:21" id="3920" opendate="2011-05-24 21:52:43" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HLog hbase.regionserver.flushlogentries no longer supported</summary>
+			
+			
+			<description>While searching for config options on syncing the HLog, I was a bit confused by hbase.regionserver.flushlogentries which is still in the code and in hbase-default.xml but isn&amp;amp;apos;t actually used.</description>
+			
+			
+			<version>0.92.0</version>
+			
+			
+			<fixedVersion>0.90.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.HLog.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.TestWALReplay.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.coprocessor.TestWALObserver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.TestHLogSplit.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.TestHLog.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestFullLogReconstruction.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">3885</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-31 20:08:28" id="3885" opendate="2011-05-14 03:48:54" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Remove hbase.regionserver.flushlogentries, its not used</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.92.0</version>
+			
+			
+			<fixedVersion>0.90.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.HLog.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.TestWALReplay.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.coprocessor.TestWALObserver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.TestHLogSplit.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.TestHLog.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestFullLogReconstruction.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">3920</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-10-21 19:55:30" id="4536" opendate="2011-10-03 23:10:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Allow CF to retain deleted rows</summary>
+			
+			
+			<description>Parent allows for a cluster to retain rows for a TTL or keep a minimum number of versions.
+However, if a client deletes a row all version older than the delete tomb stone will be remove at the next major compaction (and even at memstore flush - see HBASE-4241).
+There should be a way to retain those version to guard against software error.
+I see two options here:
+1. Add a new flag HColumnDescriptor. Something like &quot;RETAIN_DELETED&quot;.
+2. Folds this into the parent change. I.e. keep minimum-number-of-versions of versions even past the delete marker.
+#1 would allow for more flexibility. #2 comes somewhat naturally with parent (from a user viewpoint)
+Comments? Any other options?</description>
+			
+			
+			<version>0.92.0</version>
+			
+			
+			<fixedVersion>0.94.0</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestMinVersions.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestQueryMatcher.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.ExplicitColumnTracker.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.Store.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestStoreScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.Attributes.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.ScanQueryMatcher.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.StoreFile.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestFromClientSide.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.ScanWildcardColumnTracker.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.Scan.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestExplicitColumnTracker.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.ColumnTracker.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.KeyValue.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestScanWildcardColumnTracker.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestCompaction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestMemStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HColumnDescriptor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.StoreScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HBaseTestCase.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">848</link>
+			
+			
+			<link description="relates to" type="Reference">3443</link>
+			
+			
+			<link description="relates to" type="Reference">2376</link>
+			
+			
+			<link description="relates to" type="Reference">4721</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-11-06 21:49:57" id="3939" opendate="2011-06-01 01:53:13" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Some crossports of Hadoop IPC fixes</summary>
+			
+			
+			<description>A few fixes from Hadoop IPC that we should probably cross-port into our copy:
+
+HADOOP-7227: remove the protocol version check at call time
+HADOOP-7146: fix a socket leak in server
+HADOOP-7121: fix behavior when response serialization throws an exception
+HADOOP-7346: send back nicer error response when client is using an out of date IPC version
+
+</description>
+			
+			
+			<version>0.92.0</version>
+			
+			
+			<fixedVersion>0.92.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.CoprocessorProtocol.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMaster.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.coprocessor.AggregateProtocol.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.Invocation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.WritableRpcEngine.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.HBaseClient.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.TestDelayedRpc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestServerCustomProtocol.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.VersionedProtocol.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.coprocessor.AggregateImplementation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.coprocessor.BaseEndpointCoprocessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.HBaseServer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1913</link>
+			
+			
+			<link description="is related to" type="Reference">4777</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-12-19 16:26:53" id="5062" opendate="2011-12-18 00:42:51" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Missing logons if security is enabled</summary>
+			
+			
+			<description>Somehow the attached changes are missing from the security integration. </description>
+			
+			
+			<version>0.92.0</version>
+			
+			
+			<fixedVersion>0.92.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.thrift.ThriftServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.Strings.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.Main.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">4099</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">4100</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-02 08:39:03" id="6265" opendate="2012-06-25 11:16:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Calling getTimestamp() on a KV in cp.prePut() causes KV not to be flushed</summary>
+			
+			
+			<description>There is an issue when you call getTimestamp() on any KV handed into a Coprocessor&amp;amp;apos;s prePut(). It initializes the internal &quot;timestampCache&quot; variable. 
+When you then pass it to the normal processing, the region server sets the time to the server time in case you have left it unset from the client side (updateLatestStamp() call). 
+The TimeRangeTracker then calls getTimestamp() later on to see if it has to include the KV, but instead of getting the proper time it sees the cached timestamp from the prePut() call.</description>
+			
+			
+			<version>0.92.0</version>
+			
+			
+			<fixedVersion>0.94.1, 0.95.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestKeyValue.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.KeyValue.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">7774</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-08-23 04:31:10" id="5333" opendate="2012-02-04 01:04:30" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Introduce Memstore &quot;backpressure&quot; for writes</summary>
+			
+			
+			<description>Currently if the memstore/flush/compaction cannot keep up with the writeload, we block writers up to hbase.hstore.blockingWaitTime milliseconds (default is 90000).
+Would be nice if there was a concept of a soft &quot;backpressure&quot; that slows writing clients gracefully before we reach this condition.
+From the log:
+&quot;2012-02-04 00:00:06,963 WARN org.apache.hadoop.hbase.regionserver.MemStoreFlusher: Region &amp;lt;table&amp;gt;,,1328313512779.c2761757621ddf8fb78baf5288d71271. has too many store files; delaying flush up to 90000ms&quot;</description>
+			
+			
+			<version>0.92.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.RSRpcServices.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestClientPushback.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.RpcRetryingCallerFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.StatsTrackingRpcRetryingCaller.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.ClientProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HConstants.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.RpcRetryingCaller.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.ClusterConnection.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.WALEditsReplaySink.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.Result.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HTable.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestAsyncProcess.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.TestRegionReplicaReplicationEndpoint.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.ConnectionAdapter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.ResponseConverter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.AsyncProcess.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.MultiAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.ConnectionManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HConnectionTestingUtility.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestReplicasClient.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestFastFailWithoutTestUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RegionCoprocessorRpcChannel.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5162</link>
+			
+			
+			<link description="relates to" type="Reference">2981</link>
+			
+			
+			<link description="is related to" type="Reference">6423</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-08-31 16:46:30" id="4100" opendate="2011-07-14 18:06:28" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Authentication for REST clients</summary>
+			
+			
+			<description>Like Thrift, the REST gateway is not currently integrated into the authentication used for HBase RPC.  Currently this means the REST gateway cannot even be used when HBase security is active.
+For the REST gateway to be able to interoperate with HBase security:
+
+the REST server needs to be able to login from a keytab on startup with its own server principal
+REST clients need to be able to authenticate security with the REST server
+the REST server needs to be able to act as a trusted proxy for the original client identities, so that the HBase authorization checks can be performed against the original client request
+
+Like Thrift, implementing step #1 as a bare minimum would at least allow deploying a REST server configured to login as the application user on startup.  Even without authenticating REST clients, this would allow the gateway to work when HBase security is active.
+For step #2, we can make use of SPNEGO to provide Kerberos/GSSAPI authentication of clients over HTTP.  The Alfredo library from Cloudera would hopefully make this relatively easy to do:
+http://cloudera.github.com/alfredo/docs/latest/index.html</description>
+			
+			
+			<version>0.92.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.thrift.ThriftServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.Strings.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.Main.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5062</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-08-31 16:47:10" id="4099" opendate="2011-07-14 17:56:13" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Authentication for ThriftServer clients</summary>
+			
+			
+			<description>The current implementation of HBase client authentication only works with the Java API.  Alternate access gateways, like Thrift and REST are left out and will not work.
+For the ThriftServer to be able to fully interoperate with the security implementation:
+
+the ThriftServer should be able to login from a keytab file with it&amp;amp;apos;s own server principal on startup
+thrift clients should be able to authenticate securely when connecting to the server
+the ThriftServer should be able to act as a proxy for those clients so that the RPCs it issues will be correctly authorized as the original client identities
+
+There is already some support for step 3 in UserGroupInformation and related classes.
+For step #2, we really need to look at what thrift itself supports.
+At a bare minimum, we need to implement step #1.  If we do this, even without steps 2 &amp;amp; 3, this would at least allow deployments to use a ThriftServer per application user, and have the server login as that user on startup.  Thrift clients may not be directly authenticated, but authorization checks for HBase could still be handled correctly this way.</description>
+			
+			
+			<version>0.92.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.thrift.ThriftServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.Strings.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.Main.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5062</link>
+			
+			
+			<link description="is related to" type="Reference">4460</link>
+			
+			
+			<link description="is related to" type="Reference">4475</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-01-29 19:13:04" id="6280" opendate="2012-06-27 08:23:48" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>why using treeMap at default implement with class  Batch.Callback</summary>
+			
+			
+			<description>public &amp;lt;T extends CoprocessorProtocol, R&amp;gt; Map&amp;lt;byte[],R&amp;gt; coprocessorExec(
+      Class&amp;lt;T&amp;gt; protocol, byte[] startKey, byte[] endKey,
+      Batch.Call&amp;lt;T,R&amp;gt; callable)
+      throws IOException, Throwable {
+    final Map&amp;lt;byte[],R&amp;gt; results = new TreeMap&amp;lt;byte[],R&amp;gt;(
+        Bytes.BYTES_COMPARATOR);
+    coprocessorExec(protocol, startKey, endKey, callable,
+        new Batch.Callback&amp;lt;R&amp;gt;(){
+      public void update(byte[] region, byte[] row, R value) 
+{
+
+        results.put(region, value);
+
+      }
+    });
+    return results;
+  }
+when mulit region  call the Batch.Callback ,the treemap should lockup.
+we meet this situation after we run 3 month.</description>
+			
+			
+			<version>0.92.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HTable.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6565</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-03-08 02:11:45" id="5492" opendate="2012-02-29 16:19:59" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Caching StartKeys and EndKeys of Regions</summary>
+			
+			
+			<description>Each call for HTable.getStartEndKeys will read meta table.
+In particular, 
+in the case of client side multi-threaded concurrency statistics, 
+we must call HTable.coprocessorExec== &amp;gt; getStartKeysInRange ==&amp;gt; getStartEndKeys,
+resulting in the need to always scan the meta table.
+This is not necessary,
+we can implement the HConnectionManager.HConnectionImplementation.locateRegions(byte[] tableName) method,
+then, get the StartKeys and EndKeys from the cachedRegionLocations of HConnectionImplementation.
+Combined with https://issues.apache.org/jira/browse/HBASE-5491, can improve the performance of statistical</description>
+			
+			
+			<version>0.92.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HTable.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6870</link>
+			
+			
+			<link description="relates to" type="Reference">5489</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-12-17 20:48:34" id="5162" opendate="2012-01-10 00:35:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Basic client pushback mechanism</summary>
+			
+			
+			<description>The current blocking we do when we are close to some limits (memstores over the multiplier factor, too many store files, global memstore memory) is bad, too coarse and confusing. After hitting HBASE-5161, it really becomes obvious that we need something better.
+I did a little brainstorm with Stack, we came up quickly with two solutions:
+
+Send some exception to the client, like OverloadedException, that&amp;amp;apos;s thrown when some situation happens like getting past the low memory barrier. It would be thrown when the client gets a handler and does some check while putting or deleting. The client would treat this a retryable exception but ideally wouldn&amp;amp;apos;t check .META. for a new location. It could be fancy and have multiple levels of pushback, like send the exception to 25% of the clients, and then go up if the situation persists. Should be &quot;easy&quot; to implement but we&amp;amp;apos;ll be using a lot more IO to send the payload over and over again (but at least it wouldn&amp;amp;apos;t sit in the RS&amp;amp;apos;s memory).
+Send a message alongside a successful put or delete to tell the client to slow down a little, this way we don&amp;amp;apos;t have to do back and forth with the payload between the client and the server. It&amp;amp;apos;s a cleaner (I think) but more involved solution.
+
+In every case the RS should do very obvious things to notify the operators of this situation, through logs, web UI, metrics, etc.
+Other ideas?</description>
+			
+			
+			<version>0.92.0</version>
+			
+			
+			<fixedVersion>2.0.0</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.RSRpcServices.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestClientPushback.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.RpcRetryingCallerFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.StatsTrackingRpcRetryingCaller.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.ClientProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HConstants.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.RpcRetryingCaller.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.ClusterConnection.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.WALEditsReplaySink.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.Result.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HTable.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestAsyncProcess.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.TestRegionReplicaReplicationEndpoint.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.ConnectionAdapter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.ResponseConverter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.AsyncProcess.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.MultiAction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.ConnectionManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HConnectionTestingUtility.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestReplicasClient.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestFastFailWithoutTestUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RegionCoprocessorRpcChannel.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">5333</link>
+			
+			
+			<link description="relates to" type="Reference">12703</link>
+			
+			
+			<link description="relates to" type="Reference">12217</link>
+			
+			
+			<link description="relates to" type="Reference">12841</link>
+			
+			
+			<link description="relates to" type="Reference">12840</link>
+			
+			
+			<link description="relates to" type="Reference">12986</link>
+			
+			
+			<link description="relates to" type="Reference">14693</link>
+			
+			
+			<link description="relates to" type="Reference">14756</link>
+			
+			
+			<link description="relates to" type="Reference">12906</link>
+			
+			
+			<link description="relates to" type="Reference">12702</link>
+			
+			
+			<link description="is related to" type="Reference">6423</link>
+			
+			
+			<link description="is related to" type="Reference">12911</link>
+			
+			
+			<link description="is related to" type="Reference">12731</link>
+			
+			
+			<link description="is related to" type="Reference">2981</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

@@ -1,0 +1,1 @@
+tif set scanner cach size smaller row tabl perform tif default scanner cach size 1 row process fast small limit perform set higher scanner cach level achiev 100x perform exact map reduc tabl

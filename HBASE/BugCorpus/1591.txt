@@ -1,0 +1,1 @@
+hbase 1554 broke org apach hadoop hbase io hfile testlrublockcach testresizeblockcach modif lru heap size calcul alter test expect lru test error messag expect lt 0 gt lt 1 gt stacktrac junit framework assertionfailederror expect lt 0 gt lt 1 gt org apach hadoop hbase io hfile testlrublockcach testresizeblockcach testlrublockcach java 435 patch

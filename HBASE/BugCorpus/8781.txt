@@ -1,0 +1,1 @@
+immutablebyteswrit constructor ibw param offset pass ibw set immutablebyteswrit content pass lt code gt ibw lt code gt param ibw set immutablebyteswrit public immutablebyteswrit final immutablebyteswrit ibw ibw 0 ibw getsiz ibw ibw getoffset ibw getsiz

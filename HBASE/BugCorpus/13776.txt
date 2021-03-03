@@ -1,0 +1,1 @@
+set illeg version hcolumndescriptor throw illegalargumentexcept hcolumndescriptor hcd hcolumndescriptor hcolumndescriptor hconstant catalog famili setinmemori true setscop hconstant replic scope local setbloomfiltertyp bloomtyp setcachedatainl1 true final int minvers 123 final int maxvers 234 hcd setmaxvers minvers hcd setminvers maxvers throw

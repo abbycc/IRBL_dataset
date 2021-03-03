@@ -1,0 +1,4162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HIVE">
+	<bug fixdate="2009-01-06 22:03:49" id="84" opendate="2008-11-27 11:03:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MetaStore Client is not thread safe</summary>
+			
+			
+			<description>when running DDL Tasks in concurrent threads - the following exception trace is observed:
+java.sql.SQLIntegrityConstraintViolationException: The statement was aborted because it would have caused a duplicate ke\ y value in a unique or primary key constraint or unique index identified by &amp;amp;apos;UNIQUETABLE&amp;amp;apos; defined on &amp;amp;apos;TBLS&amp;amp;apos;.
+  at org.apache.hadoop.hive.ql.metadata.Hive.createTable(Hive.java:207)
+  at org.apache.hadoop.hive.ql.exec.DDLTask.execute(DDLTask.java:209)
+  at org.apache.hadoop.hive.ql.Driver.run(Driver.java:174)
+  at org.apache.hadoop.hive.cli.CliDriver.processCmd(CliDriver.java:185)
+  at org.apache.hadoop.hive.cli.CliDriver.processLine(CliDriver.java:210)
+  at org.apache.hadoop.hive.ql.QTestUtil.executeClient(QTestUtil.java:390)
+  at org.apache.hadoop.hive.ql.QTestUtil$QTRunner.run(QTestUtil.java:681)
+  at java.lang.Thread.run(Thread.java:619)
+Caused by: javax.jdo.JDODataStoreException: Insert of object &quot;org.apache.hadoop.hive.metastore.model.MTable@3bc8d400&quot; us\ ing statement &quot;INSERT INTO TBLS (TBL_ID,CREATE_TIME,DB_ID,RETENTION,TBL_NAME,SD_ID,OWNER,LAST_ACCESS_TIME) VALUES (?,?,?\ ,?,?,?,?,?)&quot; failed : The statement was aborted because it would have caused a duplicate key value in a unique or primar\ y key constraint or unique index identified by &amp;amp;apos;UNIQUETABLE&amp;amp;apos; defined on &amp;amp;apos;TBLS&amp;amp;apos;.
+NestedThrowables:
+java.sql.SQLIntegrityConstraintViolationException: The statement was aborted because it would have caused a duplicate ke\ y value in a unique or primary key constraint or unique index identified by &amp;amp;apos;UNIQUETABLE&amp;amp;apos; defined on &amp;amp;apos;TBLS&amp;amp;apos;.
+  at org.jpox.jdo.JPOXJDOHelper.getJDOExceptionForJPOXException(JPOXJDOHelper.java:291)
+  at org.jpox.jdo.AbstractPersistenceManager.jdoMakePersistent(AbstractPersistenceManager.java:671)
+  at org.jpox.jdo.AbstractPersistenceManager.makePersistent(AbstractPersistenceManager.java:691)
+  at org.apache.hadoop.hive.metastore.ObjectStore.createTable(ObjectStore.java:479)
+  at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler.create_table(HiveMetaStore.java:292)
+  at org.apache.hadoop.hive.metastore.HiveMetaStoreClient.createTable(HiveMetaStoreClient.java:252)
+  at org.apache.hadoop.hive.ql.metadata.Hive.createTable(Hive.java:205)
+  ... 7 more
+Caused by: java.sql.SQLIntegrityConstraintViolationException: The statement was aborted because it would have caused a d\ uplicate key value in a unique or primary key constraint or unique index identified by &amp;amp;apos;UNIQUETABLE&amp;amp;apos; defined on &amp;amp;apos;TBLS&amp;amp;apos;.
+  at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
+  at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Unknown Source)
+  at org.apache.derby.impl.jdbc.TransactionResourceImpl.wrapInSQLException(Unknown Source)
+  at org.apache.derby.impl.jdbc.TransactionResourceImpl.handleException(Unknown Source)
+  at org.apache.derby.impl.jdbc.EmbedConnection.handleException(Unknown Source)
+  at org.apache.derby.impl.jdbc.ConnectionChild.handleException(Unknown Source)
+  at org.apache.derby.impl.jdbc.EmbedStatement.executeStatement(Unknown Source)
+  at org.apache.derby.impl.jdbc.EmbedPreparedStatement.executeStatement(Unknown Source)
+  at org.apache.derby.impl.jdbc.EmbedPreparedStatement.executeUpdate(Unknown Source)
+  at org.jpox.store.rdbms.SQLController.executeStatementUpdate(SQLController.java:396)
+  at org.jpox.store.rdbms.request.InsertRequest.execute(InsertRequest.java:370)
+  at org.jpox.store.rdbms.RDBMSPersistenceHandler.insertTable(RDBMSPersistenceHandler.java:157)
+  at org.jpox.store.rdbms.RDBMSPersistenceHandler.insertObject(RDBMSPersistenceHandler.java:136)
+  at org.jpox.state.JDOStateManagerImpl.internalMakePersistent(JDOStateManagerImpl.java:3082)
+  at org.jpox.state.JDOStateManagerImpl.makePersistent(JDOStateManagerImpl.java:3062)
+  at org.jpox.ObjectManagerImpl.persistObjectInternal(ObjectManagerImpl.java:1231)
+  at org.jpox.ObjectManagerImpl.persistObject(ObjectManagerImpl.java:1077)
+  at org.jpox.jdo.AbstractPersistenceManager.jdoMakePersistent(AbstractPersistenceManager.java:666)
+  ... 12 more
+Caused by: java.sql.SQLException: The statement was aborted because it would have caused a duplicate key value in a uniq\ ue or primary key constraint or unique index identified by &amp;amp;apos;UNIQUETABLE&amp;amp;apos; defined on &amp;amp;apos;TBLS&amp;amp;apos;.
+  at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
+  at org.apache.derby.impl.jdbc.SQLExceptionFactory40.wrapArgsForTransportAcrossDRDA(Unknown Source)
+  ... 30 more
+Caused by: ERROR 23505: The statement was aborted because it would have caused a duplicate key value in a unique or prim\ ary key constraint or unique index identified by &amp;amp;apos;UNIQUETABLE&amp;amp;apos; defined on &amp;amp;apos;TBLS&amp;amp;apos;.
+  at org.apache.derby.iapi.error.StandardException.newException(Unknown Source)
+  at org.apache.derby.impl.sql.execute.IndexChanger.insertAndCheckDups(Unknown Source)
+  at org.apache.derby.impl.sql.execute.IndexChanger.doInsert(Unknown Source)
+  at org.apache.derby.impl.sql.execute.IndexChanger.insert(Unknown Source)
+  at org.apache.derby.impl.sql.execute.IndexSetChanger.insert(Unknown Source)
+  at org.apache.derby.impl.sql.execute.RowChangerImpl.insertRow(Unknown Source)
+  at org.apache.derby.impl.sql.execute.InsertResultSet.normalInsertCore(Unknown Source)
+  at org.apache.derby.impl.sql.execute.InsertResultSet.open(Unknown Source)
+when running normal select queries as well - one hits exception, stack trace:
+2008-11-27 01:54:00,216 ERROR metadata.Hive (Hive.java:getTable(275)) - NoSuchObjectException(message:default.dummySrc t\
+able not found)
+  at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler.get_table(HiveMetaStore.java:347)
+  at org.apache.hadoop.hive.metastore.HiveMetaStoreClient.getTable(HiveMetaStoreClient.java:433)
+  at org.apache.hadoop.hive.metastore.HiveMetaStoreClient.getTable(HiveMetaStoreClient.java:472)
+  at org.apache.hadoop.hive.ql.metadata.Hive.getTable(Hive.java:272)
+  at org.apache.hadoop.hive.ql.metadata.Hive.getTable(Hive.java:254)
+  at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.getMetaData(SemanticAnalyzer.java:544)
+  at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.analyzeInternal(SemanticAnalyzer.java:3192)
+  at org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.analyze(BaseSemanticAnalyzer.java:73)
+  at org.apache.hadoop.hive.ql.QTestUtil.analyzeAST(QTestUtil.java:672)
+  at org.apache.hadoop.hive.ql.parse.TestParseNegative.testParseNegative_unknown_table1(TestParseNegative.java:231)
+  at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+  at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+  at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+  at java.lang.reflect.Method.invoke(Method.java:597)
+  at junit.framework.TestCase.runTest(TestCase.java:154)
+  at junit.framework.TestCase.runBare(TestCase.java:127)
+  at junit.framework.TestResult$1.protect(TestResult.java:106)
+  at junit.framework.TestResult.runProtected(TestResult.java:124)
+  at junit.framework.TestResult.run(TestResult.java:109)
+  at junit.framework.TestCase.run(TestCase.java:118)
+  at junit.framework.TestSuite.runTest(TestSuite.java:208)
+  at junit.framework.TestSuite.run(TestSuite.java:203)
+  at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:297)
+  at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.launch(JUnitTestRunner.java:672)
+  at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:567)
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.session.SessionState.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestMTQueries.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QTestUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-02-05 23:40:13" id="264" opendate="2009-02-02 03:29:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TBinarySortable Protocol should support null characters</summary>
+			
+			
+			<description>Currently TBinarySortable Protocol does not support serializing null &quot;\0&quot; characters which confused a lot of users.
+We should support that.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.thrift.TBinarySortableProtocol.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QTestUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-11 17:47:59" id="325" opendate="2009-03-05 06:35:05" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[Hive] rand() should be ignored by input pruning</summary>
+			
+			
+			<description>select * from T where rand() &amp;lt; 0.5
+may return 0 rows because all partitions may simply be eliminated by partition pruning if rand() &amp;lt; 0.5 happens to be false</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.PartitionPruner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.UDFRand.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.UDF.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">253</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-18 01:57:46" id="251" opendate="2009-01-26 20:12:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Failures in Transform don&amp;apos;t stop the job</summary>
+			
+			
+			<description>If the program executed via a SELECT TRANSFORM() USING &amp;amp;apos;foo&amp;amp;apos; exits with a non-zero exit status, Hive proceeds as if nothing bad happened.  The main way that the user knows something bad has happened is if the user checks the logs (probably because he got no output).  This is doubly bad if the program only fails part of the time (say, on certain inputs) since the job will still produce output and thus the problem will likely go undetected.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FileSinkOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Operator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-18 22:02:38" id="253" opendate="2009-01-28 00:52:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>rand() gets precomputated in compilation phase</summary>
+			
+			
+			<description>SELECT * FROM t WHERE rand() &amp;lt; 0.01;
+Hive will say: &quot;No need to submit job&quot;, because the condition evaluates to false.
+The rand() function is special in the sense that every time it evaluates to a different value. We should disallow computing the value in the compiling phase.
+One way to do that is to add an annotation in the UDFRand and check that in the compiling phase.
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.PartitionPruner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.UDFRand.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.UDF.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">325</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-24 23:49:56" id="337" opendate="2009-03-10 23:31:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>LazySimpleSerDe should support multi-level nested array, map, struct types</summary>
+			
+			
+			<description>Once we do that, we can completely deprecate DynamicSerDe/TCTLSeparatedProtocol, and close any bugs that DynamicSerDe/TCTLSeparatedProtocol has.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.TestExecDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.exprNodeColumnDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.StandardMapObjectInspector.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.ql.typeinfo.StructTypeInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyByte.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.LazySimpleStructObjectInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.GroupByOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.TestOperators.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.TestLazySimpleSerDe.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.InputSignature.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.exprNodeDesc.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.ql.typeinfo.PrimitiveTypeInfo.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.ql.typeinfo.TypeInfoUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.exprNodeFieldDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyLong.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExprNodeFuncEvaluator.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.ql.typeinfo.TypeInfo.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.ql.typeinfo.TypeInfoFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.exprNodeConstantDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.TestPlan.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.PartitionPruner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyObject.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyInteger.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.PlanUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyString.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyPrimitive.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.exprNodeNullDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyStruct.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.ql.typeinfo.MapTypeInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.TypeCheckProcFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.MapObjectInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.exprNodeIndexDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.TestLazyPrimitive.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyDouble.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.exprNodeFuncDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyShort.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ColumnInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecDriver.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.ql.typeinfo.ListTypeInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.TestExpressionEvaluator.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">336</link>
+			
+			
+			<link description="blocks" type="Blocker">136</link>
+			
+			
+			<link description="blocks" type="Blocker">365</link>
+			
+			
+			<link description="blocks" type="Blocker">352</link>
+			
+			
+			<link description="blocks" type="Blocker">358</link>
+			
+			
+			<link description="blocks" type="Blocker">266</link>
+			
+			
+			<link description="is blocked by" type="Blocker">270</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-25 21:14:48" id="342" opendate="2009-03-11 17:37:25" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestMTQueries is broken</summary>
+			
+			
+			<description>It has been broken for quite sometime but the build is not failing.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QTestUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is blocked by" type="Blocker">349</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-01-21 00:55:23" id="1064" opendate="2010-01-18 11:56:05" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NPE when operating HiveCLI in distributed mode</summary>
+			
+			
+			<description>
+
+
+hive&amp;gt; select id, name from tab_a;
+
+select id, name from tab_a;
+
+10/01/18 03:55:59 INFO parse.ParseDriver: Parsing command: select id, name from tab_a
+
+10/01/18 03:55:59 INFO parse.ParseDriver: Parse Completed
+
+10/01/18 03:55:59 INFO parse.SemanticAnalyzer: Starting Semantic Analysis
+
+10/01/18 03:55:59 INFO parse.SemanticAnalyzer: Completed phase 1 of Semantic Analysis
+
+10/01/18 03:55:59 INFO parse.SemanticAnalyzer: Get metadata for source tables
+
+10/01/18 03:55:59 INFO metastore.HiveMetaStore: 0: Opening raw store with implemenation class:org.apache.hadoop.hive.metastore.ObjectStore
+
+10/01/18 03:55:59 INFO metastore.ObjectStore: ObjectStore, initialize called
+
+10/01/18 03:56:03 INFO metastore.ObjectStore: Initialized ObjectStore
+
+10/01/18 03:56:03 INFO metastore.HiveMetaStore: 0: get_table : db=default tbl=tab_a
+
+10/01/18 03:56:03 INFO hive.log: DDL: struct tab_a { i32 id, string file, string name}
+
+10/01/18 03:56:03 INFO parse.SemanticAnalyzer: Get metadata for subqueries
+
+10/01/18 03:56:03 INFO parse.SemanticAnalyzer: Get metadata for destination tables
+
+10/01/18 03:56:04 INFO parse.SemanticAnalyzer: Completed getting MetaData in Semantic Analysis
+
+10/01/18 03:56:04 INFO ppd.OpProcFactory: Processing for FS(2)
+
+10/01/18 03:56:04 INFO ppd.OpProcFactory: Processing for SEL(1)
+
+10/01/18 03:56:04 INFO ppd.OpProcFactory: Processing for TS(0)
+
+10/01/18 03:56:04 INFO hive.log: DDL: struct tab_a { i32 id, string file, string name}
+
+10/01/18 03:56:04 INFO hive.log: DDL: struct tab_a { i32 id, string file, string name}
+
+10/01/18 03:56:04 INFO parse.SemanticAnalyzer: Completed plan generation
+
+10/01/18 03:56:04 INFO ql.Driver: Semantic Analysis Completed
+
+10/01/18 03:56:04 INFO ql.Driver: Starting command: select id, name from tab_a
+
+Total MapReduce jobs = 1
+
+10/01/18 03:56:04 INFO ql.Driver: Total MapReduce jobs = 1
+
+Launching Job 1 out of 1
+
+10/01/18 03:56:04 INFO ql.Driver: Launching Job 1 out of 1
+
+Number of reduce tasks is set to 0 since there&amp;amp;apos;s no reduce operator
+
+10/01/18 03:56:04 INFO exec.ExecDriver: Number of reduce tasks is set to 0 since there&amp;amp;apos;s no reduce operator
+
+FAILED: Unknown exception : null
+
+10/01/18 03:56:04 ERROR ql.Driver: FAILED: Unknown exception : null
+
+java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.conf.HiveConf.getVar(HiveConf.java:288)
+
+	at org.apache.hadoop.hive.ql.exec.ExecDriver.execute(ExecDriver.java:475)
+
+	at org.apache.hadoop.hive.ql.exec.Task.executeTask(Task.java:103)
+
+	at org.apache.hadoop.hive.ql.exec.TaskRunner.runSequential(TaskRunner.java:64)
+
+	at org.apache.hadoop.hive.ql.Driver.launchTask(Driver.java:589)
+
+	at org.apache.hadoop.hive.ql.Driver.execute(Driver.java:469)
+
+	at org.apache.hadoop.hive.ql.Driver.runCommand(Driver.java:329)
+
+	at org.apache.hadoop.hive.ql.Driver.run(Driver.java:317)
+
+	at org.apache.hadoop.hive.cli.CliDriver.processCmd(CliDriver.java:123)
+
+	at org.apache.hadoop.hive.cli.CliDriver.processLine(CliDriver.java:181)
+
+	at org.apache.hadoop.hive.cli.CliDriver.main(CliDriver.java:287)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+
+	at java.lang.reflect.Method.invoke(Method.java:597)
+
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:155)
+
+	at org.apache.hadoop.mapred.JobShell.run(JobShell.java:54)
+
+	at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:65)
+
+	at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:79)
+
+	at org.apache.hadoop.mapred.JobShell.main(JobShell.java:68)
+
+
+
+hive&amp;gt; 
+
+
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FetchTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Task.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FunctionTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">1080</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-02 23:33:46" id="1125" opendate="2010-02-02 18:52:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive CLI shows &amp;apos;Ended Job=&amp;apos; at the beginning of the job</summary>
+			
+			
+			<description>Instead of &quot;Starting Job = &quot;, it prints &quot;Ended Job =&quot;
+
+
+
+Total MapReduce jobs = 1
+
+Launching Job 1 out of 1
+
+Number of reduce tasks is set to 0 since there&amp;amp;apos;s no reduce operator
+
+Ended Job = job_201002012342_2688, Tracking URL = http://silver.data.facebook.com:50030/jobdetails.jsp?jobid=job_201002012342_2688
+
+Kill Command = /data/users/pyang/task2/trunk/dist/shortcuts/silver.trunk/hadoop/bin/../bin/hadoop job  -Dmapred.job.tracker=silver.data.facebook.com:50029 -kill job_201002012342_2688
+
+2010-02-02 10:47:05,067 Stage-1 map = 0%,  reduce = 0%
+
+
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecDriver.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-04 19:43:54" id="1124" opendate="2010-02-02 08:26:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CREATE VIEW should expand the query text consistently</summary>
+			
+			
+			<description>We should expand the omitted alias in the same way in &quot;select&quot; and in &quot;group by&quot;.
+Hive &quot;Group By&quot; recognize &quot;group by&quot; expressions by comparing the literal string.
+
+
+
+hive&amp;gt; create view zshao_view as select d, count(1) as cnt from zshao_tt group by d;
+
+OK
+
+Time taken: 0.286 seconds
+
+hive&amp;gt; select * from zshao_view;
+
+FAILED: Error in semantic analysis: line 1:7 Expression Not In Group By Key d in definition of VIEW zshao_view [
+
+select d, count(1) as `cnt` from `zshao_tt` group by `zshao_tt`.`d`
+
+] used as zshao_view at line 1:14
+
+
+
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.TypeCheckProcFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.RowResolver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.UnparseTranslator.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">972</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-14 02:32:25" id="1167" opendate="2010-02-13 01:50:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Use TreeMap instead of Property to make explain extended deterministic</summary>
+			
+			
+			<description>In some places in the code, we are using Properties class in &quot;explain extended&quot;.
+This makes the order of the lines in the &quot;explain extended&quot; undeterministic because Properties are based on Hashtable class.
+We should add another function to show the properties in sorted order.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExplainTask.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">1117</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-25 08:40:17" id="1184" opendate="2010-02-20 04:20:47" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Expression Not In Group By Key error is sometimes masked</summary>
+			
+			
+			<description>Depending on the order of expressions, the error message for a expression not in group key is not displayed; instead it is null.
+
+
+
+hive&amp;gt; select concat(value, concat(value)) from src group by concat(value);
+
+FAILED: Error in semantic analysis: null
+
+
+
+hive&amp;gt; select concat(concat(value), value) from src group by concat(value);
+
+FAILED: Error in semantic analysis: line 1:29 Expression Not In Group By Key value
+
+
+
+
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.TypeCheckProcFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.TypeCheckCtx.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-23 22:35:02" id="1257" opendate="2010-03-18 22:57:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>joins between HBase tables and other tables (whether HBase or not) are broken</summary>
+			
+			
+			<description>Details in
+http://mail-archives.apache.org/mod_mbox/hadoop-hive-user/201003.mbox/%3C9A53DDE1FE082F4D952FDF20AC87E21F021F3EBC@exchange2.t8design.com%3E</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.HiveInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.CombineHiveInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">705</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-24 01:01:15" id="1273" opendate="2010-03-23 23:09:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>UDF_Percentile NullPointerException</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.UDAFPercentile.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-25 22:37:23" id="1275" opendate="2010-03-24 17:55:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestHBaseCliDriver hangs</summary>
+			
+			
+			<description>TestHBaseCliDriver hangs after running hbase_joins.q
+This can be reproduced by running
+
+
+
+ant test -Dtestcase=TestHBaseCliDriver
+
+
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HBaseQTestUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QTestUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-04-06 06:11:13" id="1291" opendate="2010-04-05 20:49:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix UDAFPercentile ndexOutOfBoundsException</summary>
+			
+			
+			<description>The counts array can be empty. We should directly return null in that case.
+
+
+
+org.apache.hadoop.hive.ql.metadata.HiveException: Unable to execute method public org.apache.hadoop.hive.serde2.io.DoubleWritable org.apache.hadoop.hive.ql.udf.UDAFPercentile$PercentileLongEvaluator.terminate()  on object org.apache.hadoop.hive.ql.udf.UDAFPercentile$PercentileLongEvaluator@530d0eae of class org.apache.hadoop.hive.ql.udf.UDAFPercentile$PercentileLongEvaluator with arguments {} of size 0
+
+	at org.apache.hadoop.hive.ql.exec.FunctionRegistry.invoke(FunctionRegistry.java:725)
+
+	at org.apache.hadoop.hive.ql.udf.generic.GenericUDAFBridge$GenericUDAFBridgeEvaluator.terminate(GenericUDAFBridge.java:181)
+
+	at org.apache.hadoop.hive.ql.udf.generic.GenericUDAFEvaluator.evaluate(GenericUDAFEvaluator.java:157)
+
+	at org.apache.hadoop.hive.ql.exec.GroupByOperator.forward(GroupByOperator.java:838)
+
+	at org.apache.hadoop.hive.ql.exec.GroupByOperator.closeOp(GroupByOperator.java:885)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.close(Operator.java:539)
+
+	at org.apache.hadoop.hive.ql.exec.ExecReducer.close(ExecReducer.java:300)
+
+	at org.apache.hadoop.mapred.ReduceTask.runOldReducer(ReduceTask.java:474)
+
+	at org.apache.hadoop.mapred.ReduceTask.run(ReduceTask.java:412)
+
+	at org.apache.hadoop.mapred.Child.main(Child.java:159)
+
+Caused by: java.lang.reflect.InvocationTargetException
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+
+	at java.lang.reflect.Method.invoke(Method.java:597)
+
+	at org.apache.hadoop.hive.ql.exec.FunctionRegistry.invoke(FunctionRegistry.java:701)
+
+	... 9 more
+
+Caused by: java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+
+	at java.util.ArrayList.RangeCheck(ArrayList.java:547)
+
+	at java.util.ArrayList.get(ArrayList.java:322)
+
+	at org.apache.hadoop.hive.ql.udf.UDAFPercentile.getPercentile(UDAFPercentile.java:97)
+
+	at org.apache.hadoop.hive.ql.udf.UDAFPercentile.access$300(UDAFPercentile.java:44)
+
+	at org.apache.hadoop.hive.ql.udf.UDAFPercentile$PercentileLongEvaluator.terminate(UDAFPercentile.java:196)
+
+	... 14 more
+
+
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.UDAFPercentile.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-04-16 03:52:11" id="1312" opendate="2010-04-15 07:55:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>hive trunk does not compile with hadoop 0.17 any more</summary>
+			
+			
+			<description>This is caused by HIVE-1295.
+
+
+
+compile:
+
+     [echo] Compiling: hive
+
+    [javac] Compiling 527 source files to /hadoop_hive_trunk/.ptest_0/build/ql/classes
+
+    [javac] /hadoop_hive_trunk/.ptest_0/ql/src/java/org/apache/hadoop/hive/ql/io/HiveNullValueSequenceFileOu\
+
+tputFormat.java:69: cannot find symbol
+
+    [javac] symbol  : method getBytes()
+
+    [javac] location: class org.apache.hadoop.io.BytesWritable
+
+    [javac]           keyWritable.set(bw.getBytes(), 0, bw.getLength());
+
+    [javac]                             ^
+
+    [javac] /hadoop_hive_trunk/.ptest_0/ql/src/java/org/apache/hadoop/hive/ql/io/HiveNullValueSequenceFileOu\
+
+tputFormat.java:69: cannot find symbol
+
+    [javac] symbol  : method getLength()
+
+    [javac] location: class org.apache.hadoop.io.BytesWritable
+
+    [javac]           keyWritable.set(bw.getBytes(), 0, bw.getLength());
+
+    [javac]                                               ^
+
+    [javac] Note: Some input files use or override a deprecated API.
+
+    [javac] Note: Recompile with -Xlint:deprecation for details.
+
+    [javac] Note: Some input files use unchecked or unsafe operations.
+
+    [javac] Note: Recompile with -Xlint:unchecked for details.
+
+    [javac] 2 errors
+
+
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.HiveNullValueSequenceFileOutputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-04-20 19:29:07" id="1315" opendate="2010-04-20 05:19:05" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>bucketed sort merge join breaks after dynamic partition insert</summary>
+			
+			
+			<description>bucketed sort merge join produces wrong bucket number due to HIVE-1002 patch, which breaks HIVE-1290.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FileSinkOperator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-04-23 01:08:53" id="1320" opendate="2010-04-22 22:50:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NPE with lineage in a query of union alls on joins.</summary>
+			
+			
+			<description>The following query generates a NPE in the lineage ctx code
+EXPLAIN
+INSERT OVERWRITE TABLE dest_l1
+SELECT j.*
+FROM (SELECT t1.key, p1.value
+      FROM src1 t1
+      LEFT OUTER JOIN src p1
+      ON (t1.key = p1.key)
+      UNION ALL
+      SELECT t2.key, p2.value
+      FROM src1 t2
+      LEFT OUTER JOIN src p2
+      ON (t2.key = p2.key)) j;
+The stack trace is:
+FAILED: Hive Internal Error: java.lang.NullPointerException(null)
+java.lang.NullPointerException
+at org.apache.hadoop.hive.ql.optimizer.lineage.LineageCtx$Index.mergeDependency(LineageCtx.java:116)
+at org.apache.hadoop.hive.ql.optimizer.lineage.OpProcFactory$UnionLineage.process(OpProcFactory.java:396)
+at org.apache.hadoop.hive.ql.lib.DefaultRuleDispatcher.dispatch(DefaultRuleDispatcher.java:89)
+at org.apache.hadoop.hive.ql.lib.DefaultGraphWalker.dispatch(DefaultGraphWalker.java:88)
+at org.apache.hadoop.hive.ql.lib.PreOrderWalker.walk(PreOrderWalker.java:54)
+at org.apache.hadoop.hive.ql.lib.PreOrderWalker.walk(PreOrderWalker.java:59)
+at org.apache.hadoop.hive.ql.lib.PreOrderWalker.walk(PreOrderWalker.java:59)
+at org.apache.hadoop.hive.ql.lib.PreOrderWalker.walk(PreOrderWalker.java:59)
+at org.apache.hadoop.hive.ql.lib.PreOrderWalker.walk(PreOrderWalker.java:59)
+at org.apache.hadoop.hive.ql.lib.PreOrderWalker.walk(PreOrderWalker.java:59)
+at org.apache.hadoop.hive.ql.lib.DefaultGraphWalker.startWalking(DefaultGraphWalker.java:102)
+at org.apache.hadoop.hive.ql.optimizer.lineage.Generator.transform(Generator.java:72)
+at org.apache.hadoop.hive.ql.optimizer.Optimizer.optimize(Optimizer.java:83)
+at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.analyzeInternal(SemanticAnalyzer.java:5976)
+at org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.analyze(BaseSemanticAnalyzer.java:126)
+at org.apache.hadoop.hive.ql.parse.ExplainSemanticAnalyzer.analyzeInternal(ExplainSemanticAnalyzer.java:48)
+at org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.analyze(BaseSemanticAnalyzer.java:126)</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.lineage.OpProcFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-04-26 23:13:02" id="1321" opendate="2010-04-22 23:14:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>bugs with temp directories, trailing blank fields in HBase bulk load</summary>
+			
+			
+			<description>HIVE-1295 had two bugs discovered during testing with production data:
+(1) extra directories may be present in the output directory depending on how the cluster is configured; we need to walk down these to find the column family directory
+(2) if a record ends with fields which are blank strings, the text format omits the corresponding Control-A delimiters, so we need to fill in blanks for these fields (instead of throwing ArrayIndexOutOfBoundsException)</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HiveHFileOutputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">1295</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-04-29 17:22:27" id="1330" opendate="2010-04-29 04:35:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>fatal error check omitted for reducer-side operators</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecDriver.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-06 19:07:41" id="1317" opendate="2010-04-22 01:02:47" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CombineHiveInputFormat throws exception when partition name contains special characters to URI</summary>
+			
+			
+			<description>If a partition name contains characters such as &amp;amp;apos;:&amp;amp;apos; and &amp;amp;apos;|&amp;amp;apos; which have special meaning in URI (hdfs uses URI internally for Path), CombineHiveInputFormat throws an exception. URI was created in CombineHiveInputFormat to compare a path belongs to a partition in partitionToPathInfo. We should bypass URI creation by just string comparisons. </description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.CombineHiveInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop20Shims.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-12 19:49:28" id="1341" opendate="2010-05-11 18:00:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Filter Operator Column Pruning should preserve the column order</summary>
+			
+			
+			<description>The column pruning process for the filter operator should preserve the order of input columns, otherwise it could result in miss match in columns in the down stream operators. </description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazybinary.LazyBinaryFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazybinary.LazyBinaryUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazybinary.LazyBinaryStruct.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.objectinspector.primitive.LazyPrimitiveObjectInspectorFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.ColumnPrunerProcFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1340</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-06-02 04:24:13" id="1377" opendate="2010-05-28 21:55:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>getPartitionDescFromPath() in CombineHiveInputFormat should handle matching by path</summary>
+			
+			
+			<description>The use case is:
+
+
+
+dir = hdfs://host:9000/user/warehouse/tableName/abc
+
+pathToPartitionInfo = {/user/warehouse/tableName : myPart}
+
+
+
+Then calling 
+
+ 
+
+getPartitionDescFromPath(dir, pathToPartitionInfo)
+
+
+
+will throw an IOException because /user/warehouse/tableName is not a prefix of hdfs://host:9000/user/warehouse/tableName/abc. Currently, this is not an issue but will come up if CombineFileInputFormat is modified so what the scheme and authority are not stripped out  when generating splits (see MAPREDUCE-1806).
+The proposed solution is add a case where matching is done by just the path component of the URI&amp;amp;apos;s.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.CombineHiveInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-06-10 16:49:14" id="1187" opendate="2010-02-22 16:51:16" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Implement ddldump utility for Hive Metastore</summary>
+			
+			
+			<description>Implement a ddldump utility for the Hive metastore that will generate the QL DDL necessary to recreate the state of the current metastore on another metastore instance.
+A major use case for this utility is migrating a metastore from one database to another database, e.g. from an embedded Derby instanced to a MySQL instance.
+The ddldump utility should support the following features:
+
+Ability to generate DDL for specific tables or all tables.
+Ability to specify a table name prefix for the generated DDL, which will be useful for resolving table name conflicts.
+
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzerFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.HiveOperation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.ErrorMsg.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.DDLWork.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">967</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-06-15 22:04:53" id="1409" opendate="2010-06-15 03:26:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>File format information is retrieved from first partition</summary>
+			
+			
+			<description>Currently, if no partitions match the partition predicate, the first partition is used to retrieve the file format. This can cause an problem if the table is set to use RCFile, but the first partition uses SequenceFile:
+
+
+
+java.lang.RuntimeException: java.lang.NoSuchMethodException: org.apache.hadoop.hive.ql.io.RCFile$KeyBuffer.()
+
+	at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:115)
+
+	at org.apache.hadoop.mapred.SequenceFileRecordReader.createKey(SequenceFileRecordReader.java:65)
+
+	at org.apache.hadoop.hive.ql.io.CombineHiveRecordReader.createKey(CombineHiveRecordReader.java:76)
+
+	at org.apache.hadoop.hive.ql.io.CombineHiveRecordReader.createKey(CombineHiveRecordReader.java:42)
+
+	at org.apache.hadoop.hive.shims.Hadoop20Shims$CombineFileRecordReader.createKey(Hadoop20Shims.java:212)
+
+	at org.apache.hadoop.mapred.MapTask$TrackedRecordReader.createKey(MapTask.java:167)
+
+	at org.apache.hadoop.mapred.MapRunner.run(MapRunner.java:45)
+
+	at org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:358)
+
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:307)
+
+	at org.apache.hadoop.mapred.Child.main(Child.java:159)
+
+Caused by: java.lang.NoSuchMethodException: org.apache.hadoop.hive.ql.io.RCFile$KeyBuffer.()
+
+	at java.lang.Class.getConstructor0(Class.java:2706)
+
+	at java.lang.Class.getDeclaredConstructor(Class.java:1985)
+
+	at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:109)
+
+	... 9 more
+
+
+
+
+
+The proposed change is to use the table&amp;amp;apos;s metadata in such cases.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.GenMapRedUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-06-22 01:18:01" id="1412" opendate="2010-06-17 19:44:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CombineHiveInputFormat bug on tablesample</summary>
+			
+			
+			<description>CombineHiveInputFormat should combine all files inside one partition to form a split but should not takes files cross partition boundary. This works for regular table and partitions since all input paths are directory. However this breaks when the input is files (in which case tablesample could be the use case). CombineHiveInputFormat should adjust to the case when input could also be non-directories. </description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.CombineHiveInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-12 01:24:40" id="287" opendate="2009-02-12 19:31:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>support count(*) and count distinct on multiple columns</summary>
+			
+			
+			<description>The following query does not work:
+select count(distinct col1, col2) from Tbl</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFHistogramNumeric.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FunctionRegistry.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFCount.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFVariance.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFAverage.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFBridge.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFSum.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFMax.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFResolver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFMin.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">1459</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-27 00:17:27" id="1470" opendate="2010-07-16 22:37:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>percentile_approx() fails with more than 1 reducer</summary>
+			
+			
+			<description>The larger issue is that a UDAF that has variable return types needs two inner Evaluator classes. This patch fixes a NullPointerException bug that is only encountered when partial aggregations are invoked.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFPercentileApprox.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-29 18:55:06" id="1471" opendate="2010-07-17 01:05:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CTAS should unescape the column name in the select-clause. </summary>
+			
+			
+			<description>The following query 
+{{
+{
+
+create table T as select `to` from S;
+
+}
+}}
+failed since `to` should be unescaped before creating the table. </description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-02 23:43:02" id="1422" opendate="2010-06-22 01:33:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>skip counter update when RunningJob.getCounters() returns null</summary>
+			
+			
+			<description>Under heavy load circumstances on some Hadoop versions, we may get a NPE from trying to dereference a null Counters object.  I don&amp;amp;apos;t have a unit test which can reproduce it, but here&amp;amp;apos;s an example stack from a production cluster we saw today:
+10/06/21 13:01:10 ERROR exec.ExecDriver: Ended Job = job_201005200457_701060 with exception &amp;amp;apos;java.lang.NullPointerException(null)&amp;amp;apos;
+java.lang.NullPointerException
+at org.apache.hadoop.hive.ql.exec.Operator.updateCounters(Operator.java:999)
+at org.apache.hadoop.hive.ql.exec.ExecDriver.updateCounters(ExecDriver.java:503)
+at org.apache.hadoop.hive.ql.exec.ExecDriver.progress(ExecDriver.java:390)
+at org.apache.hadoop.hive.ql.exec.ExecDriver.execute(ExecDriver.java:697)
+at org.apache.hadoop.hive.ql.exec.Task.executeTask(Task.java:107)
+at org.apache.hadoop.hive.ql.exec.TaskRunner.runSequential(TaskRunner.java:55)
+at org.apache.hadoop.hive.ql.exec.TaskRunner.run(TaskRunner.java:47)</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapRedTask.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="incorporates" type="Incorporates">1493</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-05 07:38:58" id="1509" opendate="2010-08-04 00:07:51" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Monitor the working set of the number of files </summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Operator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FileSinkOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-12 19:02:54" id="1460" opendate="2010-07-12 21:13:50" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JOIN should not output rows for NULL values</summary>
+			
+			
+			<description>We should filter out rows with NULL keys from the result of this query
+
+
+
+SELECT * FROM a JOIN b on a.key = b.key
+
+
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.SerDeUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.SMBMapJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.AbstractMapJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.JoinOperator.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">741</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-24 22:21:00" id="741" opendate="2009-08-08 03:58:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NULL is not handled correctly in join</summary>
+			
+			
+			<description>With the following data in table input4_cb:
+Key        Value
+------       --------
+NULL     325
+18          NULL
+The following query:
+
+
+
+select * from input4_cb a join input4_cb b on a.key = b.value;
+
+
+
+returns the following result:
+NULL    325    18   NULL
+The correct result should be empty set.
+When &amp;amp;apos;null&amp;amp;apos; is replaced by &amp;amp;apos;&amp;amp;apos; it works.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.SerDeUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.SMBMapJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.AbstractMapJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.JoinOperator.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is a clone of" type="Cloners">734</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1460</link>
+			
+			
+			<link description="incorporates" type="Incorporates">1552</link>
+			
+			
+			<link description="relates to" type="Reference">1552</link>
+			
+			
+			<link description="relates to" type="Reference">2810</link>
+			
+			
+			<link description="relates to" type="Reference">1544</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-29 06:54:46" id="1600" opendate="2010-08-26 21:53:35" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>need to sort hook input/output lists for test result determinism</summary>
+			
+			
+			<description>Begin forwarded message:
+From: Ning Zhang &amp;lt;nzhang@facebook.com&amp;gt;
+Date: August 26, 2010 2:47:26 PM PDT
+To: John Sichi &amp;lt;jsichi@facebook.com&amp;gt;
+Cc: &quot;hive-dev@hadoop.apache.org&quot; &amp;lt;hive-dev@hadoop.apache.org&amp;gt;
+Subject: Re: failure in load_dyn_part1.q
+Yes I saw this error before but if it does not repro. So it&amp;amp;apos;s probably an ordering issue in POSTHOOK. 
+On Aug 26, 2010, at 2:39 PM, John Sichi wrote:
+I&amp;amp;apos;m seeing this failure due to a result diff when running tests on latest trunk:
+POSTHOOK: Input: default@srcpart@ds=2008-04-08/hr=12
+POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=11
+POSTHOOK: Input: default@srcpart@ds=2008-04-09/hr=12
+-POSTHOOK: Output: default@nzhang_part2@ds=2008-12-31/hr=11
+-POSTHOOK: Output: default@nzhang_part2@ds=2008-12-31/hr=12
+POSTHOOK: Output: default@nzhang_part1@ds=2008-04-08/hr=11
+POSTHOOK: Output: default@nzhang_part1@ds=2008-04-08/hr=12
++POSTHOOK: Output: default@nzhang_part2@ds=2008-12-31/hr=11
++POSTHOOK: Output: default@nzhang_part2@ds=2008-12-31/hr=12
+Did something change recently?  Or are we missing a Java-level sort on the input/output list for determinism?
+JVS
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.hooks.PreExecutePrinter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.hooks.PostExecutePrinter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is blocked by" type="Blocker">1601</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-09-20 21:41:07" id="1628" opendate="2010-09-10 18:35:55" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix Base64TextInputFormat to be compatible with commons codec 1.4</summary>
+			
+			
+			<description>Commons-codec 1.4 made an incompatible change to the Base64 class that made line-wrapping default (boo!). This breaks the Base64TextInputFormat in contrib. This patch adds some simple reflection to use the new constructor that uses the old behavior.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.contrib.fileformat.base64.Base64TextOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.contrib.fileformat.base64.Base64TextInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-07 17:02:18" id="1376" opendate="2010-05-28 21:10:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Simple UDAFs with more than 1 parameter crash on empty row query </summary>
+			
+			
+			<description>Simple UDAFs with more than 1 parameter crash when the query returns no rows. Currently, this only seems to affect the percentile() UDAF where the second parameter is the percentile to be computed (of type double). I&amp;amp;apos;ve also verified the bug by adding a dummy parameter to ExampleMin in contrib. 
+On an empty query, Hive seems to be trying to resolve an iterate() method with signature 
+{null,null}
+ instead of 
+{null,double}
+. You can reproduce this bug using:
+CREATE TABLE pct_test ( val INT );
+SELECT percentile(val, 0.5) FROM pct_test;
+which produces a lot of errors like: 
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: Unable to execute method public boolean org.apache.hadoop.hive.ql.udf.UDAFPercentile$PercentileLongEvaluator.iterate(org.apache.hadoop.io.LongWritable,double)  on object org.apache.hadoop.hive.ql.udf.UDAFPercentile$PercentileLongEvaluator@11d13272 of class org.apache.hadoop.hive.ql.udf.UDAFPercentile$PercentileLongEvaluator with arguments 
+{null, null}
+ of size 2</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.UDAFPercentile.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-18 03:26:21" id="1340" opendate="2010-05-11 17:56:48" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>checking VOID type for NULL in LazyBinarySerde</summary>
+			
+			
+			<description>NULL was not handled correctly in LazyBinarySerDe. One example is
+
+
+
+ insert overwrite table T select &amp;amp;apos;1&amp;amp;apos;, NULL from src limit 1;
+
+
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.6.0</fixedVersion>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazybinary.LazyBinaryFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazybinary.LazyBinaryUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazybinary.LazyBinaryStruct.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.objectinspector.primitive.LazyPrimitiveObjectInspectorFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.ColumnPrunerProcFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">1341</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-11-10 06:01:39" id="1771" opendate="2010-11-05 21:49:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ROUND(infinity) chokes</summary>
+			
+			
+			<description>Since 1-arg ROUND returns an integer, it&amp;amp;apos;s hard to fix this without either losing data (return NULL) or making a backwards-incompatible change (return DOUBLE instead of BIGINT).
+In any case, we should definitely fix 2-arg ROUND to preserve infinity/NaN/etc, since it is already returning double.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.UDFRound.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-12-21 04:45:46" id="1857" opendate="2010-12-20 22:55:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>mixed case tablename on lefthand side of LATERAL VIEW results in query failing with confusing error message</summary>
+			
+			
+			<description>For the modified query below in lateral_view.q, the exception &quot;org.apache.hadoop.hive.ql.parse.SemanticException: line 3:7 Invalid Table Alias or Column Reference myCol&quot; is thrown.  The query should succeed.
+SELECT myCol from tmp_PYANG_lv LATERAL VIEW explode(array(1,2,3)) myTab as myCol limit 3;</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.QBParseInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-11 17:28:46" id="1829" opendate="2010-12-03 21:12:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix intermittent failures in TestRemoteMetaStore</summary>
+			
+			
+			<description>Notice how Running metastore! appears twice.
+
+test:
+
+    [junit] Running org.apache.hadoop.hive.metastore.TestEmbeddedHiveMetaStore
+
+    [junit] BR.recoverFromMismatchedToken
+
+    [junit] Tests run: 11, Failures: 0, Errors: 0, Time elapsed: 36.697 sec
+
+    [junit] Running org.apache.hadoop.hive.metastore.TestRemoteHiveMetaStore
+
+    [junit] Running metastore!
+
+    [junit] Running metastore!
+
+    [junit] org.apache.thrift.transport.TTransportException: Could not create ServerSocket on address 0.0.0.0/0.0.0.0:29083.
+
+    [junit] 	at org.apache.thrift.transport.TServerSocket.&amp;lt;init&amp;gt;(TServerSocket.java:98)
+
+    [junit] 	at org.apache.thrift.transport.TServerSocket.&amp;lt;init&amp;gt;(TServerSocket.java:79)
+
+    [junit] 	at org.apache.hadoop.hive.metastore.TServerSocketKeepAlive.&amp;lt;init&amp;gt;(TServerSocketKeepAlive.java:34)
+
+    [junit] 	at org.apache.hadoop.hive.metastore.HiveMetaStore.main(HiveMetaStore.java:2189)
+
+    [junit] 	at org.apache.hadoop.hive.metastore.TestRemoteHiveMetaStore$RunMS.run(TestRemoteHiveMetaStore.java:35)
+
+    [junit] 	at java.lang.Thread.run(Thread.java:619)
+
+    [junit] Running org.apache.hadoop.hive.metastore.TestRemoteHiveMetaStore
+
+    [junit] Tests run: 1, Failures: 0, Errors: 1, Time elapsed: 0 sec
+
+    [junit] Test org.apache.hadoop.hive.metastore.TestRemoteHiveMetaStore FAILED (crashed)
+
+
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.TestRemoteHiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStoreClient.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-24 23:28:15" id="1897" opendate="2011-01-06 14:25:13" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Alter command execution &quot;when HDFS is down&quot; results in holding stale data in MetaStore </summary>
+			
+			
+			<description>Lets  consider, the  &quot;DFS&quot; is down , 
+And on executing an alter query say  &quot;alter table firsttable rename to secondtable&quot;.  
+the query execution fails with the following exception:
+ 
+InvalidOperationException(message:Unable to access old location hdfs://localhost:9000/user/hive/warehouse/firsttable for table default.firsttable)
+Now after starting the DFS and then executing the same query , the client gets the following exception:
+
+NoSuchObjectException(message:default.firsttable table not found)
+Root Cause
+In Alter Query execution flow, first &quot;MetaStore&quot; operation is executed successfully and then &quot;DFS&quot; operation is started. In this scenario, &quot;DFS&quot; is down. As a result, execution of the query failed and partial information of the operation is saved.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveAlterHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-01-24 23:31:48" id="1908" opendate="2011-01-11 10:38:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FileHandler leak on partial iteration of the resultset. </summary>
+			
+			
+			<description>If the &quot;resultset&quot; is not iterated completely ,  one filehandler is leaking
+Ex: We need only first row. This case one resource is leaking
+
+
+
+
+
+ResultSet resultSet = createStatement.executeQuery(&quot;select * from sampletable&quot;);
+
+
+
+if (resultSet.next())
+
+{
+
+	System.out.println(resultSet.getString(1)+&quot;   &quot;+resultSet.getString(2));
+
+} 
+
+
+
+
+
+Command used for checking the filehandlers
+
+
+
+lsof -p {hive_process_id} &amp;gt; runjarlsof.txt
+
+
+
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.7.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Driver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FetchTask.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-08-30 22:18:24" id="2382" opendate="2011-08-17 00:55:51" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Invalid predicate pushdown from incorrect column expression map for select operator generated by GROUP BY operation</summary>
+			
+			
+			<description>When a GROUP BY is specified, a select operator is added before the GROUP BY in SemanticAnalyzer.insertSelectAllPlanForGroupBy.  Currently, the column expression map for this is set to the column expression map for the parent operator.  This behavior is incorrect as, for example, the parent operator could rearrange the order of the columns (_col0 =&amp;gt; _col0, _col1 =&amp;gt; _col2, _col2 =&amp;gt; _col1) and the new operator should not repeat this.
+The predicate pushdown optimization uses the column expression map to track which columns a filter expression refers to at different operators.  This results in a filter on incorrect columns.
+Here is a simple case of this going wrong: Using
+
+create table invites (id int, foo int, bar int);
+
+
+
+executing the query
+
+explain select * from (select foo, bar from (select bar, foo from invites c union all select bar, foo from invites d) b) a group by bar, foo having bar=1;
+
+
+
+results in
+
+STAGE DEPENDENCIES:
+
+  Stage-1 is a root stage
+
+  Stage-0 is a root stage
+
+
+
+STAGE PLANS:
+
+  Stage: Stage-1
+
+    Map Reduce
+
+      Alias -&amp;gt; Map Operator Tree:
+
+        a-subquery1:b-subquery1:c 
+
+          TableScan
+
+            alias: c
+
+            Filter Operator
+
+              predicate:
+
+                  expr: (foo = 1)
+
+                  type: boolean
+
+              Select Operator
+
+                expressions:
+
+                      expr: bar
+
+                      type: int
+
+                      expr: foo
+
+                      type: int
+
+                outputColumnNames: _col0, _col1
+
+                Union
+
+                  Select Operator
+
+                    expressions:
+
+                          expr: _col1
+
+                          type: int
+
+                          expr: _col0
+
+                          type: int
+
+                    outputColumnNames: _col0, _col1
+
+                    Select Operator
+
+                      expressions:
+
+                            expr: _col0
+
+                            type: int
+
+                            expr: _col1
+
+                            type: int
+
+                      outputColumnNames: _col0, _col1
+
+                      Group By Operator
+
+                        bucketGroup: false
+
+                        keys:
+
+                              expr: _col1
+
+                              type: int
+
+                              expr: _col0
+
+                              type: int
+
+                        mode: hash
+
+                        outputColumnNames: _col0, _col1
+
+                        Reduce Output Operator
+
+                          key expressions:
+
+                                expr: _col0
+
+                                type: int
+
+                                expr: _col1
+
+                                type: int
+
+                          sort order: ++
+
+                          Map-reduce partition columns:
+
+                                expr: _col0
+
+                                type: int
+
+                                expr: _col1
+
+                                type: int
+
+                          tag: -1
+
+        a-subquery2:b-subquery2:d 
+
+          TableScan
+
+            alias: d
+
+            Filter Operator
+
+              predicate:
+
+                  expr: (foo = 1)
+
+                  type: boolean
+
+              Select Operator
+
+                expressions:
+
+                      expr: bar
+
+                      type: int
+
+                      expr: foo
+
+                      type: int
+
+                outputColumnNames: _col0, _col1
+
+                Union
+
+                  Select Operator
+
+                    expressions:
+
+                          expr: _col1
+
+                          type: int
+
+                          expr: _col0
+
+                          type: int
+
+                    outputColumnNames: _col0, _col1
+
+                    Select Operator
+
+                      expressions:
+
+                            expr: _col0
+
+                            type: int
+
+                            expr: _col1
+
+                            type: int
+
+                      outputColumnNames: _col0, _col1
+
+                      Group By Operator
+
+                        bucketGroup: false
+
+                        keys:
+
+                              expr: _col1
+
+                              type: int
+
+                              expr: _col0
+
+                              type: int
+
+                        mode: hash
+
+                        outputColumnNames: _col0, _col1
+
+                        Reduce Output Operator
+
+                          key expressions:
+
+                                expr: _col0
+
+                                type: int
+
+                                expr: _col1
+
+                                type: int
+
+                          sort order: ++
+
+                          Map-reduce partition columns:
+
+                                expr: _col0
+
+                                type: int
+
+                                expr: _col1
+
+                                type: int
+
+                          tag: -1
+
+      Reduce Operator Tree:
+
+        Group By Operator
+
+          bucketGroup: false
+
+          keys:
+
+                expr: KEY._col0
+
+                type: int
+
+                expr: KEY._col1
+
+                type: int
+
+          mode: mergepartial
+
+          outputColumnNames: _col0, _col1
+
+          Select Operator
+
+            expressions:
+
+                  expr: _col0
+
+                  type: int
+
+                  expr: _col1
+
+                  type: int
+
+            outputColumnNames: _col0, _col1
+
+            File Output Operator
+
+              compressed: false
+
+              GlobalTableId: 0
+
+              table:
+
+                  input format: org.apache.hadoop.mapred.TextInputFormat
+
+                  output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+
+
+
+  Stage: Stage-0
+
+    Fetch Operator
+
+      limit: -1
+
+
+
+Note that the filter is now &quot;foo = 1&quot;, while the correct behavior is to have &quot;bar = 1&quot;.  If we remove the group by, the behavior is correct.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is part of" type="Incorporates">1342</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-08-31 23:42:00" id="2383" opendate="2011-08-17 00:55:55" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Incorrect alias filtering for predicate pushdown</summary>
+			
+			
+			<description>The predicate pushdown optimizer starts at the topmost operators traverses the operator tree, at each stage collecting predicates to be pushed down.  At each operator, ive.ql.ppd.OpProcFactory.DefaultPPD.mergeWithChildrenPred is called, which merges the predicates of the children nodes into the current node.  The predicates are stored in hive.ql.ppd.ExprWalkerInfo.pushdownPreds as a map from the alias a predicate refers to (a predicate may only refer to one alias at a time as only such predicates can be pushed) to a list of such predicates.  Since at each stage the alias the predicate refers to may change (subqueries may change aliases), this is updated for each operator (hive.ql.ppd.ExprWalkerProcFactory.extractPushdownPreds is called which walks the ExprNodeDesc for each predicate). When a JoinOperator is encountered, mergeWithChildrenPred is passed an optional parameter &quot;aliases&quot; which contains a set of aliases that can be pushed per ansi semantics (see hive.ql.ppd.OpProcFactory.JoinPPD.getQualifiedAliases).  The part that is incorrect is that aliases are filtered in mergeWithChildrenPred before extractPushdownPreds is called, which associates the predicates with the correct alias in the current operator&amp;amp;apos;s context while the filtering should happen after.
+In test case Q2 below, when the predicate &quot;a.bar=3&quot; comes into the JoinOperator, the alias is &quot;a&quot; coming in so it is accepted for pushdown.  When brought into the JoinOperator&amp;amp;apos;s context, however, since the predicate refers to b.foo in the inner scope, we should not actually accept this for pushdown.
+With the test cases
+
+-- Q1: predicate should not be pushed on the right side of a left outer join (this is correct in trunk)
+
+explain
+
+SELECT a.foo as foo1, b.foo as foo2, b.bar
+
+FROM pokes a LEFT OUTER JOIN pokes2 b
+
+ON a.foo=b.foo
+
+WHERE b.bar=3;
+
+
+
+-- Q2: predicate should not be pushed on the right side of a left outer join (this is broken in trunk)
+
+explain
+
+SELECT * FROM
+
+    (SELECT a.foo as foo1, b.foo as foo2, b.bar
+
+    FROM pokes a LEFT OUTER JOIN pokes2 b
+
+    ON a.foo=b.foo) a
+
+WHERE a.bar=3;
+
+
+
+-- Q3: predicate should be pushed (this is correct in trunk)
+
+explain
+
+SELECT * FROM
+
+    (SELECT a.foo as foo1, b.foo as foo2, a.bar
+
+    FROM pokes a JOIN pokes2 b
+
+    ON a.foo=b.foo) a
+
+WHERE a.bar=3;
+
+
+
+The current output is
+
+hive&amp;gt; 
+
+    &amp;gt; -- Q1: predicate should not be pushed on the right side of a left outer join
+
+    &amp;gt; explain
+
+    &amp;gt; SELECT a.foo as foo1, b.foo as foo2, b.bar
+
+    &amp;gt; FROM pokes a LEFT OUTER JOIN pokes2 b
+
+    &amp;gt; ON a.foo=b.foo
+
+    &amp;gt; WHERE b.bar=3;
+
+OK
+
+ABSTRACT SYNTAX TREE:
+
+  (TOK_QUERY (TOK_FROM (TOK_LEFTOUTERJOIN (TOK_TABREF (TOK_TABNAME pokes) a) (TOK_TABREF (TOK_TABNAME pokes2) b) (= (. (TOK_TABLE_OR_COL a) foo) (. (TOK_TABLE_OR_COL b) foo)))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) foo) foo1) (TOK_SELEXPR (. (TOK_TABLE_OR_COL b) foo) foo2) (TOK_SELEXPR (. (TOK_TABLE_OR_COL b) bar))) (TOK_WHERE (= (. (TOK_TABLE_OR_COL b) bar) 3))))
+
+
+
+STAGE DEPENDENCIES:
+
+  Stage-1 is a root stage
+
+  Stage-0 is a root stage
+
+
+
+STAGE PLANS:
+
+  Stage: Stage-1
+
+    Map Reduce
+
+      Alias -&amp;gt; Map Operator Tree:
+
+        a 
+
+          TableScan
+
+            alias: a
+
+            Reduce Output Operator
+
+              key expressions:
+
+                    expr: foo
+
+                    type: int
+
+              sort order: +
+
+              Map-reduce partition columns:
+
+                    expr: foo
+
+                    type: int
+
+              tag: 0
+
+              value expressions:
+
+                    expr: foo
+
+                    type: int
+
+        b 
+
+          TableScan
+
+            alias: b
+
+            Reduce Output Operator
+
+              key expressions:
+
+                    expr: foo
+
+                    type: int
+
+              sort order: +
+
+              Map-reduce partition columns:
+
+                    expr: foo
+
+                    type: int
+
+              tag: 1
+
+              value expressions:
+
+                    expr: foo
+
+                    type: int
+
+                    expr: bar
+
+                    type: int
+
+      Reduce Operator Tree:
+
+        Join Operator
+
+          condition map:
+
+               Left Outer Join0 to 1
+
+          condition expressions:
+
+            0 {VALUE._col0}
+
+            1 {VALUE._col0} {VALUE._col1}
+
+          handleSkewJoin: false
+
+          outputColumnNames: _col0, _col4, _col5
+
+          Filter Operator
+
+            predicate:
+
+                expr: (_col5 = 3)
+
+                type: boolean
+
+            Select Operator
+
+              expressions:
+
+                    expr: _col0
+
+                    type: int
+
+                    expr: _col4
+
+                    type: int
+
+                    expr: _col5
+
+                    type: int
+
+              outputColumnNames: _col0, _col1, _col2
+
+              File Output Operator
+
+                compressed: false
+
+                GlobalTableId: 0
+
+                table:
+
+                    input format: org.apache.hadoop.mapred.TextInputFormat
+
+                    output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+
+
+
+  Stage: Stage-0
+
+    Fetch Operator
+
+      limit: -1
+
+
+
+
+
+Time taken: 0.113 seconds
+
+hive&amp;gt; 
+
+    &amp;gt; -- Q2: predicate should not be pushed on the right side of a left outer join
+
+    &amp;gt; explain
+
+    &amp;gt; SELECT * FROM
+
+    &amp;gt;     (SELECT a.foo as foo1, b.foo as foo2, b.bar
+
+    &amp;gt;     FROM pokes a LEFT OUTER JOIN pokes2 b
+
+    &amp;gt;     ON a.foo=b.foo) a
+
+    &amp;gt; WHERE a.bar=3;
+
+OK
+
+ABSTRACT SYNTAX TREE:
+
+  (TOK_QUERY (TOK_FROM (TOK_SUBQUERY (TOK_QUERY (TOK_FROM (TOK_LEFTOUTERJOIN (TOK_TABREF (TOK_TABNAME pokes) a) (TOK_TABREF (TOK_TABNAME pokes2) b) (= (. (TOK_TABLE_OR_COL a) foo) (. (TOK_TABLE_OR_COL b) foo)))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) foo) foo1) (TOK_SELEXPR (. (TOK_TABLE_OR_COL b) foo) foo2) (TOK_SELEXPR (. (TOK_TABLE_OR_COL b) bar))))) a)) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR TOK_ALLCOLREF)) (TOK_WHERE (= (. (TOK_TABLE_OR_COL a) bar) 3))))
+
+
+
+STAGE DEPENDENCIES:
+
+  Stage-1 is a root stage
+
+  Stage-0 is a root stage
+
+
+
+STAGE PLANS:
+
+  Stage: Stage-1
+
+    Map Reduce
+
+      Alias -&amp;gt; Map Operator Tree:
+
+        a:a 
+
+          TableScan
+
+            alias: a
+
+            Reduce Output Operator
+
+              key expressions:
+
+                    expr: foo
+
+                    type: int
+
+              sort order: +
+
+              Map-reduce partition columns:
+
+                    expr: foo
+
+                    type: int
+
+              tag: 0
+
+              value expressions:
+
+                    expr: foo
+
+                    type: int
+
+        a:b 
+
+          TableScan
+
+            alias: b
+
+            Filter Operator
+
+              predicate:
+
+                  expr: (bar = 3)
+
+                  type: boolean
+
+              Reduce Output Operator
+
+                key expressions:
+
+                      expr: foo
+
+                      type: int
+
+                sort order: +
+
+                Map-reduce partition columns:
+
+                      expr: foo
+
+                      type: int
+
+                tag: 1
+
+                value expressions:
+
+                      expr: foo
+
+                      type: int
+
+                      expr: bar
+
+                      type: int
+
+      Reduce Operator Tree:
+
+        Join Operator
+
+          condition map:
+
+               Left Outer Join0 to 1
+
+          condition expressions:
+
+            0 {VALUE._col0}
+
+            1 {VALUE._col0} {VALUE._col1}
+
+          handleSkewJoin: false
+
+          outputColumnNames: _col0, _col4, _col5
+
+          Select Operator
+
+            expressions:
+
+                  expr: _col0
+
+                  type: int
+
+                  expr: _col4
+
+                  type: int
+
+                  expr: _col5
+
+                  type: int
+
+            outputColumnNames: _col0, _col1, _col2
+
+            Select Operator
+
+              expressions:
+
+                    expr: _col0
+
+                    type: int
+
+                    expr: _col1
+
+                    type: int
+
+                    expr: _col2
+
+                    type: int
+
+              outputColumnNames: _col0, _col1, _col2
+
+              File Output Operator
+
+                compressed: false
+
+                GlobalTableId: 0
+
+                table:
+
+                    input format: org.apache.hadoop.mapred.TextInputFormat
+
+                    output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+
+
+
+  Stage: Stage-0
+
+    Fetch Operator
+
+      limit: -1
+
+
+
+
+
+Time taken: 0.101 seconds
+
+hive&amp;gt; 
+
+    &amp;gt; -- Q3: predicate should be pushed
+
+    &amp;gt; explain
+
+    &amp;gt; SELECT * FROM
+
+    &amp;gt;     (SELECT a.foo as foo1, b.foo as foo2, a.bar
+
+    &amp;gt;     FROM pokes a JOIN pokes2 b
+
+    &amp;gt;     ON a.foo=b.foo) a
+
+    &amp;gt; WHERE a.bar=3;
+
+OK
+
+ABSTRACT SYNTAX TREE:
+
+  (TOK_QUERY (TOK_FROM (TOK_SUBQUERY (TOK_QUERY (TOK_FROM (TOK_JOIN (TOK_TABREF (TOK_TABNAME pokes) a) (TOK_TABREF (TOK_TABNAME pokes2) b) (= (. (TOK_TABLE_OR_COL a) foo) (. (TOK_TABLE_OR_COL b) foo)))) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) foo) foo1) (TOK_SELEXPR (. (TOK_TABLE_OR_COL b) foo) foo2) (TOK_SELEXPR (. (TOK_TABLE_OR_COL a) bar))))) a)) (TOK_INSERT (TOK_DESTINATION (TOK_DIR TOK_TMP_FILE)) (TOK_SELECT (TOK_SELEXPR TOK_ALLCOLREF)) (TOK_WHERE (= (. (TOK_TABLE_OR_COL a) bar) 3))))
+
+
+
+STAGE DEPENDENCIES:
+
+  Stage-1 is a root stage
+
+  Stage-0 is a root stage
+
+
+
+STAGE PLANS:
+
+  Stage: Stage-1
+
+    Map Reduce
+
+      Alias -&amp;gt; Map Operator Tree:
+
+        a:a 
+
+          TableScan
+
+            alias: a
+
+            Filter Operator
+
+              predicate:
+
+                  expr: (bar = 3)
+
+                  type: boolean
+
+              Reduce Output Operator
+
+                key expressions:
+
+                      expr: foo
+
+                      type: int
+
+                sort order: +
+
+                Map-reduce partition columns:
+
+                      expr: foo
+
+                      type: int
+
+                tag: 0
+
+                value expressions:
+
+                      expr: foo
+
+                      type: int
+
+                      expr: bar
+
+                      type: int
+
+        a:b 
+
+          TableScan
+
+            alias: b
+
+            Reduce Output Operator
+
+              key expressions:
+
+                    expr: foo
+
+                    type: int
+
+              sort order: +
+
+              Map-reduce partition columns:
+
+                    expr: foo
+
+                    type: int
+
+              tag: 1
+
+              value expressions:
+
+                    expr: foo
+
+                    type: int
+
+      Reduce Operator Tree:
+
+        Join Operator
+
+          condition map:
+
+               Inner Join 0 to 1
+
+          condition expressions:
+
+            0 {VALUE._col0} {VALUE._col1}
+
+            1 {VALUE._col0}
+
+          handleSkewJoin: false
+
+          outputColumnNames: _col0, _col1, _col4
+
+          Select Operator
+
+            expressions:
+
+                  expr: _col0
+
+                  type: int
+
+                  expr: _col4
+
+                  type: int
+
+                  expr: _col1
+
+                  type: int
+
+            outputColumnNames: _col0, _col1, _col2
+
+            Select Operator
+
+              expressions:
+
+                    expr: _col0
+
+                    type: int
+
+                    expr: _col1
+
+                    type: int
+
+                    expr: _col2
+
+                    type: int
+
+              outputColumnNames: _col0, _col1, _col2
+
+              File Output Operator
+
+                compressed: false
+
+                GlobalTableId: 0
+
+                table:
+
+                    input format: org.apache.hadoop.mapred.TextInputFormat
+
+                    output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+
+
+
+  Stage: Stage-0
+
+    Fetch Operator
+
+      limit: -1
+
+
+
+Note that Q2 is incorrect because the predicate &quot;bar = 3&quot; is incorrectly pushed to the right side of the left outer join (Q1 and Q3 are correct).</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.ppd.ExprWalkerInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.ppd.OpProcFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.ppd.ExprWalkerProcFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is part of" type="Incorporates">1342</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-10-16 17:41:00" id="967" opendate="2009-12-02 19:50:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Implement &quot;show create table&quot;</summary>
+			
+			
+			<description>SHOW CREATE TABLE would be very useful in cases where you are trying to figure out the partitioning and/or bucketing scheme for a table. Perhaps this could be implemented by having new tables automatically SET PROPERTIES (create_command=&amp;amp;apos;raw text of the create statement&amp;amp;apos;)?</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzerFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.HiveOperation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.ErrorMsg.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.DDLWork.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1187</link>
+			
+			
+			<link description="relates to" type="Reference">4659</link>
+			
+			
+			<link description="relates to" type="Reference">11706</link>
+			
+			
+			<link description="is related to" type="Reference">4210</link>
+			
+			
+			<link description="is related to" type="Reference">2816</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-01-12 00:04:10" id="1649" opendate="2010-09-17 04:32:03" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Ability to update counters and status from TRANSFORM scripts</summary>
+			
+			
+			<description>Hadoop Streaming supports the ability to update counters and status by writing specially coded messages to the script&amp;amp;apos;s stderr stream.
+A streaming process can use the stderr to emit counter information. reporter:counter:&amp;lt;group&amp;gt;,&amp;lt;counter&amp;gt;,&amp;lt;amount&amp;gt; should be sent to stderr to update the counter.
+A streaming process can use the stderr to emit status information. To set a status, reporter:status:&amp;lt;message&amp;gt; should be sent to stderr.
+Hive should support these same features with its TRANSFORM mechanism.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ScriptOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">305</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-07-29 12:46:28" id="305" opendate="2009-02-24 20:31:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Port Hadoop streaming&amp;apos;s counters/status reporters to Hive Transforms</summary>
+			
+			
+			<description>https://issues.apache.org/jira/browse/HADOOP-1328
+&quot; Introduced a way for a streaming process to update global counters and status using stderr stream to emit information. Use &quot;reporter:counter:&amp;lt;group&amp;gt;,&amp;lt;counter&amp;gt;,&amp;lt;amount&amp;gt; &quot; to update  a counter. Use &quot;reporter:status:&amp;lt;message&amp;gt;&quot; to update status. &quot;
+</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ScriptOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1649</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-03-23 02:25:33" id="2615" opendate="2011-11-30 00:44:25" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CTAS with literal NULL creates VOID type</summary>
+			
+			
+			<description>Create the table with a column that always contains NULL:
+
+hive&amp;gt; create table bad as select 1 x, null z from dual;     
+Because there&amp;amp;apos;s no type, Hive gives it the VOID type:
+
+hive&amp;gt; describe bad;
+OK
+x	int	
+z	void	
+This seems weird, because AFAIK, there is no normal way to create a column of type VOID.  The problem is that the table can&amp;amp;apos;t be queried:
+
+hive&amp;gt; select * from bad;
+OK
+Failed with exception java.io.IOException:java.lang.RuntimeException: Internal error: no LazyObject for VOID
+Worse, even if you don&amp;amp;apos;t select that field, the query fails at runtime:
+
+hive&amp;gt; select x from bad;
+...
+FAILED: Execution Error, return code 2 from org.apache.hadoop.hive.ql.exec.MapRedTask</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.SkewedValueList.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.SkewedInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ThriftHiveMetastore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.TestJdbcDriver.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.Row.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveBaseResultSet.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.Type.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyFactory.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.thrift.TTypeId.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.ColumnValue.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveResultSetMetaData.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.thrift.TCLIServiceConstants.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.TestJdbcDriver2.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">4172</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-01-15 22:16:23" id="9194" opendate="2014-12-22 23:43:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Support select distinct *</summary>
+			
+			
+			<description>As per Laljo John Pullokkaran&amp;amp;apos;s review comments, implement select distinct *</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.CalcitePlanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.UnparseTranslator.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1344</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1654</link>
+			
+			
+			<link description="is related to" type="Reference">1344</link>
+			
+			
+			<link description="is related to" type="Reference">1654</link>
+			
+			
+			<link description="is related to" type="Reference">3167</link>
+			
+			
+			<link description="is related to" type="Reference">3199</link>
+			
+			
+			<link description="is related to" type="Reference">3288</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-01-19 18:11:01" id="1344" opendate="2010-05-14 00:03:06" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>error in select disinct</summary>
+			
+			
+			<description> from T a select distinct a.* where a.ds=&amp;amp;apos;2010-05-01&amp;amp;apos;;
+gets a error</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.CalcitePlanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.UnparseTranslator.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is blocked by" type="Blocker">919</link>
+			
+			
+			<link description="duplicates" type="Duplicate">9194</link>
+			
+			
+			<link description="relates to" type="Reference">9194</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-01-19 18:12:50" id="1654" opendate="2010-09-17 22:31:27" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>select distinct should allow column name regex</summary>
+			
+			
+			<description>This works (matching column name foo):
+select `fo.*` from pokes;
+but this
+select distinct `fo.*` from pokes;
+gives
+FAILED: Error in semantic analysis: line 1:16 Invalid Table Alias or Column Reference `fo.*`
+It should work consistently.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.CalcitePlanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.UnparseTranslator.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">9194</link>
+			
+			
+			<link description="relates to" type="Reference">9194</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-12 21:33:26" id="7129" opendate="2014-05-27 22:49:21" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Change datanucleus.fixedDatastore config to true</summary>
+			
+			
+			<description>Much safer in production environment to have this as true.</description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.cli.TestHiveCli.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">1841</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-15 04:45:40" id="1841" opendate="2010-12-08 17:26:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary> datanucleus.fixedDatastore should be true in hive-default.xml</summary>
+			
+			
+			<description>Two datanucleus variables:
+
+&amp;lt;property&amp;gt;
+
+ &amp;lt;name&amp;gt;datanucleus.autoCreateSchema&amp;lt;/name&amp;gt;
+
+ &amp;lt;value&amp;gt;false&amp;lt;/value&amp;gt;
+
+&amp;lt;/property&amp;gt;
+
+
+
+&amp;lt;property&amp;gt;
+
+ &amp;lt;name&amp;gt;datanucleus.fixedDatastore&amp;lt;/name&amp;gt;
+
+ &amp;lt;value&amp;gt;true&amp;lt;/value&amp;gt;
+
+&amp;lt;/property&amp;gt;
+
+
+
+are dangerous.  We do want the schema to auto-create itself, but we do not want the schema to auto update itself. 
+Someone might accidentally point a trunk at the wrong meta-store and unknowingly update. I believe we should set this to false and possibly trap exceptions stemming from hive wanting to do any update. This way someone has to actively acknowledge the update, by setting this to true and then starting up hive, or leaving it false, removing schema modifies for the user that hive usages, and doing all the time and doing the updates by hand. </description>
+			
+			
+			<version>0.6.0</version>
+			
+			
+			<fixedVersion>2.0.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.cli.TestHiveCli.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">7129</link>
+			
+			
+			<link description="relates to" type="Reference">14152</link>
+			
+			
+			<link description="relates to" type="Reference">14322</link>
+			
+			
+			<link description="relates to" type="Reference">3764</link>
+			
+			
+			<link description="is related to" type="Reference">6113</link>
+			
+			
+			<link description="depends upon" type="dependent">1530</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

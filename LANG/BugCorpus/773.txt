@@ -1,0 +1,2 @@
+ImmutablePair doc contains nonsense text Description of this class contains the following nonsense text:
+#ThreadSafe# if the objects are threadsafe

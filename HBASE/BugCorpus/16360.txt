@@ -1,0 +1,1 @@
+tablemapreduceutil addhbasedependencyjar wrong class prefixtreecodec hbase 15152 includ prefix tree modul depend tablemapreduceutil hardcod string class wrong class fornam org apach hadoop hbase code prefixtre prefixtreecodec codec code class fornam org apach hadoop hbase codec prefixtre prefixtreecodec

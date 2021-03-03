@@ -1,0 +1,1 @@
+fix debug messag simpleregionnorm small region simpleregionnorm smallestregion getsecond smallestneighborofsmallestregion getsecond lt avgregions log debug tabl tabl smallest region size smallestregion getsecond smallest neighbor size smallestneighborofsmallestregion getsecond half avg size merg check half avg size avg size drop half fix messag

@@ -1,0 +1,1 @@
+htabl getrow return null row exist hbase api doc row exist getrow return rowresult empti row exist regionserv hregionserv java amp apo getrow result null result isempti return null return rowresult row result return null fix code document

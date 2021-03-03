@@ -1,0 +1,1 @@
+resultseri mutationseri throw invalidprotocolbufferexcept serial cell larger 64mb report crunch 534 problem handl deseri larg cell gt 64mb resultseri mutationseri fix hbase 13230

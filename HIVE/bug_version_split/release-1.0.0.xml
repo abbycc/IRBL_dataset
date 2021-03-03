@@ -1,0 +1,4041 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HIVE">
+	<bug fixdate="2013-08-16 16:24:00" id="4940" opendate="2013-07-26 04:25:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>udaf_percentile_approx.q is not deterministic</summary>
+			
+			
+			<description>Makes different result for 20(S) and 23.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.OpenTxnRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.LockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.HiveSchemaTool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowCompactResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.CheckLockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.TxnInfo.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">3911</link>
+			
+			
+			<link description="duplicates" type="Duplicate">9833</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-04-07 00:10:55" id="9832" opendate="2015-03-03 00:47:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Merge join followed by union and a map join in hive on tez fails.</summary>
+			
+			
+			<description>
+
+
+select a.key, b.value from (select x.key as key, y.value as value from
+
+srcpart x join srcpart y on (x.key = y.key)
+
+union all
+
+select key, value from srcpart z) a join src b on (a.value = b.value);
+
+
+
+
+
+
+TaskAttempt 3 failed, info=[Error: Failure while running task:java.lang.RuntimeException: java.lang.RuntimeException: Hive Runtime Error while closing operators: null
+
+        at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:186)
+
+        at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.run(TezProcessor.java:138)
+
+        at org.apache.tez.runtime.LogicalIOProcessorRuntimeTask.run(LogicalIOProcessorRuntimeTask.java:324)
+
+        at org.apache.tez.runtime.task.TezTaskRunner$TaskRunnerCallable$1.run(TezTaskRunner.java:176)
+
+        at org.apache.tez.runtime.task.TezTaskRunner$TaskRunnerCallable$1.run(TezTaskRunner.java:168)
+
+        at java.security.AccessController.doPrivileged(Native Method)
+
+        at javax.security.auth.Subject.doAs(Subject.java:415)
+
+        at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1628)
+
+        at org.apache.tez.runtime.task.TezTaskRunner$TaskRunnerCallable.call(TezTaskRunner.java:168)
+
+        at org.apache.tez.runtime.task.TezTaskRunner$TaskRunnerCallable.call(TezTaskRunner.java:163)
+
+        at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+
+        at java.lang.Thread.run(Thread.java:745)
+
+Caused by: java.lang.RuntimeException: Hive Runtime Error while closing operators: null
+
+        at org.apache.hadoop.hive.ql.exec.tez.ReduceRecordProcessor.close(ReduceRecordProcessor.java:214)
+
+        at org.apache.hadoop.hive.ql.exec.tez.TezProcessor.initializeAndRunProcessor(TezProcessor.java:177)
+
+        ... 13 more
+
+Caused by: java.lang.NullPointerException
+
+        at org.apache.hadoop.hive.ql.exec.MapJoinOperator.closeOp(MapJoinOperator.java:317)
+
+        at org.apache.hadoop.hive.ql.exec.Operator.close(Operator.java:598)
+
+        at org.apache.hadoop.hive.ql.exec.Operator.close(Operator.java:610)
+
+        at org.apache.hadoop.hive.ql.exec.Operator.close(Operator.java:610)
+
+        at org.apache.hadoop.hive.ql.exec.Operator.close(Operator.java:610)
+
+        at org.apache.hadoop.hive.ql.exec.Operator.close(Operator.java:610)
+
+        at org.apache.hadoop.hive.ql.exec.tez.ReduceRecordProcessor.close(ReduceRecordProcessor.java:196)
+
+        ... 14 more
+
+]], Vertex failed as one or more tasks failed. failedTasks:1, Vertex vertex_1425055721029_0048_4_09 [Reducer 5] killed/failed due to:null]
+
+Vertex killed, vertexName=Reducer 7, vertexId=vertex_1425055721029_0048_4_11, diagnostics=[Vertex received Kill while in RUNNING state., Vertex killed as other vertex failed. failedTasks:0, Vertex vertex_1425055721029_0048_4_11 [Reducer 7] killed/failed due to:null]
+
+Vertex killed, vertexName=Reducer 4, vertexId=vertex_1425055721029_0048_4_07, diagnostics=[Vertex received Kill while in RUNNING state., Vertex killed as other vertex failed. failedTasks:0, Vertex vertex_1425055721029_0048_4_07 [Reducer 4] killed/failed due to:null]
+
+DAG failed due to vertex failure. failedVertices:1 killedVertices:2
+
+FAILED: Execution Error, return code 2 from org.apache.hadoop.hive.ql.exec.tez.TezTask
+
+
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.MergeJoinWork.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">9624</link>
+			
+			
+			<link description="is related to" type="Reference">12530</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-04-10 00:23:03" id="10240" opendate="2015-04-07 18:39:23" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Patch HIVE-9473 breaks KERBEROS</summary>
+			
+			
+			<description>The patch from HIVE-9473 introduces a regression. Hive-Server2 does not start properly any more for our config (more or less the bigtop environment)
+sql std auth enabled, enableDoAs disabled, tez enabled, kerberos enabled.
+Problem seems to be that the kerberos ticket is not present when hive-server2 tries first to access HDFS. When HIVE-9473 is reverted getting the ticket is one of the first things hive-server2 does.
+Posting startup of vanilla hive-1.0.0 and startup of a hive-1.0.0 with this commit revoked, where hive-server2 correctly starts.
+
+
+
+commit 35582c2065a6b90b003a656bdb3b0ff08b0c35b9
+
+Author: Thejas Nair &amp;lt;thejas@apache.org&amp;gt;
+
+Date:   Fri Jan 30 00:05:50 2015 +0000
+
+
+
+    HIVE-9473 : sql std auth should disallow built-in udfs that allow any java methods to be called (Thejas Nair, reviewed by Jason Dere)
+
+    
+
+    git-svn-id: https://svn.apache.org/repos/asf/hive/branches/branch-1.0@1655891 13f79535-47bb-0310-9956-ffa450edef68
+
+
+
+revoked.
+Startup of vanilla hive-1.0.0 hive-server2 
+
+
+
+STARTUP_MSG:   build = git://os2-debian80/net/os2-debian80/fs1/olaf/bigtop/output/hive/hive-1.0.0 -r 813996292c9f966109f990127ddd5673cf813125; compiled by &amp;amp;apos;olaf&amp;amp;apos; on Tue Apr 7 09:33:01 CEST 2015
+
+************************************************************/
+
+2015-04-07 10:23:52,579 INFO  [main]: server.HiveServer2 (HiveServer2.java:startHiveServer2(292)) - Starting HiveServer2
+
+2015-04-07 10:23:53,104 INFO  [main]: metastore.HiveMetaStore (HiveMetaStore.java:newRawStore(556)) - 0: Opening raw store with implemenation class:org.apache.hadoop.hive.metastore.ObjectStore
+
+2015-04-07 10:23:53,135 INFO  [main]: metastore.ObjectStore (ObjectStore.java:initialize(264)) - ObjectStore, initialize called
+
+2015-04-07 10:23:54,775 INFO  [main]: metastore.ObjectStore (ObjectStore.java:getPMF(345)) - Setting MetaStore object pin classes with hive.metastore.cache.pinobjtypes=&quot;Table,StorageDescriptor,SerDeInfo,Pa
+
+rtition,Database,Type,FieldSchema,Order&quot;
+
+2015-04-07 10:23:56,953 INFO  [main]: metastore.MetaStoreDirectSql (MetaStoreDirectSql.java:&amp;lt;init&amp;gt;(132)) - Using direct SQL, underlying DB is DERBY
+
+2015-04-07 10:23:56,954 INFO  [main]: metastore.ObjectStore (ObjectStore.java:setConf(247)) - Initialized ObjectStore
+
+2015-04-07 10:23:57,275 INFO  [main]: metastore.HiveMetaStore (HiveMetaStore.java:createDefaultRoles_core(630)) - Added admin role in metastore
+
+2015-04-07 10:23:57,276 INFO  [main]: metastore.HiveMetaStore (HiveMetaStore.java:createDefaultRoles_core(639)) - Added public role in metastore
+
+2015-04-07 10:23:58,241 WARN  [main]: ipc.Client (Client.java:run(675)) - Exception encountered while connecting to the server : javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]
+
+2015-04-07 10:23:58,248 WARN  [main]: ipc.Client (Client.java:run(675)) - Exception encountered while connecting to the server : javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]
+
+2015-04-07 10:23:58,249 INFO  [main]: retry.RetryInvocationHandler (RetryInvocationHandler.java:invoke(140)) - Exception while invoking getFileInfo of class ClientNamenodeProtocolTranslatorPB over node2.proto.bsi.de/192.168.100.22:8020 after 1 fail over attempts. Trying to fail over immediately.
+
+java.io.IOException: Failed on local exception: java.io.IOException: javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]; Host Details : local host is: &quot;node2.proto.bsi.de/192.168.100.22&quot;; destination host is: &quot;node2.proto.bsi.de&quot;:8020; 
+
+        at org.apache.hadoop.net.NetUtils.wrapException(NetUtils.java:772)
+
+        at org.apache.hadoop.ipc.Client.call(Client.java:1472)
+
+        at org.apache.hadoop.ipc.Client.call(Client.java:1399)
+
+        at org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:232)
+
+        at com.sun.proxy.$Proxy14.getFileInfo(Unknown Source)
+
+        at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.getFileInfo(ClientNamenodeProtocolTranslatorPB.java:752)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+        at java.lang.reflect.Method.invoke(Method.java:606)
+
+        at org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:187)
+
+        at org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:102)
+
+        at com.sun.proxy.$Proxy15.getFileInfo(Unknown Source)
+
+        at org.apache.hadoop.hdfs.DFSClient.getFileInfo(DFSClient.java:1988)
+
+        at org.apache.hadoop.hdfs.DistributedFileSystem$18.doCall(DistributedFileSystem.java:1118)
+
+        at org.apache.hadoop.hdfs.DistributedFileSystem$18.doCall(DistributedFileSystem.java:1114)
+
+        at org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)
+
+        at org.apache.hadoop.hdfs.DistributedFileSystem.getFileStatus(DistributedFileSystem.java:1114)
+
+        at org.apache.hadoop.fs.FileSystem.exists(FileSystem.java:1400)
+
+        at org.apache.hadoop.hive.ql.session.SessionState.createRootHDFSDir(SessionState.java:520)
+
+        at org.apache.hadoop.hive.ql.session.SessionState.createSessionDirs(SessionState.java:478)
+
+        at org.apache.hadoop.hive.ql.session.SessionState.start(SessionState.java:430)
+
+        at org.apache.hive.service.cli.CLIService.applyAuthorizationConfigPolicy(CLIService.java:123)
+
+        at org.apache.hive.service.cli.CLIService.init(CLIService.java:81)
+
+        at org.apache.hive.service.CompositeService.init(CompositeService.java:59)
+
+        at org.apache.hive.service.server.HiveServer2.init(HiveServer2.java:89)
+
+        at org.apache.hive.service.server.HiveServer2.startHiveServer2(HiveServer2.java:298)
+
+        at org.apache.hive.service.server.HiveServer2.access$400(HiveServer2.java:65)
+
+        at org.apache.hive.service.server.HiveServer2$StartOptionExecutor.execute(HiveServer2.java:508)
+
+        at org.apache.hive.service.server.HiveServer2.main(HiveServer2.java:381)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+        at java.lang.reflect.Method.invoke(Method.java:606)
+
+        at org.apache.hadoop.util.RunJar.run(RunJar.java:221)
+
+        at org.apache.hadoop.util.RunJar.main(RunJar.java:136)
+
+Caused by: java.io.IOException: javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]
+
+        at org.apache.hadoop.ipc.Client$Connection$1.run(Client.java:680)
+
+        at java.security.AccessController.doPrivileged(Native Method)
+
+        at javax.security.auth.Subject.doAs(Subject.java:415)
+
+
+
+And now startup log of reverted patch
+
+
+
+2015-04-07 16:38:40,862 INFO  [main]: server.HiveServer2 (HiveServer2.java:startHiveServer2(292)) - Starting HiveServer2
+
+2015-04-07 16:38:41,384 INFO  [main]: security.UserGroupInformation (UserGroupInformation.java:loginUserFromKeytab(938)) - Login successful for user hive/node2.proto.bsi.de@PROTO.BSI.DE using keytab file /etc/hive.keytab
+
+2015-04-07 16:38:41,384 INFO  [main]: cli.CLIService (CLIService.java:init(100)) - SPNego httpUGI not created, spNegoPrincipal: , ketabFile: 
+
+2015-04-07 16:38:42,044 INFO  [main]: metastore.HiveMetaStore (HiveMetaStore.java:newRawStore(556)) - 0: Opening raw store with implemenation class:org.apache.hadoop.hive.metastore.ObjectStore
+
+2015-04-07 16:38:42,074 INFO  [main]: metastore.ObjectStore (ObjectStore.java:initialize(264)) - ObjectStore, initialize called
+
+2015-04-07 16:38:44,682 INFO  [main]: metastore.ObjectStore (ObjectStore.java:getPMF(345)) - Setting MetaStore object pin classes with hive.metastore.cache.pinobjtypes=&quot;Table,StorageDescriptor,SerDeInfo,Partition,Database,Type,FieldSchema,Order&quot;
+
+2015-04-07 16:38:46,762 INFO  [main]: metastore.MetaStoreDirectSql (MetaStoreDirectSql.java:&amp;lt;init&amp;gt;(132)) - Using direct SQL, underlying DB is DERBY
+
+2015-04-07 16:38:46,762 INFO  [main]: metastore.ObjectStore (ObjectStore.java:setConf(247)) - Initialized ObjectStore
+
+2015-04-07 16:38:47,067 INFO  [main]: metastore.HiveMetaStore (HiveMetaStore.java:createDefaultRoles_core(630)) - Added admin role in metastore
+
+2015-04-07 16:38:47,068 INFO  [main]: metastore.HiveMetaStore (HiveMetaStore.java:createDefaultRoles_core(639)) - Added public role in metastore
+
+2015-04-07 16:38:48,101 INFO  [main]: session.SessionState (SessionState.java:createPath(558)) - Created local directory: /tmp/7a90155d-fbd9-4991-bce6-f583a9ef259f_resources
+
+2015-04-07 16:38:48,111 INFO  [main]: session.SessionState (SessionState.java:createPath(558)) - Created HDFS directory: /tmp/hive/hive/7a90155d-fbd9-4991-bce6-f583a9ef259f
+
+2015-04-07 16:38:48,113 INFO  [main]: session.SessionState (SessionState.java:createPath(558)) - Created local directory: /tmp/hive/7a90155d-fbd9-4991-bce6-f583a9ef259f
+
+2015-04-07 16:38:48,118 INFO  [main]: session.SessionState (SessionState.java:createPath(558)) - Created HDFS directory: /tmp/hive/hive/7a90155d-fbd9-4991-bce6-f583a9ef259f/_tmp_space.db
+
+2015-04-07 16:38:48,120 INFO  [main]: session.SessionState (SessionState.java:start(460)) - No Tez session required at this point. hive.execution.engine=mr.
+
+2015-04-07 16:38:48,134 INFO  [main]: sqlstd.SQLStdHiveAccessController (SQLStdHiveAccessController.java:&amp;lt;init&amp;gt;(95)) - Created SQLStdHiveAccessController for session context : HiveAuthzSessionContext [sessionString=7a90155d-fbd9-4991-bce6-f583a9ef259f, clientType=HIVESERVER2]
+
+2015-04-07 16:38:48,148 INFO  [main]: service.CompositeService (SessionManager.java:initOperationLogRootDir(148)) - Operation log root directory is created: /tmp/hive/operation_logs
+
+2015-04-07 16:38:48,153 INFO  [main]: service.CompositeService (SessionManager.java:createBackgroundOperationPool(96)) - HiveServer2: Background operation thread pool size: 100
+
+2015-04-07 16:38:48,153 INFO  [main]: service.CompositeService (SessionManager.java:createBackgroundOperationPool(98)) - HiveServer2: Background operation thread wait queue size: 100
+
+2015-04-07 16:38:48,153 INFO  [main]: service.CompositeService (SessionManager.java:createBackgroundOperationPool(101)) - HiveServer2: Background operation thread keepalive time: 10 seconds
+
+2015-04-07 16:38:48,157 INFO  [main]: service.AbstractService (AbstractService.java:init(89)) - Service:OperationManager is inited.
+
+2015-04-07 16:38:48,157 INFO  [main]: service.AbstractService (AbstractService.java:init(89)) - Service:SessionManager is inited.
+
+2015-04-07 16:38:48,157 INFO  [main]: service.AbstractService (AbstractService.java:init(89)) - Service:CLIService is inited.
+
+2015-04-07 16:38:48,158 INFO  [main]: service.AbstractService (AbstractService.java:init(89)) - Service:ThriftBinaryCLIService is inited.
+
+2015-04-07 16:38:48,158 INFO  [main]: service.AbstractService (AbstractService.java:init(89)) - Service:HiveServer2 is inited.
+
+2015-04-07 16:38:48,158 INFO  [main]: service.AbstractService (AbstractService.java:start(104)) - Service:OperationManager is started.
+
+2015-04-07 16:38:48,158 INFO  [main]: service.AbstractService (AbstractService.java:start(104)) - Service:SessionManager is started.
+
+2015-04-07 16:38:48,158 INFO  [main]: service.AbstractService (AbstractService.java:start(104)) - Service:CLIService is started.
+
+2015-04-07 16:38:48,161 INFO  [main]: metastore.ObjectStore (ObjectStore.java:initialize(264)) - ObjectStore, initialize called
+
+2015-04-07 16:38:48,167 INFO  [main]: metastore.MetaStoreDirectSql (MetaStoreDirectSql.java:&amp;lt;init&amp;gt;(132)) - Using direct SQL, underlying DB is DERBY
+
+2015-04-07 16:38:48,167 INFO  [main]: metastore.ObjectStore (ObjectStore.java:setConf(247)) - Initialized ObjectStore
+
+2015-04-07 16:38:48,168 INFO  [main]: metastore.HiveMetaStore (HiveMetaStore.java:logInfo(713)) - 0: get_databases: default
+
+2015-04-07 16:38:48,168 INFO  [main]: HiveMetaStore.audit (HiveMetaStore.java:logAuditEvent(339)) - ugi=hive/node2.proto.bsi.de@PROTO.BSI.DE    ip=unknown-ip-addr      cmd=get_databases: default      
+
+2015-04-07 16:38:48,193 INFO  [main]: metastore.HiveMetaStore (HiveMetaStore.java:logInfo(713)) - 0: Shutting down the object store...
+
+2015-04-07 16:38:48,193 INFO  [main]: HiveMetaStore.audit (HiveMetaStore.java:logAuditEvent(339)) - ugi=hive/node2.proto.bsi.de@PROTO.BSI.DE    ip=unknown-ip-addr      cmd=Shutting down the object store...   
+
+2015-04-07 16:38:48,193 INFO  [main]: metastore.HiveMetaStore (HiveMetaStore.java:logInfo(713)) - 0: Metastore shutdown complete.
+
+2015-04-07 16:38:48,194 INFO  [main]: HiveMetaStore.audit (HiveMetaStore.java:logAuditEvent(339)) - ugi=hive/node2.proto.bsi.de@PROTO.BSI.DE    ip=unknown-ip-addr      cmd=Metastore shutdown complete.
+
+        
+
+2015-04-07 16:38:48,194 INFO  [main]: service.AbstractService (AbstractService.java:start(104)) - Service:ThriftBinaryCLIService is started.
+
+2015-04-07 16:38:48,194 INFO  [main]: service.AbstractService (AbstractService.java:start(104)) - Service:HiveServer2 is started.
+
+
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.service.cli.CLIService.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">9685</link>
+			
+			
+			<link description="is related to" type="Reference">1808</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-04-29 03:13:43" id="10483" opendate="2015-04-24 20:54:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>insert overwrite partition deadlocks on itself with DbTxnManager</summary>
+			
+			
+			<description>insert overwrite ta partition(part=xxxx) select xxx from tb join ta where part=xxxx
+It seems like the Shared conflicts with the Exclusive lock for Insert Overwrite even though both are part of the same txn.
+More precisely insert overwrite requires X lock on partition and the read side needs an S lock on the query.
+A simpler case is
+insert overwrite ta partition(part=xxxx) select * from ta</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.lockmgr.DbLockManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.common.JavaUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestTxnCommands2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.TxnHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">7483</link>
+			
+			
+			<link description="is related to" type="Reference">15077</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-10 22:12:25" id="10965" opendate="2015-06-08 19:22:42" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>direct SQL for stats fails in 0-column case</summary>
+			
+			
+			<description/>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.2.1, 1.0.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.TestHiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreDirectSql.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStoreClient.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.stats.StatsUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">9748</link>
+			
+			
+			<link description="is related to" type="Reference">12083</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-08-21 17:12:59" id="11607" opendate="2015-08-19 23:18:47" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Export tables broken for data &gt; 32 MB</summary>
+			
+			
+			<description>Broken for both hadoop-1 as well as hadoop-2 line</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop20SShims.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.Hadoop23Shims.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">12087</link>
+			
+			
+			<link description="is related to" type="Reference">11820</link>
+			
+			
+			<link description="breaks" type="Regression">13704</link>
+			
+			
+			<link description="is broken by" type="Regression">9264</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-09-24 22:56:00" id="9748" opendate="2015-02-21 08:33:18" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MetastoreDirectSql fails for zero item queries</summary>
+			
+			
+			<description>Metastore Direct SQL throws a SQL Exception 
+
+
+
+2015-02-21 00:29:00,238 WARN  [pool-3-thread-10]: metastore.ObjectStore (ObjectStore.java:handleDirectSqlError(2400)) - Direct SQL failed
+
+MetaException(message:See previous errors; Error executing SQL query &quot;select count(&quot;COLUMN_NAME&quot;) from &quot;PART_COL_STATS&quot; where &quot;DB_NAME&quot; = ? and &quot;TABLE_NAME&quot; = ?  and &quot;COLUMN_NAME&quot; in () and &quot;PARTITION_NAME&quot; in () group by &quot;PARTITION_NAME&quot;
+
+&quot;.)
+
+        at org.apache.hadoop.hive.metastore.MetaStoreDirectSql.executeWithArray(MetaStoreDirectSql.java:1448)
+
+        at org.apache.hadoop.hive.metastore.MetaStoreDirectSql.partsFoundForPartitions(MetaStoreDirectSql.java:1098)
+
+        at org.apache.hadoop.hive.metastore.MetaStoreDirectSql.aggrColStatsForPartitions(MetaStoreDirectSql.java:1081)
+
+        at org.apache.hadoop.hive.metastore.ObjectStore$8.getSqlResult(ObjectStore.java:6100)
+
+        at org.apache.hadoop.hive.metastore.ObjectStore$8.getSqlResult(ObjectStore.java:6096)
+
+        at org.apache.hadoop.hive.metastore.ObjectStore$GetHelper.run(ObjectStore.java:2365)
+
+        at org.apache.hadoop.hive.metastore.ObjectStore.get_aggr_stats_for(ObjectStore.java:6115)
+
+
+
+The query to trigger the issue an EXPLAIN query with column + partition stats on.
+
+
+
+ explain select count(1) from store_sales where &amp;amp;apos;2014-10-01&amp;amp;apos; =ss_sold_date ;
+
+
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.TestHiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreDirectSql.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStoreClient.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.stats.StatsUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">10965</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-09-28 03:12:47" id="10048" opendate="2015-03-21 02:29:10" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JDBC - Support SSL encryption regardless of Authentication mechanism</summary>
+			
+			
+			<description>JDBC driver currently only supports SSL Transport if the Authentication mechanism is SASL Plain with username and password. SSL transport  should be decoupled from Authentication mechanism. If the customer chooses to do Kerberos Authentication and SSL encryption over the wire it should be supported. The Server side already supports this but the driver does not.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.0.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveConnection.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">14019</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-03 19:48:46" id="12266" opendate="2015-10-26 19:50:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>When client exists abnormally, it doesn&amp;apos;t release ACID locks</summary>
+			
+			
+			<description>if you start Hive CLI (locking enabled) and run some command that acquires locks and ^C the shell before command completes the locks for the command remain until they timeout.
+I believe Beeline has the same issue.
+Need to add proper hooks to release locks when command dies. (As much as possible)</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Driver.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">12583</link>
+			
+			
+			<link description="is related to" type="Reference">12453</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-16 17:03:23" id="12378" opendate="2015-11-10 20:15:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Exception on HBaseSerDe.serialize binary field</summary>
+			
+			
+			<description>An issue was reproduced with the binary typed HBase columns in Hive:
+It works fine as below:
+CREATE TABLE test9 (key int, val string)
+STORED BY &amp;amp;apos;org.apache.hadoop.hive.hbase.HBaseStorageHandler&amp;amp;apos;
+WITH SERDEPROPERTIES (
+&quot;hbase.columns.mapping&quot; = &quot;:key,cf:val#b&quot;
+);
+insert into test9 values(1,&quot;hello&quot;);
+But when string type is changed to binary as:
+CREATE TABLE test2 (key int, val binary)
+STORED BY &amp;amp;apos;org.apache.hadoop.hive.hbase.HBaseStorageHandler&amp;amp;apos;
+WITH SERDEPROPERTIES (
+&quot;hbase.columns.mapping&quot; = &quot;:key,cf:val#b&quot;
+);
+insert into table test2 values(1, &amp;amp;apos;hello&amp;amp;apos;);
+The following exception is thrown:
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: Hive Runtime Error while processing row 
+{&quot;tmp_values_col1&quot;:&quot;1&quot;,&quot;tmp_values_col2&quot;:&quot;hello&quot;}
+...
+Caused by: java.lang.RuntimeException: Hive internal error.
+at org.apache.hadoop.hive.serde2.lazy.LazyUtils.writePrimitive(LazyUtils.java:322)
+at org.apache.hadoop.hive.hbase.HBaseRowSerializer.serialize(HBaseRowSerializer.java:220)
+at org.apache.hadoop.hive.hbase.HBaseRowSerializer.serializeField(HBaseRowSerializer.java:194)
+at org.apache.hadoop.hive.hbase.HBaseRowSerializer.serialize(HBaseRowSerializer.java:118)
+at org.apache.hadoop.hive.hbase.HBaseSerDe.serialize(HBaseSerDe.java:282)
+... 16 more
+We should support hive binary type column for hbase.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyBinary.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-23 17:31:18" id="12409" opendate="2015-11-13 19:33:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>make sure SessionState.initTxnMgr() is thread safe</summary>
+			
+			
+			<description>make this method synchronized since HS2 may run multiple threads in a Session.  see HIVE-11402</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.session.SessionState.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">11402</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-23 17:31:50" id="12389" opendate="2015-11-12 02:45:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CompactionTxnHandler.cleanEmptyAbortedTxns() should safeguard against huge IN clauses</summary>
+			
+			
+			<description>in extreme situations, due to misconfigurations, it may be possible to have 100Ks or even 1Ms of aborted txns.
+This causes delete from TXNS where txn_id in (...) to have a huge IN clause and DB chokes.  
+Should use something like TxnHandler.TIMED_OUT_TXN_ABORT_BATCH_SIZE to break up delete into multiple queries.  (Incidentally the batch size should likely be 1000, not 100, maybe even configurable).
+On MySQL for example, it can cause query to fail with
+Packet for query is too large (9288598 &amp;gt; 1048576). You can change this value on the server by setting the max_allowed_packet&amp;amp;apos; variable.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.txn.compactor.TestInitiator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.CompactionTxnHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.TxnHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is blocked by" type="Blocker">11948</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-04 19:13:13" id="12567" opendate="2015-12-02 16:38:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Enhance TxnHandler retry logic to handle ORA-08176</summary>
+			
+			
+			<description>
+FAILED: Error in acquiring locks: Error communicating with the metastore
+
+2015-12-01 09:19:32,459 ERROR [HiveServer2-Background-Pool: Thread-55]: ql.Driver (SessionState.java:printError(932)) - FAILED: Error in acquiring locks: Error communicating with the metastore
+
+org.apache.hadoop.hive.ql.lockmgr.LockException: Error communicating with the metastore
+
+        at org.apache.hadoop.hive.ql.lockmgr.DbLockManager.lock(DbLockManager.java:132)
+
+        at org.apache.hadoop.hive.ql.lockmgr.DbTxnManager.acquireLocks(DbTxnManager.java:227)
+
+        at org.apache.hadoop.hive.ql.lockmgr.DbTxnManager.acquireLocks(DbTxnManager.java:92)
+
+        at org.apache.hadoop.hive.ql.Driver.acquireLocksAndOpenTxn(Driver.java:1029)
+
+        at org.apache.hadoop.hive.ql.Driver.runInternal(Driver.java:1226)
+
+        at org.apache.hadoop.hive.ql.Driver.run(Driver.java:1100)
+
+        at org.apache.hadoop.hive.ql.Driver.run(Driver.java:1095)
+
+        at org.apache.hive.service.cli.operation.SQLOperation.runQuery(SQLOperation.java:154)
+
+        at org.apache.hive.service.cli.operation.SQLOperation.access$100(SQLOperation.java:71)
+
+        at org.apache.hive.service.cli.operation.SQLOperation$1$1.run(SQLOperation.java:206)
+
+        at java.security.AccessController.doPrivileged(Native Method)
+
+        at javax.security.auth.Subject.doAs(Subject.java:422)
+
+        at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1657)
+
+        at org.apache.hive.service.cli.operation.SQLOperation$1.run(SQLOperation.java:218)
+
+        at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+
+        at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+        at java.lang.Thread.run(Thread.java:745)
+
+Caused by: MetaException(message:Unable to update transaction database java.sql.SQLException: ORA-08176: consistent read failure; rollback data not available
+
+
+
+        at oracle.jdbc.driver.T4CTTIoer.processError(T4CTTIoer.java:450)
+
+        at oracle.jdbc.driver.T4CTTIoer.processError(T4CTTIoer.java:399)
+
+        at oracle.jdbc.driver.T4C8Oall.processError(T4C8Oall.java:1059)
+
+        at oracle.jdbc.driver.T4CTTIfun.receive(T4CTTIfun.java:522)
+
+        at oracle.jdbc.driver.T4CTTIfun.doRPC(T4CTTIfun.java:257)
+
+        at oracle.jdbc.driver.T4C8Oall.doOALL(T4C8Oall.java:587)
+
+        at oracle.jdbc.driver.T4CStatement.doOall8(T4CStatement.java:210)
+
+        at oracle.jdbc.driver.T4CStatement.doOall8(T4CStatement.java:30)
+
+        at oracle.jdbc.driver.T4CStatement.executeForDescribe(T4CStatement.java:762)
+
+        at oracle.jdbc.driver.OracleStatement.executeMaybeDescribe(OracleStatement.java:925)
+
+        at oracle.jdbc.driver.OracleStatement.doExecuteWithTimeout(OracleStatement.java:1111)
+
+        at oracle.jdbc.driver.OracleStatement.executeQuery(OracleStatement.java:1309)
+
+        at oracle.jdbc.driver.OracleStatementWrapper.executeQuery(OracleStatementWrapper.java:422)
+
+        at com.jolbox.bonecp.StatementHandle.executeQuery(StatementHandle.java:464)
+
+        at org.apache.hadoop.hive.metastore.txn.TxnHandler.getLockInfoFromLockId(TxnHandler.java:1951)
+
+        at org.apache.hadoop.hive.metastore.txn.TxnHandler.checkLock(TxnHandler.java:1600)
+
+        at org.apache.hadoop.hive.metastore.txn.TxnHandler.lock(TxnHandler.java:1576)
+
+        at org.apache.hadoop.hive.metastore.txn.TxnHandler.lock(TxnHandler.java:480)
+
+        at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler.lock(HiveMetaStore.java:5586)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+        at java.lang.reflect.Method.invoke(Method.java:497)
+
+        at org.apache.hadoop.hive.metastore.RetryingHMSHandler.invoke(RetryingHMSHandler.java:107)
+
+        at com.sun.proxy.$Proxy8.lock(Unknown Source)
+
+        at org.apache.hadoop.hive.metastore.HiveMetaStoreClient.lock(HiveMetaStoreClient.java:1869)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+        at java.lang.reflect.Method.invoke(Method.java:497)
+
+        at org.apache.hadoop.hive.metastore.RetryingMetaStoreClient.invoke(RetryingMetaStoreClient.java:156)
+
+        at com.sun.proxy.$Proxy9.lock(Unknown Source)
+
+        at org.apache.hadoop.hive.ql.lockmgr.DbLockManager.lock(DbLockManager.java:93)
+
+        at org.apache.hadoop.hive.ql.lockmgr.DbTxnManager.acquireLocks(DbTxnManager.java:227)
+
+        at org.apache.hadoop.hive.ql.lockmgr.DbTxnManager.acquireLocks(DbTxnManager.java:92)
+
+        at org.apache.hadoop.hive.ql.Driver.acquireLocksAndOpenTxn(Driver.java:1029)
+
+        at org.apache.hadoop.hive.ql.Driver.runInternal(Driver.java:1226)
+
+        at org.apache.hadoop.hive.ql.Driver.run(Driver.java:1100)
+
+        at org.apache.hadoop.hive.ql.Driver.run(Driver.java:1095)
+
+        at org.apache.hive.service.cli.operation.SQLOperation.runQuery(SQLOperation.java:154)
+
+        at org.apache.hive.service.cli.operation.SQLOperation.access$100(SQLOperation.java:71)
+
+        at org.apache.hive.service.cli.operation.SQLOperation$1$1.run(SQLOperation.java:206)
+
+        at java.security.AccessController.doPrivileged(Native Method)
+
+        at javax.security.auth.Subject.doAs(Subject.java:422)
+
+        at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1657)
+
+        at org.apache.hive.service.cli.operation.SQLOperation$1.run(SQLOperation.java:218)
+
+        at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+
+        at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+        at java.lang.Thread.run(Thread.java:745)
+
+)
+
+        at org.apache.hadoop.hive.metastore.txn.TxnHandler.lock(TxnHandler.java:485)
+
+        at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler.lock(HiveMetaStore.java:5586)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+        at java.lang.reflect.Method.invoke(Method.java:497)
+
+        at org.apache.hadoop.hive.metastore.RetryingHMSHandler.invoke(RetryingHMSHandler.java:107)
+
+        at com.sun.proxy.$Proxy8.lock(Unknown Source)
+
+        at org.apache.hadoop.hive.metastore.HiveMetaStoreClient.lock(HiveMetaStoreClient.java:1869)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+        at java.lang.reflect.Method.invoke(Method.java:497)
+
+        at org.apache.hadoop.hive.metastore.RetryingMetaStoreClient.invoke(RetryingMetaStoreClient.java:156)
+
+        at com.sun.proxy.$Proxy9.lock(Unknown Source)
+
+        at org.apache.hadoop.hive.ql.lockmgr.DbLockManager.lock(DbLockManager.java:93)
+
+        ... 18 more
+
+
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.TxnHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">12620</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-04 19:14:10" id="12529" opendate="2015-11-26 00:14:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HiveTxnManager.acquireLocks() should not block forever</summary>
+			
+			
+			<description>Currently, in DbTxnManager this method will block until all competing locks have gone away.
+This is not appropriate for all clients.  There should be a way to specify a max-wait-time.
+It will throw an exception on timeout (given how current method signature is written).
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.lockmgr.TestDbTxnManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.lockmgr.DbLockManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.lockmgr.TestDbTxnManager2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.TxnHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.lockmgr.HiveTxnManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.lockmgr.DbTxnManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.ErrorMsg.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is blocked by" type="Blocker">12544</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-05 01:16:06" id="12502" opendate="2015-11-24 01:20:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>to_date UDF cannot accept NULLs of VOID type</summary>
+			
+			
+			<description>The to_date method behaves differently based off the &amp;amp;apos;data type&amp;amp;apos; of null passed in.
+hive&amp;gt; select to_date(null);                   
+FAILED: SemanticException [Error 10014]: Line 1:7 Wrong arguments &amp;amp;apos;TOK_NULL&amp;amp;apos;: TO_DATE() only takes STRING/TIMESTAMP/DATEWRITABLE types, got VOID
+hive&amp;gt; select to_date(cast(null as timestamp));
+OK
+NULL
+Time taken: 0.031 seconds, Fetched: 1 row(s)
+This appears to be a regression introduced in HIVE-5731.  The previous version of to_date would not check the type:
+https://github.com/apache/hive/commit/09b6553214d6db5ec7049b88bbe8ff640a7fef72#diff-204f5588c0767cf372a5ca7e3fb964afL56</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.TestGenericUDFDate.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDFDate.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">5731</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-12 19:07:57" id="12807" opendate="2016-01-07 23:40:12" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Thrift and DB Changes for HIVE-12352</summary>
+			
+			
+			<description>This ticket just covers the thrift and DB changes necessary for HIVE-12352</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.OpenTxnRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.LockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.HiveSchemaTool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowCompactResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.CheckLockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.TxnInfo.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">12832</link>
+			
+			
+			<link description="is depended upon by" type="dependent">12814</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-12 19:12:59" id="12814" opendate="2016-01-08 21:20:07" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Make thrift and DB changes for HIVE-11444</summary>
+			
+			
+			<description>This JIRA tracks the Thrift and DB schema changes for HIVE-11444.  It depends on HIVE-12807.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.OpenTxnRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.LockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.HiveSchemaTool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowCompactResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.CheckLockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.TxnInfo.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">12832</link>
+			
+			
+			<link description="depends upon" type="dependent">12807</link>
+			
+			
+			<link description="is depended upon by" type="dependent">12816</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-12 19:15:47" id="12818" opendate="2016-01-08 23:04:22" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Schema changes for HIVE-12353</summary>
+			
+			
+			<description>This JIRA just covers RDBMS schema changes for HIVE-12353.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.OpenTxnRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.LockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.HiveSchemaTool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowCompactResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.CheckLockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.TxnInfo.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">12832</link>
+			
+			
+			<link description="depends upon" type="dependent">12816</link>
+			
+			
+			<link description="is depended upon by" type="dependent">12819</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-12 19:18:32" id="12819" opendate="2016-01-08 23:34:56" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Thrift and RDBMS schema changes for HIVE-11957</summary>
+			
+			
+			<description/>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.OpenTxnRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.LockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.HiveSchemaTool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowCompactResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.CheckLockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.TxnInfo.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">12832</link>
+			
+			
+			<link description="depends upon" type="dependent">12818</link>
+			
+			
+			<link description="is depended upon by" type="dependent">12821</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-12 19:20:46" id="12822" opendate="2016-01-09 00:58:20" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Thrift and RDBMS schema changes for HIVE-11495</summary>
+			
+			
+			<description/>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.OpenTxnRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.LockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.HiveSchemaTool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowCompactResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.CheckLockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.TxnInfo.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">12832</link>
+			
+			
+			<link description="depends upon" type="dependent">12821</link>
+			
+			
+			<link description="is depended upon by" type="dependent">12823</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-12 19:24:24" id="12830" opendate="2016-01-09 15:56:57" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Thrift changes for HIVE-11793</summary>
+			
+			
+			<description/>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.OpenTxnRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.LockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.HiveSchemaTool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowCompactResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.CheckLockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.TxnInfo.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">12832</link>
+			
+			
+			<link description="depends upon" type="dependent">12829</link>
+			
+			
+			<link description="is depended upon by" type="dependent">12831</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-12 19:25:06" id="12831" opendate="2016-01-09 16:26:38" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Thrift and RDBMS changes for HIVE-10249</summary>
+			
+			
+			<description/>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.OpenTxnRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.LockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.HiveSchemaTool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowCompactResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.CheckLockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.TxnInfo.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">12832</link>
+			
+			
+			<link description="depends upon" type="dependent">12830</link>
+			
+			
+			<link description="is depended upon by" type="dependent">12832</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-15 01:20:39" id="12832" opendate="2016-01-09 17:46:05" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RDBMS schema changes for HIVE-11388</summary>
+			
+			
+			<description/>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.0.0</fixedVersion>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.OpenTxnRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.LockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.HiveSchemaTool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowCompactResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.CheckLockRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksResponseElement.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.ShowLocksRequest.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.api.TxnInfo.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">12352</link>
+			
+			
+			<link description="blocks" type="Blocker">12353</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">12807</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">12814</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">12816</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">12818</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">12819</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">12821</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">12822</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">12823</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">12829</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">12831</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">12830</link>
+			
+			
+			<link description="depends upon" type="dependent">12831</link>
+			
+			
+			<link description="is depended upon by" type="dependent">12686</link>
+			
+			
+			<link description="is depended upon by" type="dependent">11444</link>
+			
+			
+			<link description="is depended upon by" type="dependent">11495</link>
+			
+			
+			<link description="is depended upon by" type="dependent">11685</link>
+			
+			
+			<link description="is depended upon by" type="dependent">11965</link>
+			
+			
+			<link description="is depended upon by" type="dependent">11957</link>
+			
+			
+			<link description="is depended upon by" type="dependent">10249</link>
+			
+			
+			<link description="is depended upon by" type="dependent">11956</link>
+			
+			
+			<link description="is depended upon by" type="dependent">11793</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-15 03:06:24" id="12352" opendate="2015-11-05 21:09:55" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CompactionTxnHandler.markCleaned() may delete too much</summary>
+			
+			
+			<description>   Worker will start with DB in state X (wrt this partition).
+   while it&amp;amp;apos;s working more txns will happen, against partition it&amp;amp;apos;s compacting.
+   then this will delete state up to X and since then.  There may be new delta files created
+   between compaction starting and cleaning.  These will not be compacted until more
+   transactions happen.  So this ideally should only delete
+   up to TXN_ID that was compacted (i.e. HWM in Worker?)  Then this can also run
+   at READ_COMMITTED.  So this means we&amp;amp;apos;d want to store HWM in COMPACTION_QUEUE when
+   Worker picks up the job.
+Actually the problem is even worse (but also solved using HWM as above):
+Suppose some transactions (against same partition) have started and aborted since the time Worker ran compaction job.
+That means there are never-compacted delta files with data that belongs to these aborted txns.
+Following will pick up these aborted txns.
+s = &quot;select txn_id from TXNS, TXN_COMPONENTS where txn_id = tc_txnid and txn_state = &amp;amp;apos;&quot; +
+          TXN_ABORTED + &quot;&amp;amp;apos; and tc_database = &amp;amp;apos;&quot; + info.dbname + &quot;&amp;amp;apos; and tc_table = &amp;amp;apos;&quot; +
+          info.tableName + &quot;&amp;amp;apos;&quot;;
+        if (info.partName != null) s += &quot; and tc_partition = &amp;amp;apos;&quot; + info.partName + &quot;&amp;amp;apos;&quot;;
+The logic after that will delete relevant data from TXN_COMPONENTS and if one of these txns becomes empty, it will be picked up by cleanEmptyAbortedTxns().  At that point any metadata about an Aborted txn is gone and the system will think it&amp;amp;apos;s committed.
+HWM in this case would be (in ValidCompactorTxnList)
+if(minOpenTxn &amp;gt; 0)
+min(highWaterMark, minOpenTxn) 
+else 
+highWaterMark</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.ValidCompactorTxnList.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.txn.compactor.Initiator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.CompactionTxnHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Driver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.txn.compactor.TestCompactor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.TxnDbUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.common.ValidTxnList.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.CompactionInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.txn.compactor.Worker.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">12353</link>
+			
+			
+			<link description="is blocked by" type="Blocker">12832</link>
+			
+			
+			<link description="relates to" type="Reference">12353</link>
+			
+			
+			<link description="is related to" type="Reference">11948</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-17 07:01:59" id="12661" opendate="2015-12-12 02:14:10" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StatsSetupConst.COLUMN_STATS_ACCURATE is not used correctly</summary>
+			
+			
+			<description>PROBLEM:
+Hive stats are autogathered properly till an &amp;amp;apos;analyze table [tablename] compute statistics for columns&amp;amp;apos; is run. Then it does not auto-update the stats till the command is run again. repo:
+
+
+
+set hive.stats.autogather=true; 
+
+set hive.stats.atomic=false ; 
+
+set hive.stats.collect.rawdatasize=true ; 
+
+set hive.stats.collect.scancols=false ; 
+
+set hive.stats.collect.tablekeys=false ; 
+
+set hive.stats.fetch.column.stats=true; 
+
+set hive.stats.fetch.partition.stats=true ; 
+
+set hive.stats.reliable=false ; 
+
+set hive.compute.query.using.stats=true; 
+
+
+
+CREATE TABLE `default`.`calendar` (`year` int) ROW FORMAT SERDE &amp;amp;apos;org.apache.hadoop.hive.ql.io.orc.OrcSerde&amp;amp;apos; STORED AS INPUTFORMAT &amp;amp;apos;org.apache.hadoop.hive.ql.io.orc.OrcInputFormat&amp;amp;apos; OUTPUTFORMAT &amp;amp;apos;org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat&amp;amp;apos; TBLPROPERTIES ( &amp;amp;apos;orc.compress&amp;amp;apos;=&amp;amp;apos;NONE&amp;amp;apos;) ; 
+
+
+
+insert into calendar values (2010), (2011), (2012); 
+
+select * from calendar; 
+
++----------------+--+ 
+
+| calendar.year | 
+
++----------------+--+ 
+
+| 2010 | 
+
+| 2011 | 
+
+| 2012 | 
+
++----------------+--+ 
+
+
+
+select max(year) from calendar; 
+
+| 2012 | 
+
+
+
+insert into calendar values (2013); 
+
+select * from calendar; 
+
++----------------+--+ 
+
+| calendar.year | 
+
++----------------+--+ 
+
+| 2010 | 
+
+| 2011 | 
+
+| 2012 | 
+
+| 2013 | 
+
++----------------+--+ 
+
+
+
+select max(year) from calendar; 
+
+| 2013 | 
+
+
+
+insert into calendar values (2014); 
+
+select max(year) from calendar; 
+
+| 2014 |
+
+
+
+analyze table calendar compute statistics for columns;
+
+
+
+insert into calendar values (2015);
+
+select max(year) from calendar;
+
+| 2014 |
+
+
+
+insert into calendar values (2016), (2017), (2018);
+
+select max(year) from calendar;
+
+| 2014  |
+
+
+
+analyze table calendar compute statistics for columns;
+
+select max(year) from calendar;
+
+| 2018  |
+
+
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.StatsWork.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreUtils.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.listener.TestDbNotificationListener.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.StatsOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.StatsTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.common.StatsSetupConst.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.ObjectStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Table.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">13147</link>
+			
+			
+			<link description="is related to" type="Reference">3917</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-22 03:02:50" id="12353" opendate="2015-11-05 21:29:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>When Compactor fails it calls CompactionTxnHandler.markedCleaned().  it should not.</summary>
+			
+			
+			<description>One of the things that this method does is delete entries from TXN_COMPONENTS for partition that it was trying to compact.
+This causes Aborted transactions in TXNS to become empty according to
+CompactionTxnHandler.cleanEmptyAbortedTxns() which means they can now be deleted.  
+Once they are deleted, data that belongs to these txns is deemed committed...
+We should extend COMPACTION_QUEUE state with &amp;amp;apos;f&amp;amp;apos; and &amp;amp;apos;s&amp;amp;apos; (failed, success) states.  We should also not delete then entry from markedCleaned()
+We&amp;amp;apos;ll have separate process that cleans &amp;amp;apos;f&amp;amp;apos; and &amp;amp;apos;s&amp;amp;apos; records after X minutes (or after &amp;gt; N records for a given partition exist).
+This allows SHOW COMPACTIONS to show some history info and how many times compaction failed on a given partition (subject to retention interval) so that we don&amp;amp;apos;t have to call markCleaned() on Compactor failures at the same time preventing Compactor to constantly getting stuck on the same bad partition/table.
+Ideally we&amp;amp;apos;d want to include END_TIME field.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.txn.compactor.Initiator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.txn.compactor.Worker.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.CompactionTxnHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.txn.AcidHouseKeeperService.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.TestCompactionTxnHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.txn.compactor.TestWorker.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.TxnHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.txn.compactor.TestCompactor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestTxnCommands2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.txn.compactor.Cleaner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.TxnDbUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HouseKeeperService.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.CompactionInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.txn.compactor.CompactorMR.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.txn.compactor.TestCleaner.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">11994</link>
+			
+			
+			<link description="is blocked by" type="Blocker">12832</link>
+			
+			
+			<link description="is blocked by" type="Blocker">12352</link>
+			
+			
+			<link description="is related to" type="Reference">12352</link>
+			
+			
+			<link description="is related to" type="Reference">13691</link>
+			
+			
+			<link description="is related to" type="Reference">11444</link>
+			
+			
+			<link description="requires" type="Required">13353</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-11 18:52:51" id="12441" opendate="2015-11-17 19:57:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Driver.acquireLocksAndOpenTxn() should only call recordValidTxns() when needed</summary>
+			
+			
+			<description>recordValidTxns() is only needed if ACID tables are part of the query.  Otherwise it&amp;amp;apos;s just overhead.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Driver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestTxnCommands2.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">11716</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-22 17:11:56" id="13090" opendate="2016-02-18 21:58:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive metastore crashes on NPE with ZooKeeperTokenStore</summary>
+			
+			
+			<description>Observed that hive metastore shutdown with NPE from ZookeeperTokenStore.
+
+
+
+INFO  [pool-5-thread-192]: metastore.HiveMetaStore (HiveMetaStore.java:logInfo(714)) - 191: Metastore shutdown complete.
+
+ INFO  [pool-5-thread-192]: HiveMetaStore.audit (HiveMetaStore.java:logAuditEvent(340)) - ugi=cvdpqap	ip=/19.1.2.129	cmd=Metastore shutdown complete.	
+
+ ERROR [Thread[Thread-6,5,main]]: thrift.TokenStoreDelegationTokenSecretManager (TokenStoreDelegationTokenSecretManager.java:run(331)) - ExpiredTokenRemover thread received unexpected exception. org.apache.hadoop.hive.thrift.DelegationTokenStore$TokenStoreException: Failed to decode token
+
+org.apache.hadoop.hive.thrift.DelegationTokenStore$TokenStoreException: Failed to decode token
+
+	at org.apache.hadoop.hive.thrift.ZooKeeperTokenStore.getToken(ZooKeeperTokenStore.java:401)
+
+	at org.apache.hadoop.hive.thrift.TokenStoreDelegationTokenSecretManager.removeExpiredTokens(TokenStoreDelegationTokenSecretManager.java:256)
+
+	at org.apache.hadoop.hive.thrift.TokenStoreDelegationTokenSecretManager$ExpiredTokenRemover.run(TokenStoreDelegationTokenSecretManager.java:319)
+
+	at java.lang.Thread.run(Thread.java:744)
+
+Caused by: java.lang.NullPointerException
+
+	at java.io.ByteArrayInputStream.&amp;lt;init&amp;gt;(ByteArrayInputStream.java:106)
+
+	at org.apache.hadoop.security.token.delegation.HiveDelegationTokenSupport.decodeDelegationTokenInformation(HiveDelegationTokenSupport.java:53)
+
+	at org.apache.hadoop.hive.thrift.ZooKeeperTokenStore.getToken(ZooKeeperTokenStore.java:399)
+
+	... 3 more
+
+ INFO  [Thread-3]: metastore.HiveMetaStore (HiveMetaStore.java:run(5639)) - Shutting down hive metastore.
+
+
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.1.0, 2.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.TokenStoreDelegationTokenSecretManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.ZooKeeperTokenStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.TestZooKeeperTokenStore.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">13075</link>
+			
+			
+			<link description="breaks" type="Regression">15090</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-29 19:34:07" id="13013" opendate="2016-02-05 18:03:51" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Further Improve concurrency in TxnHandler</summary>
+			
+			
+			<description>There are still a few operations in TxnHandler that run at Serializable isolation.
+Most or all of them can be dropped to READ_COMMITTED now that we have SELECT ... FOR UPDATE support.  This will reduce number of deadlocks in the DBs.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.TestTxnHandlerNegative.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.lockmgr.DbTxnManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.CompactionTxnHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.TxnHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is blocked by" type="Blocker">11948</link>
+			
+			
+			<link description="is blocked by" type="Blocker">11388</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-02 12:39:10" id="12749" opendate="2015-12-25 13:04:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Constant propagate returns string values in incorrect format</summary>
+			
+			
+			<description>STEP 1. Create and upload test data
+Execute in command line:
+
+nano stest.data
+
+
+
+Add to file:
+
+000126,000777
+
+000126,000778
+
+000126,000779
+
+000474,000888
+
+000468,000889
+
+000272,000880
+
+
+
+
+hadoop fs -put stest.data /
+
+
+
+
+hive&amp;gt; create table stest(x STRING, y STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY &amp;amp;apos;,&amp;amp;apos;;
+
+hive&amp;gt; LOAD DATA  INPATH &amp;amp;apos;/stest.data&amp;amp;apos; OVERWRITE INTO TABLE stest;
+
+
+
+STEP 2. Execute test query (with cast for x)
+
+select x from stest where cast(x as int) = 126;
+
+
+
+EXPECTED RESULT:
+
+000126
+
+000126
+
+000126
+
+
+
+ACTUAL RESULT:
+
+126
+
+126
+
+126
+
+
+
+STEP 3. Execute test query (no cast for x)
+
+hive&amp;gt; select x from stest where  x = 126; 
+
+
+
+EXPECTED RESULT:
+
+000126
+
+000126
+
+000126
+
+
+
+ACTUAL RESULT:
+
+126
+
+126
+
+126
+
+
+
+In steps #2, #3 I expected &amp;amp;apos;000126&amp;amp;apos; because the origin type of x is STRING in stest table.
+Note, setting hive.optimize.constant.propagation=false fixes the issue.
+
+hive&amp;gt; set hive.optimize.constant.propagation=false;
+
+hive&amp;gt; select x from stest where  x = 126;
+
+OK
+
+000126
+
+000126
+
+000126
+
+
+
+Related to HIVE-11104, HIVE-8555</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.1.0, 2.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.ConstantPropagateProcFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="incorporates" type="Incorporates">13197</link>
+			
+			
+			<link description="is related to" type="Reference">15106</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-05 16:12:07" id="13200" opendate="2016-03-03 16:29:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Aggregation functions returning empty rows on partitioned columns</summary>
+			
+			
+			<description>Running aggregation functions like MAX, MIN, DISTINCT against partitioned columns will return empty rows if table has property: &amp;amp;apos;skip.header.line.count&amp;amp;apos;=&amp;amp;apos;1&amp;amp;apos;
+Reproduce:
+
+DROP TABLE IF EXISTS test;
+
+
+
+CREATE TABLE test (a int) 
+
+PARTITIONED BY (b int) 
+
+ROW FORMAT DELIMITED FIELDS TERMINATED BY &amp;amp;apos;|&amp;amp;apos; 
+
+TBLPROPERTIES(&amp;amp;apos;skip.header.line.count&amp;amp;apos;=&amp;amp;apos;1&amp;amp;apos;);
+
+
+
+INSERT OVERWRITE TABLE test PARTITION (b = 1) VALUES (1), (2), (3), (4);
+
+INSERT OVERWRITE TABLE test PARTITION (b = 2) VALUES (1), (2), (3), (4);
+
+
+
+SELECT * FROM test;
+
+
+
+SELECT DISTINCT b FROM test;
+
+SELECT MAX(b) FROM test;
+
+SELECT DISTINCT a FROM test;
+
+
+
+The output:
+
+0: jdbc:hive2://localhost:10000/default&amp;gt; SELECT * FROM test;
+
++---------+---------+--+
+
+| test.a  | test.b  |
+
++---------+---------+--+
+
+| 2       | 1       |
+
+| 3       | 1       |
+
+| 4       | 1       |
+
+| 2       | 2       |
+
+| 3       | 2       |
+
+| 4       | 2       |
+
++---------+---------+--+
+
+6 rows selected (0.631 seconds)
+
+
+
+0: jdbc:hive2://localhost:10000/default&amp;gt; SELECT DISTINCT b FROM test;
+
++----+--+
+
+| b  |
+
++----+--+
+
++----+--+
+
+No rows selected (47.229 seconds)
+
+
+
+0: jdbc:hive2://localhost:10000/default&amp;gt; SELECT MAX(b) FROM test;
+
++-------+--+
+
+|  _c0  |
+
++-------+--+
+
+| NULL  |
+
++-------+--+
+
+1 row selected (49.508 seconds)
+
+
+
+0: jdbc:hive2://localhost:10000/default&amp;gt; SELECT DISTINCT a FROM test;
+
++----+--+
+
+| a  |
+
++----+--+
+
+| 2  |
+
+| 3  |
+
+| 4  |
+
++----+--+
+
+3 rows selected (46.859 seconds)
+
+
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.1.0, 2.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.physical.MetadataOnlyOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.TableScanDesc.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">12950</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-24 00:36:54" id="13261" opendate="2016-03-10 22:58:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Can not compute column stats for partition when schema evolves</summary>
+			
+			
+			<description>To repro
+
+
+
+CREATE TABLE partitioned1(a INT, b STRING) PARTITIONED BY(part INT) STORED AS TEXTFILE;
+
+
+
+insert into table partitioned1 partition(part=1) values(1, &amp;amp;apos;original&amp;amp;apos;),(2, &amp;amp;apos;original&amp;amp;apos;), (3, &amp;amp;apos;original&amp;amp;apos;),(4, &amp;amp;apos;original&amp;amp;apos;);
+
+
+
+-- Table-Non-Cascade ADD COLUMNS ...
+
+alter table partitioned1 add columns(c int, d string);
+
+
+
+insert into table partitioned1 partition(part=2) values(1, &amp;amp;apos;new&amp;amp;apos;, 10, &amp;amp;apos;ten&amp;amp;apos;),(2, &amp;amp;apos;new&amp;amp;apos;, 20, &amp;amp;apos;twenty&amp;amp;apos;), (3, &amp;amp;apos;new&amp;amp;apos;, 30, &amp;amp;apos;thirty&amp;amp;apos;),(4, &amp;amp;apos;new&amp;amp;apos;, 40, &amp;amp;apos;forty&amp;amp;apos;);
+
+
+
+insert into table partitioned1 partition(part=1) values(5, &amp;amp;apos;new&amp;amp;apos;, 100, &amp;amp;apos;hundred&amp;amp;apos;),(6, &amp;amp;apos;new&amp;amp;apos;, 200, &amp;amp;apos;two hundred&amp;amp;apos;);
+
+
+
+analyze table partitioned1 compute statistics for columns;
+
+
+
+Error msg:
+
+
+
+2016-03-10T14:55:43,205 ERROR [abc3eb8d-7432-47ae-b76f-54c8d7020312 main[]]: metastore.RetryingHMSHandler (RetryingHMSHandler.java:invokeInternal(177)) - NoSuchObjectException(message:Column c for which stats gathering is requested doesn&amp;amp;apos;t exist.)
+
+        at org.apache.hadoop.hive.metastore.ObjectStore.writeMPartitionColumnStatistics(ObjectStore.java:6492)
+
+        at org.apache.hadoop.hive.metastore.ObjectStore.updatePartitionColumnStatistics(ObjectStore.java:6574)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+
+
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.ObjectStore.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">11160</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-25 01:04:12" id="13008" opendate="2016-02-05 01:08:05" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>WebHcat DDL commands in secure mode NPE when default FileSystem doesn&amp;apos;t support delegation tokens</summary>
+			
+			
+			<description>
+ERROR | 11 Jan 2016 20:19:02,781 | org.apache.hive.hcatalog.templeton.CatchallExceptionMapper |
+
+java.lang.NullPointerException
+
+        at org.apache.hive.hcatalog.templeton.SecureProxySupport$2.run(SecureProxySupport.java:171)
+
+        at java.security.AccessController.doPrivileged(Native Method)
+
+        at javax.security.auth.Subject.doAs(Subject.java:415)
+
+        at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1657)
+
+        at org.apache.hive.hcatalog.templeton.SecureProxySupport.writeProxyDelegationTokens(SecureProxySupport.java:168)
+
+        at org.apache.hive.hcatalog.templeton.SecureProxySupport.open(SecureProxySupport.java:95)
+
+        at org.apache.hive.hcatalog.templeton.HcatDelegator.run(HcatDelegator.java:63)
+
+        at org.apache.hive.hcatalog.templeton.Server.ddl(Server.java:217)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+        at java.lang.reflect.Method.invoke(Method.java:606)
+
+        at com.sun.jersey.spi.container.JavaMethodInvokerFactory$1.invoke(JavaMethodInvokerFactory.java:60)
+
+        at com.sun.jersey.server.impl.model.method.dispatch.AbstractResourceMethodDispatchProvider$TypeOutInvoker._dispatch(AbstractResourceMethodDispatchProvider.java:185)
+
+        at com.sun.jersey.server.impl.model.method.dispatch.ResourceJavaMethodDispatcher.dispatch(ResourceJavaMethodDispatcher.java:75)
+
+        at com.sun.jersey.server.impl.uri.rules.HttpMethodRule.accept(HttpMethodRule.java:302)
+
+        at com.sun.jersey.server.impl.uri.rules.RightHandPathRule.accept(RightHandPathRule.java:147)
+
+        at com.sun.jersey.server.impl.uri.rules.ResourceClassRule.accept(ResourceClassRule.java:108)
+
+        at com.sun.jersey.server.impl.uri.rules.RightHandPathRule.accept(RightHandPathRule.java:147)
+
+        at com.sun.jersey.server.impl.uri.rules.RootResourceClassesRule.accept(RootResourceClassesRule.java:84)
+
+        at com.sun.jersey.server.impl.application.WebApplicationImpl._handleRequest(WebApplicationImpl.java:1480)
+
+        at com.sun.jersey.server.impl.application.WebApplicationImpl._handleRequest(WebApplicationImpl.java:1411)
+
+        at com.sun.jersey.server.impl.application.WebApplicationImpl.handleRequest(WebApplicationImpl.java:1360)
+
+        at com.sun.jersey.server.impl.application.WebApplicationImpl.handleRequest(WebApplicationImpl.java:1350)
+
+        at com.sun.jersey.spi.container.servlet.WebComponent.service(WebComponent.java:416)
+
+        at com.sun.jersey.spi.container.servlet.ServletContainer.service(ServletContainer.java:538)
+
+        at com.sun.jersey.spi.container.servlet.ServletContainer.service(ServletContainer.java:716)
+
+        at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+
+        at org.eclipse.jetty.servlet.ServletHolder.handle(ServletHolder.java:565)
+
+        at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1360)
+
+        at org.apache.hadoop.security.authentication.server.AuthenticationFilter.doFilter(AuthenticationFilter.java:615)
+
+        at org.apache.hadoop.security.authentication.server.AuthenticationFilter.doFilter(AuthenticationFilter.java:574)
+
+        at org.apache.hadoop.hdfs.web.AuthFilter.doFilter(AuthFilter.java:88)
+
+        at org.eclipse.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1331)
+
+        at org.eclipse.jetty.servlet.ServletHandler.doHandle(ServletHandler.java:477)
+
+        at org.eclipse.jetty.server.handler.ContextHandler.doHandle(ContextHandler.java:1031)
+
+        at org.eclipse.jetty.servlet.ServletHandler.doScope(ServletHandler.java:406)
+
+        at org.eclipse.jetty.server.handler.ContextHandler.doScope(ContextHandler.java:965)
+
+        at org.eclipse.jetty.server.handler.ScopedHandler.handle(ScopedHandler.java:117)
+
+        at org.eclipse.jetty.server.handler.HandlerList.handle(HandlerList.java:47)
+
+
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.templeton.SecureProxySupport.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-29 18:20:14" id="11424" opendate="2015-07-31 14:30:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Rule to transform OR clauses into IN clauses in CBO</summary>
+			
+			
+			<description>We create a rule that will transform OR clauses into IN clauses (when possible).</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.1.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FunctionRegistry.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.Optimizer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.pcr.PcrExprProcFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.CalcitePlanner.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">14194</link>
+			
+			
+			<link description="is part of" type="Incorporates">11315</link>
+			
+			
+			<link description="relates to" type="Reference">9069</link>
+			
+			
+			<link description="relates to" type="Reference">11461</link>
+			
+			
+			<link description="breaks" type="Regression">14652</link>
+			
+			
+			<link description="requires" type="Required">11602</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-04 20:12:59" id="13381" opendate="2016-03-30 02:01:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Timestamp &amp; date should have precedence in type hierarchy than string group</summary>
+			
+			
+			<description>Both sql server &amp;amp; oracle treats date/timestamp higher in hierarchy than varchars</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FunctionRegistry.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.TestFunctionRegistry.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.TestVectorizationContext.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.VectorizationContext.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="breaks" type="Regression">15291</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-05 14:46:19" id="13373" opendate="2016-03-29 01:35:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Use most specific type for numerical constants</summary>
+			
+			
+			<description>tinyint &amp;amp; shortint are currently inferred as ints, if they are without postfix.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.TypeCheckProcFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-05-03 22:26:48" id="13213" opendate="2016-03-05 06:01:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>make DbLockManger work for non-acid resources</summary>
+			
+			
+			<description>for example,
+insert into T values(...)
+if T is an ACID table we acquire Read lock
+but for non-acid table it should acquire Exclusive lock</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.lockmgr.DbTxnManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.lockmgr.TestDbTxnManager2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestTxnCommands2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.TxnHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-05-04 00:12:46" id="13646" opendate="2016-04-28 20:34:09" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>make hive.optimize.sort.dynamic.partition compatible with ACID tables</summary>
+			
+			
+			<description>HIVE-8875 disabled hive.optimize.sort.dynamic.partition for ACID queries.
+dynamic inserts are common in ACID and this leaves users with few options if they are seeing OutOfMemory errors due to too many writers.
+hive.optimize.sort.dynamic.partition sorts data by partition col/bucket col/sort col to ensure each reducer only needs 1 writer.
+Acid requires data in each bucket file to be sorted by ROW__ID and thus doesn&amp;amp;apos;t allow end user to determine sorting.
+So we should be able to support hive.optimize.sort.dynamic.partition with
+sort on partition col/bucket col/ROW__ID </description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">11550</link>
+			
+			
+			<link description="is blocked by" type="Blocker">13773</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-05-05 00:00:39" id="12579" opendate="2015-12-03 00:39:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>add support for datanucleus.connectionPoolingType=None in TxnHandler.setupJdbcConnectionPool()</summary>
+			
+			
+			<description>&quot;None&quot; is a valid option for datanucleus.connectionPoolingType
+http://www.datanucleus.org/products/accessplatform_2_2/rdbms/connection_pooling.html#Manual.
+TxnHandler.setupJdbcConnectionPool() doesn&amp;amp;apos;t support it.
+If nothing else, this is useful for debugging.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.TxnHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">13159</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-07 16:14:41" id="13932" opendate="2016-06-02 21:45:17" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive SMB Map Join with small set of LIMIT failed with NPE</summary>
+			
+			
+			<description>1) prepare sample data:
+a=1
+while [[ $a -lt 100 ]]; do echo $a ; let a=$a+1; done &amp;gt; data
+2) prepare source hive table:
+CREATE TABLE `s`(`c` string);
+load data local inpath &amp;amp;apos;data&amp;amp;apos; into table s;
+3) prepare the bucketed table:
+set hive.enforce.bucketing=true;
+set hive.enforce.sorting=true;
+CREATE TABLE `t`(`c` string) CLUSTERED BY (c) SORTED BY (c) INTO 5 BUCKETS;
+insert into t select * from s;
+4) reproduce this issue:
+SET hive.auto.convert.sortmerge.join = true;
+SET hive.auto.convert.sortmerge.join.bigtable.selection.policy = org.apache.hadoop.hive.ql.optimizer.LeftmostBigTableSelectorForAutoSMJ;
+SET hive.auto.convert.sortmerge.join.noconditionaltask = true;
+SET hive.optimize.bucketmapjoin = true;
+SET hive.optimize.bucketmapjoin.sortedmerge = true;
+select * from t join t t1 on t.c=t1.c limit 1;</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.SMBMapJoinOperator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-08 21:26:46" id="13392" opendate="2016-03-30 22:32:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>disable speculative execution for ACID Compactor</summary>
+			
+			
+			<description>https://developer.yahoo.com/hadoop/tutorial/module4.html
+Speculative execution is enabled by default. You can disable speculative execution for the mappers and reducers by setting the mapred.map.tasks.speculative.execution and mapred.reduce.tasks.speculative.execution JobConf options to false, respectively.
+CompactorMR is currently not set up to handle speculative execution and may lead to something like
+
+
+
+2016-02-08 22:56:38,256 WARN [main] org.apache.hadoop.mapred.YarnChild: Exception running child : org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.hdfs.protocol.AlreadyBeingCreatedException): Failed to CREATE_FILE /apps/hive/warehouse/service_logs_v2/ds=2016-01-20/_tmp_6cf08b9f-c2e2-4182-bc81-e032801b147f/base_13858600/bucket_00004 for DFSClient_attempt_1454628390210_27756_m_000001_1_131224698_1 on 172.18.129.12 because this file lease is currently owned by DFSClient_attempt_1454628390210_27756_m_000001_0_-2027182532_1 on 172.18.129.18
+
+        at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.recoverLeaseInternal(FSNamesystem.java:2937)
+
+        at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.startFileInternal(FSNamesystem.java:2562)
+
+        at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.startFileInt(FSNamesystem.java:2451)
+
+        at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.startFile(FSNamesystem.java:2335)
+
+        at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.create(NameNodeRpcServer.java:688)
+
+        at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.create(ClientNamenodeProtocolServerSideTranslatorPB.java:397)
+
+        at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)
+
+        at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:616)
+
+        at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:969)
+
+        at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2151)
+
+
+
+Short term: disable speculative execution for this job
+Longer term perhaps make each task write to dir with UUID...
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.TxnUtils.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.metastore.txn.ValidCompactorTxnList.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.txn.compactor.CompactorMR.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.TestValidCompactorTxnList.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.CompactionInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.TestAcidUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-09 03:21:33" id="14114" opendate="2016-06-28 03:46:51" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Ensure RecordWriter in streaming API is using the same UserGroupInformation as StreamingConnection</summary>
+			
+			
+			<description>currently both DelimitedInputWriter and StrictJsonWriter perform some Metastore access operations but without using UGI created by the caller for Metastore operations made by matching StreamingConnection &amp;amp; TransactionBatch</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.streaming.AbstractRecordWriter.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.streaming.HiveEndPoint.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.streaming.StreamingConnection.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.streaming.StrictJsonWriter.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.streaming.DelimitedInputWriter.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.streaming.TestStreaming.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">11089</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-18 21:55:16" id="13369" opendate="2016-03-28 19:56:49" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>AcidUtils.getAcidState() is not paying attention toValidTxnList when choosing the &quot;best&quot; base file</summary>
+			
+			
+			<description>The JavaDoc on getAcidState() reads, in part:
+&quot;Note that because major compactions don&amp;amp;apos;t
+   preserve the history, we can&amp;amp;apos;t use a base directory that includes a
+   transaction id that we must exclude.&quot;
+which is correct but there is nothing in the code that does this.
+And if we detect a situation where txn X must be excluded but and there are deltas that contain X, we&amp;amp;apos;ll have to abort the txn.  This can&amp;amp;apos;t (reasonably) happen with auto commit mode, but with multi statement txns it&amp;amp;apos;s possible.
+Suppose some long running txn starts and lock in snapshot at 17 (HWM).  An hour later it decides to access some partition for which all txns &amp;lt; 20 (for example) have already been compacted (i.e. GC&amp;amp;apos;d).  
+==========================================================
+Here is a more concrete example.  Let&amp;amp;apos;s say the file for table A are as follows and created in the order listed.
+delta_4_4
+delta_5_5
+delta_4_5
+base_5
+delta_16_16
+delta_17_17
+base_17  (for example user ran major compaction)
+let&amp;amp;apos;s say getAcidState() is called with ValidTxnList(20:16), i.e. with HWM=20 and ExceptionList=&amp;lt;16&amp;gt;
+Assume that all txns &amp;lt;= 20 commit.
+Reader can&amp;amp;apos;t use base_17 because it has result of txn16.  So it should chose base_5 &quot;TxnBase bestBase&quot; in getChildState().
+Then the reset of the logic in getAcidState() should choose delta_16_16 and delta_17_17 in Directory object.  This would represent acceptable snapshot for such reader.
+The issue is if at the same time the Cleaner process is running.  It will see everything with txnid&amp;lt;17 as obsolete.  Then it will check lock manger state and decide to delete (as there may not be any locks in LM for table A).  The order in which the files are deleted is undefined right now.  It may delete delta_16_16 and delta_17_17 first and right at this moment the read request with ValidTxnList(20:16) arrives (such snapshot may have bee locked in by some multi-stmt txn that started some time ago.  It acquires locks after the Cleaner checks LM state and calls getAcidState(). This request will choose base_5 but it won&amp;amp;apos;t see delta_16_16 and delta_17_17 and thus return the snapshot w/o modifications made by those txns.
+[This is not possible currently since we only support autoCommit=true.  The reason is the a query (0) opens txn (if appropriate), (1) acquires locks, (2) locks in the snapshot.  The cleaner won't delete anything for a given compaction (partition) if there are locks on it.  Thus for duration of the transaction, nothing will be deleted so it's safe to use base_5]
+This is a subtle race condition but possible.
+1. So the safest thing to do to ensure correctness is to use the latest base_x as the &quot;best&quot; and check against exceptions in ValidTxnList and throw an exception if there is an exception &amp;lt;=x.
+2. A better option is to keep 2 exception lists: aborted and open and only throw if there is an open txn &amp;lt;=x.  Compaction throws away data from aborted txns and thus there is no harm using base with aborted txns in its range.
+3. You could make each txn record the lowest open txn id at its start and prevent the cleaner from cleaning anything delta with id range that includes this open txn id for any txn that is still running.  This has a drawback of potentially delaying GC of old files for arbitrarily long periods.  So this should be a user config choice.   The implementation is not trivial.
+I would go with 1 now and do 2/3 together with multi-statement txn work.
+Side note:  if 2 deltas have overlapping ID range, then 1 must be a subset of the other
+A more concrete example (autoCommit=true)  (given 2.1 codebase)
+Suppose base_2 exists.
+1. lock table T
+2. Lock in the snapshot, txnid 3 open, hwm 5.
+3. a long GC pause or more practically the query is submitted but there are no resources to start App Master which is where getAcidState() is called from.
+4. getAcidState() is called
+It&amp;amp;apos;s not unreasonable that during #3 txnid 3 commits and base_5 is produced and is seen in #4.
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.txn.AcidOpenTxnsCounterService.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.TestAcidUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.ErrorMsg.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.AcidUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is cloned by" type="Cloners">14211</link>
+			
+			
+			<link description="is required by" type="Required">14350</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-01 19:25:35" id="14366" opendate="2016-07-28 02:16:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Conversion of a Non-ACID table to an ACID table produces non-unique primary keys</summary>
+			
+			
+			<description>When a Non-ACID table is converted to an ACID table, the primary key consisting of (original transaction id, bucket_id, row_id) is not generated uniquely. Currently, the row_id is always set to 0 for most rows. This leads to correctness issue for such tables.
+Quickest way to reproduce is to add the following unit test to ql/src/test/org/apache/hadoop/hive/ql/TestTxnCommands2.java
+ql/src/test/org/apache/hadoop/hive/ql/TestTxnCommands2.java
+
+
+  @Test
+
+  public void testOriginalReader() throws Exception {
+
+    FileSystem fs = FileSystem.get(hiveConf);
+
+    FileStatus[] status;
+
+
+
+    // 1. Insert five rows to Non-ACID table.
+
+    runStatementOnDriver(&quot;insert into &quot; + Table.NONACIDORCTBL + &quot;(a,b) values(1,2),(3,4),(5,6),(7,8),(9,10)&quot;);
+
+
+
+    // 2. Convert NONACIDORCTBL to ACID table.
+
+    runStatementOnDriver(&quot;alter table &quot; + Table.NONACIDORCTBL + &quot; SET TBLPROPERTIES (&amp;amp;apos;transactional&amp;amp;apos;=&amp;amp;apos;true&amp;amp;apos;)&quot;);
+
+
+
+    // 3. Perform a major compaction.
+
+    runStatementOnDriver(&quot;alter table &quot;+ Table.NONACIDORCTBL + &quot; compact &amp;amp;apos;MAJOR&amp;amp;apos;&quot;);
+
+    runWorker(hiveConf);
+
+
+
+    // 4. Perform a delete.
+
+    runStatementOnDriver(&quot;delete from &quot; + Table.NONACIDORCTBL + &quot; where a = 1&quot;);
+
+
+
+    // 5. Now do a projection should have (3,4) (5,6),(7,8),(9,10) only since (1,2) has been deleted.
+
+    List&amp;lt;String&amp;gt; rs = runStatementOnDriver(&quot;select a,b from &quot; + Table.NONACIDORCTBL + &quot; order by a,b&quot;);
+
+    int[][] resultData = new int[][] {{3,4}, {5,6}, {7,8}, {9,10}};
+
+    Assert.assertEquals(stringifyValues(resultData), rs);
+
+  }
+
+
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.TestInputOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcRawRecordMerger.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestTxnCommands2.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">12724</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-12 15:32:25" id="14513" opendate="2016-08-10 19:44:58" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Enhance custom query feature in LDAP atn to support resultset of ldap groups</summary>
+			
+			
+			<description>LDAP Authenticator can be configured to use a result set from a LDAP query to authenticate. However, is it expected that this LDAP query would only result a set of users (aka full DNs for the users in LDAP).
+However, its not always straightforward to be able to author queries that return users. For example, say you would like to allow &quot;all users from group1 and group2&quot; to be authenticated. The LDAP query has to return a union of all members of the group1 and group2.
+For example, one common configuration is that groups contain a list of its users
+      &quot;dn: uid=group1,ou=Groups,dc=example,dc=com&quot;,
+      &quot;distinguishedName: uid=group1,ou=Groups,dc=example,dc=com&quot;,
+      &quot;objectClass: top&quot;,
+      &quot;objectClass: groupOfNames&quot;,
+      &quot;objectClass: ExtensibleObject&quot;,
+      &quot;cn: group1&quot;,
+      &quot;ou: Groups&quot;,
+      &quot;sn: group1&quot;,
+      &quot;member: uid=user1,ou=People,dc=example,dc=com&quot;,
+The query 
+(&amp;amp;(objectClass=groupOfNames)(|(cn=group1)(cn=group2)))
+will return the entries
+uid=group1,ou=Groups,dc=example,dc=com
+uid=group2,ou=Groups,dc=example,dc=com
+but there is no means to form a query that would return just the values of &quot;member&quot; attributes. (ldap client tools are able to do by filtering out the attributes on these entries.
+So it will be useful to have such support to be able to specify queries that return groups.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.service.auth.LdapAuthenticationProviderImpl.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.auth.TestLdapAtnProviderWithMiniDS.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-15 16:16:21" id="14743" opendate="2016-09-13 16:47:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ArrayIndexOutOfBoundsException - HBASE-backed views&amp;apos; query with JOINs</summary>
+			
+			
+			<description>The stack:
+
+2016-09-13T09:38:49,972 ERROR [186b4545-65b5-4bfc-bc8e-3e14e251bb12 main] exec.Task: Job Submission failed with exception &amp;amp;apos;java.lang.ArrayIndexOutOfBoundsException(1)&amp;amp;apos;
+
+java.lang.ArrayIndexOutOfBoundsException: 1
+
+        at org.apache.hadoop.hive.hbase.HiveHBaseTableInputFormat.createFilterScan(HiveHBaseTableInputFormat.java:224)
+
+        at org.apache.hadoop.hive.hbase.HiveHBaseTableInputFormat.getSplitsInternal(HiveHBaseTableInputFormat.java:492)
+
+        at org.apache.hadoop.hive.hbase.HiveHBaseTableInputFormat.getSplits(HiveHBaseTableInputFormat.java:449)
+
+        at org.apache.hadoop.hive.ql.io.HiveInputFormat.addSplitsForGroup(HiveInputFormat.java:370)
+
+        at org.apache.hadoop.hive.ql.io.HiveInputFormat.getSplits(HiveInputFormat.java:466)
+
+        at org.apache.hadoop.hive.ql.io.CombineHiveInputFormat.getCombineSplits(CombineHiveInputFormat.java:356)
+
+        at org.apache.hadoop.hive.ql.io.CombineHiveInputFormat.getSplits(CombineHiveInputFormat.java:546)
+
+        at org.apache.hadoop.mapreduce.JobSubmitter.writeOldSplits(JobSubmitter.java:329)
+
+        at org.apache.hadoop.mapreduce.JobSubmitter.writeSplits(JobSubmitter.java:320)
+
+        at org.apache.hadoop.mapreduce.JobSubmitter.submitJobInternal(JobSubmitter.java:196)
+
+        at org.apache.hadoop.mapreduce.Job$10.run(Job.java:1290)
+
+        at org.apache.hadoop.mapreduce.Job$10.run(Job.java:1287)
+
+        at java.security.AccessController.doPrivileged(Native Method)
+
+        at javax.security.auth.Subject.doAs(Subject.java:415)
+
+        at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1657)
+
+        at org.apache.hadoop.mapreduce.Job.submit(Job.java:1287)
+
+        at org.apache.hadoop.mapred.JobClient$1.run(JobClient.java:575)
+
+        at org.apache.hadoop.mapred.JobClient$1.run(JobClient.java:570)
+
+
+
+
+
+Repro:
+
+CREATE TABLE HBASE_TABLE_TEST_1(
+
+  cvalue string ,
+
+  pk string,
+
+ ccount int   )
+
+ROW FORMAT SERDE
+
+  &amp;amp;apos;org.apache.hadoop.hive.hbase.HBaseSerDe&amp;amp;apos;
+
+STORED BY
+
+  &amp;amp;apos;org.apache.hadoop.hive.hbase.HBaseStorageHandler&amp;amp;apos;
+
+WITH SERDEPROPERTIES (
+
+  &amp;amp;apos;hbase.columns.mapping&amp;amp;apos;=&amp;amp;apos;cf:val,:key,cf2:count&amp;amp;apos;,
+
+  &amp;amp;apos;hbase.scan.cache&amp;amp;apos;=&amp;amp;apos;500&amp;amp;apos;,
+
+  &amp;amp;apos;hbase.scan.cacheblocks&amp;amp;apos;=&amp;amp;apos;false&amp;amp;apos;,
+
+  &amp;amp;apos;serialization.format&amp;amp;apos;=&amp;amp;apos;1&amp;amp;apos;)
+
+TBLPROPERTIES (
+
+  &amp;amp;apos;hbase.table.name&amp;amp;apos;=&amp;amp;apos;hbase_table_test_1&amp;amp;apos;,
+
+  &amp;amp;apos;serialization.null.format&amp;amp;apos;=&amp;amp;apos;&amp;amp;apos;  );
+
+
+
+
+
+  CREATE VIEW VIEW_HBASE_TABLE_TEST_1 AS SELECT hbase_table_test_1.cvalue,hbase_table_test_1.pk,hbase_table_test_1.ccount FROM hbase_table_test_1 WHERE hbase_table_test_1.ccount IS NOT NULL;
+
+
+
+CREATE TABLE HBASE_TABLE_TEST_2(
+
+  cvalue string ,
+
+    pk string ,
+
+   ccount int  )
+
+ROW FORMAT SERDE
+
+  &amp;amp;apos;org.apache.hadoop.hive.hbase.HBaseSerDe&amp;amp;apos;
+
+STORED BY
+
+  &amp;amp;apos;org.apache.hadoop.hive.hbase.HBaseStorageHandler&amp;amp;apos;
+
+WITH SERDEPROPERTIES (
+
+  &amp;amp;apos;hbase.columns.mapping&amp;amp;apos;=&amp;amp;apos;cf:val,:key,cf2:count&amp;amp;apos;,
+
+  &amp;amp;apos;hbase.scan.cache&amp;amp;apos;=&amp;amp;apos;500&amp;amp;apos;,
+
+  &amp;amp;apos;hbase.scan.cacheblocks&amp;amp;apos;=&amp;amp;apos;false&amp;amp;apos;,
+
+  &amp;amp;apos;serialization.format&amp;amp;apos;=&amp;amp;apos;1&amp;amp;apos;)
+
+TBLPROPERTIES (
+
+  &amp;amp;apos;hbase.table.name&amp;amp;apos;=&amp;amp;apos;hbase_table_test_2&amp;amp;apos;,
+
+  &amp;amp;apos;serialization.null.format&amp;amp;apos;=&amp;amp;apos;&amp;amp;apos;);
+
+
+
+
+
+CREATE VIEW VIEW_HBASE_TABLE_TEST_2 AS SELECT hbase_table_test_2.cvalue,hbase_table_test_2.pk,hbase_table_test_2.ccount FROM hbase_table_test_2 WHERE  hbase_table_test_2.pk &amp;gt;=&amp;amp;apos;3-0000h-0&amp;amp;apos; AND hbase_table_test_2.pk &amp;lt;= &amp;amp;apos;3-0000h-g&amp;amp;apos; AND hbase_table_test_2.ccount IS NOT NULL;
+
+
+
+set hive.auto.convert.join=false;
+
+
+
+  SELECT  p.cvalue cvalue
+
+FROM `VIEW_HBASE_TABLE_TEST_1` `p`
+
+LEFT OUTER JOIN `VIEW_HBASE_TABLE_TEST_2` `A1`
+
+ON `p`.cvalue = `A1`.cvalue
+
+LEFT OUTER JOIN `VIEW_HBASE_TABLE_TEST_1` `A2`
+
+ON `p`.cvalue = `A2`.cvalue;
+
+
+
+
+
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HiveHBaseTableInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-27 14:45:59" id="14194" opendate="2016-07-08 14:43:23" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Investigate optimizing the query compilation of long or-list in where statement </summary>
+			
+			
+			<description>The following query will take long time to compile if the where statement has a long list of &amp;amp;apos;or&amp;amp;apos;. Investigate if we can optimize it.
+select * from src 
+where key = 1
+or key =2
+or ....</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.FunctionRegistry.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.Optimizer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.pcr.PcrExprProcFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.CalcitePlanner.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">11424</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

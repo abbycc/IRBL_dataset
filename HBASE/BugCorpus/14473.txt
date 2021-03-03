@@ -1,0 +1,1 @@
+comput region local parallel larg cluster amp apo turn local balanc cost long comput region local amp apo comput serial comput parallel amp apo

@@ -1,0 +1,1 @@
+typo tableinputformatbas setinputcolum typo method tableinputformatbas getinputcolum getinputcolumn

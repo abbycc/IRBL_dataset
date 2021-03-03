@@ -1,0 +1,1 @@
+upgrad guava version lastest 19 0 hbase client guava version 12 0 1 elasticsearch sdk version 18 make conflict constructor stopwatch class public choos es rest api resolv conflict upgrad depend version thx

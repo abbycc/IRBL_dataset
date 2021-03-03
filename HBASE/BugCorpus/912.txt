@@ -1,0 +1,1 @@
+pe broken tabl exist iter checktabl broken int 0 lt extantt length extantt 0 equal tabledescriptor log warn tabl tabledescriptor exist tableexist true break

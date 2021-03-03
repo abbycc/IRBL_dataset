@@ -1,0 +1,1 @@
+admin oper tabl author tabl permiss global permiss inconsist exist hbase 6061 author tabl permiss global permiss privat void requiretableadminpermiss mastercoprocessorenviron byte tablenam throw ioexcept isactiveusertableown tablenam requirepermiss permiss action creat requirepermiss permiss action admin

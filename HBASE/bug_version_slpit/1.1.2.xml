@@ -1,0 +1,992 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HBASE">
+	<bug fixdate="2015-10-04 08:34:24" id="14367" opendate="2015-09-04 13:15:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Add normalization support to shell</summary>
+			
+			
+			<description>https://issues.apache.org/jira/browse/HBASE-13103 adds support for setting a normalization flag per HTableDescriptor, along with the server side chore to do the work.
+What is lacking is to easily set this from the shell, right now you need to use the Java API to modify the descriptor. This issue is to add the flag as a known attribute key and/or other means to toggle this per table.</description>
+			
+			
+			<version>1.1.2</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.RequestConverter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HTableDescriptor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.ConnectionImplementation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.zookeeper.TestZooKeeperWatcher.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.generated.MasterProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMaster.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.MasterRpcServices.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestAdmin2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HBaseAdmin.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.Admin.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.zookeeper.ZooKeeperWatcher.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">15124</link>
+			
+			
+			<link description="is related to" type="Reference">13103</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-05 17:04:21" id="14544" opendate="2015-10-02 21:18:38" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Allow HConnectionImpl to not refresh the dns on errors</summary>
+			
+			
+			<description>Some clusters will have static ip addresses and forced dns lookup can cause extra instability. Allow users to tun that feature off, if wanted.</description>
+			
+			
+			<version>1.1.2</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.ConnectionImplementation.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">13067</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-27 21:40:09" id="14705" opendate="2015-10-27 12:56:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Javadoc for KeyValue constructor is not correct.</summary>
+			
+			
+			<description>
+
+
+  /**
+
+   * Constructs KeyValue structure filled with null value.
+
+   * @param row - row key (arbitrary byte array)
+
+   * @param family family name
+
+   * @param qualifier column qualifier
+
+   */
+
+  public KeyValue(final byte [] row, final byte [] family,
+
+      final byte [] qualifier, final byte [] value) {
+
+    this(row, family, qualifier, HConstants.LATEST_TIMESTAMP, Type.Put, value);
+
+  }
+
+
+
+Value is not filled with null.</description>
+			
+			
+			<version>1.1.2</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 1.0.3, 1.1.3, 0.98.16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.KeyValue.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-10 19:55:49" id="14784" opendate="2015-11-07 00:23:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Port conflict is not resolved in HBaseTestingUtility.randomFreePort()</summary>
+			
+			
+			<description>If takenRandomPorts.contains(port) == true, it means port conflict, so randomFreePort() should rerun the loop. But continue statement leads to exit the loop, because port != 0.
+hbase-server/src/test/java/org/apache/hadoop/hbase/HBaseTestingUtility.java
+
+
+public static int randomFreePort() {
+
+  int port = 0; 
+
+  do { 
+
+    port = randomPort();
+
+    if (takenRandomPorts.contains(port)) {
+
+      continue;
+
+    }    
+
+    takenRandomPorts.add(port);
+
+
+
+    ...
+
+
+
+  } while (port == 0);
+
+  return port;
+
+}
+
+
+</description>
+			
+			
+			<version>1.1.2</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HBaseTestingUtility.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestHBaseTestingUtility.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-10 21:59:07" id="14778" opendate="2015-11-06 17:58:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Make block cache hit percentages not integer in the metrics system</summary>
+			
+			
+			<description>Once you&amp;amp;apos;re close to the 90%+ it&amp;amp;apos;s hard to see a difference because getting a full percent change is rare.</description>
+			
+			
+			<version>1.1.2</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.MetricsRegionServerWrapperImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.MetricsRegionServerWrapperStub.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.MetricsRegionServerWrapper.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-17 18:45:48" id="14793" opendate="2015-11-10 18:56:05" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Allow limiting size of block into L1 block cache.</summary>
+			
+			
+			<description>G1GC does really badly with long lived large objects. Lets allow limiting the size of a block that can be kept in the block cache.</description>
+			
+			
+			<version>1.1.2</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 0.98.17</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.MetricsRegionServerSource.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.MetricsRegionServerWrapperImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.MetricsRegionServerSourceImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestMetricsRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.hfile.CacheStats.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.hfile.LruBlockCache.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.hfile.TestLruBlockCache.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.MetricsRegionServerWrapper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.hfile.bucket.BucketCache.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.MetricsRegionServerWrapperStub.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="breaks" type="Regression">16300</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-05 01:00:24" id="14922" opendate="2015-12-03 10:03:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Delayed flush doesn&amp;apos;t work causing flush storms.</summary>
+			
+			
+			<description>Starting all regionservers at the same time will mean that most PeriodicMemstoreFlusher&amp;amp;apos;s will be running at the same time. So all of these threads will queue flushes at about the same time.
+This was supposed to be mitigated by Delayed. However that isn&amp;amp;apos;t nearly enough. This results in the immediate filling up and then draining of the flush queues every hour.</description>
+			
+			
+			<version>1.1.2</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.JitterScheduledThreadPoolExecutorImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ChoreService.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestChoreService.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-09 15:22:30" id="14954" opendate="2015-12-09 02:21:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>IllegalArgumentException was thrown when doing online configuration change in CompactSplitThread</summary>
+			
+			
+			<description>Online configuration change is a terrific feature for HBase administrators. However, when we use this feature to tune compaction thread pool size online, it triggered a IllegalArgumentException. The cause is the order of setMaximumPoolSize() and setCorePoolSize() of ThreadPoolExecutor: when turning parameters bigger, we should setMax first; when turning parameters smaller, we need to setCore first. Besides, there is also a copy-code bug in merge and split thread pool which I will fix together.</description>
+			
+			
+			<version>1.1.2</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 1.1.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.CompactSplitThread.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-14 10:56:41" id="14936" opendate="2015-12-07 09:54:17" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CombinedBlockCache should overwrite CacheStats#rollMetricsPeriod()</summary>
+			
+			
+			<description>It seems CombinedBlockCache should overwrite CacheStats#rollMetricsPeriod() as
+
+
+
+public void rollMetricsPeriod() {
+
+  lruCacheStats.rollMetricsPeriod();
+
+  bucketCacheStats.rollMetricsPeriod();
+
+}
+
+
+
+otherwise, CombinedBlockCache.getHitRatioPastNPeriods() and CombinedBlockCache.getHitCachingRatioPastNPeriods() will always return 0.</description>
+			
+			
+			<version>1.1.2</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 1.0.3, 1.1.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.hfile.CacheStats.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.hfile.CombinedBlockCache.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-10 04:28:32" id="15120" opendate="2016-01-15 10:00:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Backport HBASE-14883 to branch-1.1</summary>
+			
+			
+			<description>When checking branch-1.1 UT in HBASE-13590, found TestSplitTransactionOnCluster#testFailedSplit will fail at a 12/50 chance. The issue is fixed by HBASE-14883 but the change didn&amp;amp;apos;t go into branch-1.1</description>
+			
+			
+			<version>1.1.2</version>
+			
+			
+			<fixedVersion>1.1.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.balancer.BaseLoadBalancer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="Is contained by" type="Container">15168</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-07 18:46:47" id="15957" opendate="2016-06-03 18:51:23" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RpcClientImpl.close never ends in some circumstances</summary>
+			
+			
+			<description>This bug is related to HBASE-14241 and HBASE-13851. 
+Fix for HBASE-13851 introduced the check for non alive connections and if connection is not alive, it close it:
+
+        if (!conn.isAlive()) {
+
+          if (connsToClose == null) {
+
+            connsToClose = new HashSet&amp;lt;Connection&amp;gt;();
+
+          }
+
+          connsToClose.add(conn);
+
+        }
+
+....
+
+    if (connsToClose != null) {
+
+      for (Connection conn : connsToClose) {
+
+        if (conn.markClosed(new InterruptedIOException(&quot;RpcClient is closing&quot;))) {
+
+          conn.close();
+
+        }
+
+      }
+
+    }
+
+
+
+
+
+That worked fine until fix for HBASE-14241 introduced handling for interrupt in writer thread:
+
+          try {
+
+            cts = callsToWrite.take();
+
+          } catch (InterruptedException e) {
+
+            markClosed(new InterruptedIOException());
+
+          }
+
+
+
+So, if writer thread is running, but connection thread is not started yet, interrupt will cause calling of markClosed which will set shouldCloseConnection flag for the parent connection. And the next time during the handling of non alive connections markClosed will return false and close will not be called. As the result connection will not be removed from the connections pool and RpcClientImpl.close never finish. </description>
+			
+			
+			<version>1.1.2</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0, 1.2.2, 1.1.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.IntegrationTestRpcClient.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RpcClientImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-05 16:16:47" id="16359" opendate="2016-08-04 22:38:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NullPointerException in RSRpcServices.openRegion()</summary>
+			
+			
+			<description>I was investigating why some region failed to move out of transition within timeout 120000ms and found the following in region server log:
+
+
+
+2016-08-04 09:19:52,616 INFO  [B.priority.fifo.QRpcServer.handler=12,queue=0,port=16020] regionserver.RSRpcServices: Open hbck_table_772674,,1470302211047.                                da859880bb51bc0fd25979798a96c444.
+
+2016-08-04 09:19:52,620 ERROR [B.priority.fifo.QRpcServer.handler=12,queue=0,port=16020] ipc.RpcServer: Unexpected throwable object
+
+java.lang.NullPointerException
+
+  at org.apache.hadoop.hbase.regionserver.RSRpcServices.openRegion(RSRpcServices.java:1530)
+
+  at org.apache.hadoop.hbase.protobuf.generated.AdminProtos$AdminService$2.callBlockingMethod(AdminProtos.java:22737)
+
+  at org.apache.hadoop.hbase.ipc.RpcServer.call(RpcServer.java:2127)
+
+  at org.apache.hadoop.hbase.ipc.CallRunner.run(CallRunner.java:107)
+
+  at org.apache.hadoop.hbase.ipc.RpcExecutor.consumerLoop(RpcExecutor.java:133)
+
+
+
+Here is related code - NPE was thrown from the last line:
+
+
+
+        htd = htds.get(region.getTable());
+
+        if (htd == null) {
+
+          htd = regionServer.tableDescriptors.get(region.getTable());
+
+          htds.put(region.getTable(), htd);
+
+        }
+
+...
+
+          if (region.isMetaRegion()) {
+
+            regionServer.service.submit(new OpenMetaHandler(
+
+              regionServer, regionServer, region, htd, masterSystemTime, coordination, ord));
+
+          } else {
+
+            regionServer.updateRegionFavoredNodesMapping(region.getEncodedName(),
+
+              regionOpenInfo.getFavoredNodesList());
+
+            if (htd.getPriority() &amp;gt;= HConstants.ADMIN_QOS || region.getTable().isSystemTable()) {
+
+
+
+region.getTable() shouldn&amp;amp;apos;t be null since it is called via htds.get(region.getTable()) unconditionally.
+It seems htd was null.</description>
+			
+			
+			<version>1.1.2</version>
+			
+			
+			<fixedVersion>2.0.0, 1.4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.RSRpcServices.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-08 17:42:13" id="16367" opendate="2016-08-06 09:20:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Race between master and region server initialization may lead to premature server abort</summary>
+			
+			
+			<description>I was troubleshooting a case where hbase (1.1.2) master always dies shortly after start - see attached master log snippet.
+It turned out that master initialization thread was racing with HRegionServer#preRegistrationInitialization() (initializeZooKeeper, actually) since HMaster extends HRegionServer.
+Through additional logging in master:
+
+
+
+    this.oldLogDir = createInitialFileSystemLayout();
+
+    HFileSystem.addLocationsOrderInterceptor(conf);
+
+    LOG.info(&quot;creating splitLogManager&quot;);
+
+
+
+I found that execution didn&amp;amp;apos;t reach the last log line before region server declared cluster Id being null.</description>
+			
+			
+			<version>1.1.2</version>
+			
+			
+			<fixedVersion>2.0.0, 1.4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMaster.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-18 03:21:34" id="16429" opendate="2016-08-17 03:35:09" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FSHLog: deadlock if rollWriter called when ring buffer filled with appends</summary>
+			
+			
+			<description>Recently we experienced an online problem that all handlers are stuck. Checking the jstack we could see all handler threads waiting for RingBuffer.next, while the single ring buffer consumer dead waiting for safePointReleasedLatch to count down:
+
+Normal handler thread:
+
+&quot;B.defaultRpcServer.handler=126,queue=9,port=16020&quot; daemon prio=10 tid=0x00007efd4b44f800 nid=0x15f29 runnable [0x00007efd3db7b000]
+
+   java.lang.Thread.State: TIMED_WAITING (parking)
+
+        at sun.misc.Unsafe.park(Native Method)
+
+        at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:349)
+
+        at com.lmax.disruptor.MultiProducerSequencer.next(MultiProducerSequencer.java:136)
+
+        at com.lmax.disruptor.MultiProducerSequencer.next(MultiProducerSequencer.java:105)
+
+        at com.lmax.disruptor.RingBuffer.next(RingBuffer.java:246)
+
+        at org.apache.hadoop.hbase.regionserver.wal.FSHLog.append(FSHLog.java:1222)
+
+        at org.apache.hadoop.hbase.regionserver.HRegion.doMiniBatchMutation(HRegion.java:3188)
+
+        at org.apache.hadoop.hbase.regionserver.HRegion.batchMutate(HRegion.java:2879)
+
+        at org.apache.hadoop.hbase.regionserver.HRegion.batchMutate(HRegion.java:2819)
+
+        at org.apache.hadoop.hbase.regionserver.RSRpcServices.doBatchOp(RSRpcServices.java:736)
+
+        at org.apache.hadoop.hbase.regionserver.RSRpcServices.doNonAtomicRegionMutation(RSRpcServices.java:698)
+
+        at org.apache.hadoop.hbase.regionserver.RSRpcServices.multi(RSRpcServices.java:2095)
+
+        at org.apache.hadoop.hbase.protobuf.generated.ClientProtos$ClientService$2.callBlockingMethod(ClientProtos.java:32213)
+
+        at org.apache.hadoop.hbase.ipc.RpcServer.call(RpcServer.java:774)
+
+        at org.apache.hadoop.hbase.ipc.CallRunner.run(CallRunner.java:102)
+
+        at org.apache.hadoop.hbase.ipc.RpcExecutor.consumerLoop(RpcExecutor.java:133)
+
+        at org.apache.hadoop.hbase.ipc.RpcExecutor$1.run(RpcExecutor.java:108)
+
+        at java.lang.Thread.run(Thread.java:756)
+
+
+
+RingBufferEventHandler thread waiting for safePointReleasedLatch:
+
+&quot;regionserver/hadoop0369.et2.tbsite.net/11.251.152.226:16020.append-pool2-t1&quot; prio=10 tid=0x00007efd320d0000 nid=0x1777b waiting on condition [0x00007efd2d2fa000]
+
+   java.lang.Thread.State: WAITING (parking)
+
+        at sun.misc.Unsafe.park(Native Method)
+
+        - parking to wait for  &amp;lt;0x00007f01b48d9178&amp;gt; (a java.util.concurrent.CountDownLatch$Sync)
+
+        at java.util.concurrent.locks.LockSupport.park(LockSupport.java:186)
+
+        at java.util.concurrent.locks.AbstractQueuedSynchronizer.parkAndCheckInterrupt(AbstractQueuedSynchronizer.java:834)
+
+        at java.util.concurrent.locks.AbstractQueuedSynchronizer.doAcquireSharedInterruptibly(AbstractQueuedSynchronizer.java:994)
+
+        at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireSharedInterruptibly(AbstractQueuedSynchronizer.java:1303)
+
+        at java.util.concurrent.CountDownLatch.await(CountDownLatch.java:236)
+
+        at org.apache.hadoop.hbase.regionserver.wal.FSHLog$SafePointZigZagLatch.safePointAttained(FSHLog.java:1866)
+
+        at org.apache.hadoop.hbase.regionserver.wal.FSHLog$RingBufferEventHandler.attainSafePoint(FSHLog.java:2066)
+
+        at org.apache.hadoop.hbase.regionserver.wal.FSHLog$RingBufferEventHandler.onEvent(FSHLog.java:2029)
+
+        at org.apache.hadoop.hbase.regionserver.wal.FSHLog$RingBufferEventHandler.onEvent(FSHLog.java:1909)
+
+        at com.lmax.disruptor.BatchEventProcessor.run(BatchEventProcessor.java:128)
+
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+
+        at java.lang.Thread.run(Thread.java:756)
+
+
+
+FSHLog#replaceWriter will call SafePointZigZagLatch#releaseSafePoint to count down safePointReleasedLatch, but replaceWriter got stuck when trying to publish a sync onto ring buffer:
+
+&quot;regionserver/hadoop0369.et2.tbsite.net/11.251.152.226:16020.logRoller&quot; daemon prio=10 tid=0x00007efd320c8800 nid=0x16123 runnable [0x00007efd311f6000]
+
+   java.lang.Thread.State: TIMED_WAITING (parking)
+
+        at sun.misc.Unsafe.park(Native Method)
+
+        at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:349)
+
+        at com.lmax.disruptor.MultiProducerSequencer.next(MultiProducerSequencer.java:136)
+
+        at com.lmax.disruptor.MultiProducerSequencer.next(MultiProducerSequencer.java:105)
+
+        at com.lmax.disruptor.RingBuffer.next(RingBuffer.java:246)
+
+        at org.apache.hadoop.hbase.regionserver.wal.FSHLog.publishSyncOnRingBuffer(FSHLog.java:1481)
+
+        at org.apache.hadoop.hbase.regionserver.wal.FSHLog.publishSyncOnRingBuffer(FSHLog.java:1477)
+
+        at org.apache.hadoop.hbase.regionserver.wal.FSHLog.replaceWriter(FSHLog.java:957)
+
+        at org.apache.hadoop.hbase.regionserver.wal.FSHLog.rollWriter(FSHLog.java:726)
+
+        at org.apache.hadoop.hbase.regionserver.LogRoller.run(LogRoller.java:148)
+
+        at java.lang.Thread.run(Thread.java:756)
+
+
+
+Thus deadlock happens.
+A brief process of how deadlock forms:
+
+ring buffer filled with appends
+
+-&amp;gt; rollWriter happens
+
+-&amp;gt; the only consumer of ring buffer waiting for safePointReleasedLatch
+
+-&amp;gt; rollWriter cannot publish sync since ring buffer is full
+
+-&amp;gt; rollWriter won&amp;amp;apos;t release safePointReleasedLatch
+
+
+
+This JIRA targeting at resolve this issue, and will add a UT to cover the case</description>
+			
+			
+			<version>1.1.2</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0, 1.1.6, 1.2.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestHRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.FSHLog.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-24 13:54:53" id="16270" opendate="2016-07-21 21:13:49" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Handle duplicate clearing of snapshot in region replicas</summary>
+			
+			
+			<description>We have an HBase (1.1.2) production cluster with 58 region servers and a staging cluster with 6 region servers.
+For both clusters, we enabled region replicas with the following settings:
+hbase.regionserver.storefile.refresh.period = 0
+hbase.region.replica.replication.enabled = true
+hbase.region.replica.replication.memstore.enabled = true
+hbase.master.hfilecleaner.ttl = 3600000
+hbase.master.loadbalancer.class = org.apache.hadoop.hbase.master.balancer.StochasticLoadBalancer
+hbase.meta.replica.count = 3
+hbase.regionserver.meta.storefile.refresh.period = 30000
+hbase.region.replica.wait.for.primary.flush = true
+hbase.region.replica.storefile.refresh.memstore.multiplier = 4
+We then altered our HBase tables to have REGION_REPLICATION =&amp;gt; 2
+Both clusters got into a state where a few region servers were spewing the following error below in the HBase logs.  In one instance the error occurred over 70K times.  At this time, these region servers would see 10x write traffic (the hadoop.HBase.RegionServer.Server.writeRequestCount metric) and in some instances would crash.
+At the same time, we would see secondary regions move and then go into the &quot;reads are disabled&quot; state for extended periods.  
+It appears there is a race condition where the DefaultMemStore::clearSnapshot method might be called more than once in succession. The first call would set snapshotId to -1, but the second call would throw an exception.  It seems the second call should just return if the snapshotId is already -1, rather than throwing an exception.
+Thu Jul 21 08:38:50 UTC 2016, RpcRetryingCaller
+{globalStartTime=1469090201543, pause=100, retries=35}
+, org.apache.hadoop.hbase.regionserver.UnexpectedStateException: org.apache.hadoop.hbase.regionserver.UnexpectedStateException: Current snapshot id is -1,passed 1469085004304
+        at org.apache.hadoop.hbase.regionserver.DefaultMemStore.clearSnapshot(DefaultMemStore.java:187)
+        at org.apache.hadoop.hbase.regionserver.HStore.updateStorefiles(HStore.java:1054)
+        at org.apache.hadoop.hbase.regionserver.HStore.access$500(HStore.java:128)
+        at org.apache.hadoop.hbase.regionserver.HStore$StoreFlusherImpl.replayFlush(HStore.java:2270)
+        at org.apache.hadoop.hbase.regionserver.HRegion.replayFlushInStores(HRegion.java:4487)
+        at org.apache.hadoop.hbase.regionserver.HRegion.replayWALFlushCommitMarker(HRegion.java:4388)
+        at org.apache.hadoop.hbase.regionserver.HRegion.replayWALFlushMarker(HRegion.java:4191)
+        at org.apache.hadoop.hbase.regionserver.RSRpcServices.doReplayBatchOp(RSRpcServices.java:776)
+        at org.apache.hadoop.hbase.regionserver.RSRpcServices.replay(RSRpcServices.java:1655)
+        at org.apache.hadoop.hbase.protobuf.generated.AdminProtos$AdminService$2.callBlockingMethod(AdminProtos.java:22255)
+        at org.apache.hadoop.hbase.ipc.RpcServer.call(RpcServer.java:2114)
+        at org.apache.hadoop.hbase.ipc.CallRunner.run(CallRunner.java:101)
+        at org.apache.hadoop.hbase.ipc.RpcExecutor.consumerLoop(RpcExecutor.java:130)
+        at org.apache.hadoop.hbase.ipc.RpcExecutor$1.run(RpcExecutor.java:107)
+        at java.lang.Thread.run(Thread.java:745)</description>
+			
+			
+			<version>1.1.2</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0, 1.1.6, 1.2.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.AbstractMemStore.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

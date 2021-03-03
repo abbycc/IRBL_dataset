@@ -1,0 +1,1 @@
+put permit store includ append colon tabl famili testfamili put api famili colon kv store depend put put add testfamili qualifi throw nosuchcolumnfamilyexcept

@@ -1,0 +1,1 @@
+mr testcas testimportexport run trunk hadoop2 0 testimportexport test case run trunk compil hadoop 2 0

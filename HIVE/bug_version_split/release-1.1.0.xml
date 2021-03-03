@@ -1,0 +1,3426 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HIVE">
+	<bug fixdate="2015-01-26 23:23:29" id="8485" opendate="2014-10-16 12:59:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HMS on Oracle incompatibility</summary>
+			
+			
+			<description>Oracle does not distinguish between empty strings and NULL,which proves problematic for DataNucleus.
+In the event a user creates a table with some property stored as an empty string the table will no longer be accessible.
+i.e. TBLPROPERTIES (&amp;amp;apos;serialization.null.format&amp;amp;apos;=&amp;amp;apos;&amp;amp;apos;)
+If they try to select, describe, drop, etc the client prints the following exception.
+ERROR ql.Driver: FAILED: SemanticException [Error 10001]: Table not found &amp;lt;table name&amp;gt;
+The work around for this was to go into the hive metastore on the Oracle database and replace NULL with some other string. Users could then drop the tables or alter their data to use the new null format they just set.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.ObjectStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreDirectSql.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">14116</link>
+			
+			
+			<link description="relates to" type="Reference">12476</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-02-15 01:20:03" id="9685" opendate="2015-02-13 16:05:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CLIService should create SessionState after logging into kerberos</summary>
+			
+			
+			<description>
+javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]
+
+        at com.sun.security.sasl.gsskerb.GssKrb5Client.evaluateChallenge(GssKrb5Client.java:211)
+
+        at org.apache.thrift.transport.TSaslClientTransport.handleSaslStartMessage(TSaslClientTransport.java:94)
+
+        at org.apache.thrift.transport.TSaslTransport.open(TSaslTransport.java:271)
+
+        at org.apache.thrift.transport.TSaslClientTransport.open(TSaslClientTransport.java:37)
+
+        at org.apache.hadoop.hive.thrift.client.TUGIAssumingTransport$1.run(TUGIAssumingTransport.java:52)
+
+        at org.apache.hadoop.hive.thrift.client.TUGIAssumingTransport$1.run(TUGIAssumingTransport.java:49)
+
+        at java.security.AccessController.doPrivileged(Native Method)
+
+        at javax.security.auth.Subject.doAs(Subject.java:422)
+
+        at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1671)
+
+        at org.apache.hadoop.hive.thrift.client.TUGIAssumingTransport.open(TUGIAssumingTransport.java:49)
+
+        at org.apache.hadoop.hive.metastore.HiveMetaStoreClient.open(HiveMetaStoreClient.java:409)
+
+        at org.apache.hadoop.hive.metastore.HiveMetaStoreClient.&amp;lt;init&amp;gt;(HiveMetaStoreClient.java:230)
+
+        at org.apache.hadoop.hive.ql.metadata.SessionHiveMetaStoreClient.&amp;lt;init&amp;gt;(SessionHiveMetaStoreClient.java:74)
+
+        at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+
+        at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+
+        at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+
+        at java.lang.reflect.Constructor.newInstance(Constructor.java:408)
+
+        at org.apache.hadoop.hive.metastore.MetaStoreUtils.newInstance(MetaStoreUtils.java:1483)
+
+        at org.apache.hadoop.hive.metastore.RetryingMetaStoreClient.&amp;lt;init&amp;gt;(RetryingMetaStoreClient.java:64)
+
+        at org.apache.hadoop.hive.metastore.RetryingMetaStoreClient.getProxy(RetryingMetaStoreClient.java:74)
+
+        at org.apache.hadoop.hive.ql.metadata.Hive.createMetaStoreClient(Hive.java:2841)
+
+        at org.apache.hadoop.hive.ql.metadata.Hive.getMSC(Hive.java:2860)
+
+        at org.apache.hadoop.hive.ql.session.SessionState.start(SessionState.java:453)
+
+        at org.apache.hive.service.cli.CLIService.applyAuthorizationConfigPolicy(CLIService.java:123)
+
+        at org.apache.hive.service.cli.CLIService.init(CLIService.java:81)
+
+        at org.apache.hive.service.CompositeService.init(CompositeService.java:59)
+
+        at org.apache.hive.service.server.HiveServer2.init(HiveServer2.java:92)
+
+        at org.apache.hive.service.server.HiveServer2.startHiveServer2(HiveServer2.java:309)
+
+        at org.apache.hive.service.server.HiveServer2.access$400(HiveServer2.java:68)
+
+        at org.apache.hive.service.server.HiveServer2$StartOptionExecutor.execute(HiveServer2.java:523)
+
+        at org.apache.hive.service.server.HiveServer2.main(HiveServer2.java:396)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+        at java.lang.reflect.Method.invoke(Method.java:483)
+
+        at org.apache.hadoop.util.RunJar.run(RunJar.java:221)
+
+        at org.apache.hadoop.util.RunJar.main(RunJar.java:136)
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.service.cli.CLIService.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">10240</link>
+			
+			
+			<link description="is related to" type="Reference">1808</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-02-24 18:48:15" id="9655" opendate="2015-02-11 20:58:13" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Dynamic partition table insertion error</summary>
+			
+			
+			<description>We have these two tables:
+
+
+
+create table t1 (c1 bigint, c2 string);
+
+
+
+CREATE TABLE t2 (c1 int, c2 string)
+
+PARTITIONED BY (p1 string);
+
+
+
+load data local inpath &amp;amp;apos;data&amp;amp;apos; into table t1;
+
+load data local inpath &amp;amp;apos;data&amp;amp;apos; into table t1;
+
+load data local inpath &amp;amp;apos;data&amp;amp;apos; into table t1;
+
+load data local inpath &amp;amp;apos;data&amp;amp;apos; into table t1;
+
+load data local inpath &amp;amp;apos;data&amp;amp;apos; into table t1;
+
+
+
+But, when try to insert into table t2 from t1:
+
+
+
+SET hive.exec.dynamic.partition.mode=nonstrict;
+
+insert overwrite table t2 partition(p1) select *,c1 as p1 from t1 distribute by p1;
+
+
+
+The query failed with the following exception:
+
+2015-02-11 12:50:52,756 ERROR [LocalJobRunner Map Task Executor #0]: mr.ExecMapper (ExecMapper.java:map(178)) - org.apache.hadoop.hive.ql.metadata.HiveException: Hive Runtime Error while processing row {&quot;c1&quot;:1,&quot;c2&quot;:&quot;one&quot;}
+
+  at org.apache.hadoop.hive.ql.exec.MapOperator.process(MapOperator.java:503)
+
+  at org.apache.hadoop.hive.ql.exec.mr.ExecMapper.map(ExecMapper.java:170)
+
+  at org.apache.hadoop.mapred.MapRunner.run(MapRunner.java:54)
+
+  at org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:450)
+
+  at org.apache.hadoop.mapred.MapTask.run(MapTask.java:343)
+
+  at org.apache.hadoop.mapred.LocalJobRunner$Job$MapTaskRunnable.run(LocalJobRunner.java:243)
+
+  at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+
+  at java.util.concurrent.FutureTask.run(FutureTask.java:262)
+
+  at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+
+  at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+
+  at java.lang.Thread.run(Thread.java:745)
+
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: java.lang.RuntimeException: cannot find field _col2 from [0:_col0, 1:_col1]
+
+  at org.apache.hadoop.hive.ql.exec.ReduceSinkOperator.processOp(ReduceSinkOperator.java:397)
+
+  at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:815)
+
+  at org.apache.hadoop.hive.ql.exec.SelectOperator.processOp(SelectOperator.java:84)
+
+  at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:815)
+
+  at org.apache.hadoop.hive.ql.exec.TableScanOperator.processOp(TableScanOperator.java:95)
+
+  at org.apache.hadoop.hive.ql.exec.MapOperator$MapOpCtx.forward(MapOperator.java:157)
+
+  at org.apache.hadoop.hive.ql.exec.MapOperator.process(MapOperator.java:493)
+
+  ... 10 more
+
+Caused by: java.lang.RuntimeException: cannot find field _col2 from [0:_col0, 1:_col1]
+
+  at org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils.getStandardStructFieldRef(ObjectInspectorUtils.java:410)
+
+  at org.apache.hadoop.hive.serde2.objectinspector.StandardStructObjectInspector.getStructFieldRef(StandardStructObjectInspector.java:147)
+
+  at org.apache.hadoop.hive.ql.exec.ExprNodeColumnEvaluator.initialize(ExprNodeColumnEvaluator.java:55)
+
+  at org.apache.hadoop.hive.ql.exec.Operator.initEvaluators(Operator.java:954)
+
+  at org.apache.hadoop.hive.ql.exec.ReduceSinkOperator.processOp(ReduceSinkOperator.java:325)
+
+  ... 16 more
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.ColumnPrunerProcFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">9718</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-19 17:11:55" id="11000" opendate="2015-06-13 01:37:31" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive not able to pass Hive&amp;apos;s Kerberos credential to spark-submit process [Spark Branch]</summary>
+			
+			
+			<description>The end of the result is that manual kinit with Hive&amp;amp;apos;s keytab on the host where HS2 is running, or the following error may appear:
+
+
+
+2015-04-29 15:49:34,614 INFO org.apache.hive.spark.client.SparkClientImpl: 15/04/29 15:49:34 WARN UserGroupInformation: PriviledgedActionException as:hive (auth:KERBEROS) cause:java.io.IOException: javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]
+
+2015-04-29 15:49:34,652 INFO org.apache.hive.spark.client.SparkClientImpl: Exception in thread &quot;main&quot; java.io.IOException: Failed on local exception: java.io.IOException: javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]; Host Details : local host is: &quot;secure-hos-1.ent.cloudera.com/10.20.77.79&quot;; destination host is: &quot;secure-hos-1.ent.cloudera.com&quot;:8032;
+
+2015-04-29 15:49:34,653 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.net.NetUtils.wrapException(NetUtils.java:772)
+
+2015-04-29 15:49:34,653 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client.call(Client.java:1472)
+
+2015-04-29 15:49:34,654 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client.call(Client.java:1399)
+
+2015-04-29 15:49:34,654 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:232)
+
+2015-04-29 15:49:34,654 INFO org.apache.hive.spark.client.SparkClientImpl:      at com.sun.proxy.$Proxy11.getClusterMetrics(Unknown Source)
+
+2015-04-29 15:49:34,655 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.yarn.api.impl.pb.client.ApplicationClientProtocolPBClientImpl.getClusterMetrics(ApplicationClientProtocolPBClientImpl.java:202)
+
+2015-04-29 15:49:34,655 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+2015-04-29 15:49:34,655 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+
+2015-04-29 15:49:34,656 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+2015-04-29 15:49:34,656 INFO org.apache.hive.spark.client.SparkClientImpl:      at java.lang.reflect.Method.invoke(Method.java:606)
+
+2015-04-29 15:49:34,656 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:187)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:102)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at com.sun.proxy.$Proxy12.getClusterMetrics(Unknown Source)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.yarn.client.api.impl.YarnClientImpl.getYarnClusterMetrics(YarnClientImpl.java:461)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.yarn.Client$$anonfun$submitApplication$1.apply(Client.scala:91)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.yarn.Client$$anonfun$submitApplication$1.apply(Client.scala:91)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.Logging$class.logInfo(Logging.scala:59)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.yarn.Client.logInfo(Client.scala:49)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.yarn.Client.submitApplication(Client.scala:90)
+
+2015-04-29 15:49:34,658 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.yarn.Client.run(Client.scala:619)
+
+2015-04-29 15:49:34,658 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.yarn.Client$.main(Client.scala:647)
+
+2015-04-29 15:49:34,658 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.yarn.Client.main(Client.scala)
+
+2015-04-29 15:49:34,658 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+2015-04-29 15:49:34,658 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+
+2015-04-29 15:49:34,658 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+2015-04-29 15:49:34,658 INFO org.apache.hive.spark.client.SparkClientImpl:      at java.lang.reflect.Method.invoke(Method.java:606)
+
+2015-04-29 15:49:34,659 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.SparkSubmit$.org$apache$spark$deploy$SparkSubmit$$runMain(SparkSubmit.scala:569)
+
+2015-04-29 15:49:34,659 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.SparkSubmit$.doRunMain$1(SparkSubmit.scala:166)
+
+2015-04-29 15:49:34,659 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.SparkSubmit$.submit(SparkSubmit.scala:189)
+
+2015-04-29 15:49:34,659 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.SparkSubmit$.main(SparkSubmit.scala:110)
+
+2015-04-29 15:49:34,659 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.SparkSubmit.main(SparkSubmit.scala)
+
+2015-04-29 15:49:34,660 INFO org.apache.hive.spark.client.SparkClientImpl: Caused by: java.io.IOException: javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]
+
+2015-04-29 15:49:34,660 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection$1.run(Client.java:680)
+
+2015-04-29 15:49:34,660 INFO org.apache.hive.spark.client.SparkClientImpl:      at java.security.AccessController.doPrivileged(Native Method)
+
+2015-04-29 15:49:34,660 INFO org.apache.hive.spark.client.SparkClientImpl:      at javax.security.auth.Subject.doAs(Subject.java:415)
+
+2015-04-29 15:49:34,660 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1671)
+
+2015-04-29 15:49:34,660 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection.handleSaslConnectionFailure(Client.java:643)
+
+2015-04-29 15:49:34,661 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection.setupIOstreams(Client.java:730)
+
+2015-04-29 15:49:34,661 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection.access$2800(Client.java:368)
+
+2015-04-29 15:49:34,661 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client.getConnection(Client.java:1521)
+
+2015-04-29 15:49:34,661 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client.call(Client.java:1438)
+
+2015-04-29 15:49:34,661 INFO org.apache.hive.spark.client.SparkClientImpl:      ... 29 more
+
+2015-04-29 15:49:34,662 INFO org.apache.hive.spark.client.SparkClientImpl: Caused by: javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]
+
+2015-04-29 15:49:34,662 INFO org.apache.hive.spark.client.SparkClientImpl:      at com.sun.security.sasl.gsskerb.GssKrb5Client.evaluateChallenge(GssKrb5Client.java:212)
+
+2015-04-29 15:49:34,662 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.security.SaslRpcClient.saslConnect(SaslRpcClient.java:413)
+
+2015-04-29 15:49:34,662 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection.setupSaslConnection(Client.java:553)
+
+2015-04-29 15:49:34,662 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection.access$1800(Client.java:368)
+
+2015-04-29 15:49:34,663 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection$2.run(Client.java:722)
+
+2015-04-29 15:49:34,663 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection$2.run(Client.java:718)
+
+2015-04-29 15:49:34,663 INFO org.apache.hive.spark.client.SparkClientImpl:      at java.security.AccessController.doPrivileged(Native Method)
+
+2015-04-29 15:49:34,663 INFO org.apache.hive.spark.client.SparkClientImpl:      at javax.security.auth.Subject.doAs(Subject.java:415)
+
+2015-04-29 15:49:34,663 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1671)
+
+2015-04-29 15:49:34,664 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection.setupIOstreams(Client.java:717)
+
+2015-04-29 15:49:34,664 INFO org.apache.hive.spark.client.SparkClientImpl:      ... 32 more
+
+2015-04-29 15:49:34,664 INFO org.apache.hive.spark.client.SparkClientImpl: Caused by: GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)
+
+2015-04-29 15:49:34,664 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.security.jgss.krb5.Krb5InitCredential.getInstance(Krb5InitCredential.java:147)
+
+2015-04-29 15:49:34,664 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.security.jgss.krb5.Krb5MechFactory.getCredentialElement(Krb5MechFactory.java:121)
+
+2015-04-29 15:49:34,665 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.security.jgss.krb5.Krb5MechFactory.getMechanismContext(Krb5MechFactory.java:187)
+
+2015-04-29 15:49:34,665 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.security.jgss.GSSManagerImpl.getMechanismContext(GSSManagerImpl.java:223)
+
+2015-04-29 15:49:34,665 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.security.jgss.GSSContextImpl.initSecContext(GSSContextImpl.java:212)
+
+2015-04-29 15:49:34,665 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.security.jgss.GSSContextImpl.initSecContext(GSSContextImpl.java:179)
+
+2015-04-29 15:49:34,665 INFO org.apache.hive.spark.client.SparkClientImpl:      at com.sun.security.sasl.gsskerb.GssKrb5Client.evaluateChallenge(GssKrb5Client.java:193)
+
+2015-04-29 15:49:34,665 INFO org.apache.hive.spark.client.SparkClientImpl:      ... 41 more...
+
+
+
+We need to find way pass the HS2&amp;amp;apos;s ticket to spark-submit.sh when it&amp;amp;apos;s launched.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.spark.client.SparkClientImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">10594</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-22 20:10:26" id="10594" opendate="2015-05-04 16:48:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Remote Spark client doesn&amp;apos;t use Kerberos keytab to authenticate [Spark Branch]</summary>
+			
+			
+			<description>Reporting problem found by one of the HoS users:
+Currently, if user is running Beeline on a different host than HS2, and he/she didn&amp;amp;apos;t do kinit on the HS2 host, then he/she may get the following error:
+
+
+
+2015-04-29 15:49:34,614 INFO org.apache.hive.spark.client.SparkClientImpl: 15/04/29 15:49:34 WARN UserGroupInformation: PriviledgedActionException as:hive (auth:KERBEROS) cause:java.io.IOException: javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]
+
+2015-04-29 15:49:34,652 INFO org.apache.hive.spark.client.SparkClientImpl: Exception in thread &quot;main&quot; java.io.IOException: Failed on local exception: java.io.IOException: javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]; Host Details : local host is: &quot;secure-hos-1.ent.cloudera.com/10.20.77.79&quot;; destination host is: &quot;secure-hos-1.ent.cloudera.com&quot;:8032;
+
+2015-04-29 15:49:34,653 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.net.NetUtils.wrapException(NetUtils.java:772)
+
+2015-04-29 15:49:34,653 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client.call(Client.java:1472)
+
+2015-04-29 15:49:34,654 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client.call(Client.java:1399)
+
+2015-04-29 15:49:34,654 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:232)
+
+2015-04-29 15:49:34,654 INFO org.apache.hive.spark.client.SparkClientImpl:      at com.sun.proxy.$Proxy11.getClusterMetrics(Unknown Source)
+
+2015-04-29 15:49:34,655 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.yarn.api.impl.pb.client.ApplicationClientProtocolPBClientImpl.getClusterMetrics(ApplicationClientProtocolPBClientImpl.java:202)
+
+2015-04-29 15:49:34,655 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+2015-04-29 15:49:34,655 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+
+2015-04-29 15:49:34,656 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+2015-04-29 15:49:34,656 INFO org.apache.hive.spark.client.SparkClientImpl:      at java.lang.reflect.Method.invoke(Method.java:606)
+
+2015-04-29 15:49:34,656 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:187)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:102)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at com.sun.proxy.$Proxy12.getClusterMetrics(Unknown Source)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.yarn.client.api.impl.YarnClientImpl.getYarnClusterMetrics(YarnClientImpl.java:461)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.yarn.Client$$anonfun$submitApplication$1.apply(Client.scala:91)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.yarn.Client$$anonfun$submitApplication$1.apply(Client.scala:91)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.Logging$class.logInfo(Logging.scala:59)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.yarn.Client.logInfo(Client.scala:49)
+
+2015-04-29 15:49:34,657 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.yarn.Client.submitApplication(Client.scala:90)
+
+2015-04-29 15:49:34,658 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.yarn.Client.run(Client.scala:619)
+
+2015-04-29 15:49:34,658 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.yarn.Client$.main(Client.scala:647)
+
+2015-04-29 15:49:34,658 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.yarn.Client.main(Client.scala)
+
+2015-04-29 15:49:34,658 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+2015-04-29 15:49:34,658 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+
+2015-04-29 15:49:34,658 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+2015-04-29 15:49:34,658 INFO org.apache.hive.spark.client.SparkClientImpl:      at java.lang.reflect.Method.invoke(Method.java:606)
+
+2015-04-29 15:49:34,659 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.SparkSubmit$.org$apache$spark$deploy$SparkSubmit$$runMain(SparkSubmit.scala:569)
+
+2015-04-29 15:49:34,659 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.SparkSubmit$.doRunMain$1(SparkSubmit.scala:166)
+
+2015-04-29 15:49:34,659 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.SparkSubmit$.submit(SparkSubmit.scala:189)
+
+2015-04-29 15:49:34,659 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.SparkSubmit$.main(SparkSubmit.scala:110)
+
+2015-04-29 15:49:34,659 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.spark.deploy.SparkSubmit.main(SparkSubmit.scala)
+
+2015-04-29 15:49:34,660 INFO org.apache.hive.spark.client.SparkClientImpl: Caused by: java.io.IOException: javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]
+
+2015-04-29 15:49:34,660 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection$1.run(Client.java:680)
+
+2015-04-29 15:49:34,660 INFO org.apache.hive.spark.client.SparkClientImpl:      at java.security.AccessController.doPrivileged(Native Method)
+
+2015-04-29 15:49:34,660 INFO org.apache.hive.spark.client.SparkClientImpl:      at javax.security.auth.Subject.doAs(Subject.java:415)
+
+2015-04-29 15:49:34,660 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1671)
+
+2015-04-29 15:49:34,660 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection.handleSaslConnectionFailure(Client.java:643)
+
+2015-04-29 15:49:34,661 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection.setupIOstreams(Client.java:730)
+
+2015-04-29 15:49:34,661 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection.access$2800(Client.java:368)
+
+2015-04-29 15:49:34,661 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client.getConnection(Client.java:1521)
+
+2015-04-29 15:49:34,661 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client.call(Client.java:1438)
+
+2015-04-29 15:49:34,661 INFO org.apache.hive.spark.client.SparkClientImpl:      ... 29 more
+
+2015-04-29 15:49:34,662 INFO org.apache.hive.spark.client.SparkClientImpl: Caused by: javax.security.sasl.SaslException: GSS initiate failed [Caused by GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)]
+
+2015-04-29 15:49:34,662 INFO org.apache.hive.spark.client.SparkClientImpl:      at com.sun.security.sasl.gsskerb.GssKrb5Client.evaluateChallenge(GssKrb5Client.java:212)
+
+2015-04-29 15:49:34,662 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.security.SaslRpcClient.saslConnect(SaslRpcClient.java:413)
+
+2015-04-29 15:49:34,662 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection.setupSaslConnection(Client.java:553)
+
+2015-04-29 15:49:34,662 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection.access$1800(Client.java:368)
+
+2015-04-29 15:49:34,663 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection$2.run(Client.java:722)
+
+2015-04-29 15:49:34,663 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection$2.run(Client.java:718)
+
+2015-04-29 15:49:34,663 INFO org.apache.hive.spark.client.SparkClientImpl:      at java.security.AccessController.doPrivileged(Native Method)
+
+2015-04-29 15:49:34,663 INFO org.apache.hive.spark.client.SparkClientImpl:      at javax.security.auth.Subject.doAs(Subject.java:415)
+
+2015-04-29 15:49:34,663 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1671)
+
+2015-04-29 15:49:34,664 INFO org.apache.hive.spark.client.SparkClientImpl:      at org.apache.hadoop.ipc.Client$Connection.setupIOstreams(Client.java:717)
+
+2015-04-29 15:49:34,664 INFO org.apache.hive.spark.client.SparkClientImpl:      ... 32 more
+
+2015-04-29 15:49:34,664 INFO org.apache.hive.spark.client.SparkClientImpl: Caused by: GSSException: No valid credentials provided (Mechanism level: Failed to find any Kerberos tgt)
+
+2015-04-29 15:49:34,664 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.security.jgss.krb5.Krb5InitCredential.getInstance(Krb5InitCredential.java:147)
+
+2015-04-29 15:49:34,664 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.security.jgss.krb5.Krb5MechFactory.getCredentialElement(Krb5MechFactory.java:121)
+
+2015-04-29 15:49:34,665 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.security.jgss.krb5.Krb5MechFactory.getMechanismContext(Krb5MechFactory.java:187)
+
+2015-04-29 15:49:34,665 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.security.jgss.GSSManagerImpl.getMechanismContext(GSSManagerImpl.java:223)
+
+2015-04-29 15:49:34,665 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.security.jgss.GSSContextImpl.initSecContext(GSSContextImpl.java:212)
+
+2015-04-29 15:49:34,665 INFO org.apache.hive.spark.client.SparkClientImpl:      at sun.security.jgss.GSSContextImpl.initSecContext(GSSContextImpl.java:179)
+
+2015-04-29 15:49:34,665 INFO org.apache.hive.spark.client.SparkClientImpl:      at com.sun.security.sasl.gsskerb.GssKrb5Client.evaluateChallenge(GssKrb5Client.java:193)
+
+2015-04-29 15:49:34,665 INFO org.apache.hive.spark.client.SparkClientImpl:      ... 41 more...
+
+
+
+For MR, it works fine. I reproduced the issue on a newly provisioned CDH-5.4.1 cluster, by explicitly kdestroy on the HS2 host first, and later submitting HoS query through beeline on a different host.
+According to the user&amp;amp;apos;s investigation, it might be an issue with spark-submit.sh.
+Here&amp;amp;apos;s the quote:
+
+I think I found it .. HS2 calls out via Bash to set up the spark container for the HS2 session  I am not seeing any keytab access for this new session  so having a krb5cc_xx available solves the hive need for an active TGT.
+Basically bash is laundering the access .. the TGT that HS2 is carrying isnt passed on through to bash  because bash doesnt have a KRB5CCNAME to go looking for so it cannot pass the TGT on even if one existed.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>spark-branch, 1.3.0, 2.0.0</fixedVersion>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.spark.client.SparkClientImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">11000</link>
+			
+			
+			<link description="relates to" type="Reference">14383</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-27 22:22:21" id="10996" opendate="2015-06-13 00:46:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Aggregation / Projection over Multi-Join Inner Query producing incorrect results</summary>
+			
+			
+			<description>We see the following problem on 1.1.0 and 1.2.0 but not 0.13 which seems like a regression.
+The following query (Q1) produces no results:
+
+
+
+select s
+
+from (
+
+  select last.*, action.st2, action.n
+
+  from (
+
+    select purchase.s, purchase.timestamp, max (mevt.timestamp) as last_stage_timestamp
+
+    from (select * from purchase_history) purchase
+
+    join (select * from cart_history) mevt
+
+    on purchase.s = mevt.s
+
+    where purchase.timestamp &amp;gt; mevt.timestamp
+
+    group by purchase.s, purchase.timestamp
+
+  ) last
+
+  join (select * from events) action
+
+  on last.s = action.s and last.last_stage_timestamp = action.timestamp
+
+) list;
+
+
+
+
+
+While this one (Q2) does produce results :
+
+
+
+select *
+
+from (
+
+  select last.*, action.st2, action.n
+
+  from (
+
+    select purchase.s, purchase.timestamp, max (mevt.timestamp) as last_stage_timestamp
+
+    from (select * from purchase_history) purchase
+
+    join (select * from cart_history) mevt
+
+    on purchase.s = mevt.s
+
+    where purchase.timestamp &amp;gt; mevt.timestamp
+
+    group by purchase.s, purchase.timestamp
+
+  ) last
+
+  join (select * from events) action
+
+  on last.s = action.s and last.last_stage_timestamp = action.timestamp
+
+) list;
+
+1	21	20	Bob	1234
+
+1	31	30	Bob	1234
+
+3	51	50	Jeff	1234
+
+
+
+
+
+The setup to test this is:
+
+
+
+create table purchase_history (s string, product string, price double, timestamp int);
+
+insert into purchase_history values (&amp;amp;apos;1&amp;amp;apos;, &amp;amp;apos;Belt&amp;amp;apos;, 20.00, 21);
+
+insert into purchase_history values (&amp;amp;apos;1&amp;amp;apos;, &amp;amp;apos;Socks&amp;amp;apos;, 3.50, 31);
+
+insert into purchase_history values (&amp;amp;apos;3&amp;amp;apos;, &amp;amp;apos;Belt&amp;amp;apos;, 20.00, 51);
+
+insert into purchase_history values (&amp;amp;apos;4&amp;amp;apos;, &amp;amp;apos;Shirt&amp;amp;apos;, 15.50, 59);
+
+
+
+create table cart_history (s string, cart_id int, timestamp int);
+
+insert into cart_history values (&amp;amp;apos;1&amp;amp;apos;, 1, 10);
+
+insert into cart_history values (&amp;amp;apos;1&amp;amp;apos;, 2, 20);
+
+insert into cart_history values (&amp;amp;apos;1&amp;amp;apos;, 3, 30);
+
+insert into cart_history values (&amp;amp;apos;1&amp;amp;apos;, 4, 40);
+
+insert into cart_history values (&amp;amp;apos;3&amp;amp;apos;, 5, 50);
+
+insert into cart_history values (&amp;amp;apos;4&amp;amp;apos;, 6, 60);
+
+
+
+create table events (s string, st2 string, n int, timestamp int);
+
+insert into events values (&amp;amp;apos;1&amp;amp;apos;, &amp;amp;apos;Bob&amp;amp;apos;, 1234, 20);
+
+insert into events values (&amp;amp;apos;1&amp;amp;apos;, &amp;amp;apos;Bob&amp;amp;apos;, 1234, 30);
+
+insert into events values (&amp;amp;apos;1&amp;amp;apos;, &amp;amp;apos;Bob&amp;amp;apos;, 1234, 25);
+
+insert into events values (&amp;amp;apos;2&amp;amp;apos;, &amp;amp;apos;Sam&amp;amp;apos;, 1234, 30);
+
+insert into events values (&amp;amp;apos;3&amp;amp;apos;, &amp;amp;apos;Jeff&amp;amp;apos;, 1234, 50);
+
+insert into events values (&amp;amp;apos;4&amp;amp;apos;, &amp;amp;apos;Ted&amp;amp;apos;, 1234, 60);
+
+
+
+
+
+I realize select * and select s are not all that interesting in this context but what lead us to this issue was select count(distinct s) was not returning results. The above queries are the simplified queries that produce the issue. 
+I will note that if I convert the inner join to a table and select from that the issue does not appear.
+Update: Found that turning off  hive.optimize.remove.identity.project fixes this issue. This optimization was introduced in https://issues.apache.org/jira/browse/HIVE-8435</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.1.1, 2.0.0, 1.2.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.ColumnPrunerProcCtx.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ColumnInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.ColumnPrunerProcFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">11931</link>
+			
+			
+			<link description="relates to" type="Reference">11088</link>
+			
+			
+			<link description="relates to" type="Reference">11056</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-08-11 01:52:34" id="10625" opendate="2015-05-06 09:38:33" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Handle Authorization for  &amp;apos;select &lt;expr&gt;&amp;apos; hive queries in  SQL Standard Authorization</summary>
+			
+			
+			<description>Hive internally rewrites this &amp;amp;apos;select &amp;lt;expression&amp;gt;&amp;amp;apos; query into &amp;amp;apos;select &amp;lt;expression&amp;gt; from _dummy_database._dummy_table&amp;amp;apos;, where these dummy db and table are temp entities for the current query.
+The SQL Standard Authorization  need to handle these special objects.
+Typing &quot;select reverse(&quot;123&quot;);&quot; in beeline,will get this error :
+
+
+
+Error: Error while compiling statement: FAILED: HiveAuthzPluginException Error getting object from metastore for Object [type=TABLE_OR_VIEW, name=_dummy_database._dummy_table] (state=42000,code=40000)
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Driver.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">11498</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-27 18:10:43" id="12250" opendate="2015-10-23 21:31:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Zookeeper connection leaks in Hive&amp;apos;s HBaseHandler.</summary>
+			
+			
+			<description>HiveServer2 performance regresses severely due to what appears to be a leak in the ZooKeeper connections. lsof output on the HS2 process shows about 8000 TCP connections to the ZK ensemble nodes.
+grep TCP lsof-hive-node11 | grep node11 | grep -E &quot;node03|node04|node05&quot; | wc -l
+    7866 
+grep TCP lsof-hive-node11 | grep node11 | grep -E &quot;node03&quot; | wc -l
+    2615
+grep TCP lsof-hive-node11 | grep node11 | grep -E &quot;node04&quot; | wc -l
+    2622
+grep TCP lsof-hive-node11 | grep node11 | grep -E &quot;node05&quot; | wc -l
+    2629
+node11 - HMS node
+node03, node04 and node05 are the hosts for zookeeper ensemble.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HiveHBaseTableInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HiveHBaseTableOutputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is depended upon by" type="dependent">12418</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-11-19 14:11:11" id="12418" opendate="2015-11-16 19:49:35" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HiveHBaseTableInputFormat.getRecordReader() causes Zookeeper connection leak.</summary>
+			
+			
+			<description>  @Override
+  public RecordReader&amp;lt;ImmutableBytesWritable, ResultWritable&amp;gt; getRecordReader(
+...
+...
+ setHTable(HiveHBaseInputFormatUtil.getTable(jobConf));
+...
+The HiveHBaseInputFormatUtil.getTable() creates new ZooKeeper connections(when HTable instance is created) which are never closed.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HiveHBaseTableInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends upon" type="dependent">12250</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-07 19:13:39" id="12568" opendate="2015-12-02 18:46:02" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Provide an option to specify network interface used by Spark remote client [Spark Branch]</summary>
+			
+			
+			<description>Spark client sends a pair of host name and port number to the remote driver so that the driver can connects back to HS2 where the user session is. Spark client has its own way determining the host name, and pick one network interface if the host happens to have multiple network interfaces. This can be problematic. For that, there is parameter, hive.spark.client.server.address, which user can pick an interface. Unfortunately, this interface isn&amp;amp;apos;t exposed.
+Instead of exposing this parameter, we can use the same logic as Hive in determining the host name. Therefore, the remote driver connecting to HS2 using the same network interface as a HS2 client would do.
+There might be a case where user may want the remote driver to use a different network. This is rare if at all. Thus, for now it should be sufficient to use the same network interface.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>spark-branch, 2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.thrift.ThriftCLIService.java</file>
+			
+			
+			<file type="M">org.apache.hive.spark.client.rpc.RpcConfiguration.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.common.ServerUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-18 22:37:39" id="12708" opendate="2015-12-18 18:02:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive on Spark doesn&amp;apos;t work with Kerboresed HBase [Spark Branch]</summary>
+			
+			
+			<description>Spark application launcher (spark-submit) acquires HBase delegation token on Hive user&amp;amp;apos;s behalf when the application is launched. This mechanism, which doesn&amp;amp;apos;t work for long-running sessions, is not in line with what Hive is doing. Hive actually acquires the token automatically whenever a job needs it. The right approach for Spark should be allowing applications to dynamically add whatever tokens they need to the spark context. While this needs work on Spark side, we provide a workaround solution in Hive.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>spark-branch, 2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.spark.HiveSparkClientFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-01-11 15:30:46" id="12795" opendate="2016-01-06 22:40:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Vectorized execution causes ClassCastException</summary>
+			
+			
+			<description>In some hive versions, when
+set hive.auto.convert.join=false;
+set hive.vectorized.execution.enabled = true;
+Some join queries fail with ClassCastException:
+The stack:
+
+Caused by: java.lang.ClassCastException: org.apache.hadoop.hive.serde2.lazy.objectinspector.primitive.LazyStringObjectInspector cannot be cast to org.apache.hadoop.hive.serde2.objectinspector.primitive.SettableStringObjectInspector
+
+at org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpressionWriterFactory.genVectorExpressionWritable(VectorExpressionWriterFactory.java:419)
+
+at org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpressionWriterFactory.processVectorInspector(VectorExpressionWriterFactory.java:1102)
+
+at org.apache.hadoop.hive.ql.exec.vector.VectorReduceSinkOperator.initializeOp(VectorReduceSinkOperator.java:55)
+
+at org.apache.hadoop.hive.ql.exec.Operator.initialize(Operator.java:385)
+
+at org.apache.hadoop.hive.ql.exec.Operator.initialize(Operator.java:469)
+
+at org.apache.hadoop.hive.ql.exec.Operator.initializeChildren(Operator.java:425)
+
+at org.apache.hadoop.hive.ql.exec.TableScanOperator.initializeOp(TableScanOperator.java:193)
+
+at org.apache.hadoop.hive.ql.exec.Operator.initialize(Operator.java:385)
+
+at org.apache.hadoop.hive.ql.exec.MapOperator.initializeOp(MapOperator.java:431)
+
+at org.apache.hadoop.hive.ql.exec.Operator.initialize(Operator.java:385)
+
+at org.apache.hadoop.hive.ql.exec.mr.ExecMapper.configure(ExecMapper.java:126)
+
+... 22 more
+
+
+
+
+
+It can not be reproduced in hive 2.0 and 1.3 because of different code path. 
+Reproduce:
+
+
+
+CREATE TABLE test1
+
+ (
+
+   id string)
+
+   PARTITIONED BY (
+
+  cr_year bigint,
+
+  cr_month bigint)
+
+ ROW FORMAT SERDE
+
+  &amp;amp;apos;org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe&amp;amp;apos;
+
+STORED AS INPUTFORMAT
+
+  &amp;amp;apos;org.apache.hadoop.hive.ql.io.RCFileInputFormat&amp;amp;apos;
+
+OUTPUTFORMAT
+
+  &amp;amp;apos;org.apache.hadoop.hive.ql.io.RCFileOutputFormat&amp;amp;apos;
+
+TBLPROPERTIES (
+
+  &amp;amp;apos;serialization.null.format&amp;amp;apos;=&amp;amp;apos;&amp;amp;apos; );
+
+  
+
+  CREATE TABLE test2(
+
+    id string
+
+  )
+
+   PARTITIONED BY (
+
+  cr_year bigint,
+
+  cr_month bigint)
+
+ROW FORMAT SERDE
+
+  &amp;amp;apos;org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe&amp;amp;apos;
+
+STORED AS INPUTFORMAT
+
+  &amp;amp;apos;org.apache.hadoop.hive.ql.io.RCFileInputFormat&amp;amp;apos;
+
+OUTPUTFORMAT
+
+  &amp;amp;apos;org.apache.hadoop.hive.ql.io.RCFileOutputFormat&amp;amp;apos;
+
+TBLPROPERTIES (
+
+  &amp;amp;apos;serialization.null.format&amp;amp;apos;=&amp;amp;apos;&amp;amp;apos;
+
+ );
+
+set hive.auto.convert.join=false;
+
+set hive.vectorized.execution.enabled = true;
+
+ SELECT cr.id1 ,
+
+cr.id2 
+
+FROM
+
+(SELECT t1.id id1,
+
+ t2.id id2
+
+ from
+
+ (select * from test1 ) t1
+
+ left outer join test2  t2
+
+ on t1.id=t2.id) cr;
+
+
+
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpressionWriterFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-05 14:10:14" id="12790" opendate="2016-01-06 17:46:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Metastore connection leaks in HiveServer2</summary>
+			
+			
+			<description>HiveServer2 keeps opening new connections to HMS each time it launches a task. These connections do not appear to be closed when the task completes thus causing a HMS connection leak. &quot;lsof&quot; for the HS2 process shows connections to port 9083.
+
+
+
+2015-12-03 04:20:56,352 INFO  [HiveServer2-Background-Pool: Thread-424756()]: ql.Driver (SessionState.java:printInfo(558)) - Launching Job 11 out of 41
+
+2015-12-03 04:20:56,354 INFO  [Thread-405728()]: hive.metastore (HiveMetaStoreClient.java:open(311)) - Trying to connect to metastore with URI thrift://&amp;lt;anonymizedURL&amp;gt;:9083
+
+2015-12-03 04:20:56,360 INFO  [Thread-405728()]: hive.metastore (HiveMetaStoreClient.java:open(351)) - Opened a connection to metastore, current connections: 14824
+
+2015-12-03 04:20:56,360 INFO  [Thread-405728()]: hive.metastore (HiveMetaStoreClient.java:open(400)) - Connected to metastore.
+
+....
+
+2015-12-03 04:21:06,355 INFO  [HiveServer2-Background-Pool: Thread-424756()]: ql.Driver (SessionState.java:printInfo(558)) - Launching Job 12 out of 41
+
+2015-12-03 04:21:06,357 INFO  [Thread-405756()]: hive.metastore (HiveMetaStoreClient.java:open(311)) - Trying to connect to metastore with URI thrift://&amp;lt;anonymizedURL&amp;gt;:9083
+
+2015-12-03 04:21:06,362 INFO  [Thread-405756()]: hive.metastore (HiveMetaStoreClient.java:open(351)) - Opened a connection to metastore, current connections: 14825
+
+2015-12-03 04:21:06,362 INFO  [Thread-405756()]: hive.metastore (HiveMetaStoreClient.java:open(400)) - Connected to metastore.
+
+...
+
+2015-12-03 04:21:08,357 INFO  [HiveServer2-Background-Pool: Thread-424756()]: ql.Driver (SessionState.java:printInfo(558)) - Launching Job 13 out of 41
+
+2015-12-03 04:21:08,360 INFO  [Thread-405782()]: hive.metastore (HiveMetaStoreClient.java:open(311)) - Trying to connect to metastore with URI thrift://&amp;lt;anonymizedURL&amp;gt;:9083
+
+2015-12-03 04:21:08,364 INFO  [Thread-405782()]: hive.metastore (HiveMetaStoreClient.java:open(351)) - Opened a connection to metastore, current connections: 14826
+
+2015-12-03 04:21:08,365 INFO  [Thread-405782()]: hive.metastore (HiveMetaStoreClient.java:open(400)) - Connected to metastore.
+
+... 
+
+
+
+The TaskRunner thread starts a new SessionState each time, which creates a new connection to the HMS (via Hive.get(conf).getMSC()) that is never closed.
+Even SessionState.close(), currently not being called by the TaskRunner thread, does not close this connection.
+Attaching a anonymized log snippet where the number of HMS connections reaches north of 25000+ connections.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.session.SessionState.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.TaskRunner.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-05 20:56:04" id="12885" opendate="2016-01-18 17:07:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>LDAP Authenticator improvements</summary>
+			
+			
+			<description>Currently Hive&amp;amp;apos;s LDAP Atn provider assumes certain defaults to keep its configuration simple. 
+1) One of the assumptions is the presence of an attribute &quot;distinguishedName&quot;. In certain non-standard LDAP implementations, this attribute may not be available. So instead of basing all ldap searches on this attribute, getNameInNamespace() returns the same value. So this API is to be used instead.
+2) It also assumes that the &quot;user&quot; value being passed in, will be able to bind to LDAP. However, certain LDAP implementations, by default, only allow the full DN to be used, just short user names are not permitted. We will need to be able to support short names too when hive configuration only has &quot;BaseDN&quot; specified (not userDNPatterns). So instead of hard-coding &quot;uid&quot; or &quot;CN&quot; as keys for the short usernames, it probably better to make this a configurable parameter.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.service.auth.LdapAuthenticationProviderImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">7193</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-11 14:24:21" id="12941" opendate="2016-01-27 07:14:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Unexpected result when using MIN() on struct with NULL in first field</summary>
+			
+			
+			<description>Using MIN() on struct with NULL in first field of a row yields NULL as result.
+Example:
+select min(a) FROM (select 1 as a union all select 2 as a union all select cast(null as int) as a) tmp;
+OK
+_c0
+1
+As expected. But if we wrap it in a struct:
+select min(a) FROM (select named_struct(&quot;field&quot;,1) as a union all select named_struct(&quot;field&quot;,2) as a union all select named_struct(&quot;field&quot;,cast(null as int)) as a) tmp;
+OK
+_c0
+NULL
+Using MAX() works as expected for structs.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFMin.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-18 18:58:40" id="13065" opendate="2016-02-16 21:11:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive throws NPE when writing map type data to a HBase backed table</summary>
+			
+			
+			<description>Hive throws NPE when writing data to a HBase backed table with below conditions:
+
+There is a map type column
+The map type column has NULL in its values
+
+Below are the reproduce steps:
+1) Create a HBase backed Hive table
+
+
+
+create table hbase_test (id bigint, data map&amp;lt;string, string&amp;gt;)
+
+stored by &amp;amp;apos;org.apache.hadoop.hive.hbase.HBaseStorageHandler&amp;amp;apos;
+
+with serdeproperties (&quot;hbase.columns.mapping&quot; = &quot;:key,cf:map_col&quot;)
+
+tblproperties (&quot;hbase.table.name&quot; = &quot;hive_test&quot;);
+
+
+
+2) insert data into above table
+
+
+
+insert overwrite table hbase_test select 1 as id, map(&amp;amp;apos;abcd&amp;amp;apos;, null) as data from src limit 1;
+
+
+
+The mapreduce job for insert query fails. Error messages are as below:
+
+2016-02-15 02:26:33,225 WARN [main] org.apache.hadoop.mapred.YarnChild: Exception running child : java.lang.RuntimeException: org.apache.hadoop.hive.ql.metadata.HiveException: Hive Runtime Error while processing row (tag=0) {&quot;key&quot;:{},&quot;value&quot;:{&quot;_col0&quot;:1,&quot;_col1&quot;:{&quot;abcd&quot;:null}}}
+
+	at org.apache.hadoop.hive.ql.exec.mr.ExecReducer.reduce(ExecReducer.java:265)
+
+	at org.apache.hadoop.mapred.ReduceTask.runOldReducer(ReduceTask.java:444)
+
+	at org.apache.hadoop.mapred.ReduceTask.run(ReduceTask.java:392)
+
+	at org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:163)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1671)
+
+	at org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:158)
+
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: Hive Runtime Error while processing row (tag=0) {&quot;key&quot;:{},&quot;value&quot;:{&quot;_col0&quot;:1,&quot;_col1&quot;:{&quot;abcd&quot;:null}}}
+
+	at org.apache.hadoop.hive.ql.exec.mr.ExecReducer.reduce(ExecReducer.java:253)
+
+	... 7 more
+
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: org.apache.hadoop.hive.serde2.SerDeException: java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.exec.FileSinkOperator.processOp(FileSinkOperator.java:731)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:815)
+
+	at org.apache.hadoop.hive.ql.exec.SelectOperator.processOp(SelectOperator.java:84)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:815)
+
+	at org.apache.hadoop.hive.ql.exec.LimitOperator.processOp(LimitOperator.java:51)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:815)
+
+	at org.apache.hadoop.hive.ql.exec.SelectOperator.processOp(SelectOperator.java:84)
+
+	at org.apache.hadoop.hive.ql.exec.mr.ExecReducer.reduce(ExecReducer.java:244)
+
+	... 7 more
+
+Caused by: org.apache.hadoop.hive.serde2.SerDeException: java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.hbase.HBaseSerDe.serialize(HBaseSerDe.java:286)
+
+	at org.apache.hadoop.hive.ql.exec.FileSinkOperator.processOp(FileSinkOperator.java:666)
+
+	... 14 more
+
+Caused by: java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.serde2.lazy.LazyUtils.writePrimitiveUTF8(LazyUtils.java:221)
+
+	at org.apache.hadoop.hive.hbase.HBaseRowSerializer.serialize(HBaseRowSerializer.java:236)
+
+	at org.apache.hadoop.hive.hbase.HBaseRowSerializer.serialize(HBaseRowSerializer.java:275)
+
+	at org.apache.hadoop.hive.hbase.HBaseRowSerializer.serialize(HBaseRowSerializer.java:222)
+
+	at org.apache.hadoop.hive.hbase.HBaseRowSerializer.serializeField(HBaseRowSerializer.java:194)
+
+	at org.apache.hadoop.hive.hbase.HBaseRowSerializer.serialize(HBaseRowSerializer.java:118)
+
+	at org.apache.hadoop.hive.hbase.HBaseSerDe.serialize(HBaseSerDe.java:282)
+
+	... 15 more
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HBaseRowSerializer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-30 15:00:11" id="12619" opendate="2015-12-08 19:56:09" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>(Parquet) Switching the field order within an array of structs causes the query to fail</summary>
+			
+			
+			<description>Switching the field order within an array of structs causes the query to fail or return the wrong data for the fields, but switching the field order within just a struct works.
+How to reproduce:
+Case1 if the two fields have the same type, query will return wrong data for the fields
+drop table if exists schema_test;
+create table schema_test (msg array&amp;lt;struct&amp;lt;f1: string, f2: string&amp;gt;&amp;gt;) stored as parquet;
+insert into table schema_test select stack(2, array(named_struct(&amp;amp;apos;f1&amp;amp;apos;, &amp;amp;apos;abc&amp;amp;apos;, &amp;amp;apos;f2&amp;amp;apos;, &amp;amp;apos;abc2&amp;amp;apos;)), array(named_struct(&amp;amp;apos;f1&amp;amp;apos;, &amp;amp;apos;efg&amp;amp;apos;, &amp;amp;apos;f2&amp;amp;apos;, &amp;amp;apos;efg2&amp;amp;apos;))) from one limit 2;
+select * from schema_test;
+--returns
+--[
+{&quot;f1&quot;:&quot;efg&quot;,&quot;f2&quot;:&quot;efg2&quot;}
+]
+--[
+{&quot;f1&quot;:&quot;abc&quot;,&quot;f2&quot;:&quot;abc2&quot;}
+]
+alter table schema_test change msg msg array&amp;lt;struct&amp;lt;f2: string, f1: string&amp;gt;&amp;gt;;
+select * from schema_test;
+--returns
+--[
+{&quot;f2&quot;:&quot;efg&quot;,&quot;f1&quot;:&quot;efg2&quot;}
+]
+--[
+{&quot;f2&quot;:&quot;abc&quot;,&quot;f1&quot;:&quot;abc2&quot;}
+]
+Case2: if the two fields have different type, the query will fail
+drop table if exists schema_test;
+create table schema_test (msg array&amp;lt;struct&amp;lt;f1: string, f2: int&amp;gt;&amp;gt;) stored as parquet;
+insert into table schema_test select stack(2, array(named_struct(&amp;amp;apos;f1&amp;amp;apos;, &amp;amp;apos;abc&amp;amp;apos;, &amp;amp;apos;f2&amp;amp;apos;, 1)), array(named_struct(&amp;amp;apos;f1&amp;amp;apos;, &amp;amp;apos;efg&amp;amp;apos;, &amp;amp;apos;f2&amp;amp;apos;, 2))) from one limit 2;
+select * from schema_test;
+--returns
+--[
+{&quot;f1&quot;:&quot;efg&quot;,&quot;f2&quot;:2}
+]
+--[
+{&quot;f1&quot;:&quot;abc&quot;,&quot;f2&quot;:1}
+]
+alter table schema_test change msg msg array&amp;lt;struct&amp;lt;f2: int, f1: string&amp;gt;&amp;gt;;
+select * from schema_test;
+Failed with exception java.io.IOException:org.apache.hadoop.hive.ql.metadata.HiveException: java.lang.ClassCastException: org.apache.hadoop.io.Text cannot be cast to org.apache.hadoop.io.IntWritable</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.parquet.read.DataWritableReadSupport.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.parquet.convert.HiveSchemaConverter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-01 15:41:10" id="12612" opendate="2015-12-08 05:20:47" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>beeline always exits with 0 status when reading query from standard input</summary>
+			
+			
+			<description>Similar to what was reported on HIVE-6978, but now it only happens when the query is read from the standard input. For example, the following fails as expected:
+
+
+
+bash$ if beeline -u &quot;jdbc:hive2://...&quot; -e &quot;boo;&quot; ; then echo &quot;Ok?!&quot; ; else echo &quot;Failed!&quot; ; fi
+
+Connecting to jdbc:hive2://...
+
+Connected to: Apache Hive (version 1.1.0-cdh5.5.0)
+
+Driver: Hive JDBC (version 1.1.0-cdh5.5.0)
+
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+
+Error: Error while compiling statement: FAILED: ParseException line 1:0 cannot recognize input near &amp;amp;apos;boo&amp;amp;apos; &amp;amp;apos;&amp;lt;EOF&amp;gt;&amp;amp;apos; &amp;amp;apos;&amp;lt;EOF&amp;gt;&amp;amp;apos; (state=42000,code=40000)
+
+Closing: 0: jdbc:hive2://...
+
+Failed!
+
+
+
+But the following does not:
+
+
+
+bash$ if echo &quot;boo;&quot;|beeline -u &quot;jdbc:hive2://...&quot; ; then echo &quot;Ok?!&quot; ; else echo &quot;Failed!&quot; ; fi
+
+Connecting to jdbc:hive2://...
+
+Connected to: Apache Hive (version 1.1.0-cdh5.5.0)
+
+Driver: Hive JDBC (version 1.1.0-cdh5.5.0)
+
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+
+Beeline version 1.1.0-cdh5.5.0 by Apache Hive
+
+0: jdbc:hive2://...:8&amp;gt; Error: Error while compiling statement: FAILED: ParseException line 1:0 cannot recognize input near &amp;amp;apos;boo&amp;amp;apos; &amp;amp;apos;&amp;lt;EOF&amp;gt;&amp;amp;apos; &amp;amp;apos;&amp;lt;EOF&amp;gt;&amp;amp;apos; (state=42000,code=40000)
+
+0: jdbc:hive2://...:8&amp;gt; Closing: 0: jdbc:hive2://...
+
+Ok?!
+
+
+
+This was misleading our batch scripts to always believe that the execution of the queries succeded, when sometimes that was not the case. 
+Workaround
+We found we can work around the issue by always using the -e or the -f parameters, and even reading the standard input through the /dev/stdin device (this was useful because a lot of the scripts fed the queries from here documents), like this:
+some-script.sh
+
+
+#!/bin/sh
+
+
+
+set -o nounset -o errexit -o pipefail
+
+
+
+# As beeline is failing to report an error status if reading the query
+
+# to be executed from STDIN, check whether no -f or -e option is used
+
+# and, in that case, pretend it has to read the query from a regular
+
+# file using -f to read from /dev/stdin
+
+function beeline_workaround_exit_status () {
+
+    for arg in &quot;$@&quot;
+
+    do if [ &quot;$arg&quot; = &quot;-f&quot; -o &quot;$arg&quot; = &quot;-e&quot; ]
+
+       then beeline -u &quot;...&quot; &quot;$@&quot;
+
+            return
+
+       fi
+
+    done
+
+    beeline -u &quot;...&quot; &quot;$@&quot; -f /dev/stdin
+
+}
+
+
+
+beeline_workaround_exit_status &amp;lt;&amp;lt;EOF
+
+boo;
+
+EOF
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.beeline.BeeLine.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.cli.TestHiveCli.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="breaks" type="Regression">13845</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-24 00:52:32" id="13527" opendate="2016-04-15 19:05:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Using deprecated APIs in HBase client causes zookeeper connection leaks.</summary>
+			
+			
+			<description>When running queries against hbase-backed hive tables, the following log messages are seen in the HS2 log.
+
+
+
+2016-04-11 07:25:23,657 WARN org.apache.hadoop.hbase.mapreduce.TableInputFormatBase: You are using an HTable instance that relies on an HBase-managed Connection. This is usually due to directly creating an HTable, which is deprecated. Instead, you should create a Connection object and then request a Table instance from it. If you don&amp;amp;apos;t need the Table instance for your own use, you should instead use the TableInputFormatBase.initalizeTable method directly.
+
+2016-04-11 07:25:23,658 INFO org.apache.hadoop.hbase.mapreduce.TableInputFormatBase: Creating an additional unmanaged connection because user provided one can&amp;amp;apos;t be used for administrative actions. We&amp;amp;apos;ll close it when we close out the table.
+
+
+
+In a HS2 log file, there are 1366 zookeeper connections established but only a small fraction of them were closed. So lsof would show 1300+ open TCP connections to Zookeeper.
+grep &quot;org.apache.zookeeper.ClientCnxn: Session establishment complete on server&quot; * |wc -l
+1366
+grep &quot;INFO org.apache.zookeeper.ZooKeeper: Session:&quot; * |grep closed |wc -l
+54
+According to the comments in TableInputFormatBase, the recommended means for subclasses like HiveHBaseTableInputFormat is to call initializeTable() instead of setHTable() that it currently uses.
+&quot;
+Subclasses MUST ensure initializeTable(Connection, TableName) is called for an instance to function properly. Each of the entry points to this class used by the MapReduce framework, 
+{@link #createRecordReader(InputSplit, TaskAttemptContext)}
+ and 
+{@link #getSplits(JobContext)}
+, will call 
+{@link #initialize(JobContext)}
+ as a convenient centralized location to handle retrieving the necessary configuration information. If your subclass overrides either of these methods, either call the parent version or call initialize yourself.
+&quot;
+Currently setHTable() also creates an additional Admin connection, even though it is not needed.
+So the use of deprecated APIs are to be replaced.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HiveHBaseTableInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-05-05 15:10:45" id="13632" opendate="2016-04-27 23:20:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive failing on insert empty array into parquet table</summary>
+			
+			
+			<description>The insert will fail with following stack:
+
+by: parquet.io.ParquetEncodingException: empty fields are illegal, the field should be ommited completely instead
+
+	at parquet.io.MessageColumnIO$MessageColumnIORecordConsumer.endField(MessageColumnIO.java:271)
+
+	at org.apache.hadoop.hive.ql.io.parquet.write.DataWritableWriter$ListDataWriter.write(DataWritableWriter.java:271)
+
+	at org.apache.hadoop.hive.ql.io.parquet.write.DataWritableWriter$GroupDataWriter.write(DataWritableWriter.java:199)
+
+	at org.apache.hadoop.hive.ql.io.parquet.write.DataWritableWriter$MessageDataWriter.write(DataWritableWriter.java:215)
+
+	at org.apache.hadoop.hive.ql.io.parquet.write.DataWritableWriter.write(DataWritableWriter.java:88)
+
+	at org.apache.hadoop.hive.ql.io.parquet.write.DataWritableWriteSupport.write(DataWritableWriteSupport.java:59)
+
+	at org.apache.hadoop.hive.ql.io.parquet.write.DataWritableWriteSupport.write(DataWritableWriteSupport.java:31)
+
+	at parquet.hadoop.InternalParquetRecordWriter.write(InternalParquetRecordWriter.java:116)
+
+	at parquet.hadoop.ParquetRecordWriter.write(ParquetRecordWriter.java:123)
+
+	at parquet.hadoop.ParquetRecordWriter.write(ParquetRecordWriter.java:42)
+
+	at org.apache.hadoop.hive.ql.io.parquet.write.ParquetRecordWriterWrapper.write(ParquetRecordWriterWrapper.java:111)
+
+	at org.apache.hadoop.hive.ql.io.parquet.write.ParquetRecordWriterWrapper.write(ParquetRecordWriterWrapper.java:124)
+
+	at org.apache.hadoop.hive.ql.exec.FileSinkOperator.processOp(FileSinkOperator.java:697)
+
+
+
+Reproduce:
+
+create table test_small (
+
+key string,
+
+arrayValues array&amp;lt;string&amp;gt;)
+
+stored as parquet;
+
+insert into table test_small select &amp;amp;apos;abcd&amp;amp;apos;, array() from src limit 1;
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveArrayInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.parquet.serde.TestParquetHiveArrayInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.parquet.serde.AbstractParquetMapInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.parquet.write.DataWritableWriter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.parquet.serde.TestAbstractParquetMapInspector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.parquet.TestDataWritableWriter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">596</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-05-23 14:26:21" id="13502" opendate="2016-04-13 16:02:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Beeline doesnt support session parameters in JDBC URL as documentation states.</summary>
+			
+			
+			<description>https://cwiki.apache.org/confluence/display/Hive/HiveServer2+Clients#HiveServer2Clients-ConnectionURLs
+documents that sessions variables like credentials etc are accepted as part of the URL. However, Beeline does not support such URLs today.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.beeline.BeeLine.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.TestBeeLineWithArgs.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.Commands.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.Utils.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="contains" type="Container">9144</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-20 02:00:17" id="14015" opendate="2016-06-14 23:47:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SMB MapJoin failed for Hive on Spark when kerberized</summary>
+			
+			
+			<description>java.io.IOException: org.apache.hadoop.ipc.RemoteException(java.io.IOException): Delegation Token can be issued only with kerberos or web authentication
+It could be reproduced:
+1) prepare sample data:
+a=1
+while [[ $a -lt 100 ]]; do echo $a ; let a=$a+1; done &amp;gt; data
+2) prepare source hive table:
+CREATE TABLE `s`(`c` string);
+load data local inpath &amp;amp;apos;data&amp;amp;apos; into table s;
+3) prepare the bucketed table:
+set hive.enforce.bucketing=true;
+set hive.enforce.sorting=true;
+CREATE TABLE `t`(`c` string) CLUSTERED BY (c) SORTED BY (c) INTO 5 BUCKETS;
+insert into t select * from s;
+4) reproduce this issue:
+SET hive.execution.engine=spark;
+SET hive.auto.convert.sortmerge.join = true;
+SET hive.auto.convert.sortmerge.join.bigtable.selection.policy = org.apache.hadoop.hive.ql.optimizer.LeftmostBigTableSelectorForAutoSMJ;
+SET hive.auto.convert.sortmerge.join.noconditionaltask = true;
+SET hive.optimize.bucketmapjoin = true;
+SET hive.optimize.bucketmapjoin.sortedmerge = true;
+select * from t join t t1 on t.c=t1.c;
+The stack is as following:
+
+Job aborted due to stage failure: Task 0 in stage 0.0 failed 4 times, most recent failure: Lost task 0.3 in stage 0.0 (TID 6, ychencdh571-2.vpc.cloudera.com): java.lang.RuntimeException: Error processing row: org.apache.hadoop.hive.ql.metadata.HiveException: Hive Runtime Error while processing row {&quot;c&quot;:&quot;13&quot;}
+
+	at org.apache.hadoop.hive.ql.exec.spark.SparkMapRecordHandler.processRow(SparkMapRecordHandler.java:154)
+
+	at org.apache.hadoop.hive.ql.exec.spark.HiveMapFunctionResultList.processNextRecord(HiveMapFunctionResultList.java:48)
+
+	at org.apache.hadoop.hive.ql.exec.spark.HiveMapFunctionResultList.processNextRecord(HiveMapFunctionResultList.java:27)
+
+	at org.apache.hadoop.hive.ql.exec.spark.HiveBaseFunctionResultList$ResultIterator.hasNext(HiveBaseFunctionResultList.java:95)
+
+	at scala.collection.convert.Wrappers$JIteratorWrapper.hasNext(Wrappers.scala:41)
+
+	at scala.collection.Iterator$class.foreach(Iterator.scala:727)
+
+	at scala.collection.AbstractIterator.foreach(Iterator.scala:1157)
+
+	at org.apache.spark.rdd.AsyncRDDActions$$anonfun$foreachAsync$1$$anonfun$apply$15.apply(AsyncRDDActions.scala:120)
+
+	at org.apache.spark.rdd.AsyncRDDActions$$anonfun$foreachAsync$1$$anonfun$apply$15.apply(AsyncRDDActions.scala:120)
+
+	at org.apache.spark.SparkContext$$anonfun$38.apply(SparkContext.scala:2003)
+
+	at org.apache.spark.SparkContext$$anonfun$38.apply(SparkContext.scala:2003)
+
+	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:66)
+
+	at org.apache.spark.scheduler.Task.run(Task.scala:89)
+
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:214)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: Hive Runtime Error while processing row {&quot;c&quot;:&quot;13&quot;}
+
+	at org.apache.hadoop.hive.ql.exec.MapOperator.process(MapOperator.java:507)
+
+	at org.apache.hadoop.hive.ql.exec.spark.SparkMapRecordHandler.processRow(SparkMapRecordHandler.java:141)
+
+	... 16 more
+
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: java.io.IOException: org.apache.hadoop.ipc.RemoteException(java.io.IOException): Delegation Token can be issued only with kerberos or web authentication
+
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getDelegationToken(FSNamesystem.java:7454)
+
+	at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.getDelegationToken(NameNodeRpcServer.java:542)
+
+	at org.apache.hadoop.hdfs.server.namenode.AuthorizationProviderProxyClientProtocol.getDelegationToken(AuthorizationProviderProxyClientProtocol.java:662)
+
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.getDelegationToken(ClientNamenodeProtocolServerSideTranslatorPB.java:966)
+
+	at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)
+
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:617)
+
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1073)
+
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2086)
+
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2082)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1693)
+
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2080)
+
+
+
+	at org.apache.hadoop.hive.ql.exec.SMBMapJoinOperator$MergeQueue.nextHive(SMBMapJoinOperator.java:774)
+
+	at org.apache.hadoop.hive.ql.exec.SMBMapJoinOperator$MergeQueue.setupContext(SMBMapJoinOperator.java:711)
+
+	at org.apache.hadoop.hive.ql.exec.SMBMapJoinOperator.setUpFetchContexts(SMBMapJoinOperator.java:538)
+
+	at org.apache.hadoop.hive.ql.exec.SMBMapJoinOperator.processOp(SMBMapJoinOperator.java:248)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:815)
+
+	at org.apache.hadoop.hive.ql.exec.FilterOperator.processOp(FilterOperator.java:120)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.forward(Operator.java:815)
+
+	at org.apache.hadoop.hive.ql.exec.TableScanOperator.processOp(TableScanOperator.java:95)
+
+	at org.apache.hadoop.hive.ql.exec.MapOperator$MapOpCtx.forward(MapOperator.java:157)
+
+	at org.apache.hadoop.hive.ql.exec.MapOperator.process(MapOperator.java:497)
+
+	... 17 more
+
+Caused by: java.io.IOException: org.apache.hadoop.ipc.RemoteException(java.io.IOException): Delegation Token can be issued only with kerberos or web authentication
+
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getDelegationToken(FSNamesystem.java:7454)
+
+	at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.getDelegationToken(NameNodeRpcServer.java:542)
+
+	at org.apache.hadoop.hdfs.server.namenode.AuthorizationProviderProxyClientProtocol.getDelegationToken(AuthorizationProviderProxyClientProtocol.java:662)
+
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.getDelegationToken(ClientNamenodeProtocolServerSideTranslatorPB.java:966)
+
+	at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)
+
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:617)
+
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1073)
+
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2086)
+
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2082)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1693)
+
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2080)
+
+
+
+	at org.apache.hadoop.hive.ql.exec.FetchOperator.getNextRow(FetchOperator.java:507)
+
+	at org.apache.hadoop.hive.ql.exec.SMBMapJoinOperator$MergeQueue.next(SMBMapJoinOperator.java:795)
+
+	at org.apache.hadoop.hive.ql.exec.SMBMapJoinOperator$MergeQueue.nextHive(SMBMapJoinOperator.java:772)
+
+	... 26 more
+
+Caused by: org.apache.hadoop.ipc.RemoteException(java.io.IOException): Delegation Token can be issued only with kerberos or web authentication
+
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getDelegationToken(FSNamesystem.java:7454)
+
+	at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.getDelegationToken(NameNodeRpcServer.java:542)
+
+	at org.apache.hadoop.hdfs.server.namenode.AuthorizationProviderProxyClientProtocol.getDelegationToken(AuthorizationProviderProxyClientProtocol.java:662)
+
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.getDelegationToken(ClientNamenodeProtocolServerSideTranslatorPB.java:966)
+
+	at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)
+
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:617)
+
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1073)
+
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2086)
+
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2082)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1693)
+
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2080)
+
+
+
+	at org.apache.hadoop.ipc.Client.call(Client.java:1471)
+
+	at org.apache.hadoop.ipc.Client.call(Client.java:1408)
+
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Invoker.invoke(ProtobufRpcEngine.java:230)
+
+	at com.sun.proxy.$Proxy18.getDelegationToken(Unknown Source)
+
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolTranslatorPB.getDelegationToken(ClientNamenodeProtocolTranslatorPB.java:914)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+	at java.lang.reflect.Method.invoke(Method.java:606)
+
+	at org.apache.hadoop.io.retry.RetryInvocationHandler.invokeMethod(RetryInvocationHandler.java:256)
+
+	at org.apache.hadoop.io.retry.RetryInvocationHandler.invoke(RetryInvocationHandler.java:104)
+
+	at com.sun.proxy.$Proxy19.getDelegationToken(Unknown Source)
+
+	at org.apache.hadoop.hdfs.DFSClient.getDelegationToken(DFSClient.java:1062)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.getDelegationToken(DistributedFileSystem.java:1452)
+
+	at org.apache.hadoop.fs.FileSystem.collectDelegationTokens(FileSystem.java:541)
+
+	at org.apache.hadoop.fs.FileSystem.addDelegationTokens(FileSystem.java:519)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.addDelegationTokens(DistributedFileSystem.java:2181)
+
+	at org.apache.hadoop.mapreduce.security.TokenCache.obtainTokensForNamenodesInternal(TokenCache.java:140)
+
+	at org.apache.hadoop.mapreduce.security.TokenCache.obtainTokensForNamenodesInternal(TokenCache.java:100)
+
+	at org.apache.hadoop.mapreduce.security.TokenCache.obtainTokensForNamenodes(TokenCache.java:80)
+
+	at org.apache.hadoop.mapred.FileInputFormat.listStatus(FileInputFormat.java:206)
+
+	at org.apache.hadoop.mapred.FileInputFormat.getSplits(FileInputFormat.java:315)
+
+	at org.apache.hadoop.hive.ql.exec.FetchOperator.getNextSplits(FetchOperator.java:362)
+
+	at org.apache.hadoop.hive.ql.exec.FetchOperator.getRecordReader(FetchOperator.java:294)
+
+	at org.apache.hadoop.hive.ql.exec.FetchOperator.getNextRow(FetchOperator.java:445)
+
+	... 28 more
+
+
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.1.0, 2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.SMBMapJoinOperator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-06 21:36:17" id="14090" opendate="2016-06-24 16:15:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JDOExceptions thrown by the Metastore have their full stack trace returned to clients</summary>
+			
+			
+			<description>When user try to create any database or table with a name longer than 128 characters:
+
+
+
+create database test_longname_looooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooongNametableFAIL;
+
+
+
+It dumps the full exception stack-trace in a non-user-friendly message. The lends to relatively negative user-experience for Beeline users who hit this exception, they are generally not interested in the full stack-trace.
+The formatted stack-trace is below:
+
+
+
+Error while processing statement: FAILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.DDLTask. MetaException(message:javax.jdo.JDOFatalUserException: Attempt to store value &quot;test_longname_looooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooongnametablefail2&quot; in column &quot;`NAME`&quot; that has maximum length of 128. Please correct your data!
+
+at org.datanucleus.api.jdo.NucleusJDOHelper.getJDOExceptionForNucleusException(NucleusJDOHelper.java:528)
+
+at org.datanucleus.api.jdo.JDOPersistenceManager.jdoMakePersistent(JDOPersistenceManager.java:732)
+
+at org.datanucleus.api.jdo.JDOPersistenceManager.makePersistent(JDOPersistenceManager.java:752)
+
+at org.apache.hadoop.hive.metastore.ObjectStore.createDatabase(ObjectStore.java:569)
+
+at sun.reflect.GeneratedMethodAccessor31.invoke(Unknown Source)
+
+at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+at java.lang.reflect.Method.invoke(Method.java:606)
+
+at org.apache.hadoop.hive.metastore.RawStoreProxy.invoke(RawStoreProxy.java:114)
+
+at com.sun.proxy.$Proxy10.createDatabase(Unknown Source)
+
+at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler.create_database_core(HiveMetaStore.java:923)
+
+at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler.create_database(HiveMetaStore.java:962)
+
+at sun.reflect.GeneratedMethodAccessor30.invoke(Unknown Source)
+
+at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+at java.lang.reflect.Method.invoke(Method.java:606)
+
+at org.apache.hadoop.hive.metastore.RetryingHMSHandler.invokeInternal(RetryingHMSHandler.java:138)
+
+at org.apache.hadoop.hive.metastore.RetryingHMSHandler.invoke(RetryingHMSHandler.java:99)
+
+at com.sun.proxy.$Proxy12.create_database(Unknown Source)
+
+at org.apache.hadoop.hive.metastore.api.ThriftHiveMetastore$Processor$create_database.getResult(ThriftHiveMetastore.java:8863)
+
+at org.apache.hadoop.hive.metastore.api.ThriftHiveMetastore$Processor$create_database.getResult(ThriftHiveMetastore.java:8847)
+
+at org.apache.thrift.ProcessFunction.process(ProcessFunction.java:39)
+
+at org.apache.thrift.TBaseProcessor.process(TBaseProcessor.java:39)
+
+at org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge$Server$TUGIAssumingProcessor$1.run(HadoopThriftAuthBridge.java:707)
+
+at org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge$Server$TUGIAssumingProcessor$1.run(HadoopThriftAuthBridge.java:702)
+
+at java.security.AccessController.doPrivileged(Native Method)
+
+at javax.security.auth.Subject.doAs(Subject.java:415)
+
+at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1693)
+
+at org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge$Server$TUGIAssumingProcessor.process(HadoopThriftAuthBridge.java:702)
+
+at org.apache.thrift.server.TThreadPoolServer$WorkerProcess.run(TThreadPoolServer.java:286)
+
+at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+
+at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+
+at java.lang.Thread.run(Thread.java:745) NestedThrowablesStackTrace: Attempt to store value &quot;test_longname_looooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooongnametablefail2&quot; in column &quot;`NAME`&quot; that has maximum length of 128. Please correct your data! org.datanucleus.exceptions.NucleusUserException: Attempt to store value &quot;test_longname_looooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooongnametablefail2&quot; in column &quot;`NAME`&quot; that has maximum length of 128. Please correct your data!
+
+at org.datanucleus.store.rdbms.mapping.datastore.CharRDBMSMapping.setString(CharRDBMSMapping.java:263)
+
+at org.datanucleus.store.rdbms.mapping.java.SingleFieldMapping.setString(SingleFieldMapping.java:201)
+
+at org.datanucleus.store.rdbms.fieldmanager.ParameterSetter.storeStringField(ParameterSetter.java:159)
+
+at org.datanucleus.state.JDOStateManager.providedStringField(JDOStateManager.java:1256)
+
+at org.apache.hadoop.hive.metastore.model.MDatabase.jdoProvideField(MDatabase.java)
+
+at org.apache.hadoop.hive.metastore.model.MDatabase.jdoProvideFields(MDatabase.java)
+
+at org.datanucleus.state.JDOStateManager.provideFields(JDOStateManager.java:1346)
+
+at org.datanucleus.store.rdbms.request.InsertRequest.execute(InsertRequest.java:289)
+
+at org.datanucleus.store.rdbms.RDBMSPersistenceHandler.insertTable(RDBMSPersistenceHandler.java:167)
+
+at org.datanucleus.store.rdbms.RDBMSPersistenceHandler.insertObject(RDBMSPersistenceHandler.java:143)
+
+at org.datanucleus.state.JDOStateManager.internalMakePersistent(JDOStateManager.java:3784)
+
+at org.datanucleus.state.JDOStateManager.makePersistent(JDOStateManager.java:3760)
+
+at org.datanucleus.ExecutionContextImpl.persistObjectInternal(ExecutionContextImpl.java:2219)
+
+at org.datanucleus.ExecutionContextImpl.persistObjectWork(ExecutionContextImpl.java:2065)
+
+at org.datanucleus.ExecutionContextImpl.persistObject(ExecutionContextImpl.java:1913)
+
+at org.datanucleus.ExecutionContextThreadedImpl.persistObject(ExecutionContextThreadedImpl.java:217)
+
+at org.datanucleus.api.jdo.JDOPersistenceManager.jdoMakePersistent(JDOPersistenceManager.java:727)
+
+at org.datanucleus.api.jdo.JDOPersistenceManager.makePersistent(JDOPersistenceManager.java:752)
+
+at org.apache.hadoop.hive.metastore.ObjectStore.createDatabase(ObjectStore.java:569)
+
+at sun.reflect.GeneratedMethodAccessor31.invoke(Unknown Source)
+
+at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+at java.lang.reflect.Method.invoke(Method.java:606)
+
+at org.apache.hadoop.hive.metastore.RawStoreProxy.invoke(RawStoreProxy.java:114)
+
+at com.sun.proxy.$Proxy10.createDatabase(Unknown Source)
+
+at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler.create_database_core(HiveMetaStore.java:923)
+
+at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler.create_database(HiveMetaStore.java:962)
+
+at sun.reflect.GeneratedMethodAccessor30.invoke(Unknown Source)
+
+at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+at java.lang.reflect.Method.invoke(Method.java:606)
+
+at org.apache.hadoop.hive.metastore.RetryingHMSHandler.invokeInternal(RetryingHMSHandler.java:138)
+
+at org.apache.hadoop.hive.metastore.RetryingHMSHandler.invoke(RetryingHMSHandler.java:99)
+
+at com.sun.proxy.$Proxy12.create_database(Unknown Source)
+
+at org.apache.hadoop.hive.metastore.api.ThriftHiveMetastore$Processor$create_database.getResult(ThriftHiveMetastore.java:8863)
+
+at org.apache.hadoop.hive.metastore.api.ThriftHiveMetastore$Processor$create_database.getResult(ThriftHiveMetastore.java:8847)
+
+at org.apache.thrift.ProcessFunction.process(ProcessFunction.java:39)
+
+at org.apache.thrift.TBaseProcessor.process(TBaseProcessor.java:39)
+
+at org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge$Server$TUGIAssumingProcessor$1.run(HadoopThriftAuthBridge.java:707)
+
+at org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge$Server$TUGIAssumingProcessor$1.run(HadoopThriftAuthBridge.java:702)
+
+at java.security.AccessController.doPrivileged(Native Method)
+
+at javax.security.auth.Subject.doAs(Subject.java:415)
+
+at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1693)
+
+at org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge$Server$TUGIAssumingProcessor.process(HadoopThriftAuthBridge.java:702)
+
+at org.apache.thrift.server.TThreadPoolServer$WorkerProcess.run(TThreadPoolServer.java:286)
+
+at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+
+at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+
+at java.lang.Thread.run(Thread.java:745) )
+
+
+
+The ideal situation would be to just return the following message to Beeline users:
+
+
+
+Error while processing statement: FAILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.DDLTask. MetaException(message:javax.jdo.JDOFatalUserException: Attempt to store value &quot;test_longname_looooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooonglooooooongnametablefail2&quot; in column &quot;`NAME`&quot; that has maximum length of 128. Please correct your data!)
+
+
+
+And have the full stack trace should up in the HiveServer2 logs.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.RetryingHMSHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-08 13:56:19" id="13749" opendate="2016-05-12 16:31:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Memory leak in Hive Metastore</summary>
+			
+			
+			<description>Looking a heap dump of 10GB, a large number of Configuration objects(&amp;gt; 66k instances) are being retained. These objects along with its retained set is occupying about 95% of the heap space. This leads to HMS crashes every few days.
+I will attach an exported snapshot from the eclipse MAT.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-11 17:23:13" id="14116" opendate="2016-06-28 13:38:34" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TBLPROPERTIES does not allow empty string values when Metastore is backed by Oracle database.</summary>
+			
+			
+			<description>DDL commands like:
+ALTER TABLE test SET TBLPROPERTIES(&amp;amp;apos;serialization.null.format&amp;amp;apos;=&amp;amp;apos;&amp;amp;apos;);
+are silently ignored if the database backing Metastore is Oracle. This appears to be because Oracle treats an empty string as null.
+Unlike when using MySql, no entry is created in the TBL_PARAMS table.
+Steps to reproduce:
+Create a table with a string field.
+eg table mytable, field mystringfield.
+ALTER TABLE mytable SET TBLPROPERTIES(&amp;amp;apos;serialization.null.format&amp;amp;apos;=&amp;amp;apos;&amp;amp;apos;);
+DESCRIBE FORMATTED mytable;
+with mysql backed Metastore, the entry will be displayed:
+serialization.null.format 
+and an entry is created in the TBL_PARAMS for the parameter.
+With Oracle backed metastore, it is not, and no entry is created in TBL_PARAMS.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.ObjectStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreDirectSql.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">8485</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-25 21:32:40" id="13422" opendate="2016-04-05 11:45:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Analyse command not working for column having datatype as decimal(38,0)</summary>
+			
+			
+			<description>For the repro
+
+
+
+drop table sample_test;
+
+CREATE TABLE IF NOT EXISTS sample_test( key decimal(38,0),b int ) ROW FORMAT DELIMITED FIELDS TERMINATED BY &amp;amp;apos;,&amp;amp;apos; STORED AS TEXTFILE;
+
+load data local inpath &amp;amp;apos;/home/hive/analyse.txt&amp;amp;apos; into table sample_test;
+
+ANALYZE TABLE sample_test COMPUTE STATISTICS FOR COLUMNS;
+
+
+
+Sample data
+
+
+
+20234567894567498250824983000004 0
+
+50320807548878498250695083000004 0
+
+40120807548878498250687183000004 0
+
+20120807548878498250667783000004 0
+
+40120807548878496250656783000004 0
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFComputeStats.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-15 16:35:03" id="14345" opendate="2016-07-26 20:28:59" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Beeline result table has erroneous characters </summary>
+			
+			
+			<description>Beeline returns query results with erroneous characters. For example:
+
+
+
+0: jdbc:hive2://xxxx:10000/def&amp;gt; select 10;
+
++------+--+
+
+| _c0  |
+
++------+--+
+
+| 10   |
+
++------+--+
+
+1 row selected (3.207 seconds)
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.beeline.TableOutputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-29 18:37:49" id="14659" opendate="2016-08-27 16:14:46" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>OutputStream won&amp;apos;t close if caught exception in funtion unparseExprForValuesClause in SemanticAnalyzer.java</summary>
+			
+			
+			<description>I hava met the problem that Hive process cannot create new threads because of lots of OutputStream not closed.
+Here is the part of jstack info:
+&quot;Thread-35783&quot; daemon prio=10 tid=0x00007f8f58f02800 nid=0x18cc in Object.wait() [0x00007f8e632c0000]
+   java.lang.Thread.State: TIMED_WAITING (on object monitor)
+        at java.lang.Object.wait(Native Method)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:577)
+
+locked &amp;lt;0x000000061af52d50&amp;gt; (a java.util.LinkedList)
+
+and the related error log:
+org.apache.hadoop.hive.ql.parse.SemanticException: Unable to create temp file for insert values Expression of type TOK_TABLE_OR_COL not supported in insert/values
+    at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genValuesTempTable(SemanticAnalyzer.java:812)
+    at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.doPhase1(SemanticAnalyzer.java:1207)
+    at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.doPhase1(SemanticAnalyzer.java:1410)
+    at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genResolvedParseTree(SemanticAnalyzer.java:10136)
+Caused by: org.apache.hadoop.hive.ql.parse.SemanticException: Expression of type TOK_TABLE_OR_COL not supported in insert/values
+    at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.unparseExprForValuesClause(SemanticAnalyzer.java:858)
+    at org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.genValuesTempTable(SemanticAnalyzer.java:785)
+    ... 15 more
+It shows the output stream won&amp;amp;apos;t close if caught exception in funtion unparseExprForValuesClause in SemanticAnalyzer.java</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-30 19:30:13" id="13610" opendate="2016-04-26 08:53:17" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive exec module won&amp;apos;t compile with IBM JDK</summary>
+			
+			
+			<description>org.apache.hadoop.hive.ql.debug.Utils explicitly import com.sun.management.HotSpotDiagnosticMXBean which is not supported by IBM JDK.
+So we can make HotSpotDiagnosticMXBean as runtime but not compile.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.3.0, 2.2.0, 2.1.1, 2.0.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.debug.Utils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-01 22:22:39" id="14538" opendate="2016-08-15 20:29:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>beeline throws exceptions with parsing hive config when using !sh statement</summary>
+			
+			
+			<description>When beeline has a connection to a server, in some env it has following problem:
+
+0: jdbc:hive2://localhost&amp;gt; !verbose
+
+verbose: on
+
+0: jdbc:hive2://localhost&amp;gt; !sh id
+
+java.lang.ArrayIndexOutOfBoundsException: 1
+
+at org.apache.hive.beeline.Commands.addConf(Commands.java:758)
+
+at org.apache.hive.beeline.Commands.getHiveConf(Commands.java:704)
+
+at org.apache.hive.beeline.Commands.sh(Commands.java:1002)
+
+at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+at java.lang.reflect.Method.invoke(Method.java:498)
+
+at org.apache.hive.beeline.ReflectiveCommandHandler.execute(ReflectiveCommandHandler.java:52)
+
+at org.apache.hive.beeline.BeeLine.dispatch(BeeLine.java:1081)
+
+at org.apache.hive.beeline.BeeLine.execute(BeeLine.java:917)
+
+at org.apache.hive.beeline.BeeLine.begin(BeeLine.java:845)
+
+at org.apache.hive.beeline.BeeLine.mainWithInputRedirection(BeeLine.java:482)
+
+at org.apache.hive.beeline.BeeLine.main(BeeLine.java:465)
+
+at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+at java.lang.reflect.Method.invoke(Method.java:498)
+
+at org.apache.hadoop.util.RunJar.run(RunJar.java:221)
+
+at org.apache.hadoop.util.RunJar.main(RunJar.java:136)
+
+0: jdbc:hive2://localhost&amp;gt; !sh echo hello
+
+java.lang.ArrayIndexOutOfBoundsException: 1
+
+at org.apache.hive.beeline.Commands.addConf(Commands.java:758)
+
+at org.apache.hive.beeline.Commands.getHiveConf(Commands.java:704)
+
+at org.apache.hive.beeline.Commands.sh(Commands.java:1002)
+
+at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+at java.lang.reflect.Method.invoke(Method.java:498)
+
+at org.apache.hive.beeline.ReflectiveCommandHandler.execute(ReflectiveCommandHandler.java:52)
+
+at org.apache.hive.beeline.BeeLine.dispatch(BeeLine.java:1081)
+
+at org.apache.hive.beeline.BeeLine.execute(BeeLine.java:917)
+
+at org.apache.hive.beeline.BeeLine.begin(BeeLine.java:845)
+
+at org.apache.hive.beeline.BeeLine.mainWithInputRedirection(BeeLine.java:482)
+
+at org.apache.hive.beeline.BeeLine.main(BeeLine.java:465)
+
+at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+at java.lang.reflect.Method.invoke(Method.java:498)
+
+at org.apache.hadoop.util.RunJar.run(RunJar.java:221)
+
+at org.apache.hadoop.util.RunJar.main(RunJar.java:136)
+
+0: jdbc:hive2://localhost&amp;gt;
+
+
+
+Also it breaks if there is no connection established:
+
+beeline&amp;gt; !sh id
+
+java.lang.NullPointerException
+
+at org.apache.hive.beeline.BeeLine.createStatement(BeeLine.java:1897)
+
+at org.apache.hive.beeline.Commands.getConfInternal(Commands.java:724)
+
+at org.apache.hive.beeline.Commands.getHiveConf(Commands.java:702)
+
+at org.apache.hive.beeline.Commands.sh(Commands.java:1002)
+
+at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+at java.lang.reflect.Method.invoke(Method.java:498)
+
+at org.apache.hive.beeline.ReflectiveCommandHandler.execute(ReflectiveCommandHandler.java:52)
+
+at org.apache.hive.beeline.BeeLine.dispatch(BeeLine.java:1081)
+
+at org.apache.hive.beeline.BeeLine.execute(BeeLine.java:917)
+
+at org.apache.hive.beeline.BeeLine.begin(BeeLine.java:845)
+
+at org.apache.hive.beeline.BeeLine.mainWithInputRedirection(BeeLine.java:482)
+
+at org.apache.hive.beeline.BeeLine.main(BeeLine.java:465)
+
+at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+
+at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+
+at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+
+at java.lang.reflect.Method.invoke(Method.java:498)
+
+at org.apache.hadoop.util.RunJar.run(RunJar.java:221)
+
+at org.apache.hadoop.util.RunJar.main(RunJar.java:136)
+
+
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.beeline.TestBeeLineWithArgs.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.Commands.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-21 08:19:55" id="14714" opendate="2016-09-07 15:46:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Avoid misleading &quot;java.io.IOException: Stream closed&quot; when shutting down HoS</summary>
+			
+			
+			<description>After execute hive command with Spark, finishing the beeline session or
+even switch the engine causes IOException. The following executed Ctrl-D to
+finish the session but &quot;!quit&quot; or even &quot;set hive.execution.engine=mr;&quot; causes
+the issue.
+From HS2 log:
+
+
+
+2016-09-06 16:15:12,291 WARN  org.apache.hive.spark.client.SparkClientImpl: [HiveServer2-Handler-Pool: Thread-106]: Timed out shutting down remote driver, interrupting...
+
+2016-09-06 16:15:12,291 WARN  org.apache.hive.spark.client.SparkClientImpl: [Driver]: Waiting thread interrupted, killing child process.
+
+2016-09-06 16:15:12,296 WARN  org.apache.hive.spark.client.SparkClientImpl: [stderr-redir-1]: Error in redirector thread.
+
+java.io.IOException: Stream closed
+
+        at java.io.BufferedInputStream.getBufIfOpen(BufferedInputStream.java:162)
+
+        at java.io.BufferedInputStream.read1(BufferedInputStream.java:272)
+
+        at java.io.BufferedInputStream.read(BufferedInputStream.java:334)
+
+        at sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:283)
+
+        at sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:325)
+
+        at sun.nio.cs.StreamDecoder.read(StreamDecoder.java:177)
+
+        at java.io.InputStreamReader.read(InputStreamReader.java:184)
+
+        at java.io.BufferedReader.fill(BufferedReader.java:154)
+
+        at java.io.BufferedReader.readLine(BufferedReader.java:317)
+
+        at java.io.BufferedReader.readLine(BufferedReader.java:382)
+
+        at org.apache.hive.spark.client.SparkClientImpl$Redirector.run(SparkClientImpl.java:617)
+
+        at java.lang.Thread.run(Thread.java:745)
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.spark.client.SparkClientImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-30 14:43:35" id="14784" opendate="2016-09-17 02:00:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Operation logs are disabled automatically if the parent directory does not exist.</summary>
+			
+			
+			<description>Operation logging is disabled automatically for the query if for some reason the parent directory (named after the hive session id) that gets created when the session is established gets deleted (for any reason). For ex: if the operation logdir is /tmp which automatically can get purged at a configured interval by the OS.
+Running a query from that session leads to
+
+
+
+2016-09-15 15:09:16,723 WARN org.apache.hive.service.cli.operation.Operation: Unable to create operation log file: /tmp/hive/operation_logs/b8809985-6b38-47ec-a49b-6158a67cd9fc/d35414f7-2418-426c-8489-c6f643ca4599
+
+java.io.IOException: No such file or directory
+
+	at java.io.UnixFileSystem.createFileExclusively(Native Method)
+
+	at java.io.File.createNewFile(File.java:1012)
+
+	at org.apache.hive.service.cli.operation.Operation.createOperationLog(Operation.java:195)
+
+	at org.apache.hive.service.cli.operation.Operation.beforeRun(Operation.java:237)
+
+	at org.apache.hive.service.cli.operation.Operation.run(Operation.java:255)
+
+	at org.apache.hive.service.cli.session.HiveSessionImpl.executeStatementInternal(HiveSessionImpl.java:398)
+
+	at org.apache.hive.service.cli.session.HiveSessionImpl.executeStatementAsync(HiveSessionImpl.java:385)
+
+	at org.apache.hive.service.cli.CLIService.executeStatementAsync(CLIService.java:271)
+
+	at org.apache.hive.service.cli.thrift.ThriftCLIService.ExecuteStatement(ThriftCLIService.java:490)
+
+	at org.apache.hive.service.cli.thrift.TCLIService$Processor$ExecuteStatement.getResult(TCLIService.java:1313)
+
+	at org.apache.hive.service.cli.thrift.TCLIService$Processor$ExecuteStatement.getResult(TCLIService.java:1298)
+
+	at org.apache.thrift.ProcessFunction.process(ProcessFunction.java:39)
+
+	at org.apache.thrift.TBaseProcessor.process(TBaseProcessor.java:39)
+
+	at org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge$Server$TUGIAssumingProcessor.process(HadoopThriftAuthBridge.java:692)
+
+	at org.apache.thrift.server.TThreadPoolServer$WorkerProcess.run(TThreadPoolServer.java:285)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+
+
+
+
+This later leads to errors like (more prominent when using HUE as HUE does not close hive sessions and attempts to retrieve the operations logs days after they were created).
+
+
+
+WARN org.apache.hive.service.cli.thrift.ThriftCLIService: Error fetching results: 
+
+org.apache.hive.service.cli.HiveSQLException: Couldn&amp;amp;apos;t find log associated with operation handle: OperationHandle [opType=EXECUTE_STATEMENT, getHandleIdentifier()=d35414f7-2418-426c-8489-c6f643ca4599]
+
+	at org.apache.hive.service.cli.operation.OperationManager.getOperationLogRowSet(OperationManager.java:259)
+
+	at org.apache.hive.service.cli.session.HiveSessionImpl.fetchResults(HiveSessionImpl.java:701)
+
+	at org.apache.hive.service.cli.CLIService.fetchResults(CLIService.java:451)
+
+	at org.apache.hive.service.cli.thrift.ThriftCLIService.FetchResults(ThriftCLIService.java:676)
+
+	at org.apache.hive.service.cli.thrift.TCLIService$Processor$FetchResults.getResult(TCLIService.java:1553)
+
+	at org.apache.hive.service.cli.thrift.TCLIService$Processor$FetchResults.getResult(TCLIService.java:1538)
+
+	at org.apache.thrift.ProcessFunction.process(ProcessFunction.java:39)
+
+	at org.apache.thrift.TBaseProcessor.process(TBaseProcessor.java:39)
+
+	at org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge$Server$TUGIAssumingProcessor.process(HadoopThriftAuthBridge.java:692)
+
+	at org.apache.thrift.server.TThreadPoolServer$WorkerProcess.run(TThreadPoolServer.java:285)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+	at java.lang.Thread.run(Thread.java:745) 
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.service.cli.operation.Operation.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-10-31 21:09:22" id="15061" opendate="2016-10-25 22:12:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Metastore types are sometimes case sensitive</summary>
+			
+			
+			<description>Impala recently encountered an issue with the metastore (IMPALA-4260 ) where column stats would get dropped when adding a column to a table.
+The reason seems to be that Hive does a case sensitive check on the column stats types during an &quot;alter table&quot; and expects the types to be all lower case. This case sensitive check doesn&amp;amp;apos;t appear to happen when the stats are set in the first place.
+We&amp;amp;apos;re solving this on the Impala end by storing types in the metastore as all lower case, but Hive&amp;amp;apos;s behavior here is very confusing. It should either always be case sensitive, so that you can&amp;amp;apos;t create column stats with types that Hive considers invalid, or it should never be case sensitive.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveAlterHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-11-17 17:02:46" id="11208" opendate="2015-07-08 14:06:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Can not drop a default partition __HIVE_DEFAULT_PARTITION__ which is not a &quot;string&quot; type</summary>
+			
+			
+			<description>When partition is not a string type, for example, if it is a int type, when drop the default partition _HIVE_DEFAULT_PARTITION_, you will get:
+SemanticException Unexpected unknown partitions
+Reproduce:
+
+SET hive.exec.dynamic.partition=true;
+
+SET hive.exec.dynamic.partition.mode=nonstrict;
+
+set hive.exec.max.dynamic.partitions.pernode=10000;
+
+
+
+DROP TABLE IF EXISTS test;
+
+CREATE TABLE test (col1 string) PARTITIONED BY (p1 int) ROW FORMAT DELIMITED FIELDS TERMINATED BY &amp;amp;apos;\001&amp;amp;apos; STORED AS TEXTFILE;
+
+INSERT OVERWRITE TABLE test PARTITION (p1) SELECT code, IF(salary &amp;gt; 600, 100, null) as p1 FROM jsmall;
+
+
+
+hive&amp;gt; SHOW PARTITIONS test;
+
+OK
+
+p1=100
+
+p1=__HIVE_DEFAULT_PARTITION__
+
+Time taken: 0.124 seconds, Fetched: 2 row(s)
+
+
+
+hive&amp;gt; ALTER TABLE test DROP partition (p1 = &amp;amp;apos;__HIVE_DEFAULT_PARTITION__&amp;amp;apos;);
+
+FAILED: SemanticException Unexpected unknown partitions for (p1 = null)
+
+
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.ppr.PartitionPruner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExprNodeEvaluatorFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.ppr.PartExprEvalUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPEqual.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDFOPNotEqual.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">11237</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-11-18 21:07:06" id="13539" opendate="2016-04-18 19:16:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HiveHFileOutputFormat searching the wrong directory for HFiles</summary>
+			
+			
+			<description>When creating HFiles for a bulkload in HBase I believe it is looking in the wrong directory to find the HFiles, resulting in the following exception:
+
+
+
+Error: java.lang.RuntimeException: Hive Runtime Error while closing operators: java.io.IOException: Multiple family directories found in hdfs://c1n1.gbif.org:8020/user/hive/warehouse/tim.db/coords_hbase/_temporary/2/_temporary
+
+	at org.apache.hadoop.hive.ql.exec.mr.ExecReducer.close(ExecReducer.java:295)
+
+	at org.apache.hadoop.mapred.ReduceTask.runOldReducer(ReduceTask.java:453)
+
+	at org.apache.hadoop.mapred.ReduceTask.run(ReduceTask.java:392)
+
+	at org.apache.hadoop.mapred.YarnChild$2.run(YarnChild.java:163)
+
+	at java.security.AccessController.doPrivileged(Native Method)
+
+	at javax.security.auth.Subject.doAs(Subject.java:415)
+
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1671)
+
+	at org.apache.hadoop.mapred.YarnChild.main(YarnChild.java:158)
+
+Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: java.io.IOException: Multiple family directories found in hdfs://c1n1.gbif.org:8020/user/hive/warehouse/tim.db/coords_hbase/_temporary/2/_temporary
+
+	at org.apache.hadoop.hive.ql.exec.FileSinkOperator$FSPaths.closeWriters(FileSinkOperator.java:188)
+
+	at org.apache.hadoop.hive.ql.exec.FileSinkOperator.closeOp(FileSinkOperator.java:958)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.close(Operator.java:598)
+
+	at org.apache.hadoop.hive.ql.exec.Operator.close(Operator.java:610)
+
+	at org.apache.hadoop.hive.ql.exec.mr.ExecReducer.close(ExecReducer.java:287)
+
+	... 7 more
+
+Caused by: java.io.IOException: Multiple family directories found in hdfs://c1n1.gbif.org:8020/user/hive/warehouse/tim.db/coords_hbase/_temporary/2/_temporary
+
+	at org.apache.hadoop.hive.hbase.HiveHFileOutputFormat$1.close(HiveHFileOutputFormat.java:158)
+
+	at org.apache.hadoop.hive.ql.exec.FileSinkOperator$FSPaths.closeWriters(FileSinkOperator.java:185)
+
+	... 11 more
+
+
+
+The issue is that is looks for the HFiles in hdfs://c1n1.gbif.org:8020/user/hive/warehouse/tim.db/coords_hbase/_temporary/2/_temporary when I believe it should be looking in the task attempt subfolder, such as hdfs://c1n1.gbif.org:8020/user/hive/warehouse/tim.db/coords_hbase/_temporary/2/_temporary/attempt_1461004169450_0002_r_000000_1000.
+This can be reproduced in any HFile creation such as:
+
+
+
+CREATE TABLE coords_hbase(id INT, x DOUBLE, y DOUBLE)
+
+STORED BY &amp;amp;apos;org.apache.hadoop.hive.hbase.HBaseStorageHandler&amp;amp;apos;
+
+WITH SERDEPROPERTIES (
+
+  &amp;amp;apos;hbase.columns.mapping&amp;amp;apos; = &amp;amp;apos;:key,o:x,o:y&amp;amp;apos;,
+
+  &amp;amp;apos;hbase.table.default.storage.type&amp;amp;apos; = &amp;amp;apos;binary&amp;amp;apos;);
+
+
+
+SET hfile.family.path=/tmp/coords_hfiles/o; 
+
+SET hive.hbase.generatehfiles=true;
+
+
+
+INSERT OVERWRITE TABLE coords_hbase 
+
+SELECT id, decimalLongitude, decimalLatitude
+
+FROM source
+
+CLUSTER BY id; 
+
+
+
+Any advice greatly appreciated</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HiveHFileOutputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

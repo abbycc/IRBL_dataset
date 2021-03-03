@@ -1,0 +1,1 @@
+make mapreduc test pass hadoop2 hbase 7904 attempt make work lost weed attempt make hbase mapreduc job run hadoop2 break mapreduc hadoop1

@@ -1,0 +1,1 @@
+nullpointerexcept clientscann stack trace observ whilst load larg volum data hbase java lang nullpointerexcept org apach hadoop hbase client htabl clientscann htabl java 2008 org apach hadoop hbase client htabl clientscann 1 hasnext htabl java 2089 lastresult initi null handl code isn amp apo null check field access row scan setstartrow lastresult getrow addit null check logic

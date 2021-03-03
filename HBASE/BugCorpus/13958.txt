@@ -1,0 +1,1 @@
+restapiclustermanag call kill suspend resum suspend resum rest clustermanag call wrong method overrid public void suspend servicetyp servic string hostnam int port throw ioexcept hbaseclustermanag kill servic hostnam port overrid public void resum servicetyp servic string hostnam int port throw ioexcept hbaseclustermanag kill servic hostnam port

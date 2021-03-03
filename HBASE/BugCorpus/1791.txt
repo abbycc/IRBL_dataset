@@ -1,0 +1,1 @@
+timeout indexrecordwrit mapreduc job gener lucen index hbase fail suffici larg tabl index finish close method indexrecordwrit call writer optim call method minut forc mapreduc task timeout heartbeatsthread send progress updat suggest fix add context progress heardbeatsthread run method context setstatu call context setstatu good

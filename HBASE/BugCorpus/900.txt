@@ -1,0 +1,1 @@
+regionserv memori leak oom modest bulk import recreat issu time introduc 0 2 import singl tabl memori usag individu region server grow bound set default 1gb eventu die oom daniel ploeg mail list case 10 rs node oom 1gb heap 30 35 region rs previou version import hundr region rs default heap size past increas max heap 2gb newer version lead kind memori leak region server import

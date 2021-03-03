@@ -1,0 +1,1 @@
+zookeep fail start bin start hbase sh fail start zookeep throw thread main java lang nullpointerexcept org apach hadoop hbase zookeep zkservertool main zkservertool java 45 broken hbase 13636

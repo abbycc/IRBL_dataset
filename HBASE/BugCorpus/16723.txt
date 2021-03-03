@@ -1,0 +1,1 @@
+rmi registri destroi stop jmx connector server creat rmi registri jmxlisten startconnectorserv creat rmi registri locateregistri createregistri rmiregistryport registri deregist destoi stop jmx connector server

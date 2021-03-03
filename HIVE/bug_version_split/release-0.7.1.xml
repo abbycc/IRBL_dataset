@@ -1,0 +1,1281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HIVE">
+	<bug fixdate="2011-05-25 05:10:06" id="2117" opendate="2011-04-18 18:26:23" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>insert overwrite ignoring partition location</summary>
+			
+			
+			<description>The following code works differently in 0.5.0 vs 0.7.0.
+In 0.5.0 the partition location is respected. 
+However in 0.7.0 while the initial partition is create with the specified location &quot;&amp;lt;path&amp;gt;/parta&quot;, the &quot;insert overwrite ...&quot; results in the partition written to &quot;&amp;lt;path&amp;gt;/dt=a&quot; (note that &amp;lt;path&amp;gt; is the same in both cases).
+
+
+
+create table foo_stg (bar INT, car INT); 
+
+load data local inpath &amp;amp;apos;data.txt&amp;amp;apos; into table foo_stg;
+
+ 
+
+create table foo4 (bar INT, car INT) partitioned by (dt STRING) LOCATION &amp;amp;apos;/user/hive/warehouse/foo4&amp;amp;apos;; 
+
+alter table foo4 add partition (dt=&amp;amp;apos;a&amp;amp;apos;) location &amp;amp;apos;/user/hive/warehouse/foo4/parta&amp;amp;apos;;
+
+ 
+
+from foo_stg fs insert overwrite table foo4 partition (dt=&amp;amp;apos;a&amp;amp;apos;) select *;
+
+
+
+From what I can tell HIVE-1707 introduced this via a change to
+org.apache.hadoop.hive.ql.metadata.Hive.loadPartition(Path, String, Map&amp;lt;String, String&amp;gt;, boolean, boolean)
+specifically:
+
+
+
++      Path partPath = new Path(tbl.getDataLocation().getPath(),
+
++          Warehouse.makePartPath(partSpec));
+
++
+
++      Path newPartPath = new Path(loadPath.toUri().getScheme(), loadPath
+
++          .toUri().getAuthority(), partPath.toUri().getPath());
+
+
+
+Reading the description on HIVE-1707 it seems that this may have been done purposefully, however given the partition location is explicitly specified for the partition in question it seems like that should be honored (esp give the table location has not changed).
+This difference in behavior is causing a regression in existing production Hive based code. I&amp;amp;apos;d like to take a stab at addressing this, any suggestions?
+</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion>0.7.1, 0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestMTQueries.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QTestUtil.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">1707</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-07-27 23:23:31" id="2309" opendate="2011-07-26 22:11:58" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Incorrect regular expression for extracting task id from filename</summary>
+			
+			
+			<description>For producing the correct filenames for bucketed tables, there is a method in Utilities.java that extracts out the task id from the filename and replaces it with the bucket number. There is a bug in the regex that is used to extract this value for attempt numbers &amp;gt;= 10:
+
+
+
+&amp;gt;&amp;gt;&amp;gt; re.match(&quot;^.*?([0-9]+)(_[0-9])?(\\..*)?$&quot;, &amp;amp;apos;attempt_201107090429_64965_m_001210_10&amp;amp;apos;).group(1)
+
+&amp;amp;apos;10&amp;amp;apos;
+
+&amp;gt;&amp;gt;&amp;gt; re.match(&quot;^.*?([0-9]+)(_[0-9])?(\\..*)?$&quot;, &amp;amp;apos;attempt_201107090429_64965_m_001210_9&amp;amp;apos;).group(1)
+
+&amp;amp;apos;001210&amp;amp;apos;
+
+
+</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Utilities.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">6309</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-08-18 21:39:27" id="2315" opendate="2011-07-27 16:46:38" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DatabaseMetadata.getColumns() does not return partition column names for a table</summary>
+			
+			
+			<description>getColumns() method of DatabaseMetadata for HIVE JDBC Driver does not return the partition column names. Where as from HIVE CLI, if you do a &amp;amp;apos;describe tablename&amp;amp;apos; you get all columns including the partition columns. It would be nice if getColumns() method returns all columns.</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.TestJdbcDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.HiveDatabaseMetaData.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">1573</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">1573</link>
+			
+			
+			<link description="relates to" type="Reference">1573</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2011-08-19 18:55:57" id="2334" opendate="2011-08-02 21:57:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DESCRIBE TABLE causes NPE when hive.cli.print.header=true</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.cli.CliDriver.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-09-07 03:04:42" id="2369" opendate="2011-08-11 17:42:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Minor typo in error message in HiveConnection.java (JDBC)</summary>
+			
+			
+			<description>There is a minor typo issue in HiveConnection.java (jdbc) :
+
+throw new SQLException(&quot;Could not establish connecton to &quot;
+
+            + uri + &quot;: &quot; + e.getMessage(), &quot;08S01&quot;);
+
+It seems like there&amp;amp;apos;s a &quot;i&quot; missing.
+I know it&amp;amp;apos;s a very minor typo but I report it anyway. I won&amp;amp;apos;t attach a patch because it would be too long for me to SVN checkout just for 1 letter.</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.HiveConnection.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-09-15 20:16:55" id="2398" opendate="2011-08-19 22:18:23" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive server doesn&amp;apos;t return schema for &amp;apos;set&amp;apos; command</summary>
+			
+			
+			<description>The Hive server does process the CLI commands like &amp;amp;apos;set&amp;amp;apos;, &amp;amp;apos;set -v&amp;amp;apos; sent by ODBC or JDBC clients. But currently only the data is returned to client but not schema for that resultset. This makes it unusable for a ODBC or JDBC client to use this option.</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.service.HiveServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.processors.SetProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.TestJdbcDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.processors.CommandProcessorResponse.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-10-11 18:26:17" id="2455" opendate="2011-09-18 07:49:19" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Pass correct remoteAddress in proxy user authentication</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.TestHadoop20SAuthBridge.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge20S.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-10-13 20:36:36" id="2499" opendate="2011-10-12 08:24:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>small table filesize for automapjoin is not consistent in HiveConf.java and hive-default.xml</summary>
+			
+			
+			<description/>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-10-25 03:45:13" id="2497" opendate="2011-10-12 02:27:43" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>partition pruning  prune some right partition under specific conditions</summary>
+			
+			
+			<description>create table src3(key string, value string) partitioned by (pt string)
+row format delimited fields terminated by &amp;amp;apos;,&amp;amp;apos;;
+ALTER TABLE src3 ADD IF NOT EXISTS PARTITION (pt=&amp;amp;apos;20110911000000&amp;amp;apos;) ;
+ALTER TABLE src3 ADD IF NOT EXISTS PARTITION (pt=&amp;amp;apos;20110912000000&amp;amp;apos;) ;
+ALTER TABLE src3 ADD IF NOT EXISTS PARTITION (pt=&amp;amp;apos;20110913000000&amp;amp;apos;) ;
+explain extended
+select user_id 
+from
+ (
+   select 
+    cast(key as int) as user_id
+    ,case when (value like &amp;amp;apos;aaa%&amp;amp;apos; or value like &amp;amp;apos;vvv%&amp;amp;apos;)
+            then 1
+            else 0  end as tag_student
+   from src3
+ ) sub
+where sub.tag_student &amp;gt; 0;
+STAGE DEPENDENCIES:
+  Stage-1 is a root stage
+  Stage-0 is a root stage
+STAGE PLANS:
+  Stage: Stage-1
+    Map Reduce
+      Alias -&amp;gt; Map Operator Tree:
+        sub:src3 
+          TableScan
+            alias: src3
+            Filter Operator
+              isSamplingPred: false
+              predicate:
+                  expr: (CASE WHEN (((value like &amp;amp;apos;aaa%&amp;amp;apos;) or (value like &amp;amp;apos;vvv%&amp;amp;apos;))) THEN (1) ELSE (0) END &amp;gt; 0)
+                  type: boolean
+              Select Operator
+                expressions:
+                      expr: UDFToInteger(key)
+                      type: int
+                      expr: CASE WHEN (((value like &amp;amp;apos;aaa%&amp;amp;apos;) or (value like &amp;amp;apos;vvv%&amp;amp;apos;))) THEN (1) ELSE (0) END
+                      type: int
+                outputColumnNames: _col0, _col1
+                Filter Operator
+                  isSamplingPred: false
+                  predicate:
+                      expr: (_col1 &amp;gt; 0)
+                      type: boolean
+                  Select Operator
+                    expressions:
+                          expr: _col0
+                          type: int
+                    outputColumnNames: _col0
+                    File Output Operator
+                      compressed: false
+                      GlobalTableId: 0
+                      directory: hdfs://localhost:54310/tmp/hive-tianzhao/hive_2011-10-11_19-26-12_894_9085644225727185586/-ext-10001
+                      NumFilesPerFileSink: 1
+                      table:
+                          input format: org.apache.hadoop.mapred.TextInputFormat
+                          output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+                          properties:
+                            columns _col0
+                            columns.types int
+                            serialization.format 1
+                      TotalFiles: 1
+                      MultiFileSpray: false
+      Needs Tagging: false
+  Stage: Stage-0
+    Fetch Operator
+      limit: -1
+if we set hive.optimize.ppd=false;
+STAGE DEPENDENCIES:
+  Stage-1 is a root stage
+  Stage-0 is a root stage
+STAGE PLANS:
+  Stage: Stage-1
+    Map Reduce
+      Alias -&amp;gt; Map Operator Tree:
+        sub:src3 
+          TableScan
+            alias: src3
+            Select Operator
+              expressions:
+                    expr: UDFToInteger(key)
+                    type: int
+                    expr: CASE WHEN (((value like &amp;amp;apos;aaa%&amp;amp;apos;) or (value like &amp;amp;apos;vvv%&amp;amp;apos;))) THEN (1) ELSE (0) END
+                    type: int
+              outputColumnNames: _col0, _col1
+              Filter Operator
+                isSamplingPred: false
+                predicate:
+                    expr: (_col1 &amp;gt; 0)
+                    type: boolean
+                Select Operator
+                  expressions:
+                        expr: _col0
+                        type: int
+                  outputColumnNames: _col0
+                  File Output Operator
+                    compressed: false
+                    GlobalTableId: 0
+                    directory: hdfs://localhost:54310/tmp/hive-tianzhao/hive_2011-10-11_19-27-22_527_1729287213481398480/-ext-10001
+                    NumFilesPerFileSink: 1
+                    table:
+                        input format: org.apache.hadoop.mapred.TextInputFormat
+                        output format: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+                        properties:
+                          columns _col0
+                          columns.types int
+                          serialization.format 1
+                    TotalFiles: 1
+                    MultiFileSpray: false
+      Needs Tagging: false
+      Path -&amp;gt; Alias:
+        hdfs://localhost:54310/user/hive/warehouse/src3/pt=20110911000000 [sub:src3]
+        hdfs://localhost:54310/user/hive/warehouse/src3/pt=20110912000000 [sub:src3]
+        hdfs://localhost:54310/user/hive/warehouse/src3/pt=20110913000000 [sub:src3]
+      Path -&amp;gt; Partition:
+        hdfs://localhost:54310/user/hive/warehouse/src3/pt=20110911000000 
+          Partition
+            base file name: pt=20110911000000
+</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.ppr.ExprProcFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-11-08 05:53:22" id="2466" opendate="2011-09-23 16:39:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>mapjoin_subquery  dump small table (mapjoin table) to the same file</summary>
+			
+			
+			<description>in mapjoin_subquery.q  there is a query
+SELECT /*+ MAPJOIN(z) */ subq.key1, z.value
+FROM
+(SELECT /*+ MAPJOIN */ x.key as key1, x.value as value1, y.key as key2, y.value as value2 
+ FROM src1 x JOIN src y ON (x.key = y.key)) subq
+ JOIN srcpart z ON (subq.key1 = z.key and z.ds=&amp;amp;apos;2008-04-08&amp;amp;apos; and z.hr=11);
+when dump x and z to a local file,there all dump to the same file, so we lost the data of x</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion>0.8.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.PlanUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.HashTableSinkDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Utilities.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.physical.GenMRSkewJoinProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.MapJoinDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.MapJoinProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.HashTableSinkOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapredLocalTask.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-01-11 15:28:26" id="2705" opendate="2012-01-10 21:08:47" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SemanticAnalyzer twice swallows an exception it shouldn&amp;apos;t</summary>
+			
+			
+			<description>Twice SemanticAnalyzer catches an exception and drops it, just passing on the original message&amp;amp;apos;s in a new SemanticException. This means that those that see the message in the output cannot tell what generated the original exception.  These original exceptions should be wrapped, as they are in other parts of the code.</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion>0.9.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-04-13 06:11:33" id="2931" opendate="2012-04-06 18:48:04" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>conf settings may be ignored</summary>
+			
+			
+			<description>This is a pretty serious problem.
+If a conf variable is changed, Hive may not pick up the variable unless the metastore variables are changed.
+When any session variables are changed, it might be simpler to update the corresponding Hive conf.</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2918</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-04-13 21:15:41" id="2829" opendate="2012-02-28 17:07:34" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SET hive.exec.max.dynamic.partitions.pernode is ignored</summary>
+			
+			
+			<description>SET hive.exec.max.dynamic.partitions.pernode=12345;
+in a Hive script is ignored. The default value of 100 coming from hive-default.xml is always passed.</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2918</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-04-25 17:00:32" id="2918" opendate="2012-04-02 11:08:59" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive Dynamic Partition Insert - move task not considering &amp;apos;hive.exec.max.dynamic.partitions&amp;apos; from CLI</summary>
+			
+			
+			<description>Dynamic Partition insert showing an error with the number of partitions created even after the default value of &amp;amp;apos;hive.exec.max.dynamic.partitions&amp;amp;apos; is bumped high to 2000.
+Error Message:
+&quot;Failed with exception Number of dynamic partitions created is 1413, which is more than 1000. To solve this try to set hive.exec.max.dynamic.partitions to at least 1413.&quot;
+These are the following properties set on hive CLI
+hive&amp;gt; set hive.exec.dynamic.partition=true;
+hive&amp;gt; set hive.exec.dynamic.partition.mode=nonstrict;
+hive&amp;gt; set hive.exec.max.dynamic.partitions=2000;
+hive&amp;gt; set hive.exec.max.dynamic.partitions.pernode=2000;
+This is the query with console error log
+hive&amp;gt; 
+    &amp;gt; INSERT OVERWRITE TABLE partn_dyn Partition (pobox)
+    &amp;gt; SELECT country,state,pobox FROM non_partn_dyn;
+Total MapReduce jobs = 2
+Launching Job 1 out of 2
+Number of reduce tasks is set to 0 since there&amp;amp;apos;s no reduce operator
+Starting Job = job_201204021529_0002, Tracking URL = http://0.0.0.0:50030/jobdetails.jsp?jobid=job_201204021529_0002
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=0.0.0.0:8021 -kill job_201204021529_0002
+2012-04-02 16:05:28,619 Stage-1 map = 0%,  reduce = 0%
+2012-04-02 16:05:39,701 Stage-1 map = 100%,  reduce = 0%
+2012-04-02 16:05:50,800 Stage-1 map = 100%,  reduce = 100%
+Ended Job = job_201204021529_0002
+Ended Job = 248865587, job is filtered out (removed at runtime).
+Moving data to: hdfs://0.0.0.0/tmp/hive-cloudera/hive_2012-04-02_16-05-24_919_5976014408587784412/-ext-10000
+Loading data to table default.partn_dyn partition (pobox=null)
+Failed with exception Number of dynamic partitions created is 1413, which is more than 1000. To solve this try to set hive.exec.max.dynamic.partitions to at least 1413.
+FAILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.MoveTask
+I checked the job.xml of the first map only job, there the value hive.exec.max.dynamic.partitions=2000 is reflected but the move task is taking the default value from hive-site.xml . If I change the value in hive-site.xml then the job completes successfully. Bottom line,the property &amp;amp;apos;hive.exec.max.dynamic.partitions&amp;amp;apos;set on CLI is not being considered by move task
+</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2829</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2931</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2963</link>
+			
+			
+			<link description="relates to" type="Reference">2984</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-05-27 12:08:25" id="2540" opendate="2011-11-01 17:32:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>LATERAL VIEW with EXPLODE produces ConcurrentModificationException</summary>
+			
+			
+			<description>The following produces ConcurrentModificationException on the for loop inside EXPLODE:
+
+
+
+create table foo as select array(1, 2) a from src limit 1;
+
+select a, x.b from foo lateral view explode(a) x as b;
+
+
+</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyMap.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyArray.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="Is contained by" type="Container">10089</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2939</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-04-02 01:40:57" id="3408" opendate="2012-08-27 07:56:33" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>A race condition is caused within QueryPlan class</summary>
+			
+			
+			<description>Hive&amp;amp;apos;s threads are stopped at HashMap.getEntry(..) that is used within QueryPlan#extractCounters() and QueryPlan#updateCountersInQueryPlan().  It seems that a race condition problem of a HashSet object is caused when extractCounters() and updateCountersInQueryPlan() are concurrently executed.  I hit the problem with Hive 0.7.1 but, I think that it also is caused with 0.8.1.
+The problem is reported by several persons on mailing list.
+http://mail-archives.apache.org/mod_mbox/hive-dev/201201.mbox/%3CCAKTRiE+3x31FDy+3F0c+jZSXQrhxBgT4DOyfZddm7sdX+cu=Zg@mail.gmail.com%3E
+http://mail-archives.apache.org/mod_mbox/hive-user/201202.mbox/%3CFC28CCD9-9C75-4F8D-B272-3D50F663A634@gmail.com%3E
+The following is a part of my thread dump.
+
+&quot;Thread-1091&quot; prio=10 tid=0x00007fd17112b000 nid=0x1100 runnable [0x00007fd175f60000]
+   java.lang.Thread.State: RUNNABLE
+   at java.util.HashMap.getEntry(HashMap.java:347)
+   at java.util.HashMap.containsKey(HashMap.java:335)
+   at java.util.HashSet.contains(HashSet.java:184)
+   at org.apache.hadoop.hive.ql.QueryPlan.extractCounters(QueryPlan.java:342)
+   at org.apache.hadoop.hive.ql.QueryPlan.getQueryPlan(QueryPlan.java:419)
+   at org.apache.hadoop.hive.ql.QueryPlan.toString(QueryPlan.java:592)
+   at org.apache.hadoop.hive.ql.history.HiveHistory.logPlanProgress(HiveHistory.java:493)
+   at org.apache.hadoop.hive.ql.exec.ExecDriver.progress(ExecDriver.java:395)
+   at org.apache.hadoop.hive.ql.exec.ExecDriver.execute(ExecDriver.java:686)
+   at org.apache.hadoop.hive.ql.exec.MapRedTask.execute(MapRedTask.java:123)
+   at org.apache.hadoop.hive.ql.exec.Task.executeTask(Task.java:130)
+   at org.apache.hadoop.hive.ql.exec.TaskRunner.runSequential(TaskRunner.java:57)
+   at org.apache.hadoop.hive.ql.exec.TaskRunner.run(TaskRunner.java:47)
+&quot;Thread-1090&quot; prio=10 tid=0x00007fd17012f000 nid=0x10ff runnable [0x00007fd175152000]
+   java.lang.Thread.State: RUNNABLE
+   at java.util.HashMap.getEntry(HashMap.java:347)
+   at java.util.HashMap.containsKey(HashMap.java:335)
+   at java.util.HashSet.contains(HashSet.java:184)
+   at org.apache.hadoop.hive.ql.QueryPlan.updateCountersInQueryPlan(QueryPlan.java:297)
+   at org.apache.hadoop.hive.ql.QueryPlan.getQueryPlan(QueryPlan.java:420)
+   at org.apache.hadoop.hive.ql.QueryPlan.toString(QueryPlan.java:592)
+   at org.apache.hadoop.hive.ql.history.HiveHistory.logPlanProgress(HiveHistory.java:493)
+   at org.apache.hadoop.hive.ql.exec.ExecDriver.progress(ExecDriver.java:395)
+   at org.apache.hadoop.hive.ql.exec.ExecDriver.execute(ExecDriver.java:686)
+   at org.apache.hadoop.hive.ql.exec.MapRedTask.execute(MapRedTask.java:123)
+   at org.apache.hadoop.hive.ql.exec.Task.executeTask(Task.java:130)
+   at org.apache.hadoop.hive.ql.exec.TaskRunner.runSequential(TaskRunner.java:57)
+   at org.apache.hadoop.hive.ql.exec.TaskRunner.run(TaskRunner.java:47)</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.history.HiveHistory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.QueryPlan.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.typeinfo.TypeInfoUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">4000</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-04-23 06:10:13" id="2379" opendate="2011-08-15 23:45:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive/HBase integration could be improved</summary>
+			
+			
+			<description>  For now any Hive/HBase queries would require the following jars to be explicitly added via hive&amp;amp;apos;s add jar command:
+add jar /usr/lib/hive/lib/hbase-0.90.1-cdh3u0.jar;
+add jar /usr/lib/hive/lib/hive-hbase-handler-0.7.0-cdh3u0.jar;
+add jar /usr/lib/hive/lib/zookeeper-3.3.1.jar;
+add jar /usr/lib/hive/lib/guava-r06.jar;
+the longer term solution, perhaps, should be to have the code at submit time call hbase&amp;amp;apos;s 
+TableMapREduceUtil.addDependencyJar(job, HBaseStorageHandler.class) to ship it in distributedcache.</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.PlanUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.MapredWork.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Utilities.java</file>
+			
+			
+			<file type="M">org.apache.hcatalog.mapreduce.HCatStorageHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.hbase.HBaseStorageHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.HiveStorageHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.DefaultStorageHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is blocked by" type="Blocker">3991</link>
+			
+			
+			<link description="is related to" type="Reference">8386</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-06-11 19:00:22" id="2564" opendate="2011-11-09 02:01:39" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Set dbname at JDBC URL or properties</summary>
+			
+			
+			<description>The current Hive implementation ignores a database name at JDBC URL, 
+though we can set it by executing &quot;use &amp;lt;DBNAME&amp;gt;&quot; statement.
+I think it is better to also specify a database name at JDBC URL or database properties.
+Therefore, I&amp;amp;apos;ll attach the patch.</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.jdbc.HiveConnection.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.TestJdbcWithMiniHS2.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2320</link>
+			
+			
+			<link description="duplicates" type="Duplicate">4256</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-08-13 07:56:49" id="2584" opendate="2011-11-16 18:19:03" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Alter table should accept database name</summary>
+			
+			
+			<description>It would be nice if alter table accepts database name.
+For example:
+This would be more useful in certain usecases:
+alter table DB.Tbl set location &amp;lt;location&amp;gt;;
+rather than 2 statements.
+use DB;
+alter table Tbl set location &amp;lt;location&amp;gt;;
+</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzerFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.hooks.UpdateInputAccessTimeHook.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.TestSemanticAnalysis.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.HiveOperationType.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.AlterTableDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.IndexUpdater.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.index.IndexMetadataChangeTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.index.bitmap.BitmapIndexHandler.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.SemanticAnalysis.HCatSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.Operation2Privilege.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.HiveOperation.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.SemanticAnalysis.CreateTableHook.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="Is contained by" type="Container">4064</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">7681</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-08-25 21:56:49" id="7681" opendate="2014-08-11 20:03:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>qualified tablenames usage does not work with several alter-table commands</summary>
+			
+			
+			<description>Changes were made in HIVE-4064 for use of qualified table names in more types of queries. But several alter table commands don&amp;amp;apos;t work with qualified 
+
+alter table default.tmpfoo set tblproperties (&quot;bar&quot; = &quot;bar value&quot;)
+ALTER TABLE default.kv_rename_test CHANGE a a STRING
+add,drop partition
+alter index rebuild
+
+</description>
+			
+			
+			<version>0.7.1</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzerFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.hooks.UpdateInputAccessTimeHook.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.TestSemanticAnalysis.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.HiveOperationType.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.AlterTableDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.IndexUpdater.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.index.IndexMetadataChangeTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.index.bitmap.BitmapIndexHandler.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.SemanticAnalysis.HCatSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.sqlstd.Operation2Privilege.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.HiveOperation.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.cli.SemanticAnalysis.CreateTableHook.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2584</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">9180</link>
+			
+			
+			<link description="relates to" type="Reference">7678</link>
+			
+			
+			<link description="is related to" type="Reference">4064</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

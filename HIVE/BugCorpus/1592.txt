@@ -1,0 +1,8 @@
+ProxyFileSystem.close calls super.close twice.   public void close() throws IOException 
+{
+
+    super.close();
+
+    super.close();
+
+  }

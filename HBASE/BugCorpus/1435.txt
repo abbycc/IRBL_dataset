@@ -1,0 +1,1 @@
+hregionserv wrong info bind address hbase site xml hregionserv java line 1149 trunk port gt 0 string addr conf hbase master info bindaddress 0 0 0 0 check auto port bind enabl boolean auto conf getboolean hbase regionserv info port auto fals line string addr conf hbase regionserv info bindaddress 0 0 0 0

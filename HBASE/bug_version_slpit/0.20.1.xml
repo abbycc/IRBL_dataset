@@ -1,0 +1,789 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HBASE">
+	<bug fixdate="2009-09-22 18:49:02" id="1856" opendate="2009-09-22 08:31:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HBASE-1765 broke MapReduce when using Result.list()</summary>
+			
+			
+			<description>Not sure if it is just me, but using MR over HBase employing a TableReducer is not working. After the first row is read all subsequent rows get the same Result&amp;amp;apos;s of that very first row. After tracing this from the Map phase I found the culprit in Result and the HBASE-1765 delayed field parsing change.
+This is the code I use in the reduce():
+
+
+
+   @Override
+
+    protected void reduce(ImmutableBytesWritable key, Iterable&amp;lt;Result&amp;gt; values,
+
+        Context context) throws IOException, InterruptedException {
+
+      String skey = Bytes.toString(key.get());
+
+      context.getCounter(CountersTotals.ROWS).increment(1);
+
+      for (Result result : values) {
+
+        for (KeyValue kv: result.list()) {
+
+          try {
+
+            if (LOG.isDebugEnabled()) LOG.debug(&quot;reduce: key -&amp;gt; &quot; + skey + &quot;, kv -&amp;gt; &quot; + kv);
+
+            ...
+
+
+
+Here is the current list() implementation:
+
+
+
+  public List&amp;lt;KeyValue&amp;gt; list() {
+
+    if(this.kvs == null) {
+
+      readFields();
+
+    }
+
+    return isEmpty()? null: Arrays.asList(sorted());
+
+  }
+
+
+
+The problem is that readFields(DataInput) does not clear kvs!
+
+
+
+  public void readFields(final DataInput in)
+
+  throws IOException {
+
+    familyMap = null;
+
+    row = null;
+
+    int totalBuffer = in.readInt();
+
+    if(totalBuffer == 0) {
+
+      bytes = null;
+
+      return;
+
+    }
+
+    byte [] raw = new byte[totalBuffer];
+
+    in.readFully(raw, 0, totalBuffer);
+
+    bytes = new ImmutableBytesWritable(raw, 0, totalBuffer);
+
+  }
+
+
+
+The above is called by the MR framework&amp;amp;apos;s WritableSerialization for each map output. But since &quot;kvs&quot; is already set &quot;list()&quot; returns the old data!
+I assume the only change needed is clearing kvs as well:
+
+
+
+  public void readFields(final DataInput in)
+
+  throws IOException {
+
+    familyMap = null;
+
+    row = null;
+
+    kvs = null;
+
+    ....
+
+
+
+I&amp;amp;apos;ll test that now and report.</description>
+			
+			
+			<version>0.20.1</version>
+			
+			
+			<fixedVersion>0.20.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.Result.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-10-15 06:48:47" id="1896" opendate="2009-10-09 03:40:43" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>WhileMatchFilter.reset should call encapsulated filter reset  </summary>
+			
+			
+			<description>Bumped into this when trying to encapsulate a SingleValueColumnFilter in a WhileMatchFilter. 
+A scanner would grab all the rows after the first matched row in the table </description>
+			
+			
+			<version>0.20.1</version>
+			
+			
+			<fixedVersion>0.20.2, 0.90.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.WhileMatchFilter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-10-20 00:08:34" id="1908" opendate="2009-10-15 18:23:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ROOT not reassigned if only one regionserver left</summary>
+			
+			
+			<description>Yannis on the list uncovered an assignment bug:
+
+I performed additional testing with some alternate configurations and the problem arises (ONLY) when there is only one regionserver left which has the META table already assigned to it. 
+In this case the ROOT table does not get assigned to the last regionserver (which holds the META table).
+Interestingly enough though when there is only one regionserver left that has the ROOT table already assign to it then it can also have the META table re-assigned to it (if again is the only server - i.e. in this scenario you can have one regionserver holding both the META and ROOT tables).
+Unless I am missing something I cannot find any reason why we cannot assign the ROOT table to the regionserver that manages the META table if it is the only one remaining (again it is an extreme case I agree that this can happen).
+I applied and tested a fix (at the hbase-0.20.0 codebase) in the RegionManager::regionsAwaitingAssignment where I add the root table in the regionstoAssign set if the it is the metaServer and also the only server.</description>
+			
+			
+			<version>0.20.1</version>
+			
+			
+			<fixedVersion>0.20.2, 0.90.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.RegionManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-10-22 18:42:44" id="1929" opendate="2009-10-22 18:36:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>If hbase-default.xml is not in CP, zk session timeout is 10 secs!</summary>
+			
+			
+			<description>In ZKW:
+
+
+
+ int sessionTimeout = conf.getInt(&quot;zookeeper.session.timeout&quot;, 10 * 1000);
+
+
+
+If hbase-default.xml is not in the path, that means potential trouble.</description>
+			
+			
+			<version>0.20.1</version>
+			
+			
+			<fixedVersion>0.20.2, 0.90.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.zookeeper.ZooKeeperWrapper.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-10-22 18:54:12" id="1927" opendate="2009-10-22 07:31:02" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Scanners not closed properly in certain circumstances (memory leak)</summary>
+			
+			
+			<description>Scanners are sometimes leaked by the KeyValueHeap class. The constructor adds each scanner to a heap, but only if the scanner&amp;amp;apos;s peek() method returns not null (line 58). Otherwise the scanner is dropped without being closed.
+Unfortunately some scanners (like StoreScanner and MemStoreScanner) register themselves to some global list when constructed and only deregister on close(). This can cause a memory leak, for example with MemStoreScanners on an empty memory store.
+The quick fix is to add an else clause to the if on line 58:
+} else 
+{
+
+  scanner.close()
+
+}
+
+The root cause is that ownership of the scanners is transferred from the caller to the KeyValueHeap on construction. Maybe this should be made clear in the documentation or changed.</description>
+			
+			
+			<version>0.20.1</version>
+			
+			
+			<fixedVersion>0.20.2, 0.90.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.KeyValueHeap.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestKeyValueHeap.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-10-26 05:31:34" id="1934" opendate="2009-10-25 21:01:51" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NullPointerException in ClientScanner</summary>
+			
+			
+			<description>The following stack trace was observed whilst loading a large volume of data into Hbase:
+Caused by: java.lang.NullPointerException
+ at org.apache.hadoop.hbase.client.HTable$ClientScanner.next(HTable.java:2008)
+ at org.apache.hadoop.hbase.client.HTable$ClientScanner$1.hasNext(HTable.java:2089)
+It appears that lastResult is initialized to be null, however in the exception handling code there isn&amp;amp;apos;t any null checking before the field is accessed for get row:
+            this.scan.setStartRow(this.lastResult.getRow());
+There should be some additional null checking logic here.</description>
+			
+			
+			<version>0.20.1</version>
+			
+			
+			<fixedVersion>0.20.2, 0.90.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HTable.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-10-29 02:14:12" id="1921" opendate="2009-10-20 03:08:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>When the Master&amp;apos;s session times out and there&amp;apos;s only one, cluster is wedged</summary>
+			
+			
+			<description>On IRC, some fella had a session expiration on his Master and had only one. Maybe in this case the Master should first try to re-get the znode?</description>
+			
+			
+			<version>0.20.1</version>
+			
+			
+			<fixedVersion>0.20.2, 0.90.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMaster.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.AssignmentManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestZooKeeper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.RegionManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ZKMasterAddressWatcher.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-10-30 17:26:07" id="1946" opendate="2009-10-30 16:39:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Unhandled exception at regionserver</summary>
+			
+			
+			<description>While starting hbase I get following exception:
+
+java.lang.NullPointerException
+  at org.apache.hadoop.hbase.regionserver.HRegionServer.run(HRegionServer.java:459)
+   at java.lang.Thread.run(Thread.java:619)
+in region server&amp;amp;apos;s log on the second machine whereas at first machine all going well.
+We&amp;amp;apos;ve discussed with larsgeorge this problem at IRC channel and seems problem is in HRegionServer implementation.
+Patch which fixies that problem attached to this message, but it should be not a final variant, because I cannot stop hbase with this fix.</description>
+			
+			
+			<version>0.20.1</version>
+			
+			
+			<fixedVersion>0.20.2, 0.90.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-03 19:41:15" id="1954" opendate="2009-11-03 19:17:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Transactional scans do not see newest put.</summary>
+			
+			
+			<description>In a transaction, if I do a put, then a put, then a scan. I will not see the latest put.
+The fix is to set the timestamp at put time.</description>
+			
+			
+			<version>0.20.1</version>
+			
+			
+			<fixedVersion>0.20.2, 0.90.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.transactional.TestTransactions.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.transactional.TransactionState.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-03 23:48:32" id="1919" opendate="2009-10-19 21:54:35" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>code: HRS.delete seems to ignore exceptions it shouldnt</summary>
+			
+			
+			<description>the code is:
+      region.delete(delete, lid, writeToWAL);
+      this.hlog.sync(region.getRegionInfo().isMetaRegion());
+    } catch (WrongRegionException ex) {
+    } catch (NotServingRegionException ex) 
+{
+
+      // ignore                                                                                                                                                                          
+
+    }
+ catch (Throwable t) 
+{
+
+      throw convertThrowableToIOE(cleanup(t));
+
+    }
+
+we ignore those 2 exceptions... weird... should not be!</description>
+			
+			
+			<version>0.20.1</version>
+			
+			
+			<fixedVersion>0.20.2, 0.90.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-04 01:29:40" id="1951" opendate="2009-11-02 15:09:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Stack overflow when calling HTable.checkAndPut() when deleting a lot of values</summary>
+			
+			
+			<description>We get a stackoverflow when calling HTable.checkAndPut() from a map-reduce job though the client API after doing a large number of deletes.
+Our mapred job is a periodic job (which extends TableMapper) that merges the versions for a value in a column into a new value/version and then deletes the older versions. This is because we use versions to store data so we can do append-only insertion. Our rows can have large/huge (from 1 till &amp;gt; 1M) numbers of columns (aka key-values).
+The problem seems to be that the org.apache.hadoop.hbase.regionserver.GetDeleteTracker.isDeleted() method is implemented with recursion but since Java has no tail recursion optimization, this fails for cases where the number of deletes that are being tracked is bigger than the stack size. I&amp;amp;apos;m not sure why recursion is used here but it is not safe without tail-call optimization and it should be optimized into a simple loop.
+I&amp;amp;apos;ll attach the stacktrace.</description>
+			
+			
+			<version>0.20.1</version>
+			
+			
+			<fixedVersion>0.20.2, 0.90.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.GetDeleteTracker.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestGetDeleteTracker.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">1781</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-05 21:52:39" id="1949" opendate="2009-10-30 22:17:41" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>KeyValue expiration by Time-to-Live during major compaction is broken</summary>
+			
+			
+			<description>During a major compaction on a region in a column family with a configured TTL, it looks like all KeyValues in a row after the first expired KeyValue are skipping and thrown out of the newly written file (regardless of whether the would have been expired or not).
+The StoreScanner is skipping to the next row, even when other columns with a non-expirable timestamp exists.  Unless I&amp;amp;apos;m misunderstanding it, it seems like it should just seek to the next column instead.  I discovered this when altering a table to lower the TTL for a column family and force the expiration of some data which led to the entire row being expired in some instances.</description>
+			
+			
+			<version>0.20.1</version>
+			
+			
+			<fixedVersion>0.20.2, 0.90.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestStoreScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.ScanQueryMatcher.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.QueryMatcher.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestQueryMatcher.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-10 01:40:49" id="1966" opendate="2009-11-10 01:27:59" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Apply the fix from site/ to remove the forrest dependency on java5 </summary>
+			
+			
+			<description>Fix forrest with:
+
+forrest.validate=false
+
+
+</description>
+			
+			
+			<version>0.20.1</version>
+			
+			
+			<fixedVersion>0.20.2, 0.90.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.transactional.TestTransactions.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-11-24 19:29:42" id="1979" opendate="2009-11-13 11:47:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MurmurHash does not yield the same results as the reference C++ implementation when size % 4 &gt;= 2</summary>
+			
+			
+			<description>Last rounds of MurmurHash are done in reverse order. data[length - 3], data[length - 2] and data[length - 1] in the block processing the remaining bytes should be data[len_m +2], data[len_m + 1], data[len_m].</description>
+			
+			
+			<version>0.20.1</version>
+			
+			
+			<fixedVersion>0.20.3, 0.90.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.MurmurHash.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is cloned by" type="Cloners">6372</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-11 16:47:36" id="1989" opendate="2009-11-18 21:27:49" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Admin (et al.) not accurate with Column vs. Column-Family usage</summary>
+			
+			
+			<description>Consider the classes Admin and HColumnDescriptor.
+HColumnDescriptor is really referring to a &quot;column family&quot; and not a &quot;column&quot; (i.e., family:qualifer).
+Likewise, in Admin there is a method called &quot;addColumn&quot; that takes an HColumnDescriptor instance.
+I labeled this a bug in the sense that it produces conceptual confusion because there is a big difference between a column and column-family in HBase and these terms should be used consistently.  The code works, though.
+</description>
+			
+			
+			<version>0.20.1</version>
+			
+			
+			<fixedVersion>2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.SchemaResource.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestSnapshotCloneIndependence.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.backup.TestHFileArchiving.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestRestoreSnapshotFromClient.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.LoadTestTool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.encoding.TestLoadAndSwitchEncodeOnDisk.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestEncryptionKeyRotation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.handler.TestTableDescriptorModification.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.handler.TestTableDeleteFamilyHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.coprocessor.TestMasterObserver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.TestTableLockManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.visibility.TestVisibilityLabels.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestSnapshotMetadata.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HBaseAdmin.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.encoding.TestChangingEncoding.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestAdmin1.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.IntegrationTestIngestWithEncryption.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.Admin.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">2704</link>
+			
+			
+			<link description="relates to" type="Reference">13645</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

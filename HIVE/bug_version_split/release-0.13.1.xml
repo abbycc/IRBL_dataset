@@ -1,0 +1,1371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HIVE">
+	<bug fixdate="2014-07-24 01:18:30" id="7475" opendate="2014-07-22 22:06:33" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Beeline requires newline at the end of each query in a file</summary>
+			
+			
+			<description>When using the -f option on beeline its required to have a newline at the end of each query otherwise the connection is closed before the query is run.
+
+
+
+$ cat test.hql
+
+show databases;%
+
+$ beeline -u jdbc:hive2://localhost:10000 --incremental=true -f test.hql
+
+scan complete in 3ms
+
+Connecting to jdbc:hive2://localhost:10000
+
+Connected to: Apache Hive (version 0.13.1)
+
+Driver: Hive JDBC (version 0.13.1)
+
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+
+Beeline version 0.13.1 by Apache Hive
+
+0: jdbc:hive2://localhost:10000&amp;gt; show databases;Closing: 0: jdbc:hive2://localhost:10000
+
+
+</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.beeline.BeeLine.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.TestBeeLineWithArgs.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">10541</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-07-29 19:08:59" id="7434" opendate="2014-07-17 06:47:54" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>beeline should not always enclose the output by default in CSV/TSV mode</summary>
+			
+			
+			<description>When using beeline in CSV/TSV mode (via command !outputformat csv) , the output is always enclosed in single quotes. This is however not the case for Hive CLI, so we need to make this enclose optional.</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.beeline.BeeLine.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.TestBeeLineWithArgs.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.SeparatedValuesOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.BeeLineOpts.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">7390</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-08-12 18:08:52" id="7390" opendate="2014-07-11 12:42:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Make single quote character optional and configurable in BeeLine CSV/TSV output</summary>
+			
+			
+			<description>Currently when either the CSV or TSV output formats are used in beeline each column is wrapped in single quotes. Quote wrapping of columns should be optional and the user should be able to choose the character used to wrap the columns.</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.beeline.BeeLine.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.TestBeeLineWithArgs.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.SeparatedValuesOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.BeeLineOpts.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">7434</link>
+			
+			
+			<link description="is related to" type="Reference">9788</link>
+			
+			
+			<link description="breaks" type="Regression">8544</link>
+			
+			
+			<link description="breaks" type="Regression">8615</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-08-15 18:15:58" id="7620" opendate="2014-08-05 20:10:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive metastore fails to start in secure mode due to &quot;java.lang.NoSuchFieldError: SASL_PROPS&quot; error</summary>
+			
+			
+			<description>When Hive metastore is started in a Hadoop 2.5 cluster, it fails to start with following error
+
+
+
+14/07/31 17:45:58 [main]: ERROR metastore.HiveMetaStore: Metastore Thrift Server threw an exception...
+
+java.lang.NoSuchFieldError: SASL_PROPS
+
+	at org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge20S.getHadoopSaslProperties(HadoopThriftAuthBridge20S.java:126)
+
+	at org.apache.hadoop.hive.metastore.MetaStoreUtils.getMetaStoreSaslProperties(MetaStoreUtils.java:1483)
+
+	at org.apache.hadoop.hive.metastore.HiveMetaStore.startMetaStore(HiveMetaStore.java:5225)
+
+	at org.apache.hadoop.hive.metastore.HiveMetaStore.main(HiveMetaStore.java:5152)
+
+
+
+Changes in HADOOP-10451 to remove SaslRpcServer.SASL_PROPS are causing this error.</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.ShimLoader.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6987</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">8154</link>
+			
+			
+			<link description="relates to" type="Reference">6741</link>
+			
+			
+			<link description="is related to" type="Reference">10451</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-08-18 11:02:21" id="7341" opendate="2014-07-02 22:52:09" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Support for Table replication across HCatalog instances</summary>
+			
+			
+			<description>The HCatClient currently doesn&amp;amp;apos;t provide very much support for replicating HCatTable definitions between 2 HCatalog Server (i.e. Hive metastore) instances. 
+Systems similar to Apache Falcon might find the need to replicate partition data between 2 clusters, and keep the HCatalog metadata in sync between the two. This poses a couple of problems:
+
+The definition of the source table might change (in column schema, I/O formats, record-formats, serde-parameters, etc.) The system will need a way to diff 2 tables and update the target-metastore with the changes. E.g.
+
+
+
+targetTable.resolve( sourceTable, targetTable.diff(sourceTable) );
+
+hcatClient.updateTableSchema(dbName, tableName, targetTable);
+
+
+
+The current HCatClient.addPartitions() API requires that the partition&amp;amp;apos;s schema be derived from the table&amp;amp;apos;s schema, thereby requiring that the table-schema be resolved before partitions with the new schema are added to the table. This is problematic, because it introduces race conditions when 2 partitions with differing column-schemas (e.g. right after a schema change) are copied in parallel. This can be avoided if each HCatAddPartitionDesc kept track of the partition&amp;amp;apos;s schema, in flight.
+The source and target metastores might be running different/incompatible versions of Hive.
+
+The impending patch attempts to address these concerns (with some caveats).
+
+HCatTable now has
+	
+a diff() method, to compare against another HCatTable instance
+a resolve(diff) method to copy over specified table-attributes from another HCatTable
+a serialize/deserialize mechanism (via HCatClient.serializeTable() and HCatClient.deserializeTable()), so that HCatTable instances constructed in other class-loaders may be used for comparison
+
+
+HCatPartition now provides finer-grained control over a Partition&amp;amp;apos;s column-schema, StorageDescriptor settings, etc. This allows partitions to be copied completely from source, with the ability to override specific properties if required (e.g. location).
+HCatClient.updateTableSchema() can now update the entire table-definition, not just the column schema.
+I&amp;amp;apos;ve cleaned up and removed most of the redundancy between the HCatTable, HCatCreateTableDesc and HCatCreateTableDesc.Builder. The prior API failed to separate the table-attributes from the add-table-operation&amp;amp;apos;s attributes. By providing fluent-interfaces in HCatTable, and composing an HCatTable instance in HCatCreateTableDesc, the interfaces are cleaner(ish). The old setters are deprecated, in favour of those in HCatTable. Likewise, HCatPartition and HCatAddPartitionDesc.
+
+I&amp;amp;apos;ll post a patch for trunk shortly.</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.HCatPartition.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.TestHCatClient.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.HCatClientHMSImpl.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.HCatAddPartitionDesc.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.HCatCreateTableDesc.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.HCatTable.java</file>
+			
+			
+			<file type="M">org.apache.hive.hcatalog.api.HCatClient.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">4274</link>
+			
+			
+			<link description="is related to" type="Reference">7770</link>
+			
+			
+			<link description="is related to" type="Reference">6378</link>
+			
+			
+			<link description="is depended upon by" type="dependent">7576</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-02 06:21:21" id="7306" opendate="2014-06-27 18:03:14" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Ineffective null check in GenericUDAFAverage#GenericUDAFAverageEvaluatorDouble#getNextResult()</summary>
+			
+			
+			<description>
+
+
+            Object[] o = ss.intermediateVals.remove(0);
+
+            Double d = o == null ? 0.0 : (Double) o[0];
+
+            r = r == null ? null : r - d;
+
+            cnt = cnt - ((Long) o[1]);
+
+
+
+Array o is accessed without null check in the last line above.</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.udf.generic.GenericUDAFAverage.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">7539</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-09 09:07:13" id="2390" opendate="2011-08-18 00:50:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Add UNIONTYPE serialization support to LazyBinarySerDe</summary>
+			
+			
+			<description>When the union type was introduced, full support for it wasn&amp;amp;apos;t provided.  For instance, when working with a union that gets passed to LazyBinarySerde: 
+
+Caused by: java.lang.RuntimeException: Unrecognized type: UNION
+
+	at org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe.serialize(LazyBinarySerDe.java:468)
+
+	at org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe.serializeStruct(LazyBinarySerDe.java:230)
+
+	at org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe.serialize(LazyBinarySerDe.java:184)
+
+
+</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazybinary.LazyBinaryUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazybinary.objectinspector.LazyBinaryObjectInspectorFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazybinary.LazyBinaryFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazybinary.LazyBinarySerDe.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">7936</link>
+			
+			
+			<link description="is related to" type="Reference">2508</link>
+			
+			
+			<link description="is related to" type="Reference">7936</link>
+			
+			
+			<link description="is related to" type="Reference">537</link>
+			
+			
+			<link description="is related to" type="Reference">2517</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-16 08:54:37" id="8030" opendate="2014-09-09 11:47:53" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NullPointerException on getSchemas</summary>
+			
+			
+			<description>java.lang.NullPointerException
+	at java.util.ArrayList.&amp;lt;init&amp;gt;(ArrayList.java:164)
+	at org.apache.hadoop.hive.jdbc.HiveMetaDataResultSet.&amp;lt;init&amp;gt;(HiveMetaDataResultSet.java:32)
+	at org.apache.hadoop.hive.jdbc.HiveDatabaseMetaData$3.&amp;lt;init&amp;gt;(HiveDatabaseMetaData.java:482)
+	at org.apache.hadoop.hive.jdbc.HiveDatabaseMetaData.getSchemas(HiveDatabaseMetaData.java:481)
+	at org.apache.hadoop.hive.jdbc.HiveDatabaseMetaData.getSchemas(HiveDatabaseMetaData.java:476)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.pentaho.hadoop.shim.common.DriverProxyInvocationChain$DatabaseMetaDataInvocationHandler.invoke(DriverProxyInvocationChain.java:368)
+	at com.sun.proxy.$Proxy20.getSchemas(Unknown Source)
+	at org.pentaho.di.core.database.Database.getSchemas(Database.java:3857)
+	at org.pentaho.di.ui.trans.steps.tableoutput.TableOutputDialog.getSchemaNames(TableOutputDialog.java:1036)
+	at org.pentaho.di.ui.trans.steps.tableoutput.TableOutputDialog.access$2400(TableOutputDialog.java:94)
+	at org.pentaho.di.ui.trans.steps.tableoutput.TableOutputDialog$24.widgetSelected(TableOutputDialog.java:863)
+	at org.eclipse.swt.widgets.TypedListener.handleEvent(Unknown Source)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(Unknown Source)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Unknown Source)
+	at org.eclipse.swt.widgets.Display.runDeferredEvents(Unknown Source)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Unknown Source)
+	at org.pentaho.di.ui.trans.steps.tableoutput.TableOutputDialog.open(TableOutputDialog.java:884)
+	at org.pentaho.di.ui.spoon.delegates.SpoonStepsDelegate.editStep(SpoonStepsDelegate.java:124)
+	at org.pentaho.di.ui.spoon.Spoon.editStep(Spoon.java:8648)
+	at org.pentaho.di.ui.spoon.trans.TransGraph.editStep(TransGraph.java:3020)
+	at org.pentaho.di.ui.spoon.trans.TransGraph.mouseDoubleClick(TransGraph.java:737)
+	at org.eclipse.swt.widgets.TypedListener.handleEvent(Unknown Source)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(Unknown Source)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Unknown Source)
+	at org.eclipse.swt.widgets.Display.runDeferredEvents(Unknown Source)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Unknown Source)
+	at org.pentaho.di.ui.spoon.Spoon.readAndDispatch(Spoon.java:1297)
+	at org.pentaho.di.ui.spoon.Spoon.waitForDispose(Spoon.java:7801)
+	at org.pentaho.di.ui.spoon.Spoon.start(Spoon.java:9130)
+	at org.pentaho.di.ui.spoon.Spoon.main(Spoon.java:638)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:606)
+	at org.pentaho.commons.launcher.Launcher.main(Launcher.java:151)</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.TestJdbcDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.HiveMetaDataResultSet.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2069</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-18 03:19:59" id="8154" opendate="2014-09-17 01:23:31" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HadoopThriftAuthBridge20S.getHadoopSaslProperties is incompatible with Hadoop 2.4.1 and later</summary>
+			
+			
+			<description>Enabled Kerberos in Hadoop 2.4.1 and Hive 0.13.1, with all kerberos properties and principals/keytabs configured correctly. Hadoop cluster is healthy but Hive Server2 is not able to start, due to following error in hive.log:
+2014-09-16 13:52:32,964 ERROR thrift.ThriftCLIService (ThriftBinaryCLIService.java:run(93)) - Error: 
+java.lang.IllegalArgumentException: Unknown auth type: null Allowed values are: [auth-int, auth-conf, auth]
+	at org.apache.hive.service.auth.SaslQOP.fromString(SaslQOP.java:56)
+	at org.apache.hive.service.auth.HiveAuthFactory.getSaslProperties(HiveAuthFactory.java:118)
+	at org.apache.hive.service.auth.HiveAuthFactory.getAuthTransFactory(HiveAuthFactory.java:133)
+	at org.apache.hive.service.cli.thrift.ThriftBinaryCLIService.run(ThriftBinaryCLIService.java:43)
+	at java.lang.Thread.run(Thread.java:853)</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion>0.14.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.shims.ShimLoader.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6741</link>
+			
+			
+			<link description="duplicates" type="Duplicate">7620</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-10-22 14:39:57" id="8541" opendate="2014-10-21 17:51:49" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Decimal values contains extra trailing zeros when vectorization is on</summary>
+			
+			
+			<description>The fix done on HIVE-7373 preserves the trailing zeroes from decimal values
+as they are read from the table files, but when vectorization is on, these
+values contain extra tralinig zeroes up to what the scale allows when aggregation
+expressions are used.
+Here&amp;amp;apos;s an example (data gotten from vector_decimal_aggregate.q):
+
+hive&amp;gt; SET hive.vectorized.execution.enabled=false;
+
+hive&amp;gt; SELECT cint, MAX(cdecimal2) max FROM decimal_vgby GROUP BY cint HAVING COUNT(*) &amp;gt; 1;
+
++------------+---------------------+--+
+
+|    cint    |         max         |
+
++------------+---------------------+--+
+
+| NULL       | 11160.715384615385  |
+
+| -3728      | 6984454.211097692   |
+
+| -563       | -617.5607769230769  |
+
+| 762        | 6984454.211097692   |
+
+| 6981       | 6984454.211097692   |
+
+| 253665376  | 11697.969230769231  |
+
+| 528534767  | 6984454.211097692   |
+
+| 626923679  | 11645.746153846154  |
+
++------------+---------------------+--+
+
+
+
+hive&amp;gt; SET hive.vectorized.execution.enabled=true;
+
+hive&amp;gt; SELECT cint, MAX(cdecimal2) max FROM decimal_vgby GROUP BY cint HAVING COUNT(*) &amp;gt; 1;
+
++------------+-------------------------+--+
+
+|    cint    |          max2           |
+
++------------+-------------------------+--+
+
+| NULL       | 11160.71538461538500    |
+
+| -3728      | 6984454.21109769200000  |
+
+| -563       | -617.56077692307690     |
+
+| 762        | 6984454.21109769200000  |
+
+| 6981       | 6984454.211097692       |
+
+| 253665376  | 11697.96923076923100    |
+
+| 528534767  | 6984454.21109769200000  |
+
+| 626923679  | 11645.74615384615400    |
+
++------------+-------------------------+--+
+
+
+
+Hive should not add trailing zeroes when aggregation functions are used.</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.TestVectorFilterExpressions.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.VectorGroupKeyHelper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpressionWriter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.VectorExpressionWriterFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.RecordReaderImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.util.FakeVectorRowBatchFromObjectIterables.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.TestVectorArithmeticExpressions.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.CastDecimalToLong.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.CastDecimalToDecimal.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.DecimalColumnInList.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.VectorizationContext.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.TestDecimalUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.CastDecimalToBoolean.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.aggregates.VectorUDAFAvgDecimal.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.aggregates.VectorUDAFSumDecimal.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.FuncDoubleToDecimal.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.CastDecimalToString.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.CastDecimalToTimestamp.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.FuncRoundWithNumDigitsDecimalToDecimal.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.FuncLongToDecimal.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.CastDecimalToDouble.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.DecimalUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.NullUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.TestVectorTypeCasts.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.udf.VectorUDFAdaptor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.CastLongToDecimal.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.TestVectorExpressionWriters.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.VectorizedBatchUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.io.HiveDecimalWritable.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.ConstantVectorExpression.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.common.type.HiveDecimal.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.CastStringToDecimal.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.TestInputOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.DecimalColumnVector.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.IDecimalInExpr.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.TestVectorGroupByOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatchCtx.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.CastTimestampToDecimal.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.util.VectorizedRowGroupGenUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.FuncDecimalToLong.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.CastDoubleToDecimal.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.VectorHashKeyWrapper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.VectorHashKeyWrapperBatch.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.VectorColumnAssignFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.FilterDecimalColumnInList.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.vector.expressions.TestConstantVectorExpression.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">8461</link>
+			
+			
+			<link description="is broken by" type="Regression">7373</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-10-26 12:30:25" id="8606" opendate="2014-10-26 10:45:52" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[hs2] Do not unnecessarily call setPermission on staging directories</summary>
+			
+			
+			<description>HS2 has made setPermission mandatory within its CLIService#setupStagingDir method as a result of HIVE-6602.
+This causes HS2 to fail to start if the owner of the staging directory is not the same user as it, even though the directory is already 777. This is because only owners and superusers of a directory can change its permission, not group or others.
+Failure appears as:
+
+
+
+Caused by: org.apache.hive.service.ServiceException: Error setting stage directories 
+
+at org.apache.hive.service.cli.CLIService.start(CLIService.java:132) 
+
+at org.apache.hive.service.CompositeService.start(CompositeService.java:70) 
+
+... 8 more 
+
+Caused by: org.apache.hadoop.security.AccessControlException: Permission denied 
+
+
+
+We should only call the setPermission if it is unsatisfactory.</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="D">org.apache.hadoop.hive.ql.TestUtilitiesDfs.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.TestUtilities.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.HiveSessionBase.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.common.ServerUtils.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.TestJdbcWithMiniHS2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Utilities.java</file>
+			
+			
+			<file type="D">org.apache.hive.service.cli.TestScratchDir.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.session.SessionState.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.CLIService.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.tez.TezSessionState.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.SessionManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Context.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.TestJdbcWithMiniMr.java</file>
+			
+			
+			<file type="M">org.apache.hive.service.cli.session.HiveSessionImpl.java</file>
+			
+			
+			<file type="M">org.apache.hive.jdbc.miniHS2.MiniHS2.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6847</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-12-17 06:34:28" id="9107" opendate="2014-12-15 21:17:12" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Non-lowercase field names in structs causes NullPointerException</summary>
+			
+			
+			<description>If an HQL query references a struct field with mixed or upper case, Hive throws a NullPointerException instead of giving a better error message or simply lower-casing the name.
+For example, if I have a struct in column mystruct with a field named myfield, a query like
+select mystruct.MyField from tablename;
+passes the local initialize (it submits an M-R job) but the remote initialize jobs throw NullPointerExceptions.  The exception is on line 61 of org.apache.hadoop.hive.ql.exec.ExprNodeFieldEvaluator, which is right after the field name is extracted and not forced to be lower-case.</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.OrcStruct.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">8870</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-12-24 22:40:21" id="9199" opendate="2014-12-23 18:45:44" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Excessive exclusive lock used in some DDLs with DummyTxnManager</summary>
+			
+			
+			<description>In DummyTxnManager, the lockMode for a WriteEntity (e.g. database, table) is determined by &quot;complete&quot; instead of its writeType. But since DDL output WriteEntity is usually complete, some DDL operations might be given exclusive locks which are actually not needed, which causes unnecessary locking contention. For example, in createTable, DummyTxnManager suggests an exclusive lock to table database writeentity since it is complete.</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.lockmgr.DummyTxnManager.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">9203</link>
+			
+			
+			<link description="duplicates" type="Duplicate">9546</link>
+			
+			
+			<link description="duplicates" type="Duplicate">8192</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-02-18 18:13:53" id="9546" opendate="2015-02-02 17:28:21" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Create table taking substantially longer time when other select queries are run in parallel.</summary>
+			
+			
+			<description>Create table taking substantially longer time when other select queries are run in parallel.
+We were able to reproduce the issue using beeline in two sessions.
+Beeline Shell 1: 
+ a) create table with no other queries running on hive ( took approximately 0.313 seconds)
+ b) Insert Data into the table
+ c) Run a select count query on the above table
+Beeline Shell 2: 
+ a) create table while step c) is running in the Beeline Shell 1. (took approximately 60.431 seconds)</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.lockmgr.DummyTxnManager.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">9199</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-04 00:13:52" id="10541" opendate="2015-04-29 21:20:43" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Beeline requires newline at the end of each query in a file</summary>
+			
+			
+			<description>Beeline requires newline at the end of each query in a file.</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion>1.3.0, 2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.beeline.BeeLine.java</file>
+			
+			
+			<file type="M">org.apache.hive.beeline.TestBeeLineWithArgs.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">7475</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-20 16:01:36" id="10709" opendate="2015-05-14 16:25:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Update Avro version to 1.7.7</summary>
+			
+			
+			<description>We should update the avro version to 1.7.7 to consumer some of the nicer compatibility features.</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion>1.3.0, 2.0.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">8690</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-26 22:24:34" id="8690" opendate="2014-11-01 00:39:05" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Move Avro dependency to 1.7.7</summary>
+			
+			
+			<description>Move Avro dependency from 1.7.5 to current release 1.7.7.</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">10709</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-22 16:52:51" id="13093" opendate="2016-02-19 07:05:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>hive metastore does not exit on start failure</summary>
+			
+			
+			<description>If metastore startup fails for some reason, such as not being able to access the database, it fails to exit. Instead the process continues to be up in a bad state.
+This is happening because of a non daemon thread.</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion>1.3.0, 2.1.0, 2.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is broken by" type="Regression">6319</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-10-21 00:48:43" id="7483" opendate="2014-07-23 03:02:34" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>hive insert overwrite table select from self dead lock</summary>
+			
+			
+			<description>CREATE TABLE test(
+  id int, 
+  msg string)
+PARTITIONED BY ( 
+  continent string, 
+  country string)
+CLUSTERED BY (id) 
+INTO 10 BUCKETS
+STORED AS ORC;
+alter table test add partition(continent=&amp;amp;apos;Asia&amp;amp;apos;,country=&amp;amp;apos;India&amp;amp;apos;);
+in hive-site.xml:
+hive.txn.manager=org.apache.hadoop.hive.ql.lockmgr.DbTxnManager;
+hive.support.concurrency=true;
+in hive shell:
+set hive.input.format=org.apache.hadoop.hive.ql.io.HiveInputFormat;
+insert into test table some records first.
+then execute sql:
+insert overwrite table test partition(continent=&amp;amp;apos;Asia&amp;amp;apos;,country=&amp;amp;apos;India&amp;amp;apos;) select id,msg from test;
+the log stop at :
+INFO log.PerfLogger: &amp;lt;PERFLOG method=acquireReadWriteLocks from=org.apache.hadoop.hive.ql.Driver&amp;gt;
+i think it has dead lock when insert overwrite table from it self.</description>
+			
+			
+			<version>0.13.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.lockmgr.DbLockManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.common.JavaUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.TestTxnCommands2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.txn.TxnHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">10483</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

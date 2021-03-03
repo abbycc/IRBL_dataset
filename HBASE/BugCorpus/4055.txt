@@ -1,0 +1,1 @@
+client region locat cach redund htabledescriptor apo examin heap map task mapreduc job write directli hbase notic hregionloc instanc 90 mb 700 mb heap map task cach locat 15k region number region cluster continu grow continu grow 80 mb 15k htabledescriptor instanc 5 tabl amp apo write wast great deal memori separ copi tabl descriptor region

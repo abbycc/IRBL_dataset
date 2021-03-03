@@ -1,0 +1,1 @@
+testreplicationadmin clean minizkclust resourc org apach hadoop hbase client replic testreplicationadmin unit test beforeclass compon start minizkclust afterclass compon shut minizkclust clean resourc minizkclust jenkin machin continu run test resourc leak affect test solut trivial

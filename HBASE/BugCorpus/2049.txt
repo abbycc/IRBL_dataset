@@ -1,0 +1,1 @@
+cleanup hlog binari log output hlog log binari region

@@ -1,0 +1,1 @@
+leak refer storefil reader hbase 13082 observ product region server di huge number hfile region region server run version hbase 13082 doc expect found scanner close scanner close refer decrement lead issu huge number store file final find selectscannersfrom discard scanner close attach patch avoid issu file log final move archiv part region close oper solv leak dire

@@ -1,0 +1,1 @@
+avoid npe start stochasticloadbalanc master start initi stochasticloadbalanc balanc setclusterstatu getclusterstatu balanc setmasterservic setclusterstatu setmasterservic setclusterstatu method master servic initi throw npe int tablescount isbyt servic gettabledescriptor getal size 1 set isbyt ture

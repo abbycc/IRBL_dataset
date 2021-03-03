@@ -1,0 +1,1 @@
+fix hadoop 3 0 profil compil dhadoop profil 3 0 build fail due code deprec hadoop2 remov hadoop3

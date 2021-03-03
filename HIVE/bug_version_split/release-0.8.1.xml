@@ -1,0 +1,1183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HIVE">
+	<bug fixdate="2012-04-03 10:48:06" id="2913" opendate="2012-03-30 09:38:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BlockMergeTask Doesn&amp;apos;t Honor Job Configuration Properties when used directly</summary>
+			
+			
+			<description>BlockMergeTask has a main() and when used directly (instead of say partition concatenate feature), the -jobconf arguments are not honored. This is not something most people directly use.
+Usage:
+BlockMergeTask -input &amp;lt;colon seperated input paths&amp;gt;  -outputDir outputDir [-jobconf k1=v1 [-jobconf k2=v2] ...] 
+To reproduce:
+Run BlockMergeTask with say -jobconf mapred.job.name=test and launched job will have a different name.</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion>0.9.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.rcfile.merge.BlockMergeTask.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-05-18 02:54:47" id="2963" opendate="2012-04-19 01:32:29" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>metastore delegation token is not getting used by hive commandline</summary>
+			
+			
+			<description>When metastore delegation tokens are used to run hive (or hcat) commands, the delegation token does not end up getting used.
+This is because new Hive object is not created with value of hive.metastore.token.signature in its conf. This config parameter is missing in the list of HiveConf variables whose change results in metastore recreation.</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2918</link>
+			
+			
+			<link description="relates to" type="Reference">13363</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-05-31 16:12:10" id="3057" opendate="2012-05-26 00:17:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>metastore.HiveMetaStore$HMSHandler should set the thread local raw store to null in shutdown()</summary>
+			
+			
+			<description>The shutdown() function of metastore.HiveMetaStore$HMSHandler does not set the thread local RawStore variable (in threadLocalMS) to null. Subsequent getMS() calls may get the wrong RawStore object.</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion>0.9.1, 0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">3067</link>
+			
+			
+			<link description="is related to" type="Reference">2184</link>
+			
+			
+			<link description="is related to" type="Reference">1195</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-06-22 04:27:09" id="2955" opendate="2012-04-17 05:31:41" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Queries consists of metadata-only-query returns always empty value</summary>
+			
+			
+			<description>For partitioned table, simple query on partition column returns always null or empty value, for example,
+
+
+
+create table emppart(empno int, ename string) partitioned by (deptno int);
+
+.. load partitions..
+
+
+
+select distinct deptno from emppart; // empty
+
+select min(deptno), max(deptno) from emppart;  // NULL and NULL
+
+
+</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.physical.MetadataOnlyOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecDriver.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">4386</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">3108</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">4386</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-21 03:39:48" id="3070" opendate="2012-05-31 09:45:43" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Filter on outer join condition removed while merging join tree</summary>
+			
+			
+			<description>should the result of query A: 
+select s.aa, s.bb, c.key keyc from (select a.key aa, b.key bb from src a left outer join src b on a.key=b.key) s left outer join src c on s.bb=c.key and s.bb&amp;lt;10 where s.aa&amp;lt;20;
+be the same as query B:
+select a.key keya, b.key keyb, c.key keyc from src a left outer join src b on a.key=b.key left outer join src c on b.key=c.key and b.key&amp;lt;10 where a.key&amp;lt;20;
+?
+Currently, the result is different, query B gets wrong result!
+In SemanticAnalyzer.java, mergeJoins():
+ArrayList&amp;lt;ArrayList&amp;lt;ASTNode&amp;gt;&amp;gt; filters = target.getFilters();
+for (int i = 0; i &amp;lt; nodeRightAliases.length; i++) 
+{
+
+  filters.add(node.getFilters().get(i + 1));
+
+}
+
+filters in node.getFilters().get(0) are lost.</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-09-13 17:51:11" id="2957" opendate="2012-04-17 14:25:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive JDBC doesn&amp;apos;t support TIMESTAMP column</summary>
+			
+			
+			<description>Steps to replicate:
+1. Create a table with at least one column of type TIMESTAMP
+2. Do a DatabaseMetaData.getColumns () such that this TIMESTAMP column is part of the resultset.
+3. When you iterate over the TIMESTAMP column it would fail, throwing the below exception:
+Exception in thread &quot;main&quot; java.sql.SQLException: Unrecognized column type: timestamp
+	at org.apache.hadoop.hive.jdbc.Utils.hiveTypeToSqlType(Utils.java:56)
+	at org.apache.hadoop.hive.jdbc.JdbcColumn.getSqlType(JdbcColumn.java:62)
+	at org.apache.hadoop.hive.jdbc.HiveDatabaseMetaData$2.next(HiveDatabaseMetaData.java:244)</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.Utils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.TestJdbcDriver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.JdbcColumn.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.HiveResultSetMetaData.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.HiveBaseResultSet.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.jdbc.HivePreparedStatement.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">11748</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-01-19 03:54:46" id="3699" opendate="2012-11-10 09:45:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Multiple insert overwrite into multiple tables query stores same results in all tables</summary>
+			
+			
+			<description>(Note: This might be related to HIVE-2750)
+I am doing a query with multiple INSERT OVERWRITE to multiple tables in order to scan the dataset only 1 time, and i end up having all these tables with the same content ! It seems the GROUP BY query that returns results is overwriting all the temp tables.
+Weird enough, if i had further GROUP BY queries into additional temp tables, grouped by a different field, then all temp tables, even the ones that would have been wrong content are all correctly populated.
+This is the misbehaving query:
+    FROM nikon
+    INSERT OVERWRITE TABLE e1
+    SELECT qs_cs_s_aid AS Emplacements, COUNT AS Impressions
+    WHERE qs_cs_s_cat=&amp;amp;apos;PRINT&amp;amp;apos; GROUP BY qs_cs_s_aid
+    INSERT OVERWRITE TABLE e2
+    SELECT qs_cs_s_aid AS Emplacements, COUNT AS Vues
+    WHERE qs_cs_s_cat=&amp;amp;apos;VIEW&amp;amp;apos; GROUP BY qs_cs_s_aid
+    ;
+It launches only one MR job and here are the results. Why does table &amp;amp;apos;e1&amp;amp;apos; contains results from table &amp;amp;apos;e2&amp;amp;apos; ?! Table &amp;amp;apos;e1&amp;amp;apos; should have been empty (see individual SELECTs further below)
+    hive&amp;gt; SELECT * from e1;
+    OK
+    NULL    2
+    1627575 25
+    1627576 70
+    1690950 22
+    1690952 42
+    1696705 199
+    1696706 66
+    1696730 229
+    1696759 85
+    1696893 218
+    Time taken: 0.229 seconds
+    hive&amp;gt; SELECT * from e2;
+    OK
+    NULL    2
+    1627575 25
+    1627576 70
+    1690950 22
+    1690952 42
+    1696705 199
+    1696706 66
+    1696730 229
+    1696759 85
+    1696893 218
+    Time taken: 0.11 seconds
+Here is are the result to the indiviual queries (only the second query returns a result set):
+    hive&amp;gt; SELECT qs_cs_s_aid AS Emplacements, COUNT AS Impressions FROM nikon
+    WHERE qs_cs_s_cat=&amp;amp;apos;PRINT&amp;amp;apos; GROUP BY qs_cs_s_aid;
+    (...)
+    OK
+          &amp;lt;- There are no results, this is normal
+    Time taken: 41.471 seconds
+    hive&amp;gt; SELECT qs_cs_s_aid AS Emplacements, COUNT AS Vues FROM nikon
+    WHERE qs_cs_s_cat=&amp;amp;apos;VIEW&amp;amp;apos; GROUP BY qs_cs_s_aid;
+    (...)
+    OK
+    NULL  2
+    1627575 25
+    1627576 70
+    1690950 22
+    1690952 42
+    1696705 199
+    1696706 66
+    1696730 229
+    1696759 85
+    1696893 218
+    Time taken: 39.607 seconds
+</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion>0.11.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.ppd.OpProcFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">4173</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-04-29 22:10:19" id="3682" opendate="2012-11-07 07:50:25" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>when output hive table to file,users should could have a separator of their own choice</summary>
+			
+			
+			<description>By default,when output hive table to file ,columns of the Hive table are separated by ^A character (that is \001).
+But indeed users should have the right to set a seperator of their own choice.
+Usage Example:
+create table for_test (key string, value string);
+load data local inpath &amp;amp;apos;./in1.txt&amp;amp;apos; into table for_test
+select * from for_test;
+UT-01default separator is \001 line separator is \n
+insert overwrite local directory &amp;amp;apos;./test-01&amp;amp;apos; 
+select * from src ;
+create table array_table (a array&amp;lt;string&amp;gt;, b array&amp;lt;string&amp;gt;)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY &amp;amp;apos;\t&amp;amp;apos;
+COLLECTION ITEMS TERMINATED BY &amp;amp;apos;,&amp;amp;apos;;
+load data local inpath &quot;../hive/examples/files/arraytest.txt&quot; overwrite into table table2;
+CREATE TABLE map_table (foo STRING , bar MAP&amp;lt;STRING, STRING&amp;gt;)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY &amp;amp;apos;\t&amp;amp;apos;
+COLLECTION ITEMS TERMINATED BY &amp;amp;apos;,&amp;amp;apos;
+MAP KEYS TERMINATED BY &amp;amp;apos;:&amp;amp;apos;
+STORED AS TEXTFILE;
+UT-02defined field separator as &amp;amp;apos;:&amp;amp;apos;
+insert overwrite local directory &amp;amp;apos;./test-02&amp;amp;apos; 
+row format delimited 
+FIELDS TERMINATED BY &amp;amp;apos;:&amp;amp;apos; 
+select * from src ;
+UT-03: line separator DO NOT ALLOWED to define as other separator 
+insert overwrite local directory &amp;amp;apos;./test-03&amp;amp;apos; 
+row format delimited 
+FIELDS TERMINATED BY &amp;amp;apos;:&amp;amp;apos; 
+select * from src ;
+UT-04: define map separators 
+insert overwrite local directory &amp;amp;apos;./test-04&amp;amp;apos; 
+row format delimited 
+FIELDS TERMINATED BY &amp;amp;apos;\t&amp;amp;apos;
+COLLECTION ITEMS TERMINATED BY &amp;amp;apos;,&amp;amp;apos;
+MAP KEYS TERMINATED BY &amp;amp;apos;:&amp;amp;apos;
+select * from src;</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion>0.11.0</fixedVersion>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.PlanUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.QB.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">634</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">268</link>
+			
+			
+			<link description="relates to" type="Reference">4346</link>
+			
+			
+			<link description="is related to" type="Reference">5672</link>
+			
+			
+			<link description="is related to" type="Reference">6410</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-06-07 03:37:18" id="268" opendate="2009-02-03 19:43:26" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&quot;Insert Overwrite Directory&quot; to accept configurable table row format</summary>
+			
+			
+			<description>There is no way for the users to control the file format when they are outputting the result into a directory.
+We should allow:
+
+INSERT OVERWRITE DIRECTORY &quot;/user/zshao/result&quot;
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY &amp;amp;apos;9&amp;amp;apos;
+SELECT tablea.* from tablea;
+
+</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.PlanUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.QB.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">3682</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">634</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-07-30 17:33:32" id="2702" opendate="2012-01-10 07:18:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Enhance listPartitionsByFilter to add support for integral types both for equality and non-equality</summary>
+			
+			
+			<description>listPartitionsByFilter supports only non-string partitions. This is because its explicitly specified in generateJDOFilterOverPartitions in ExpressionTree.java. 
+//Can only support partitions whose types are string
+      if( ! table.getPartitionKeys().get(partitionColumnIndex).
+          getType().equals(org.apache.hadoop.hive.serde.Constants.STRING_TYPE_NAME) ) 
+{
+
+        throw new MetaException
+
+        (&quot;Filtering is supported only on partition keys of type string&quot;);
+
+      }</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion>0.12.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.ppr.PartitionPruner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.TestHiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Utilities.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.parser.ExpressionTree.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is blocked by" type="Blocker">4929</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">7164</link>
+			
+			
+			<link description="relates to" type="Reference">347</link>
+			
+			
+			<link description="relates to" type="Reference">23</link>
+			
+			
+			<link description="relates to" type="Reference">4888</link>
+			
+			
+			<link description="is related to" type="Reference">2048</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-09-17 07:37:37" id="4173" opendate="2013-03-14 08:16:45" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hive Ignoring where clause for multitable insert</summary>
+			
+			
+			<description>Hive is ignoring Filter conditions given at Multi Insert select statement when  Filtering given on Source Query..
+To highlight this issue, please see below example with where clause (status!=&amp;amp;apos;C&amp;amp;apos;) from employee12 table causing issue and due to which insert filters (batch_id=&amp;amp;apos;12 and batch_id!=&amp;amp;apos;12&amp;amp;apos; )not working and dumping all the data coming from source to both the tables.
+I have checked the hive execution plan, and didn&amp;amp;apos;t find Filter predicates under for filtering record per insert statements
+from 
+(from employee12
+select * 
+where status!=&amp;amp;apos;C&amp;amp;apos;) t
+insert into table employee1
+select 
+status,
+field1,
+&amp;amp;apos;T&amp;amp;apos; as field2,
+&amp;amp;apos;P&amp;amp;apos; as field3,
+&amp;amp;apos;C&amp;amp;apos; as field4
+where batch_id=&amp;amp;apos;12&amp;amp;apos;
+insert into table employee2
+select
+status,
+field1,
+&amp;amp;apos;D&amp;amp;apos; as field2, 
+&amp;amp;apos;P&amp;amp;apos; as field3,
+&amp;amp;apos;C&amp;amp;apos; as field4
+where batch_id!=&amp;amp;apos;12&amp;amp;apos;;
+It is working fine with single insert. Hive generating plan properly.. 
+I am able to reproduce this issue with 8.1 and 9.0 version of Hive.
+</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.ppd.OpProcFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">3699</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-01-05 13:01:32" id="4386" opendate="2013-04-19 19:43:01" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>max() and min() return NULL on partition column; distinct() returns nothing</summary>
+			
+			
+			<description>partitioned_table is partitioned on year, month, day.
+&amp;gt; select max(day) from partitioned_table where year=2013 and month=4;
+spins up zero mappers, one reducer, and returns NULL.  Same for
+&amp;gt; select min(day) from ...
+&amp;gt; select distinct(day) from... returns nothing at all.
+Using an explicit intermediate table does work:
+&amp;gt; create table foo_max as select day from partitioned_table where year=2013 and month=4;  
+&amp;gt; select max(day) from foo_max; drop table foo_max;
+Several map-reduce jobs later, the correct answer is given.</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.physical.MetadataOnlyOptimizer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ExecDriver.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2955</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">2955</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-01-14 07:43:25" id="2939" opendate="2012-04-10 05:51:04" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>LazyArray.getList changes array it previously returned </summary>
+			
+			
+			<description>Simple query like:
+SELECT a, e
+FROM ikabiljo_test_string_array
+LATERAL VIEW EXPLODE(a) x1 AS e
+(table contains one column - ARRAY&amp;lt;STRING&amp;gt; - and has one row - [b,c,a] )
+fails with ConcurrentModificationException, since LazyArray.getList changes the cached array it returns.
+LazyArray.getList can easily:
+
+return cached array if present, without clearing and refiling. Hive is already not going to work properly if you change input parameters in an UDF. If that doesn&amp;amp;apos;t sound good - it can return Collections.unmodifiableList
+or just not cache anything
+
+Same is true for LazyMap.getMap</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion>0.10.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyMap.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.serde2.lazy.LazyArray.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2540</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-02 04:49:31" id="3589" opendate="2012-10-17 03:18:07" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>describe/show partition/show tblproperties command should accept database name</summary>
+			
+			
+			<description>describe command not giving the details when called as describe dbname.tablename.
+Throwing the error &quot;Table dbname not found&quot;.
+Ex: hive -e &quot;describe masterdb.table1&quot; will throw error
+&quot;Table masterdb not found&quot;</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.MetaStoreUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.DDLTask.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.AlterTableSimpleDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.AuthorizationUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.AlterTableAlterPartDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.ShowColumnsDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.authorization.TestHiveAuthorizationTaskFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveAlterHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.authorization.HiveAuthorizationTaskFactoryImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.ShowGrantDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.authorization.TestPrivilegesV2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.RenamePartitionDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.TestHive.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.TestQBCompact.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.hooks.CheckColumnAccessHook.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.TestHiveAuthorizerCheckInvocation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.Warehouse.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.Driver.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.index.RewriteGBUsingIndex.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.PrivilegeObjectDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.AlterIndexDesc.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.IndexUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.authorization.TestPrivilegesV1.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.HiveV1Authorizer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.authorization.PrivilegesTestBase.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Utilities.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.HiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.ColumnAccessInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.IndexUpdater.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.security.authorization.plugin.HivePrivilegeObject.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.ObjectStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="Is contained by" type="Container">4064</link>
+			
+			
+			<link description="duplicates" type="Duplicate">4064</link>
+			
+			
+			<link description="relates to" type="Reference">1977</link>
+			
+			
+			<link description="relates to" type="Reference">7678</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2014-11-28 18:55:23" id="7164" opendate="2014-06-02 07:35:53" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Support non-string partition types in HCatalog</summary>
+			
+			
+			<description>Currently querying hive tables with non-string partition columns using HCat  gives us the following error. 
+Error: Filtering is supported only on partition keys of type string
+Related discussion here : https://www.mail-archive.com/dev@hive.apache.org/msg18011.html</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.ppr.PartitionPruner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.TestHiveMetaStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Utilities.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.parser.ExpressionTree.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">2702</link>
+			
+			
+			<link description="is related to" type="Reference">5545</link>
+			
+			
+			<link description="supercedes" type="Supercedes">23</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-26 09:13:34" id="3335" opendate="2012-08-06 01:07:21" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Thousand of CLOSE_WAIT socket when we using SymbolicInputFormat</summary>
+			
+			
+			<description>Procedure for reproduction:
+ 1. Set up hadoop
+ 2. Prepare data file and link.txt:
+    data:
+      $ hadoop fs -cat /path/to/data/2012-07-01/20120701.csv
+      1, 20120701 00:00:00
+      2, 20120701 00:00:01
+      3, 20120701 01:12:45
+    link.txt
+      $ cat link.txt
+       /path/to/data/2012-07-01//*
+ 2. On hive, create table like below:
+   CREATE TABLE user_logs(id INT, created_at STRING)
+   row format delimited fields terminated by &amp;amp;apos;,&amp;amp;apos; lines terminated by &amp;amp;apos;\n&amp;amp;apos;
+   stored as inputformat &amp;amp;apos;org.apache.hadoop.hive.ql.io.SymlinkTextInputFormat&amp;amp;apos;
+   outputformat &amp;amp;apos;org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat&amp;amp;apos;;
+ 3. Put link.txt to /user/hive/warehouse/user_logs
+   $ sudo -u hdfs hadoop fs -put link.txt  /user/hive/warehouse/user_logs
+ 4. Open another session(A session), and watch socket,
+   $ netstat -a | grep CLOSE_WAIT
+    tcp        1      0 localhost:48121             localhost:50010
+         CLOSE_WAIT
+    tcp        1      0 localhost:48124             localhost:50010
+         CLOSE_WAIT
+   $
+ 5. Return to hive session, execute this,
+   $ select * from user_logs;
+ 6. Return to A session, watch socket again,
+   $ netstat -a | grep CLOSE_WAIT
+   tcp        1      0 localhost:48121             localhost:50010
+        CLOSE_WAIT
+   tcp        1      0 localhost:48124             localhost:50010
+        CLOSE_WAIT
+   tcp        1      0 localhost:48166             localhost:50010
+        CLOSE_WAIT
+ If you makes any partitions, you&amp;amp;apos;ll watch unclosed socket whose count
+equals partitions by once.
+I think that this problem maybe is caused by this point:
+  At https://github.com/apache/hive/blob/trunk/ql/src/java/org/apache/hadoop/hive/ql/io/SymbolicInputFormat.java,
+  line 66. BufferedReader was opened, but it doesn&amp;amp;apos;t closed.</description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.SymlinkTextInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.SymbolicInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.TestSymlinkTextInputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">3480</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-26 17:50:14" id="3173" opendate="2012-06-22 02:23:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>implement getTypeInfo database metadata method </summary>
+			
+			
+			<description>The JDBC driver does not implement the database metadata method getTypeInfo. Hence, an application cannot dynamically determine the available type information and associated properties. </description>
+			
+			
+			<version>0.8.1</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.jdbc.TestJdbcDriver2.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

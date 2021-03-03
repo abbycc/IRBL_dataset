@@ -1,0 +1,1 @@
+minimum memstor size percentag cluster optim random read larg block cach small memstor heap 20gb configur memstor 4 800mb minimum memstor size 5 gui reduc minimum size 1 suppos log warn memstor 5 folk

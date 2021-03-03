@@ -1,0 +1,2256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HBASE">
+	<bug fixdate="2015-05-02 14:14:48" id="13607" opendate="2015-05-01 17:09:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestSplitLogManager.testGetPreviousRecoveryMode consistently failing</summary>
+			
+			
+			<description>From Nick&amp;amp;apos;s 1.1.0 rc0 call for UT help:
+https://builds.apache.org/job/HBase-1.1.0RC0-JDK7/72/testReport/org.apache.hadoop.hbase.master/TestSplitLogManager/testGetPreviousRecoveryMode/
+
+java.lang.AssertionError: Mode4=LOG_SPLITTING
+
+	at org.junit.Assert.fail(Assert.java:88)
+
+	at org.junit.Assert.assertTrue(Assert.java:41)
+
+	at org.apache.hadoop.hbase.master.TestSplitLogManager.testGetPreviousRecoveryMode(TestSplitLogManager.java:661)
+
+
+
+This is repeatedly failing locally for me.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.TestSplitLogManager.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">13623</link>
+			
+			
+			<link description="is broken by" type="Regression">13584</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-05 00:17:54" id="13617" opendate="2015-05-04 23:59:42" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestReplicaWithCluster.testChangeTable timeout</summary>
+			
+			
+			<description>In our internal test TestReplicaWithCluster.testChangeTable got a timeout.  
+HBASE-12170 bumped TestReplicaWithCluster.testReplicaAndReplication timeout from 2 minutes to 5 minutes, but leaves other tests in the same package unchanged.
+When I run the test in my fast Mac, the run time of TestReplicaWithCluster.testChangeTable (~16 seconds) is about half of TestReplicaWithCluster.testReplicaAndReplication (~31 seconds).  
+We should increase the timeout in TestReplicaWithCluster.testChangeTable to avoid test failure in slow environment.
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestReplicaWithCluster.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-05 19:10:41" id="13623" opendate="2015-05-05 19:05:07" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestSplitLogManager.testGetPreviousRecoveryMode is still flaky</summary>
+			
+			
+			<description>Even with retry failing tests, I&amp;amp;apos;m seeing
+
+org.apache.hadoop.hbase.master.TestSplitLogManager.testGetPreviousRecoveryMode(org.apache.hadoop.hbase.master.TestSplitLogManager)
+
+  Run 1: TestSplitLogManager.testGetPreviousRecoveryMode:661 Mode4=LOG_SPLITTING
+
+  Run 2: TestSplitLogManager.testGetPreviousRecoveryMode:661 Mode4=LOG_SPLITTING
+
+  Run 3: TestSplitLogManager.testGetPreviousRecoveryMode:661 Mode4=LOG_SPLITTING
+
+
+
+java.lang.AssertionError: Mode4=LOG_SPLITTING
+
+	at org.junit.Assert.fail(Assert.java:88)
+
+	at org.junit.Assert.assertTrue(Assert.java:41)
+
+	at org.apache.hadoop.hbase.master.TestSplitLogManager.testGetPreviousRecoveryMode(TestSplitLogManager.java:661)
+
+
+
+Let me give Duo Zhang&amp;amp;apos;s test procedure from HBASE-13136 a spin.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Test</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.TestSplitLogManager.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">13607</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-06 17:11:36" id="13625" opendate="2015-05-05 23:05:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Use HDFS for HFileOutputFormat2 partitioner&amp;apos;s path</summary>
+			
+			
+			<description>HBASE-13010 changed hard-coded &amp;amp;apos;/tmp&amp;amp;apos; in HFileOutputFormat2 partitioner&amp;amp;apos;s path to &amp;amp;apos;hadoop.tmp.dir&amp;amp;apos;.  This breaks unit test in Windows.
+
+
+
+   static void configurePartitioner(Job job, List&amp;lt;ImmutableBytesWritable&amp;gt; splitPoints)
+
+     ...
+
+     // create the partitions file
+
+-    FileSystem fs = FileSystem.get(job.getConfiguration());
+
+-    Path partitionsPath = new Path(&quot;/tmp&quot;, &quot;partitions_&quot; + UUID.randomUUID());
+
++    FileSystem fs = FileSystem.get(conf);
+
++    Path partitionsPath = new Path(conf.get(&quot;hadoop.tmp.dir&quot;), &quot;partitions_&quot; + UUID.randomUUID());
+
+
+
+Here is the exception from 1 of the UTs when running against Windows (from branch-1.1) - The &amp;amp;apos;:&amp;amp;apos; is an invalid character in windows file path:
+
+
+
+java.lang.IllegalArgumentException: Pathname /C:/hbase-server/target/test-data/d25e2228-8959-43ee-b413-4fa69cdb8032/hadoop_tmp/partitions_fb96c0a0-41e6-4964-a391-738cb761ee3e from C:/hbase-server/target/test-data/d25e2228-8959-43ee-b413-4fa69cdb8032/hadoop_tmp/partitions_fb96c0a0-41e6-4964-a391-738cb761ee3e is not a valid DFS filename.
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.getPathName(DistributedFileSystem.java:197)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.access$000(DistributedFileSystem.java:106)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem$7.doCall(DistributedFileSystem.java:448)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem$7.doCall(DistributedFileSystem.java:444)
+
+	at org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.create(DistributedFileSystem.java:444)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.create(DistributedFileSystem.java:387)
+
+	at org.apache.hadoop.fs.FileSystem.create(FileSystem.java:909)
+
+	at org.apache.hadoop.io.SequenceFile$Writer.&amp;lt;init&amp;gt;(SequenceFile.java:1074)
+
+	at org.apache.hadoop.io.SequenceFile$RecordCompressWriter.&amp;lt;init&amp;gt;(SequenceFile.java:1374)
+
+	at org.apache.hadoop.io.SequenceFile.createWriter(SequenceFile.java:275)
+
+	at org.apache.hadoop.io.SequenceFile.createWriter(SequenceFile.java:297)
+
+	at org.apache.hadoop.hbase.mapreduce.HFileOutputFormat2.writePartitions(HFileOutputFormat2.java:335)
+
+	at org.apache.hadoop.hbase.mapreduce.HFileOutputFormat2.configurePartitioner(HFileOutputFormat2.java:593)
+
+	at org.apache.hadoop.hbase.mapreduce.HFileOutputFormat2.configureIncrementalLoad(HFileOutputFormat2.java:440)
+
+	at org.apache.hadoop.hbase.mapreduce.HFileOutputFormat2.configureIncrementalLoad(HFileOutputFormat2.java:405)
+
+	at org.apache.hadoop.hbase.mapreduce.ImportTsv.createSubmittableJob(ImportTsv.java:539)
+
+	at org.apache.hadoop.hbase.mapreduce.ImportTsv.run(ImportTsv.java:720)
+
+	at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:70)
+
+	at org.apache.hadoop.hbase.mapreduce.TestImportTsv.doMROnTableTest(TestImportTsv.java:313)
+
+	at org.apache.hadoop.hbase.mapreduce.TestImportTsv.testBulkOutputWithoutAnExistingTable(TestImportTsv.java:168)
+
+
+
+The proposed fix is to use a config to point to a hdfs directory.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.13, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.SecureBulkLoadUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestHFileOutputFormat2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestHFileOutputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.HFileOutputFormat2.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">13010</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-11 23:18:00" id="13606" opendate="2015-05-01 07:44:58" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>AssignmentManager.assign() is not sync in both path</summary>
+			
+			
+			<description>from the comment and the expected behavior AssignmentManager.assign() should be sync
+
+
+
+/** Assigns specified regions round robin, if any.
+
+ * This is a synchronous call and will return once every region has been
+
+public void assign(List&amp;lt;HRegionInfo&amp;gt; regions)
+
+
+
+but the code has two path. 1 sync and the async
+
+
+
+if (servers == 1 || (regions &amp;lt; bulkAssignThresholdRegions
+
+        &amp;amp;&amp;amp; servers &amp;lt; bulkAssignThresholdServers)) {
+
+   for (HRegionInfo region: plan.getValue()) {
+
+     ...
+
+        invokeAssign(region);  // &amp;lt;-- this is async threadPool.submit(assign)
+
+     ...
+
+  }
+
+} else {
+
+  BulkAssigner ba = new GeneralBulkAssigner(...);
+
+  ba.bulkAssign();  // &amp;lt;-- this is sync, calls BulkAssign.waitUntilDone()
+
+}
+
+
+
+https://builds.apache.org/job/HBase-1.1/452/ TestCreateTableProcedure is flaky because of this async behavior</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.AssignmentManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.GeneralBulkAssigner.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-12 18:38:23" id="13663" opendate="2015-05-11 18:54:10" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HMaster fails to restart &amp;apos;HMaster: Failed to become active master&amp;apos;</summary>
+			
+			
+			<description>HMaster fails to restart &amp;amp;apos;HMaster: Failed to become active master&amp;amp;apos;
+from Master log:
+
+
+
+2015-05-08 11:25:14,020 FATAL [MasterNOde:16000.activeMasterManager] master.HMaster: Failed to become active master
+
+java.lang.NullPointerException
+
+	at org.apache.hadoop.hbase.master.AssignmentManager.rebuildUserRegions(AssignmentManager.java:2885)
+
+	at org.apache.hadoop.hbase.master.AssignmentManager.joinCluster(AssignmentManager.java:483)
+
+	at org.apache.hadoop.hbase.master.HMaster.finishActiveMasterInitialization(HMaster.java:763)
+
+	at org.apache.hadoop.hbase.master.HMaster.access$500(HMaster.java:182)
+
+	at org.apache.hadoop.hbase.master.HMaster$1.run(HMaster.java:1632)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+2015-05-08 11:25:14,023 FATAL [MasterNOde:16000.activeMasterManager] master.HMaster: Master server abort: loaded coprocessors are: []
+
+2015-05-08 11:25:14,023 FATAL [MasterNOde:16000.activeMasterManager] master.HMaster: Unhandled exception. Starting shutdown.
+
+java.lang.NullPointerException
+
+	at org.apache.hadoop.hbase.master.AssignmentManager.rebuildUserRegions(AssignmentManager.java:2885)
+
+	at org.apache.hadoop.hbase.master.AssignmentManager.joinCluster(AssignmentManager.java:483)
+
+	at org.apache.hadoop.hbase.master.HMaster.finishActiveMasterInitialization(HMaster.java:763)
+
+	at org.apache.hadoop.hbase.master.HMaster.access$500(HMaster.java:182)
+
+	at org.apache.hadoop.hbase.master.HMaster$1.run(HMaster.java:1632)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.AssignmentManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-20 02:47:38" id="13717" opendate="2015-05-19 22:42:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestBoundedRegionGroupingProvider#setMembershipDedups need to set HDFS diretory for WAL</summary>
+			
+			
+			<description>org.apache.hadoop.hbase.wal.TestBoundedRegionGroupingProvider#setMembershipDedups() fails during testing in windows:
+
+java.lang.IllegalArgumentException: Pathname /C:/tmp/hbase-myuser/hbase/WALs/setMembershipDedups from hdfs://127.0.0.1:61737/C:/tmp/hbase-myuser/hbase/WALs/setMembershipDedups is not a valid DFS filename.
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.getPathName(DistributedFileSystem.java:197)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.access$000(DistributedFileSystem.java:106)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem$22.doCall(DistributedFileSystem.java:1305)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem$22.doCall(DistributedFileSystem.java:1301)
+
+	at org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.getFileStatus(DistributedFileSystem.java:1301)
+
+	at org.apache.hadoop.fs.FileSystem.exists(FileSystem.java:1424)
+
+	at org.apache.hadoop.hbase.regionserver.wal.FSHLog.&amp;lt;init&amp;gt;(FSHLog.java:477)
+
+	at org.apache.hadoop.hbase.wal.DefaultWALProvider.init(DefaultWALProvider.java:97)
+
+	at org.apache.hadoop.hbase.wal.WALFactory.getProvider(WALFactory.java:147)
+
+	at org.apache.hadoop.hbase.wal.BoundedRegionGroupingProvider.init(BoundedRegionGroupingProvider.java:56)
+
+	at org.apache.hadoop.hbase.wal.WALFactory.getProvider(WALFactory.java:147)
+
+	at org.apache.hadoop.hbase.wal.WALFactory.&amp;lt;init&amp;gt;(WALFactory.java:179)
+
+	at org.apache.hadoop.hbase.wal.TestBoundedRegionGroupingProvider.setMembershipDedups(TestBoundedRegionGroupingProvider.java:161)
+
+
+
+This is due to using the local file system path as root directory.  We should set the HDFS directory as the root directory.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.wal.TestBoundedRegionGroupingProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-20 03:23:38" id="13704" opendate="2015-05-18 09:05:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hbase throws OutOfOrderScannerNextException when MultiRowRangeFilter is used</summary>
+			
+			
+			<description>When using filter MultiRowRangeFilter with ranges closed to each other that there are no rows between ranges, then OutOfOrderScannerNextException is throwed.
+In filterRowKey method when range is switched to the next range, currentReturnCode is set to SEEK_NEXT_USING_HINT (MultiRowRangeFilter: 118 in v1.1.0). But if new range is already contain this row, then we should include this row, not to seek for another one.
+Replacing line 118 to this code seems to be working fine:
+
+
+
+if (range.contains(buffer, offset, length)) {
+
+    currentReturnCode = ReturnCode.INCLUDE;
+
+} else {
+
+    currentReturnCode = ReturnCode.SEEK_NEXT_USING_HINT;
+
+}
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.1, 0.98.21</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.MultiRowRangeFilter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.TestMultiRowRangeFilter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-20 18:51:20" id="13711" opendate="2015-05-19 07:59:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Provide an API to set min and max versions in HColumnDescriptor</summary>
+			
+			
+			<description>In org.apache.hadoop.hbase.chaos.actions.ChangeVersionsAction#perform(), it tries to update the max and min versions in a column descriptor: 
+
+
+
+     for(HColumnDescriptor descriptor:columnDescriptors) {
+
+       descriptor.setMaxVersions(versions);
+
+       descriptor.setMinVersions(versions);
+
+     }
+
+
+
+If the current minimum version is greater than the new max version, an IllegalArgumentException would throw from org.apache.hadoop.hbase.HColumnDescriptor#setMaxVersions().  
+Here is an example (trying to set max version to 1 while currently min version is 2):
+
+java.lang.IllegalArgumentException: Set MaxVersion to 1 while minVersion is 2. Maximum versions must be &amp;gt;= minimum versions
+
+at org.apache.hadoop.hbase.HColumnDescriptor.setMaxVersions(HColumnDescriptor.java:634)
+
+at org.apache.hadoop.hbase.chaos.actions.ChangeVersionsAction.perform(ChangeVersionsAction.java:62)
+
+
+
+One solution is to change the order of set - set min version first and then set max version (note: the current implement of org.apache.hadoop.hbase.HColumnDescriptor#setMinVersions() does not check the min version value and blindly set the version.  Not sure whether this is by-design).
+Another solution is to provide an API to set both min and max version in one function call.  </description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.13, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HColumnDescriptor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.chaos.actions.ChangeVersionsAction.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-21 18:14:12" id="13731" opendate="2015-05-20 22:59:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestReplicationAdmin should clean up MiniZKCluster resource</summary>
+			
+			
+			<description>org.apache.hadoop.hbase.client.replication.TestReplicationAdmin Unit test has a @BeforeClass component to start MiniZKCluster, but it does not have a @AfterClass component to shut down MiniZKCluster and clean up the resources from MiniZKCluster.  In Jenkins machine that continuously run tests, the resource leak could affect other tests. 
+The solution is trivial.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.13, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.replication.TestReplicationAdmin.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-21 20:59:50" id="13741" opendate="2015-05-21 17:50:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Disable TestRegionObserverInterface#testRecovery and testLegacyRecovery</summary>
+			
+			
+			<description>This is related to HBASE-13391.  
+When testing 1.1 release in Windows environment, both org.apache.hadoop.hbase.coprocessor.TestRegionObserverInterface.testRecovery and org.apache.hadoop.hbase.coprocessor.TestRegionObserverInterface.testLegacyRecovery failed frequently. testLegacyRecovery fails more frequently.
+
+java.lang.AssertionError: Result of org.apache.hadoop.hbase.coprocessor.SimpleRegionObserver.getCtPreWALRestore is expected to be 1, while we get 0
+
+	at org.junit.Assert.fail(Assert.java:88)
+
+	at org.junit.Assert.assertTrue(Assert.java:41)
+
+	at org.apache.hadoop.hbase.coprocessor.TestRegionObserverInterface.verifyMethodResult(TestRegionObserverInterface.java:746)
+
+	at org.apache.hadoop.hbase.coprocessor.TestRegionObserverInterface.testRecovery(TestRegionObserverInterface.java:630)
+
+
+
+
+
+java.lang.AssertionError: Result of org.apache.hadoop.hbase.coprocessor.SimpleRegionObserver$Legacy.getCtPreWALRestore is expected to be 1, while we get 0
+
+	at org.junit.Assert.fail(Assert.java:88)
+
+	at org.junit.Assert.assertTrue(Assert.java:41)
+
+	at org.apache.hadoop.hbase.coprocessor.TestRegionObserverInterface.verifyMethodResult(TestRegionObserverInterface.java:746)
+
+	at org.apache.hadoop.hbase.coprocessor.TestRegionObserverInterface.testLegacyRecovery(TestRegionObserverInterface.java:680)
+
+
+
+Base on Andrew Purtell, &quot;we&amp;amp;apos;re not waiting for recovery to complete, just hoping we race behind it so the test passes. These test cases need a redo (or a rip out)&quot; - the HBASE-13391 tracks the real fix; this JIRA (based on suggestion of Sean Busbey) disable these two tests so that we will not run into false alarm frequently.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.coprocessor.TestRegionObserverInterface.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">13391</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-21 21:05:08" id="13733" opendate="2015-05-21 01:43:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Failed MiniZooKeeperCluster startup did not shutdown ZK servers</summary>
+			
+			
+			<description>MiniZooKeeperCluster#startup() starts servers one-by-one, if everything is good, it would declare success of start:
+
+
+
+  public int startup(File baseDir, int numZooKeeperServers) 
+
+    ...
+
+    // running all the ZK servers
+
+    for (int i = 0; i &amp;lt; numZooKeeperServers; i++) {
+
+    ...===&amp;gt; could throw exception in the loop and end the startup
+
+      // Start up this ZK server
+
+      standaloneServerFactory.startup(server);
+
+      ...
+
+      standaloneServerFactoryList.add(standaloneServerFactory);
+
+      zooKeeperServers.add(server);
+
+    }
+
+   ...
+
+    started = true;
+
+    ...
+
+  }
+
+
+
+
+
+However, if exception throws in the middle of start up (eg. some servers already started), the MiniZooKeeperCluster#shutdown() would not shut down them and clean up resources.  
+
+
+
+  public void shutdown() throws IOException {
+
+    if (!started) {
+
+      return;
+
+    }
+
+    ...
+
+  }
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.zookeeper.MiniZooKeeperCluster.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-28 01:29:10" id="13732" opendate="2015-05-21 00:12:04" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestHBaseFsck#testParallelWithRetriesHbck fails intermittently</summary>
+			
+			
+			<description>TestHBaseFsck#testParallelWithRetriesHbck failed intermittently (especially in Windows environment) with &quot;java.io.IOException: Duplicate hbck - Abort&quot;
+
+java.util.concurrent.ExecutionException: java.io.IOException: Duplicate hbck - Abort
+
+	at java.util.concurrent.FutureTask$Sync.innerGet(FutureTask.java:252)
+
+	at java.util.concurrent.FutureTask.get(FutureTask.java:111)
+
+	at org.apache.hadoop.hbase.util.TestHBaseFsck.testParallelWithRetriesHbck(TestHBaseFsck.java:644)
+
+Caused by: java.io.IOException: Duplicate hbck - Abort
+
+	at org.apache.hadoop.hbase.util.HBaseFsck.connect(HBaseFsck.java:484)
+
+	at org.apache.hadoop.hbase.util.hbck.HbckTestingUtil.doFsck(HbckTestingUtil.java:53)
+
+	at org.apache.hadoop.hbase.util.hbck.HbckTestingUtil.doFsck(HbckTestingUtil.java:43)
+
+	at org.apache.hadoop.hbase.util.hbck.HbckTestingUtil.doFsck(HbckTestingUtil.java:38)
+
+	at org.apache.hadoop.hbase.util.TestHBaseFsck$2RunHbck.call(TestHBaseFsck.java:635)
+
+	at org.apache.hadoop.hbase.util.TestHBaseFsck$2RunHbck.call(TestHBaseFsck.java:628)
+
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+
+	at java.lang.Thread.run(Thread.java:722)
+
+
+
+HBASE-13591 tried to address this issue.  It did improve the pass rate in Linux environment (after the fix, I could not repro in my machine); however, the test still failed intermittently in Windows environment during testing of 1.1 release.
+Looking at the code, it uses the ExponentialBackoffPolicy (starting with 200ms sleep time after first failed attempt to acquire the lock in ZK, then 400ms, then 800ms, etc.) in between retries.  Therefore, even the first hbck run completes, the second hbck run would still fail due to long sleep time.  
+the proposal to fix the problem is to use ExponentialBackoffPolicyWithLimit and cap the max sleep time to some small number (eg. 5 seconds, it should be configurable).  This would make the test more robust.  </description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.TestHBaseFsck.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.HBaseFsck.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.RetryCounterFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">13574</link>
+			
+			
+			<link description="is related to" type="Reference">13574</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-29 02:31:23" id="13800" opendate="2015-05-28 23:26:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestStore#testDeleteExpiredStoreFiles should create unique data/log directory for each call</summary>
+			
+			
+			<description>When TestStore#init() was called twice in TestStore#testDeleteExpiredStoreFiles, it did not use different base directory for each call (other tests in the same test suite do).  If the first call did not release the handle of WAL files fast enough, the second init() call would fail.  
+This is constantly seen in Windows environment:
+
+java.io.IOException: Target WAL already exists within directory file:/C:/hbase/hbase-server/target/test-data/f39ecdde-1d04-4332-93c7-4c8df1e08e67/TestStoretestDeleteExpiredStoreFiles/WALs/testDeleteExpiredStoreFiles
+
+	at org.apache.hadoop.hbase.regionserver.wal.FSHLog.&amp;lt;init&amp;gt;(FSHLog.java:525)
+
+	at org.apache.hadoop.hbase.wal.DefaultWALProvider.init(DefaultWALProvider.java:97)
+
+	at org.apache.hadoop.hbase.wal.WALFactory.getProvider(WALFactory.java:147)
+
+	at org.apache.hadoop.hbase.wal.WALFactory.&amp;lt;init&amp;gt;(WALFactory.java:179)
+
+	at org.apache.hadoop.hbase.regionserver.TestStore.init(TestStore.java:185)
+
+	at org.apache.hadoop.hbase.regionserver.TestStore.init(TestStore.java:162)
+
+	at org.apache.hadoop.hbase.regionserver.TestStore.testDeleteExpiredStoreFiles(TestStore.java:307)
+
+	at org.apache.hadoop.hbase.regionserver.TestStore.testDeleteExpiredStoreFiles(TestStore.java:286)
+
+
+
+The fix is trivial: just like other tests in the same test suite, use different base directory for multiple init() calls in the same test.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestStore.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-29 09:40:26" id="13802" opendate="2015-05-29 06:00:33" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Procedure V2: Master fails to come up due to rollback of create namespace table</summary>
+			
+			
+			<description>In Procedure V2 (HBASE-13203) implementation, Rollback of a CreateTableProcedure would call the Quota Manager to remove the table from namespace quota.
+
+
+
+protected static void deleteTableStates(final MasterProcedureEnv env, final TableName tableName)  {
+
+ ProcedureSyncWait.getMasterQuotaManager(env).removeTableFromNamespaceQuota(tableName);
+
+}
+
+
+
+This could lead to a &amp;amp;apos;deadlock&amp;amp;apos;-like situation during master starting up:
+(1) The create namespace table procedure failed in the middle of master crash/failover. When master re-started, it tried to rollback, one step of rollback is to call QuotaManager to remove the table from NameSpaceQuota, but the QuotaManager has NOT started - so the rollback has to wait.
+(2). The QuotaManager would start in master after Namespace Manager starts.
+(3). The Namespace Manager is waiting for the table lock to be released by rollback of create namespace table procedure so that it can create namespace table as part of Namespace Manager initialization.
+
+
+
+HMaster#finishActiveMasterInitialization() {
+
+   ...
+
+   status.setStatus(&quot;Starting namespace manager&quot;);
+
+   initNamespace();
+
+    ...
+
+   status.setStatus(&quot;Starting quota manager&quot;);
+
+   initQuotaManager();
+
+   ...
+
+}
+
+
+
+(4). Now (1) waits for (2), which waits for (3), which waits for (1) - no one make progress &amp;amp; master could not complete initialization and fails to come up.
+
+2015-05-28 10:01:26,890 INFO  [ip-111-22-33-444:16000.activeMasterManager] master.TableNamespaceManager: Namespace table not found. Creating...
+
+2015-05-28 10:06:22,016 WARN  [ProcedureExecutorThread-0] procedure.CreateTableProcedure: Failed rollback attempt step=CREATE_TABLE_PRE_OPERATION table=hbase:namespace
+
+org.apache.hadoop.hbase.exceptions.TimeoutIOException: Timed out while waiting on quota manager to be available
+
+	at org.apache.hadoop.hbase.master.procedure.ProcedureSyncWait.waitFor(ProcedureSyncWait.java:122)
+
+	at org.apache.hadoop.hbase.master.procedure.ProcedureSyncWait.waitFor(ProcedureSyncWait.java:102)
+
+	at org.apache.hadoop.hbase.master.procedure.ProcedureSyncWait.getMasterQuotaManager(ProcedureSyncWait.java:184)
+
+	at org.apache.hadoop.hbase.master.procedure.DeleteTableProcedure.deleteTableStates(DeleteTableProcedure.java:408)
+
+	at org.apache.hadoop.hbase.master.procedure.CreateTableProcedure.rollbackState(CreateTableProcedure.java:169)
+
+	at org.apache.hadoop.hbase.master.procedure.CreateTableProcedure.rollbackState(CreateTableProcedure.java:58)
+
+	at org.apache.hadoop.hbase.procedure2.StateMachineProcedure.rollback(StateMachineProcedure.java:121)
+
+	at org.apache.hadoop.hbase.procedure2.Procedure.doRollback(Procedure.java:414)
+
+	at org.apache.hadoop.hbase.procedure2.ProcedureExecutor.executeRollback(ProcedureExecutor.java:808)
+
+	at org.apache.hadoop.hbase.procedure2.ProcedureExecutor.executeRollback(ProcedureExecutor.java:773)
+
+	at org.apache.hadoop.hbase.procedure2.ProcedureExecutor.execLoop(ProcedureExecutor.java:653)
+
+	at org.apache.hadoop.hbase.procedure2.ProcedureExecutor.execLoop(ProcedureExecutor.java:626)
+
+	at org.apache.hadoop.hbase.procedure2.ProcedureExecutor.access$200(ProcedureExecutor.java:70)
+
+	at org.apache.hadoop.hbase.procedure2.ProcedureExecutor$1.run(ProcedureExecutor.java:413)
+
+2015-05-28 10:06:22,169 WARN  [ProcedureExecutorThread-1] procedure.CreateTableProcedure: The table hbase:namespace does not exist in meta but has a znode. run hbck to fix inconsistencies.
+
+2015-05-28 10:06:27,292 FATAL [ip-111-22-33-444:16000.activeMasterManager] master.HMaster: Failed to become active master
+
+java.io.IOException: Timedout 300000ms waiting for namespace table to be assigned
+
+	at org.apache.hadoop.hbase.master.TableNamespaceManager.start(TableNamespaceManager.java:104)
+
+	at org.apache.hadoop.hbase.master.HMaster.initNamespace(HMaster.java:980)
+
+	at org.apache.hadoop.hbase.master.HMaster.finishActiveMasterInitialization(HMaster.java:779)
+
+	at org.apache.hadoop.hbase.master.HMaster.access$500(HMaster.java:182)
+
+	at org.apache.hadoop.hbase.master.HMaster$1.run(HMaster.java:1632)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+2015-05-28 10:06:27,293 FATAL [ip-111-22-33-444:16000.activeMasterManager] master.HMaster: Master server abort: loaded coprocessors are: [org.apache.ranger.authorization.hbase.RangerAuthorizationCoprocessor]
+
+2015-05-28 10:06:27,293 FATAL [ip-111-22-33-444:16000.activeMasterManager] master.HMaster: Unhandled exception. Starting shutdown.
+
+java.io.IOException: Timedout 300000ms waiting for namespace table to be assigned
+
+	at org.apache.hadoop.hbase.master.TableNamespaceManager.start(TableNamespaceManager.java:104)
+
+	at org.apache.hadoop.hbase.master.HMaster.initNamespace(HMaster.java:980)
+
+	at org.apache.hadoop.hbase.master.HMaster.finishActiveMasterInitialization(HMaster.java:779)
+
+	at org.apache.hadoop.hbase.master.HMaster.access$500(HMaster.java:182)
+
+	at org.apache.hadoop.hbase.master.HMaster$1.run(HMaster.java:1632)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.procedure.CreateTableProcedure.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.procedure.DeleteTableProcedure.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-05-31 00:37:56" id="13809" opendate="2015-05-29 20:36:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestRowTooBig should use HDFS directory for its region directory</summary>
+			
+			
+			<description>TestRowTooBig uses local directory to create region, which does not work well in Windows, and the code path expects s DFS file path
+
+java.lang.Exception: Unexpected exception, expected&amp;lt;org.apache.hadoop.hbase.regionserver.RowTooBigException&amp;gt; but was&amp;lt;java.lang.IllegalArgumentException&amp;gt;
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.getPathName(DistributedFileSystem.java:197)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.access$000(DistributedFileSystem.java:106)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem$22.doCall(DistributedFileSystem.java:1305)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem$22.doCall(DistributedFileSystem.java:1301)
+
+	at org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.getFileStatus(DistributedFileSystem.java:1301)
+
+	at org.apache.hadoop.fs.FileSystem.exists(FileSystem.java:1424)
+
+	at org.apache.hadoop.hbase.regionserver.HRegionFileSystem.createRegionOnFileSystem(HRegionFileSystem.java:875)
+
+	at org.apache.hadoop.hbase.regionserver.HRegion.createHRegion(HRegion.java:5921)
+
+	at org.apache.hadoop.hbase.regionserver.HRegion.createHRegion(HRegion.java:5892)
+
+	at org.apache.hadoop.hbase.regionserver.HRegion.createHRegion(HRegion.java:5867)
+
+	at org.apache.hadoop.hbase.regionserver.HRegion.createHRegion(HRegion.java:5949)
+
+	at org.apache.hadoop.hbase.regionserver.HRegion.createHRegion(HRegion.java:5828)
+
+	at org.apache.hadoop.hbase.HBaseTestingUtility.createLocalHRegion(HBaseTestingUtility.java:1877)
+
+	at org.apache.hadoop.hbase.regionserver.TestRowTooBig.testScannersSeekOnFewLargeCells(TestRowTooBig.java:83)
+
+
+
+
+
+java.lang.Exception: Unexpected exception, expected&amp;lt;org.apache.hadoop.hbase.regionserver.RowTooBigException&amp;gt; but was&amp;lt;java.lang.IllegalArgumentException&amp;gt;
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.getPathName(DistributedFileSystem.java:197)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.access$000(DistributedFileSystem.java:106)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem$22.doCall(DistributedFileSystem.java:1305)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem$22.doCall(DistributedFileSystem.java:1301)
+
+	at org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.getFileStatus(DistributedFileSystem.java:1301)
+
+	at org.apache.hadoop.fs.FileSystem.exists(FileSystem.java:1424)
+
+	at org.apache.hadoop.hbase.regionserver.HRegionFileSystem.createRegionOnFileSystem(HRegionFileSystem.java:875)
+
+	at org.apache.hadoop.hbase.regionserver.HRegion.createHRegion(HRegion.java:5921)
+
+	at org.apache.hadoop.hbase.regionserver.HRegion.createHRegion(HRegion.java:5892)
+
+	at org.apache.hadoop.hbase.regionserver.HRegion.createHRegion(HRegion.java:5867)
+
+	at org.apache.hadoop.hbase.regionserver.HRegion.createHRegion(HRegion.java:5949)
+
+	at org.apache.hadoop.hbase.regionserver.HRegion.createHRegion(HRegion.java:5828)
+
+	at org.apache.hadoop.hbase.HBaseTestingUtility.createLocalHRegion(HBaseTestingUtility.java:1877)
+
+	at org.apache.hadoop.hbase.regionserver.TestRowTooBig.testScanAcrossManySmallColumns(TestRowTooBig.java:125)
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestRowTooBig.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-02 17:02:39" id="13824" opendate="2015-06-02 06:11:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestGenerateDelegationToken: Master fails to start in Windows environment</summary>
+			
+			
+			<description>Master fails to start in the unit test org.apache.hadoop.hbase.security.token.TestGenerateDelegationToken in Windows environment:
+
+java.lang.RuntimeException: Master not initialized after 200000ms seconds
+
+	at org.apache.hadoop.hbase.util.JVMClusterUtil.startup(JVMClusterUtil.java:225)
+
+	at org.apache.hadoop.hbase.LocalHBaseCluster.startup(LocalHBaseCluster.java:445)
+
+	at org.apache.hadoop.hbase.security.token.TestGenerateDelegationToken.setUp(TestGenerateDelegationToken.java:125)
+
+
+
+This is due to incorrect HDFS path:
+
+2015-06-01 07:40:11,072 FATAL [myjenkins-win:59214.activeMasterManager] master.MasterFileSystem(465): Please fix invalid configuration for hbase.rootdir hdfs://127.0.0.1:59154/C:/tmp/hbase-jenkins/hbase
+
+java.lang.IllegalArgumentException: Pathname /C:/tmp/hbase-jenkins/hbase from hdfs://127.0.0.1:59154/C:/tmp/hbase-jenkins/hbase is not a valid DFS filename.
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.getPathName(DistributedFileSystem.java:197)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.access$000(DistributedFileSystem.java:106)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem$22.doCall(DistributedFileSystem.java:1305)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem$22.doCall(DistributedFileSystem.java:1301)
+
+	at org.apache.hadoop.fs.FileSystemLinkResolver.resolve(FileSystemLinkResolver.java:81)
+
+	at org.apache.hadoop.hdfs.DistributedFileSystem.getFileStatus(DistributedFileSystem.java:1301)
+
+	at org.apache.hadoop.fs.FileSystem.exists(FileSystem.java:1424)
+
+	at org.apache.hadoop.hbase.master.MasterFileSystem.checkRootDir(MasterFileSystem.java:424)
+
+	at org.apache.hadoop.hbase.master.MasterFileSystem.createInitialFileSystemLayout(MasterFileSystem.java:146)
+
+	at org.apache.hadoop.hbase.master.MasterFileSystem.&amp;lt;init&amp;gt;(MasterFileSystem.java:126)
+
+	at org.apache.hadoop.hbase.master.HMaster.finishActiveMasterInitialization(HMaster.java:649)
+
+	at org.apache.hadoop.hbase.master.HMaster.access$500(HMaster.java:182)
+
+	at org.apache.hadoop.hbase.master.HMaster$1.run(HMaster.java:1646)
+
+	at java.lang.Thread.run(Thread.java:722)
+
+
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.token.TestGenerateDelegationToken.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-03 22:47:19" id="13831" opendate="2015-06-03 18:59:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestHBaseFsck#testParallelHbck is flaky against hadoop 2.6+</summary>
+			
+			
+			<description>Running TestHBaseFsck#testParallelHbck is flaky against HADOOP-2.6+ environment.  The idea of the test is that with when 2 HBCK operations are running simultaneously, the 2nd HBCK would fail with no-retry because creating lock file would fail due to the 1st HBCK already created.  However, with HADOOP-2.6+, the FileSystem#createFile call internally retries with AlreadyBeingCreatedException (see HBASE-13574 for more details: &quot;It seems that test is broken due of the new create retry policy in hadoop 2.6. Namenode proxy now created with custom RetryPolicy for AlreadyBeingCreatedException which is implies timeout on this operations up to HdfsConstants.LEASE_SOFTLIMIT_PERIOD (60seconds).&quot;)
+When I run the TestHBaseFsck#testParallelHbck test against HADOOP-2.7 in a Windows environment (HBASE is branch-1.1) multiple times, the result is unpredictable (sometime succeeded, sometime failed - more failure than succeeded).  
+The fix is trivial: Leverage the change in HBASE-13732 and reduce the max wait time to a smaller number.   </description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.TestHBaseFsck.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-07 17:00:25" id="13686" opendate="2015-05-14 03:53:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fail to limit rate in RateLimiter</summary>
+			
+			
+			<description>While using the patch in HBASE-11598 , I found that RateLimiter can&amp;amp;apos;t to limit the rate right.
+
+ 
+
+ /**
+
+   * given the time interval, are there enough available resources to allow execution?
+
+   * @param now the current timestamp
+
+   * @param lastTs the timestamp of the last update
+
+   * @param amount the number of required resources
+
+   * @return true if there are enough available resources, otherwise false
+
+   */
+
+  public synchronized boolean canExecute(final long now, final long lastTs, final long amount) {
+
+    return avail &amp;gt;= amount ? true : refill(now, lastTs) &amp;gt;= amount;
+
+  }
+
+
+
+When avail &amp;gt;= amount, avail can&amp;amp;apos;t be refill. But in the next time to call canExecute, lastTs maybe update. So avail will waste some time to refill. Even we use smaller rate than the limit, the canExecute will return false. </description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.quotas.RateLimiter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.quotas.TestRateLimiter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.quotas.FixedIntervalRateLimiter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.quotas.AverageIntervalRateLimiter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.quotas.TimeBasedLimiter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">11598</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-08 20:50:51" id="13811" opendate="2015-05-30 00:17:16" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Splitting WALs, we are filtering out too many edits -&gt; DATALOSS</summary>
+			
+			
+			<description>I&amp;amp;apos;ve been running ITBLLs against branch-1 around HBASE-13616 (move of ServerShutdownHandler to pv2). I have come across an instance of dataloss. My patch for HBASE-13616 was in place so can only think it the cause (but cannot see how). When we split the logs, we are skipping legit edits. Digging.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.wal.WALSplitter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.test.IntegrationTestBigLinkedList.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.hfile.HFilePrettyPrinter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.TestGetLastFlushedSequenceId.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.FSHLog.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.coordination.ZKSplitLogManagerCoordination.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.RegionStates.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.wal.WAL.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.TestFSHLog.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.FlushLargeStoresPolicy.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.Region.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.wal.DisabledWALProvider.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestHRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ServerManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.TestCallRunner.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">13853</link>
+			
+			
+			<link description="relates to" type="Reference">13877</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-10 23:37:30" id="13878" opendate="2015-06-09 22:05:13" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Set hbase.fs.tmp.dir config in HBaseTestingUtility.java for Phoenix UT to use</summary>
+			
+			
+			<description>HBASE-13625 changed the HFileOutputFormat2 partitioner&amp;amp;apos;s path from using the hadoop.tmp.dir config to hbase.fs.tmp.dir config.  However, some Apache Phoenix unit tests (org.apache.phoenix.mapreduce.CsvBulkLoadToolIT and org.apache.phoenix.mapreduce.IndexToolIT) fail due to null value in the hbase.fs.tmp.dir config.  They were relied on the hadoop.tmp.dir set  from HBaseTestingUtility.  
+
+java.lang.IllegalArgumentException: Can not create a Path from a null string
+
+	at org.apache.hadoop.fs.Path.checkPathArg(Path.java:122)
+
+	at org.apache.hadoop.fs.Path.&amp;lt;init&amp;gt;(Path.java:134)
+
+	at org.apache.hadoop.fs.Path.&amp;lt;init&amp;gt;(Path.java:88)
+
+	at org.apache.hadoop.hbase.mapreduce.HFileOutputFormat2.configurePartitioner(HFileOutputFormat2.java:591)
+
+	at org.apache.hadoop.hbase.mapreduce.HFileOutputFormat2.configureIncrementalLoad(HFileOutputFormat2.java:440)
+
+	at org.apache.hadoop.hbase.mapreduce.HFileOutputFormat2.configureIncrementalLoad(HFileOutputFormat2.java:405)
+
+	at org.apache.hadoop.hbase.mapreduce.HFileOutputFormat.configureIncrementalLoad(HFileOutputFormat.java:91)
+
+	at org.apache.phoenix.mapreduce.CsvBulkLoadTool$TableLoader.call(CsvBulkLoadTool.java:505)
+
+	at org.apache.phoenix.mapreduce.CsvBulkLoadTool$TableLoader.call(CsvBulkLoadTool.java:466)
+
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+
+	at org.apache.phoenix.job.JobManager$InstrumentedJobFutureTask.run(JobManager.java:172)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+
+	at java.lang.Thread.run(Thread.java:722)
+
+
+
+The proposal is to set hbase.fs.tmp.dir in HBaseTestingUtility#setupDataTestDir().</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.14, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HBaseTestingUtility.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-12 02:28:14" id="13892" opendate="2015-06-12 00:05:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Scanner with all results filtered out results in NPE</summary>
+			
+			
+			<description>Saw a failure during some testing with region_mover.rb
+
+
+
+NativeException: java.lang.NullPointerException: null
+
+        __ensure__ at /usr/hdp/current/hbase-master/bin/region_mover.rb:110
+
+  isSuccessfulScan at /usr/hdp/current/hbase-master/bin/region_mover.rb:109
+
+  isSuccessfulScan at /usr/hdp/current/hbase-master/bin/region_mover.rb:104
+
+     unloadRegions at /usr/hdp/current/hbase-master/bin/region_mover.rb:328
+
+
+
+To try to get a real stacktrace, I wrote a simple test. Turns out, it was really simple to just produce the NPE within ClientScanner.
+
+
+
+java.lang.NullPointerException: null
+
+	at org.apache.hadoop.hbase.client.ClientScanner.getResultsToAddToCache(ClientScanner.java:576)
+
+	at org.apache.hadoop.hbase.client.ClientScanner.loadCache(ClientScanner.java:492)
+
+	at org.apache.hadoop.hbase.client.ClientScanner.next(ClientScanner.java:364)
+
+
+
+Patch with fix and test incoming.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.14, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.TestFromClientSide.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.ClientScanner.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-22 13:59:25" id="13843" opendate="2015-06-04 16:30:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix internal constant text in ReplicationManager.java</summary>
+			
+			
+			<description>ReplicationAdmin.java:  
+public static final String CFNAME = &quot;columnFamlyName; (sic)
+Fix.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.replication.ReplicationAdmin.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-15 08:42:51" id="14041" opendate="2015-07-08 05:33:41" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Client MetaCache is cleared if a ThrottlingException is thrown</summary>
+			
+			
+			<description>During performance test with the request throttling, I saw that hbase:meta table had been read a lot. Currently the MetaCache of the client is cleared, if a ThrottlingException is thrown. It seems to be not needed.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.ConnectionImplementation.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-30 01:47:20" id="14155" opendate="2015-07-25 18:14:42" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StackOverflowError in reverse scan</summary>
+			
+			
+			<description>A stack overflow may occur when a reverse scan is done. To reproduce (on a Mac), use the following steps:
+
+Download the Phoenix 4.5.0 RC here: https://dist.apache.org/repos/dist/dev/phoenix/phoenix-4.5.0-HBase-1.1-rc0/bin/
+Copy the phoenix-4.5.0-HBase-1.1-server.jar into the HBase lib directory (removing any earlier Phoenix version if there was one installed)
+Stop and restart HBase
+From the bin directory of the Phoenix binary distribution, start sqlline like this: ./sqlline.py localhost
+Create a new table and populate it like this:
+
+
+
+create table desctest (k varchar primary key desc);
+
+upsert into desctest values (&amp;amp;apos;a&amp;amp;apos;);
+
+upsert into desctest values (&amp;amp;apos;ab&amp;amp;apos;);
+
+upsert into desctest values (&amp;amp;apos;b&amp;amp;apos;);
+
+
+
+Note that the following query works fine at this point:
+
+
+
+select * from desctest order by k;
+
++------------------------------------------+
+
+|                    K                     |
+
++------------------------------------------+
+
+| a                                        |
+
+| ab                                       |
+
+| b                                        |
+
++------------------------------------------+
+
+
+
+Stop and start HBase
+Rerun the above query again and you&amp;amp;apos;ll get  a StackOverflowError at StoreFileScanner.seekToPreviousRow()
+
+
+
+select * from desctest order by k;
+
+java.lang.RuntimeException: org.apache.phoenix.exception.PhoenixIOException: org.apache.phoenix.exception.PhoenixIOException: org.apache.hadoop.hbase.DoNotRetryIOException: DESCTEST,,1437847235264.a74d70e6a8b36e24d1ea1a70edb0cdf7.: null
+
+	at org.apache.phoenix.util.ServerUtil.createIOException(ServerUtil.java:84)
+
+	at org.apache.phoenix.util.ServerUtil.throwIOException(ServerUtil.java:52)
+
+	at org.apache.phoenix.coprocessor.BaseScannerRegionObserver$2.nextRaw(BaseScannerRegionObserver.java:352)
+
+	at org.apache.phoenix.coprocessor.DelegateRegionScanner.nextRaw(DelegateRegionScanner.java:77)
+
+	at org.apache.hadoop.hbase.regionserver.RSRpcServices.scan(RSRpcServices.java:2393)
+
+	at org.apache.hadoop.hbase.protobuf.generated.ClientProtos$ClientService$2.callBlockingMethod(ClientProtos.java:32205)
+
+	at org.apache.hadoop.hbase.ipc.RpcServer.call(RpcServer.java:2112)
+
+	at org.apache.hadoop.hbase.ipc.CallRunner.run(CallRunner.java:101)
+
+	at org.apache.hadoop.hbase.ipc.RpcExecutor.consumerLoop(RpcExecutor.java:130)
+
+	at org.apache.hadoop.hbase.ipc.RpcExecutor$1.run(RpcExecutor.java:107)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+Caused by: java.lang.StackOverflowError
+
+	at org.apache.hadoop.hbase.io.hfile.ChecksumUtil.numChunks(ChecksumUtil.java:201)
+
+	at org.apache.hadoop.hbase.io.hfile.ChecksumUtil.numBytes(ChecksumUtil.java:189)
+
+	at org.apache.hadoop.hbase.io.hfile.HFileBlock.totalChecksumBytes(HFileBlock.java:1826)
+
+	at org.apache.hadoop.hbase.io.hfile.HFileBlock.getBufferReadOnly(HFileBlock.java:356)
+
+	at org.apache.hadoop.hbase.io.hfile.HFileReaderV2$EncodedScannerV2.getEncodedBuffer(HFileReaderV2.java:1211)
+
+	at org.apache.hadoop.hbase.io.hfile.HFileReaderV2$EncodedScannerV2.getFirstKeyInBlock(HFileReaderV2.java:1307)
+
+	at org.apache.hadoop.hbase.io.hfile.HFileReaderV2$AbstractScannerV2.seekBefore(HFileReaderV2.java:657)
+
+	at org.apache.hadoop.hbase.io.hfile.HFileReaderV2$AbstractScannerV2.seekBefore(HFileReaderV2.java:646)
+
+	at org.apache.hadoop.hbase.regionserver.StoreFileScanner.seekToPreviousRow(StoreFileScanner.java:425)
+
+	at org.apache.hadoop.hbase.regionserver.StoreFileScanner.seekToPreviousRow(StoreFileScanner.java:449)
+
+	at org.apache.hadoop.hbase.regionserver.StoreFileScanner.seekToPreviousRow(StoreFileScanner.java:449)
+
+	at org.apache.hadoop.hbase.regionserver.StoreFileScanner.seekToPreviousRow(StoreFileScanner.java:449)
+
+
+
+
+I&amp;amp;apos;ve attempted to reproduce this in a standalone HBase unit test, but have not been able to (but I&amp;amp;apos;ll attach my attempt which mimics what Phoenix is doing).</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.0.2, 1.2.0, 1.1.2, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.encoding.BufferedDataBlockEncoder.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-08-11 17:09:10" id="14206" opendate="2015-08-11 09:28:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MultiRowRangeFilter returns records whose rowKeys are out of allowed ranges</summary>
+			
+			
+			<description>I haven&amp;amp;apos;t found a way to attach test program to JIRA issue, so put it below :
+
+
+
+public class MultiRowRangeFilterTest {
+
+ 
+
+    byte[] key1Start = new byte[] {-3};
+
+    byte[] key1End  = new byte[] {-2};
+
+
+
+    byte[] key2Start = new byte[] {5};
+
+    byte[] key2End  = new byte[] {6};
+
+
+
+    byte[] badKey = new byte[] {-10};
+
+
+
+    @Test
+
+    public void testRanges() throws IOException {
+
+        MultiRowRangeFilter filter = new MultiRowRangeFilter(Arrays.asList(
+
+                new MultiRowRangeFilter.RowRange(key1Start, true, key1End, false),
+
+                new MultiRowRangeFilter.RowRange(key2Start, true, key2End, false)
+
+        ));
+
+        filter.filterRowKey(badKey, 0, 1);
+
+        /*
+
+        * FAILS -- includes BAD key!
+
+        * Expected :SEEK_NEXT_USING_HINT
+
+        * Actual   :INCLUDE
+
+        * */
+
+        assertEquals(Filter.ReturnCode.SEEK_NEXT_USING_HINT, filter.filterKeyValue(null));
+
+    }
+
+}
+
+
+
+It seems to happen on 2.0.0-SNAPSHOT too, but I wasn&amp;amp;apos;t able to link one with included class.
+I have played some time with algorithm, and found that quick fix may be applied to &quot;getNextRangeIndex(byte[] rowKey)&quot; method (hbase-client:1.1.0) :
+
+
+
+if (insertionPosition == 0 &amp;amp;&amp;amp; !rangeList.get(insertionPosition).contains(rowKey)) {
+
+        return ROW_BEFORE_FIRST_RANGE;
+
+}
+
+// FIX START
+
+if(!this.initialized) {
+
+    this.initialized = true;
+
+}
+
+// FIX END
+
+return insertionPosition;
+
+
+
+Thanks, hope it will help.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.2, 1.3.0, 0.98.21</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.MultiRowRangeFilter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.TestMultiRowRangeFilter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-09 22:48:04" id="13858" opendate="2015-06-08 14:23:05" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RS/MasterDumpServlet dumps threads before its Stacks header</summary>
+			
+			
+			<description>The stacktraces are captured using a Hadoop helper method, then its output is merged with the current. I presume there is a simple flush after outputing the &quot;Stack&quot; header missing, before then the caught output is dumped.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.MasterDumpServlet.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-12-30 20:55:32" id="15018" opendate="2015-12-21 09:44:35" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Inconsistent way of handling TimeoutException in the rpc client implementations</summary>
+			
+			
+			<description>If there is any rpc timeout when using RpcClientImpl then we wrap the exception in IOE and throw it,
+
+2015-11-16 04:05:24,935 WARN [main-EventThread.replicationSource,peer2] regionserver.HBaseInterClusterReplicationEndpoint: Can&amp;amp;apos;t replicate because of a local or network error:
+
+java.io.IOException: Call to host-XX:16040 failed on local exception: org.apache.hadoop.hbase.ipc.CallTimeoutException: Call id=510, waitTime=180001, operationTimeout=180000 expired.
+
+at org.apache.hadoop.hbase.ipc.RpcClientImpl.wrapException(RpcClientImpl.java:1271)
+
+at org.apache.hadoop.hbase.ipc.RpcClientImpl.call(RpcClientImpl.java:1239)
+
+at org.apache.hadoop.hbase.ipc.AbstractRpcClient.callBlockingMethod(AbstractRpcClient.java:213)
+
+at org.apache.hadoop.hbase.ipc.AbstractRpcClient$BlockingRpcChannelImplementation.callBlockingMethod(AbstractRpcClient.java:287)
+
+at org.apache.hadoop.hbase.protobuf.generated.AdminProtos$AdminService$BlockingStub.replicateWALEntry(AdminProtos.java:25690)
+
+at org.apache.hadoop.hbase.protobuf.ReplicationProtbufUtil.replicateWALEntry(ReplicationProtbufUtil.java:77)
+
+at org.apache.hadoop.hbase.replication.regionserver.HBaseInterClusterReplicationEndpoint$Replicator.call(HBaseInterClusterReplicationEndpoint.java:322)
+
+at org.apache.hadoop.hbase.replication.regionserver.HBaseInterClusterReplicationEndpoint$Replicator.call(HBaseInterClusterReplicationEndpoint.java:308)
+
+at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+at java.lang.Thread.run(Thread.java:745)
+
+Caused by: org.apache.hadoop.hbase.ipc.CallTimeoutException: Call id=510, waitTime=180001, operationTimeout=180000 expired.
+
+at org.apache.hadoop.hbase.ipc.Call.checkAndSetTimeout(Call.java:70)
+
+at org.apache.hadoop.hbase.ipc.RpcClientImpl.call(RpcClientImpl.java:1213)
+
+... 10 more
+
+
+
+But that isn&amp;amp;apos;t case with AsyncRpcClient, we don&amp;amp;apos;t wrap and throw CallTimeoutException as it is.
+
+2015-12-21 14:27:33,093 WARN  [RS_OPEN_REGION-host-XX:16201-0.replicationSource.host-XX%2C16201%2C1450687255593,1] regionserver.HBaseInterClusterReplicationEndpoint: Can&amp;amp;apos;t replicate because of a local or network error: 
+
+org.apache.hadoop.hbase.ipc.CallTimeoutException: callId=2, method=ReplicateWALEntry, rpcTimeout=600000, param {TODO: class org.apache.hadoop.hbase.protobuf.generated.AdminProtos$ReplicateWALEntryRequest}
+
+	at org.apache.hadoop.hbase.ipc.AsyncRpcClient.call(AsyncRpcClient.java:257)
+
+	at org.apache.hadoop.hbase.ipc.AbstractRpcClient.callBlockingMethod(AbstractRpcClient.java:217)
+
+	at org.apache.hadoop.hbase.ipc.AbstractRpcClient$BlockingRpcChannelImplementation.callBlockingMethod(AbstractRpcClient.java:295)
+
+	at org.apache.hadoop.hbase.protobuf.generated.AdminProtos$AdminService$BlockingStub.replicateWALEntry(AdminProtos.java:23707)
+
+	at org.apache.hadoop.hbase.protobuf.ReplicationProtbufUtil.replicateWALEntry(ReplicationProtbufUtil.java:73)
+
+	at org.apache.hadoop.hbase.replication.regionserver.HBaseInterClusterReplicationEndpoint$Replicator.call(HBaseInterClusterReplicationEndpoint.java:387)
+
+	at org.apache.hadoop.hbase.replication.regionserver.HBaseInterClusterReplicationEndpoint$Replicator.call(HBaseInterClusterReplicationEndpoint.java:370)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+	at java.lang.Thread.run(Thread.java:745)
+
+
+
+I think we should have same behavior across both the implementations.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0, 1.1.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.AsyncRpcClient.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.AbstractRpcClient.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.AbstractTestIPC.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.ipc.RpcClientImpl.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">14937</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-12 23:07:46" id="13839" opendate="2015-06-04 16:02:25" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix AssgnmentManagerTmpl.jamon issues (coloring, content etc.)</summary>
+			
+			
+			<description>The template for the RIT in the Master status page, AssignmentManagerTmpl.jamon) has a few issues:
+
+The oldest RIT should not be red, looks like a failed entry
+The RIT entries should be for example yellow/amber when over the threshold time, and red if 2x the threshold - or red for the oldest once over the threshold.
+
+
+Region count over RIT threshold should only be colored if &amp;gt; 0
+The summary line (first of two) should not be colored unless there is a value &amp;gt; 0 in it.
+
+
+Color is overriden by table-stripped CSS style!
+The Bootstrap stylesheet cancels out the hardcoded coloring! The table-stripped resets the conditional coloring and should be fixed. Best is to use &quot;alert-warning&quot; etc. that come from the Bootstrap theme stylesheet. That should maybe already work in combination with the &quot;table-stripped&quot; from the same.
+
+
+Should sort descending by time
+Currently the list of regions is sorted by encoded region name. Better is to have the table sorted by RIT time descending.
+
+We should also think about a pagination option for the currently hardcoded 100 entries max. Maybe a separate issue?
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.TestMasterStatusServlet.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.RegionStates.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">14975</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-16 23:38:03" id="15441" opendate="2016-03-10 21:29:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix WAL splitting when region has moved multiple times</summary>
+			
+			
+			<description>Currently WAL splitting is broken when a region has been opened multiple times in recent minutes.
+Region open and region close write event markers to the wal. These markers should have the sequence id in them. However it is currently getting 1. That means that if a region has moved multiple times in the last few mins then multiple split log workers will try and create the recovered edits file for sequence id 1. One of the workers will fail and on failing they will delete the recovered edits. Causing all split wal attempts to fail.
+We need to:
+
+make sure that close get the correct sequence id for open.
+Filter all region events from recovered edits
+
+It appears that the close event with a sequence id of one is coming from region warm up.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.2.1, 1.4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.RegionReplicaReplicationEndpoint.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.WALEdit.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.ProtobufUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.wal.TestWALSplit.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.wal.WALSplitter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

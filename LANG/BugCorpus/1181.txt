@@ -1,0 +1,1 @@
+MultilineRecursiveToStringStyle is not public The public access modifier is missing from the MultilineRecursiveToStringStyle class. 

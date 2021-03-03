@@ -1,0 +1,1 @@
+hregionserv getthisip check hadoop config var dn interfac getthisip method hregionserv class check hadoop config var df datanod dn interfac hbase specif configur properti propos config var call hbase regionserv dn interfac check attach patch shortli

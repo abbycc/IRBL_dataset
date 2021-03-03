@@ -1,0 +1,1718 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HBASE">
+	<bug fixdate="2008-02-08 06:45:33" id="421" opendate="2008-02-07 08:24:53" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestRegionServerExit broken</summary>
+			
+			
+			<description>TestRegionServerExit has a couple of problems:
+1. Region server tries to start http server on a port already in use:
+[junit] 2008-02-07 07:01:06,529 FATAL [RegionServer:2] hbase.HRegionServer(867): Failed init
+[junit] java.io.IOException: Problem starting http server
+[junit] 	at org.apache.hadoop.hbase.util.InfoServer.start(InfoServer.java:227)
+[junit] 	at org.apache.hadoop.hbase.HRegionServer.startServiceThreads(HRegionServer.java:928)
+[junit] 	at org.apache.hadoop.hbase.HRegionServer.init(HRegionServer.java:863)
+[junit] 	at org.apache.hadoop.hbase.HRegionServer.run(HRegionServer.java:633)
+[junit] 	at java.lang.Thread.run(Thread.java:595)
+[junit] Caused by: org.mortbay.util.MultiException[java.net.BindException: Address already in use]
+[junit] 	at org.mortbay.http.HttpServer.doStart(HttpServer.java:731)
+[junit] 	at org.mortbay.util.Container.start(Container.java:72)
+[junit] 	at org.apache.hadoop.hbase.util.InfoServer.start(InfoServer.java:205)
+[junit] 	... 4 more
+[junit] 2008-02-07 07:01:06,530 FATAL [RegionServer:2] hbase.HRegionServer(772): Unhandled exception. Aborting...
+The region server that died apparently was serving the root region.
+The test case apparently has a long timeout for finding the root region because you see a lot of 
+ [junit] 2008-02-07 07:04:14,813 DEBUG [Thread-540] hbase.HConnectionManager$TableServers(708): Wake. Retry finding root region.
+[junit] 2008-02-07 07:04:14,814 DEBUG [Thread-540] hbase.HConnectionManager$TableServers(704): Sleeping. Waiting for root region.
+[junit] 2008-02-07 07:04:24,823 DEBUG [Thread-540] hbase.HConnectionManager$TableServers(708): Wake. Retry finding root region.
+[junit] 2008-02-07 07:04:24,827 DEBUG [Thread-540] hbase.HConnectionManager$TableServers(704): Sleeping. Waiting for root region.
+[junit] 2008-02-07 07:04:34,833 DEBUG [Thread-540] hbase.HConnectionManager$TableServers(708): Wake. Retry finding root region.
+[junit] 2008-02-07 07:04:34,836 DEBUG [Thread-540] hbase.HConnectionManager$TableServers(704): Sleeping. Waiting for root region.
+[junit] 2008-02-07 07:04:44,842 DEBUG [Thread-540] hbase.HConnectionManager$TableServers(708): Wake. Retry finding root region.
+until finally the client gives up:
+ [junit] 2008-02-07 07:04:44,843 FATAL [Thread-540] hbase.TestRegionServerExit$1(161): could not re-open meta table because
+[junit] org.apache.hadoop.hbase.NoServerForRegionException: Timed out trying to locate root region
+[junit] 	at org.apache.hadoop.hbase.HConnectionManager$TableServers.locateRootRegion(HConnectionManager.java:718)
+[junit] 	at org.apache.hadoop.hbase.HConnectionManager$TableServers.locateRegion(HConnectionManager.java:329)
+[junit] 	at org.apache.hadoop.hbase.HConnectionManager$TableServers.relocateRegion(HConnectionManager.java:311)
+[junit] 	at org.apache.hadoop.hbase.HConnectionManager$TableServers.locateRegionInMeta(HConnectionManager.java:476)
+[junit] 	at org.apache.hadoop.hbase.HConnectionManager$TableServers.locateRegion(HConnectionManager.java:339)
+[junit] 	at org.apache.hadoop.hbase.HConnectionManager$TableServers.relocateRegion(HConnectionManager.java:311)
+[junit] 	at org.apache.hadoop.hbase.HTable.getRegionLocation(HTable.java:114)
+[junit] 	at org.apache.hadoop.hbase.HTable$ClientScanner.nextScanner(HTable.java:889)
+[junit] 	at org.apache.hadoop.hbase.HTable$ClientScanner.&amp;lt;init&amp;gt;(HTable.java:817)
+[junit] 	at org.apache.hadoop.hbase.HTable.obtainScanner(HTable.java:522)
+[junit] 	at org.apache.hadoop.hbase.HTable.obtainScanner(HTable.java:411)
+[junit] 	at org.apache.hadoop.hbase.TestRegionServerExit$1.run(TestRegionServerExit.java:156)
+[junit] 	at java.lang.Thread.run(Thread.java:595)
+[junit] Exception in thread &quot;Thread-540&quot; junit.framework.AssertionFailedError
+[junit] 	at junit.framework.Assert.fail(Assert.java:47)
+[junit] 	at junit.framework.Assert.fail(Assert.java:53)
+[junit] 	at org.apache.hadoop.hbase.TestRegionServerExit$1.run(TestRegionServerExit.java:162)
+[junit] 	at java.lang.Thread.run(Thread.java:595)
+Which is not the way the test is supposed to run at all.
+It appears that when we start multiple region servers in a MiniHBaseCluster, they all try to start their http server on the same port. In the past I believe that the http server start failure was not fatal, so the test ran.
+We should either have some kind of setting for MiniHBaseCluster that tells the master and region servers not to start their http servers, or some way of telling multiple servers not to start on the same port, or making http startup failure non-fatal.
+Tests like these are good as they (eventually) point out a regression to us.</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestRegionServerExit.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-09 01:55:12" id="426" opendate="2008-02-07 23:32:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>hbase can&amp;apos;t find remote filesystem</summary>
+			
+			
+			<description>If filesystem is remote, e.g. its an Hadoop DFS running &quot;over there&quot;, there is no means of pointing hbase at it currently (unless you count copying hadoop-site.xml into hbase/conf).  Should be possible to just set a fully qualified hbase.rootdir and that should be sufficient for hbase figuring the fs (needs to be backported to 0.1 too).</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMaster.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HLog.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestLogRolling.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestMergeMeta.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestCompaction.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HConstants.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestHStoreFile.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapred.TestTableMapReduce.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.AbstractMergeTestBase.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapred.TestTableIndex.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestDeleteFamily.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HMerge.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HConnectionManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.Migrate.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestDeleteAll.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestHLog.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestTimestamp.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestHRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.MiniHBaseCluster.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HBaseTestCase.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.TestMigrate.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestGet.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestSplit.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestGet2.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-11 17:26:02" id="437" opendate="2008-02-11 05:46:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Clear Command should use system.out</summary>
+			
+			
+			<description>Current clear command doesn&amp;amp;apos;t work, It should use system.out</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.hql.ClearCommand.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-14 19:02:09" id="446" opendate="2008-02-14 02:13:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fully qualified hbase.rootdir doesn&amp;apos;t work</summary>
+			
+			
+			<description>Jim was setting up cluster w/ new hbase.  Setting fully qualified hbase.rootdir was failing.  Complaint was that the filesystems didn&amp;amp;apos;t match  i.e. the hdfs of the fully qualified hbase.rootdir didn&amp;amp;apos;t jibe w/ the default hadoop file:///.
+Fix needs to be backported.
+The problem was that because the hadoop config files were not found (because they are in a different directory and not on the classpath) then fs.get(conf) returns file:///</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMaster.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-26 05:10:32" id="428" opendate="2008-02-08 14:36:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Under continuous upload of rows, WrongRegionExceptions are thrown that reach the client even after retries</summary>
+			
+			
+			<description>I have installed 0.16.0 rc 1 which I believe contains a fix for similar issue HBASE-138,  but I still see the same problem.
+
+I am using a single node.
+The client application runs in a single thread, loading data into a single table.
+I get good throughput of about 200 rows/sec to start with, with occasional significant drops due to NotServingRegionException&amp;amp;apos;s that are recoverable on client retry (internal to hbase).
+After 54 minutes, and about 500,000 rows I start to see WrongRegionException&amp;amp;apos;s in the client application, i.e. real failures. (Note that this compares to 0.15.3 which would being to throw NotServingRegionExceptions after a few tens of thousands of rows).
+
+My data consists of a single table with 5 column families. The data written is as follows:&amp;gt;&amp;gt;
+key: a URL
+family 1: a small string, often emty, 2 longs, 1 int
+family 2: a byte averaging averaging between 1k and 10k, a small string
+family 3: several columns with different names per row, values of small strings
+family 4: most rows have zero columns, some rows have 1 or more columns with a UL value
+The URLs are typically &quot;long-ish&quot; URL as seen when crawling a site, not short home page URLs  
+I am assuming the data is stored in files of the form &amp;lt;hbaseroot&amp;gt;//&amp;lt;tablename&amp;gt;/&amp;lt;9digitnum&amp;gt;/data/mapfiles/&amp;lt;19digitnum&amp;gt;/data. I have attached a csv file showing the distribution of size of these files. Average size is 19Mb, but the sizes are not evenly distributed at all
+Here are two sample exceptions thrown, copied from the region server log:
+2008-02-08 02:08:22,495 INFO org.apache.hadoop.ipc.Server: IPC Server handler 4 on 60020, call batchUpdate(pagefetch,http://galsn1.mobilook.mobiwap.com/bm/listproducts;jsessionid=D2ED1EB898163CDB27135DC2CF6958B3.197B?rsi=78011 wap2 20080102052924,1202401088077, 9223372036854775807, org.apache.hadoop.hbase.io.BatchUpdate@feb215) from 66.135.42.137:38484: error: org.apache.hadoop.hbase.WrongRegionException: Requested row out of range for HRegion pagefetch,http://galsn1.mobilook.mobiwap.com/bm/listproducts;jsessionid=D2ED1EB898163CDB27135DC2CF6958B3.197B?rsi=78011 wap2 20080102052924,1202401088077, startKey=&amp;amp;apos;http://galsn1.mobilook.mobiwap.com/bm/listproducts;jsessionid=D2ED1EB898163CDB27135DC2CF6958B3.197B?rsi=78011 wap2 20080102052924&amp;amp;apos;, getEndKey()=&amp;amp;apos;http://galsn1.mobilook.mobiwap.com/bm/listproducts;jsessionid=D2ED1EB898163CDB27135DC2CF6958B3.197B?rsi=78011 wap2 20080102052924&amp;amp;apos;, row=&amp;amp;apos;http://go2purdue.com/Redeemer_University.cfm?pt=2&amp;amp;sp=2&amp;amp;vid=1199243289_3X02X1468757255&amp;amp;rpt=2&amp;amp;kt=4&amp;amp;kp=1 wap2 20080102081237&amp;amp;apos;
+org.apache.hadoop.hbase.WrongRegionException: Requested row out of range for HRegion pagefetch,http://galsn1.mobilook.mobiwap.com/bm/listproducts;jsessionid=D2ED1EB898163CDB27135DC2CF6958B3.197B?rsi=78011 wap2 20080102052924,1202401088077, startKey=&amp;amp;apos;http://galsn1.mobilook.mobiwap.com/bm/listproducts;jsessionid=D2ED1EB898163CDB27135DC2CF6958B3.197B?rsi=78011 wap2 20080102052924&amp;amp;apos;, getEndKey()=&amp;amp;apos;http://galsn1.mobilook.mobiwap.com/bm/listproducts;jsessionid=D2ED1EB898163CDB27135DC2CF6958B3.197B?rsi=78011 wap2 20080102052924&amp;amp;apos;, row=&amp;amp;apos;http://go2purdue.com/Redeemer_University.cfm?pt=2&amp;amp;sp=2&amp;amp;vid=1199243289_3X02X1468757255&amp;amp;rpt=2&amp;amp;kt=4&amp;amp;kp=1 wap2 20080102081237&amp;amp;apos;
+        at org.apache.hadoop.hbase.HRegion.checkRow(HRegion.java:1486)
+        at org.apache.hadoop.hbase.HRegion.obtainRowLock(HRegion.java:1531)
+        at org.apache.hadoop.hbase.HRegion.batchUpdate(HRegion.java:1226)
+        at org.apache.hadoop.hbase.HRegionServer.batchUpdate(HRegionServer.java:1433)
+        at sun.reflect.GeneratedMethodAccessor10.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:585)
+        at org.apache.hadoop.hbase.ipc.HbaseRPC$Server.call(HbaseRPC.java:413)
+        at org.apache.hadoop.ipc.Server$Handler.run(Server.java:910)
+2008-02-08 02:08:22,696 INFO org.apache.hadoop.ipc.Server: IPC Server handler 6 on 60020, call batchUpdate(pagefetch,http://galsn1.mobilook.mobiwap.com/bm/listproducts;jsessionid=D2ED1EB898163CDB27135DC2CF6958B3.197B?rsi=78011 wap2 20080102052924,1202401088077, 9223372036854775807, org.apache.hadoop.hbase.io.BatchUpdate@15d9be1) from 66.135.42.137:38484: error: org.apache.hadoop.hbase.WrongRegionException: Requested row out of range for HRegion pagefetch,http://galsn1.mobilook.mobiwap.com/bm/listproducts;jsessionid=D2ED1EB898163CDB27135DC2CF6958B3.197B?rsi=78011 wap2 20080102052924,1202401088077, startKey=&amp;amp;apos;http://galsn1.mobilook.mobiwap.com/bm/listproducts;jsessionid=D2ED1EB898163CDB27135DC2CF6958B3.197B?rsi=78011 wap2 20080102052924&amp;amp;apos;, getEndKey()=&amp;amp;apos;http://galsn1.mobilook.mobiwap.com/bm/listproducts;jsessionid=D2ED1EB898163CDB27135DC2CF6958B3.197B?rsi=78011 wap2 20080102052924&amp;amp;apos;, row=&amp;amp;apos;http://go2umass.com/Travel.cfm?pt=2&amp;amp;sp=2&amp;amp;vid=1199230721_3X04X1485302803&amp;amp;rpt=2&amp;amp;kt=5&amp;amp;kp=8 wap2 20080102081239&amp;amp;apos;
+org.apache.hadoop.hbase.WrongRegionException: Requested row out of range for HRegion pagefetch,http://galsn1.mobilook.mobiwap.com/bm/listproducts;jsessionid=D2ED1EB898163CDB27135DC2CF6958B3.197B?rsi=78011 wap2 20080102052924,1202401088077, startKey=&amp;amp;apos;http://galsn1.mobilook.mobiwap.com/bm/listproducts;jsessionid=D2ED1EB898163CDB27135DC2CF6958B3.197B?rsi=78011 wap2 20080102052924&amp;amp;apos;, getEndKey()=&amp;amp;apos;http://galsn1.mobilook.mobiwap.com/bm/listproducts;jsessionid=D2ED1EB898163CDB27135DC2CF6958B3.197B?rsi=78011 wap2 20080102052924&amp;amp;apos;, row=&amp;amp;apos;http://go2umass.com/Travel.cfm?pt=2&amp;amp;sp=2&amp;amp;vid=1199230721_3X04X1485302803&amp;amp;rpt=2&amp;amp;kt=5&amp;amp;kp=8 wap2 20080102081239&amp;amp;apos;
+        at org.apache.hadoop.hbase.HRegion.checkRow(HRegion.java:1486)
+        at org.apache.hadoop.hbase.HRegion.obtainRowLock(HRegion.java:1531)
+        at org.apache.hadoop.hbase.HRegion.batchUpdate(HRegion.java:1226)
+        at org.apache.hadoop.hbase.HRegionServer.batchUpdate(HRegionServer.java:1433)
+        at sun.reflect.GeneratedMethodAccessor10.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:585)
+        at org.apache.hadoop.hbase.ipc.HbaseRPC$Server.call(HbaseRPC.java:413)
+        at org.apache.hadoop.ipc.Server$Handler.run(Server.java:910)</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HStoreFile.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-01 22:06:56" id="480" opendate="2008-02-29 22:38:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Tool to manually merge two regions</summary>
+			
+			
+			<description>hbase-471 needs a tool to merge two regions that have same start key.  This tool may be of use elsewhere making repairs.</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HMerge.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">285</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-04 19:35:11" id="490" opendate="2008-03-04 01:25:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Doubly-assigned .META.; master uses one and clients another</summary>
+			
+			
+			<description>Internal cluster has two .META.,,1 regions up (Its possible for a region to be added twice to the unassigned map if meta scans run close together).  Worse is that the master is working with one .META. but when clients come in, they&amp;amp;apos;re being give the other.  Makes for odd results.
+Made it a blocker.  Still trying to track down how master doesn&amp;amp;apos;t see subsequent update of .META. info in ROOT.....</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.BaseScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.MetaScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.RootScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.Sleeper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.RegionManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-12 16:39:43" id="251" opendate="2008-01-15 20:51:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[hbase] Stuck replaying the edits of crashed machine</summary>
+			
+			
+			<description>Rapleaf master got stuck trying to replay the logs of the server holding the .META. region.   Here are pertinent log excerpts:
+
+2008-01-12 02:17:42,621 DEBUG org.apache.hadoop.hbase.HLog: Creating new log file writer for path /data/hbase1/hregion_1679905157/oldlogfile.log; map content {spider_pages,25_530417241,1200073704087=org.apache.hadoop.io.SequenceFile$RecordCompressWriter@24336556, spider_pages,6_74488371,1200029312876=org.apache.had
+oop.io.SequenceFile$RecordCompressWriter@2a4203ab, spider_pages,2_561473281,1200054637086=org.apache.hadoop.io.SequenceFile$RecordCompressWriter@b972625, .META.,,1=org.apache.hadoop.io.SequenceFile$RecordCompressWriter@67a044a7, spider_pages,5_544278041,1199025825074=org.apache.hadoop.io.SequenceFile$RecordCompress
+Writer@42be0008, spider_pages,49_567090611,1200028378117=org.apache.hadoop.io.SequenceFile$RecordCompressWriter@7bf4cbaa, spider_pages,5_566039401,1200058871594=org.apache.hadoop.io.SequenceFile$RecordCompressWriter@16479e88, spider_pages,59_360738971,1200073647952=org.apache.hadoop.io.SequenceFile$RecordCompressWr
+iter@70494d14, spider_pages,59_302628011,1200073647951=org.apache.hadoop.io.SequenceFile$RecordCompressWriter@654670a8}
+2008-01-12 02:17:44,124 DEBUG org.apache.hadoop.hbase.HLog: Applied 20000 edits
+2008-01-12 02:17:49,076 DEBUG org.apache.hadoop.hbase.HLog: Applied 30000 edits
+2008-01-12 02:17:49,078 DEBUG org.apache.hadoop.hbase.HLog: Applied 30003 total edits
+2008-01-12 02:17:49,078 DEBUG org.apache.hadoop.hbase.HLog: Splitting 1 of 2: hdfs://tf1:7276/data/hbase1/log_XX.XX.XX.32_1200011947645_60020/hlog.dat.003
+2008-01-12 02:17:52,574 DEBUG org.apache.hadoop.hbase.HLog: Applied 10000 edits
+2008-01-12 02:17:59,822 WARN org.apache.hadoop.hbase.HMaster: Processing pending operations: ProcessServerShutdown of XX.XX.XX.32:60020
+java.io.EOFException
+        at java.io.DataInputStream.readFully(DataInputStream.java:180)
+        at org.apache.hadoop.io.DataOutputBuffer$Buffer.write(DataOutputBuffer.java:56)
+        at org.apache.hadoop.io.DataOutputBuffer.write(DataOutputBuffer.java:90)
+        at org.apache.hadoop.io.SequenceFile$Reader.next(SequenceFile.java:1763)
+        at org.apache.hadoop.io.SequenceFile$Reader.next(SequenceFile.java:1663)
+        at org.apache.hadoop.io.SequenceFile$Reader.next(SequenceFile.java:1709)
+        at org.apache.hadoop.hbase.HLog.splitLog(HLog.java:168)
+        at org.apache.hadoop.hbase.HMaster$ProcessServerShutdown.process(HMaster.java:2144)
+        at org.apache.hadoop.hbase.HMaster.run(HMaster.java:1056)
+2008-01-12 02:17:59,822 DEBUG org.apache.hadoop.hbase.HMaster: Main processing loop: ProcessServerShutdown of XX.XX.XX.32:60020
+
+
+It keeps doing the above over and over again.
+I suppose we could skip bad logs... or just shut down master w/ a reason why.
+Odd is that we seem to be well into the file  we&amp;amp;apos;ve run over 10000 edits... before we trip over the EOF.
+I&amp;amp;apos;ve asked for an fsck to see what that says.</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HLog.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is part of" type="Incorporates">433</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-12 17:07:20" id="433" opendate="2008-02-09 23:03:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>region server should deleted restore log after successfull restore</summary>
+			
+			
+			<description>Currently we do not remove the restore log &quot;oldlogfile.log&quot; after we reopen a region after a crashed region server.
+Suggestion would be to remove after we successfully flush of all the edits to a mapfile
+so something like:
+replay log 
+memcache flush
+deleted log
+</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HLog.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="incorporates" type="Incorporates">251</link>
+			
+			
+			<link description="incorporates" type="Incorporates">236</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-13 01:27:32" id="27" opendate="2008-01-24 05:23:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>[hbase] hregioninfo cell empty in meta table</summary>
+			
+			
+			<description>When we notice one of these, instead of reporting on it over and over  see below  lets just axe the whole row.   Its never going to get better on its own.  We should also figure how these horked rows get manufactured.  Below is about split cells but also instances where servercode and servername are all thats left in a row.
+
+2008-01-24 02:01:02,761 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA, info:splitB]
+2008-01-24 02:01:02,761 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA]
+2008-01-24 02:01:02,762 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA]
+2008-01-24 02:01:02,762 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA]
+2008-01-24 02:01:02,762 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA]
+2008-01-24 02:01:02,763 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitB]
+2008-01-24 02:01:02,763 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA, info:splitB]
+2008-01-24 02:01:02,763 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA, info:splitB]
+2008-01-24 02:01:02,764 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA]
+2008-01-24 02:01:02,764 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA, info:splitB]
+2008-01-24 02:01:02,764 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitB]
+2008-01-24 02:01:02,765 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA]
+2008-01-24 02:01:02,765 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA]
+2008-01-24 02:01:02,765 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA]
+2008-01-24 02:01:02,766 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA, info:splitB]
+2008-01-24 02:01:02,766 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA, info:splitB]
+2008-01-24 02:01:02,766 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitB]
+2008-01-24 02:01:02,767 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA, info:splitB]
+2008-01-24 02:01:02,767 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitB]
+2008-01-24 02:01:02,767 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA, info:splitB]
+2008-01-24 02:01:02,768 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitB]
+2008-01-24 02:01:02,768 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitB]
+2008-01-24 02:01:02,768 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA, info:splitB]
+2008-01-24 02:01:02,769 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA, info:splitB]
+2008-01-24 02:01:02,769 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA]
+2008-01-24 02:01:02,769 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA, info:splitB]
+2008-01-24 02:01:02,770 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA, info:splitB]
+2008-01-24 02:01:02,770 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA]
+2008-01-24 02:01:02,771 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA, info:splitB]
+2008-01-24 02:01:02,771 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitB]
+2008-01-24 02:01:02,771 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA, info:splitB]
+2008-01-24 02:01:02,772 WARN org.apache.hadoop.hbase.HMaster:
+info:regioninfo is empty; has keys: [info:splitA]
+
+
+
+</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ServerManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMaster.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.TableOperation.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.BaseScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ProcessServerShutdown.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.RowMap.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-13 19:37:24" id="501" opendate="2008-03-08 02:32:17" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Empty region server address in info:server entry and a startcode of -1 in .META.</summary>
+			
+			
+			<description>Manufactured a region empty server address and a startcode of -1 when a regionserver was slow to open a region and the alternative regionserver that had been asked open the region fails and reports CLOSE to the master.
+Here&amp;amp;apos;s long version of story:
+Region is enwiki_080103,CzQ7UPCw-AoIn2JzSEN_pV==.  Was originally on XX.XX.XX.184:60020 but this node ran out of memory (though it had 2G).
+
+2008-03-08 00:29:39,472 INFO org.apache.hadoop.ipc.Server: IPC Server handler 0 on 60020, call batchUpdate(enwiki_071018,6q_ORe3mPzBTOnenVGS6zk==,1204860472398, 9223372036854775807, org.apache.hadoop.hbase.io.BatchUpdate@126d2380) from XX.XX.XX.233:54292: error: java.io.IOException: java.lang.OutOfMemoryError: Java heap space
+java.io.IOException: java.lang.OutOfMemoryError: Java heap space
+        at java.lang.Object.clone(Native Method)
+        at java.lang.reflect.Method.getParameterTypes(Unknown Source)
+        at java.lang.Class.searchMethods(Unknown Source)
+        at java.lang.Class.getMethod0(Unknown Source)
+        at java.lang.Class.getMethod(Unknown Source)
+        at org.apache.hadoop.hbase.ipc.HbaseRPC$Server.call(HbaseRPC.java:408)
+        at org.apache.hadoop.ipc.Server$Handler.run(Server.java:910)
+2008-03-08 00:29:39,472 WARN org.apache.hadoop.ipc.Server: Out of Memory in server select
+java.lang.OutOfMemoryError: Java heap space
+        at java.util.HashMap.newKeyIterator(Unknown Source)
+        at java.util.HashMap$KeySet.iterator(Unknown Source)
+        at java.util.HashSet.iterator(Unknown Source)
+        at sun.nio.ch.SelectorImpl.processDeregisterQueue(Unknown Source)
+        at sun.nio.ch.PollSelectorImpl.doSelect(Unknown Source)
+        at sun.nio.ch.SelectorImpl.lockAndDoSelect(Unknown Source)
+        at sun.nio.ch.SelectorImpl.select(Unknown Source)
+        at sun.nio.ch.SelectorImpl.select(Unknown Source)
+        at org.apache.hadoop.ipc.Server$Listener.run(Server.java:323)
+2008-03-08 00:31:15,300 INFO org.apache.hadoop.ipc.Server: IPC Server handler 2 on 60020, call batchUpdate(enwiki_080103_meta,,1204867086244, 9223372036854775807, org.apache.hadoop.hbase.io.BatchUpdate@2d13981b) from XX.XX.XX.233:54810: error: java.io.IOException: java.lang.OutOfMemoryError: Java heap space
+java.io.IOException: java.lang.OutOfMemoryError: Java heap space
+        at java.lang.String.&amp;lt;init&amp;gt;(Unknown Source)
+        at java.lang.StringBuilder.toString(Unknown Source)
+        at org.apache.hadoop.hbase.ipc.HbaseRPC$Server.call(HbaseRPC.java:415)
+        at org.apache.hadoop.ipc.Server$Handler.run(Server.java:910)
+
+
+Was given to XX.XX.XX.227 at 00:36:20 but this server is crazy replaying a bunch of edits (Need to stop emitting edits in HStore  496 removed outputting skipped edits).  It can&amp;amp;apos;t put the region up immediately.  Takes a long time. 
+Then given to XX.XX.XX.183 at 00:37:26. It fails to open with:
+
+2008-03-08 00:37:29,827 INFO org.apache.hadoop.hbase.HRegion: compaction completed on region enwiki_071018,AYtsfKtThdIJkVLUSKipA-==,1204860383810. Took 5sec
+2008-03-08 00:37:29,943 ERROR org.apache.hadoop.hbase.HRegionServer: error opening region enwiki_080103,CzQ7UPCw-AoIn2JzSEN_pV==,1204865434985
+org.apache.hadoop.ipc.RemoteException: java.io.IOException: Could not complete write to file /hbase/aa0-005-2.u.powerset.com/enwiki_080103/1578810967/page/mapfiles/5679937491167886060/data by DFSClient_-540201177
+        at org.apache.hadoop.dfs.NameNode.complete(NameNode.java:341)
+        at sun.reflect.GeneratedMethodAccessor19.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+        at java.lang.reflect.Method.invoke(Unknown Source)
+...
+
+
+Sends a CLOSE to the master.
+Then 227 says its successfully opened region.
+Master says region server XX.XX.XX.227:60020 should not have opened region enwiki_080103,CzQ7UPCw-AoIn2JzSEN_pV==,1204865434985
+Now the server field in META is empty.
+
+ 59 2008-03-08 00:38:09,167 DEBUG org.apache.hadoop.hbase.HMaster: HMaster.metaScanner regioninfo: {regionname: enwiki_080103,CzQ7UPCw-AoIn2JzSEN_pV==,1204865434985, startKey: &amp;lt;CzQ7UPCw-AoIn2JzSEN_pV==&amp;gt;, endKey: &amp;lt;DUwzKe-niVjzlXs1SvrvVk==&amp;gt;, encodedName: 1578810967, offline: true, tableDesc: {name: enwiki_080103,         families: {anchor:={name: anchor, max versions: 3, compression: NONE, in memory: false, max length: 2147483647, bloom filter: none}, misc:={name: misc, max versions: 3, compression: NONE, in memory: false, max length: 2147483647, bloom filter: none}, page:={name: page, max versions: 3, compression: NONE, i        n memory: false, max length: 2147483647, bloom filter: none}, redirect:={name: redirect, max versions: 3, compression: NONE, in memory: false, max length: 2147483647, bloom filter: none}}}}, server: , startCode: -1
+
+</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.Sleeper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HLog.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMaster.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ProcessRegionClose.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ProcessServerShutdown.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ServerManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-14 03:43:24" id="510" opendate="2008-03-13 16:41:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HConnectionManger.listTables returns empty list if exception (though there may be many tables present)</summary>
+			
+			
+			<description>Its a problem because commonly a check for existence will get list of current tables.
+Yesterday saw problem when .META. went off line.  A piece of client code was asking for list of tables when .META. was offline, it was getting back an empty list because listTables do while was seeing &amp;amp;apos;org.apache.hadoop.hbase.NotServingRegionException: .META.,,1&amp;amp;apos;
+Problem is the do while in HCM.listTables goes as long as startRow does not equal LAST_ROW but startRow is initialized with EMPTY_START_ROW which is equal to LAST_ROW.
+</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HConnectionManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-14 06:07:04" id="516" opendate="2008-03-14 04:09:19" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HStoreFile.finalKey does not update the final key if it is not the top region of a split region</summary>
+			
+			
+			<description>HStoreKey.finalKey does not update the key value if the HStoreFile is not a part of the top of a split region.</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStoreFile.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-18 19:34:14" id="524" opendate="2008-03-17 20:14:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Problems with getFull</summary>
+			
+			
+			<description>There are some issues with the implementation of getFull in HStore. 
+
+If the loop encounters a deleted cell, it stops iterating. This correctly handles deletes, but then accidentally masks away any cells of different qualifiers that would come afterward
+Since the mapfiles are search oldest to newest, and the results map is only updated when there isn&amp;amp;apos;t already a value in the results map for for the cell we&amp;amp;apos;re currently looking at, older values actually take precedence over newer ones. This may be fixed by simply reversing the order of mapfiles traversed to newest to oldest.
+
+</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestGet2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.Memcache.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestHMemcache.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-21 21:43:25" id="537" opendate="2008-03-21 04:42:19" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>We no longer wait on hdfs to exit safe mode</summary>
+			
+			
+			<description>We used wait on hdfs to exit safe mode before going on to startup hbase but this feature is broken since we moved out of hadoop contrib.  Now when you try start with hdfs in safe mode you get:
+
+08/03/21 04:39:56 FATAL hbase.HMaster: Not starting HMaster because:
+org.apache.hadoop.ipc.RemoteException: org.apache.hadoop.dfs.SafeModeException: Cannot create directory /hbase010. Name node is in safe mode.
+Safe mode will be turned off automatically.
+        at org.apache.hadoop.dfs.FSNamesystem.mkdirsInternal(FSNamesystem.java:1571)
+        at org.apache.hadoop.dfs.FSNamesystem.mkdirs(FSNamesystem.java:1559)
+        at org.apache.hadoop.dfs.NameNode.mkdirs(NameNode.java:422)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+
+
+If you are lucky, it appears on STDOUT/ERR but may just be stuffed into logs and all looks like its running properly.
+Noticed first by Lars George.</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMaster.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-22 22:36:18" id="527" opendate="2008-03-18 00:10:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RegexpRowFilter does not work when there are columns from multiple families</summary>
+			
+			
+			<description>If there are multiple column families, then creating a scanner with a RegexpRowFilter to match column values will mistakenly filter other columns.</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.InclusiveStopRowFilter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.StopRowFilter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.RowFilterSet.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStoreScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.PageRowFilter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.WhileMatchRowFilter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.RegExpRowFilter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.RowFilterInterface.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="incorporates" type="Incorporates">476</link>
+			
+			
+			<link description="relates to" type="Reference">476</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-22 22:37:37" id="476" opendate="2008-02-29 18:26:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RegexpRowFilter behaves incorectly when there are multiple store files</summary>
+			
+			
+			<description>I noticed that after running some table Map/Reduces, then using a
+RegExpRowFilter to scan through the table,  the scanner misses
+rows when its columns are in different stores.
+This (rather convoluted) unit test provokes the behavior.
+
+Set memcache flush size small to trigger multiple stores
+put in 10 row with 2 columns. Each row has the same value for col1 (which the RowFilter wants to match)
+Scan with and without the filter to be sure that we get all the rows with each
+Run an identity table M/R 10 times to fill up the memcache and trigger flush.
+Scan again. This time the filter does not pickup anything.
+
+Attaching the log from this run as well.</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.InclusiveStopRowFilter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.StopRowFilter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.RowFilterSet.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStoreScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.PageRowFilter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.WhileMatchRowFilter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.RegExpRowFilter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.RowFilterInterface.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStore.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is part of" type="Incorporates">527</link>
+			
+			
+			<link description="is related to" type="Reference">527</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-24 22:32:43" id="534" opendate="2008-03-20 16:56:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Double-assignment at SPLIT-time (WAS: Stores retaining references to long-deleted mapfiles)</summary>
+			
+			
+			<description>Saw the following on the Lars clusters (He&amp;amp;apos;s up on 0.16.1 and very recent 0.1 branch) trying to run a scan over all his content:
+
+java.io.IOException: java.io.IOException: HStoreScanner failed construction
+        at org.apache.hadoop.hbase.HStore$StoreFileScanner.&amp;lt;init&amp;gt;(HStore.java:2241)
+        at org.apache.hadoop.hbase.HStore$HStoreScanner.&amp;lt;init&amp;gt;(HStore.java:2362)
+        at org.apache.hadoop.hbase.HStore.getScanner(HStore.java:2152)
+        at org.apache.hadoop.hbase.HRegion$HScanner.&amp;lt;init&amp;gt;(HRegion.java:1640)
+        at org.apache.hadoop.hbase.HRegion.getScanner(HRegion.java:1214)
+        at org.apache.hadoop.hbase.HRegionServer.openScanner(HRegionServer.java:1448)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:585)
+        at org.apache.hadoop.hbase.ipc.HbaseRPC$Server.call(HbaseRPC.java:413)
+        at org.apache.hadoop.ipc.Server$Handler.run(Server.java:910)
+Caused by: java.io.FileNotFoundException: File hdfs://lv1-xen-pdc-2.worldlingo.com:9000/hbase/pdc-docs/1733592281/contents/mapfiles/3435064940161142159/data does not exist.
+        at org.apache.hadoop.dfs.DistributedFileSystem.getFileStatus(DistributedFileSystem.java:341)
+        at org.apache.hadoop.fs.FileSystem.getLength(FileSystem.java:538)
+        at org.apache.hadoop.io.SequenceFile$Reader.&amp;lt;init&amp;gt;(SequenceFile.java:1387)
+        at org.apache.hadoop.io.SequenceFile$Reader.&amp;lt;init&amp;gt;(SequenceFile.java:1382)
+        at org.apache.hadoop.io.MapFile$Reader.&amp;lt;init&amp;gt;(MapFile.java:254)
+        at org.apache.hadoop.io.MapFile$Reader.&amp;lt;init&amp;gt;(MapFile.java:242)
+        at org.apache.hadoop.hbase.HStoreFile$HbaseMapFile$HbaseReader.&amp;lt;init&amp;gt;(HStoreFile.java:600)
+        at org.apache.hadoop.hbase.HStoreFile$BloomFilterMapFile$Reader.&amp;lt;init&amp;gt;(HStoreFile.java:655)
+        at org.apache.hadoop.hbase.HStoreFile$HalfMapFileReader.&amp;lt;init&amp;gt;(HStoreFile.java:758)
+        at org.apache.hadoop.hbase.HStoreFile.getReader(HStoreFile.java:424)
+        at org.apache.hadoop.hbase.HStore$StoreFileScanner.&amp;lt;init&amp;gt;(HStore.java:2216)
+        ... 11 more
+
+        at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+        at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:39)
+        at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:27)
+        at java.lang.reflect.Constructor.newInstance(Constructor.java:494)
+        at org.apache.hadoop.hbase.RemoteExceptionHandler.decodeRemoteException(RemoteExceptionHandler.java:82)
+        at org.apache.hadoop.hbase.HTable$ClientScanner.nextScanner(HTable.java:874)
+        at org.apache.hadoop.hbase.HTable$ClientScanner.next(HTable.java:915)
+        at org.apache.hadoop.hbase.hql.SelectCommand.scanPrint(SelectCommand.java:233)
+        at org.apache.hadoop.hbase.hql.SelectCommand.execute(SelectCommand.java:100)
+        at org.apache.hadoop.hbase.hql.HQLClient.executeQuery(HQLClient.java:50)
+        at org.apache.hadoop.hbase.Shell.main(Shell.java:114)
+
+
+The scanner breaks when it hits the above exception.  The odd thing is that the referenced mapfile is out of a region that was deleted 4 days ago after purportedly all references had been let go:
+
+2008-03-16 15:13:36,744 DEBUG org.apache.hadoop.hbase.HRegion: DELETING region hdfs://lv1-xen-pdc-2.worldlingo.com:9000/hbase/pdc-docs/1733592281
+
+</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.0, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.RegionManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ServerManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-31 19:25:01" id="550" opendate="2008-03-29 17:38:41" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>EOF trying to read reconstruction log stops region deployment</summary>
+			
+			
+			<description>Regions are just being reallocated over and over again because log file is hosed:
+
+2008-03-29 10:37:53,762 ERROR org.apache.hadoop.hbase.HRegionServer: error opening region pdc-docs,EP92114798NWA1,1205741702057
+java.io.EOFException
+        at java.io.DataInputStream.readFully(DataInputStream.java:178)
+        at java.io.DataInputStream.readFully(DataInputStream.java:152)
+        at org.apache.hadoop.io.SequenceFile$Reader.init(SequenceFile.java:1421)
+        at org.apache.hadoop.io.SequenceFile$Reader.&amp;lt;init&amp;gt;(SequenceFile.java:1398)
+        at org.apache.hadoop.io.SequenceFile$Reader.&amp;lt;init&amp;gt;(SequenceFile.java:1387)
+        at org.apache.hadoop.io.SequenceFile$Reader.&amp;lt;init&amp;gt;(SequenceFile.java:1382)
+        at org.apache.hadoop.hbase.HStore.doReconstructionLog(HStore.java:839)
+        at org.apache.hadoop.hbase.HStore.&amp;lt;init&amp;gt;(HStore.java:773)
+        at org.apache.hadoop.hbase.HRegion.&amp;lt;init&amp;gt;(HRegion.java:389)
+        at org.apache.hadoop.hbase.HRegionServer.openRegion(HRegionServer.java:1159)        at org.apache.hadoop.hbase.HRegionServer$Worker.run(HRegionServer.java:1105)
+        at java.lang.Thread.run(Thread.java:595)
+
+</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.1, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStore.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-31 20:53:05" id="551" opendate="2008-03-29 22:00:53" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Master stuck splitting server logs in shutdown loop; on each iteration, edits are aggregated up into the millions</summary>
+			
+			
+			<description>Lars cluster is sick with master trying to split logs.   The logs its replaying have millions of edits in them.  
+Here is sample from log.   First we get the shutdown and then in the shutdown process, we start to split up the shutdown servers log:
+
+2008-03-28 16:29:45,305 INFO org.apache.hadoop.hbase.HMaster: process shutdown of server 192.168.105.37:60020: logSplit: false, rootRes
+canned: false, numberOfMetaRegions: 1, onlineMetaRegions.size(): 1
+2008-03-28 16:29:45,310 INFO org.apache.hadoop.hbase.HLog: splitting 3 log(s) in hdfs://lv1-xen-pdc-2.worldlingo.com:9000/hbase/log_192
+.168.105.37_1206741382563_60020
+2008-03-28 16:29:45,311 DEBUG org.apache.hadoop.hbase.HLog: Splitting 0 of 3: hdfs://lv1-xen-pdc-2.worldlingo.com:9000/hbase/log_192.16
+8.105.37_1206741382563_60020/hlog.dat.002
+2008-03-28 16:29:45,380 DEBUG org.apache.hadoop.hbase.HLog: Creating new log file writer for path hdfs://lv1-xen-pdc-2.worldlingo.com:9
+000/hbase/pdc-docs/488338803/oldlogfile.log and region pdc-docs,EP01108687NWA2,1205739919655
+2008-03-28 16:29:45,390 DEBUG org.apache.hadoop.hbase.HLog: Creating new log file writer for path hdfs://lv1-xen-pdc-2.worldlingo.com:9
+000/hbase/pdc-docs/447465883/oldlogfile.log and region pdc-docs,EP01900680NWA1,1205754584444
+2008-03-28 16:29:45,403 DEBUG org.apache.hadoop.hbase.HLog: Creating new log file writer for path hdfs://lv1-xen-pdc-2.worldlingo.com:9
+000/hbase/pdc-docs/2035706226/oldlogfile.log and region pdc-docs,EP01119588NWA2,1205754281917
+2008-03-28 16:29:45,428 DEBUG org.apache.hadoop.hbase.HLog: Creating new log file writer for path hdfs://lv1-xen-pdc-2.worldlingo.com:9
+000/hbase/pdc-docs/437772136/oldlogfile.log and region pdc-docs,EP00200190NWA2,120576451593
+...
+
+
+We open a file in each region to take edits.  We then start replaying the 3 WAL files from the regionserver.
+On the second one, we get exception... 
+
+2008-03-28 16:40:36,537 WARN org.apache.hadoop.hbase.HLog: Old log file hdfs://lv1-xen-pdc-2.worldlingo.com:9000/hbase/pdc-docs/1045858
+46/oldlogfile.log already exists. Copying existing file to new file
+2008-03-28 16:40:36,545 DEBUG org.apache.hadoop.hbase.HLog: Creating new log file writer for path hdfs://lv1-xen-pdc-2.worldlingo.com:9
+000/hbase/pdc-docs/104585846/oldlogfile.log and region pdc-docs,EP96104830NWA1,1205768785572
+2008-03-28 16:40:36,979 DEBUG org.apache.hadoop.hbase.HLog: Copied 220000 edits
+2008-03-28 16:40:38,853 DEBUG org.apache.hadoop.hbase.HLog: Applied 222812 total edits
+2008-03-28 16:40:38,853 DEBUG org.apache.hadoop.hbase.HLog: Splitting 1 of 3: hdfs://lv1-xen-pdc-2.worldlingo.com:9000/hbase/log_192.16
+8.105.37_1206741382563_60020/hlog.dat.003
+2008-03-28 16:40:56,883 WARN org.apache.hadoop.hbase.HLog: Old log file hdfs://lv1-xen-pdc-2.worldlingo.com:9000/hbase/pdc-docs/2118067
+194/oldlogfile.log already exists. Copying existing file to new file
+2008-03-28 16:40:56,891 DEBUG org.apache.hadoop.hbase.HLog: Creating new log file writer for path hdfs://lv1-xen-pdc-2.worldlingo.com:9
+000/hbase/pdc-docs/2118067194/oldlogfile.log and region pdc-docs,EP97302517NWA2,1205726201776
+2008-03-28 16:41:12,910 DEBUG org.apache.hadoop.hbase.HLog: Applied 36638 total edits
+2008-03-28 16:41:12,910 DEBUG org.apache.hadoop.hbase.HLog: Splitting 2 of 3: hdfs://lv1-xen-pdc-2.worldlingo.com:9000/hbase/log_192.16
+8.105.37_1206741382563_60020/hlog.dat.004
+2008-03-28 16:41:18,684 WARN org.apache.hadoop.hbase.HMaster: Processing pending operations: ProcessServerShutdown of 192.168.105.37:60
+020
+java.io.EOFException
+        at java.io.DataInputStream.readFully(DataInputStream.java:178)
+        at org.apache.hadoop.io.DataOutputBuffer$Buffer.write(DataOutputBuffer.java:56)
+        at org.apache.hadoop.io.DataOutputBuffer.write(DataOutputBuffer.java:90)
+        at org.apache.hadoop.io.SequenceFile$Reader.next(SequenceFile.java:1829)
+        at org.apache.hadoop.io.SequenceFile$Reader.next(SequenceFile.java:1729)
+        at org.apache.hadoop.io.SequenceFile$Reader.next(SequenceFile.java:1775)
+        at org.apache.hadoop.hbase.HLog.splitLog(HLog.java:540)
+        at org.apache.hadoop.hbase.HMaster$ProcessServerShutdown.process(HMaster.java:2167)
+        at org.apache.hadoop.hbase.HMaster.run(HMaster.java:1085)
+
+
+
+A finally clause makes sure we close up all the new files we&amp;amp;apos;ve made in all regions.  These new files have accumulated some edits from the splitting of the first file.
+Because we got an exception, the shutdown processing runs again.
+Because regions have files in place with edits, we won&amp;amp;apos;t overwrite them second time through.  We instead copy the old into a new file to which we start appending until the exception happens again.
+After a couple of hours, we&amp;amp;apos;re up into the millions of edits.</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.1, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HLog.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-01 00:07:32" id="505" opendate="2008-03-11 21:52:58" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Region assignments should never time out so long as the region server reports that it is processing the open request</summary>
+			
+			
+			<description>Currently, when the master assigns a region to a region server, it extends the reassignment timeout when the region server reports that it is processing the open. This only happens once, and so if the region takes a long time to come on line due to a large set of transactions in the redo log or because the initial compaction takes a long time, the master will assign the region to another server when the reassignment timeout occurs.
+Assigning a region to multiple region servers can easily corrupt the region. For example:
+region server 1 is processing the redo log creating a new mapfile. It takes more than one interval to do so so the master assigns the region to region server 2. region server 2 starts processing the redo log creating essentially the same mapFile as region server 1, but with a different name. 
+region server 2 can fail to open the region if region server 1 deletes the old log file or if it tries to open the new mapFile that region server 1 is creating.
+region server 1 can fail to open the region if it tries to open the mapFile that region server 2 is creating.
+Often region server 1 eventually succeeds and reports to the master that it has finished opening the region, but the master tells it to close that region because it has assigned it to another server. Region server 2 often fails to open the region, because the old log file has been deleted, or it fails to process the new map file created by region server 1.
+Proposed solution:
+During the open process the region server should send a MSG_PROCESS_OPEN with each heartbeat until the region is opened (when it sends MSG_REGION_OPEN). The master will extend the reassignment timeout with each MSG_PROCESS_OPEN it receives and will not assign the region to another server so long as it continues to receive heart beat messages from the region server processing the open.</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.1, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.RegionManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-01 17:55:48" id="552" opendate="2008-03-29 22:13:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Bloom filter bugs</summary>
+			
+			
+			<description>There are some bugs in Bloom filters in the code that deals with initialization and (de)serialization.</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.1, 0.2.1, 0.18.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.onelab.filter.DynamicBloomFilter.java</file>
+			
+			
+			<file type="M">org.onelab.filter.Key.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">3063</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-04 19:42:58" id="452" opendate="2008-02-15 21:24:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>&quot;region offline&quot; should throw IOException, not IllegalStateException</summary>
+			
+			
+			<description>It would be nice if I could wrap my HTable.get calls in try {} catch (IOException e).  But that doesn&amp;amp;apos;t work, since I also need to catch IllegalStateException.  I think that any time there is something wrong with hbase, hbase calls should throw an IOException (or subclass thereof).  Things like IllegalStateException should be reserved for programmer error.</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HConnectionManager.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">471</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-04 21:56:30" id="563" opendate="2008-04-04 21:50:16" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestRowFilterAfterWrite erroneously sets master address to 0.0.0.0:60100 rather than relying on conf</summary>
+			
+			
+			<description>TestRowFilterAfterWrite sets HConstants.MASTER_ADDRESS to 0.0.0.0:60100 rather than relying on the setting being in the configuration. Until the latest revision of hadoop-trunk this mysteriously worked. Removing this setting makes it work again.</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.1, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.TestRowFilterAfterWrite.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-14 20:37:48" id="573" opendate="2008-04-11 04:32:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HBase does not read hadoop-*.xml for dfs configuration after moving out hadoop/contrib</summary>
+			
+			
+			<description>When HBase was in hadoop/contrib, the hbase script set both HADOOP_CONF_DIR
+and HBASE_CONF_DIR to CLASSPATH, so that dfs&amp;amp;apos;s configuration can be loaded
+correctly. However, when moved out hadoop/contrib, it only sets HBASE_CONF_DIR.
+I can think of several possible solutions:
+1) set HADOOP_CONF_DIR in hbase-env.sh, then add HADOOP_CONF_DIR to CLASSPATH as before
+2) Instruct user to create links for hadoop-*.xml if they want to customize some dfs settings.
+3) If only a small set of dfs confs are related to dfs&amp;amp;apos;s client, maybe they can be set via  hbase-site.xml, then hbase sets these for us when create a FileSystem obj.
+Please see the thread &quot;# of dfs replications when using hbase&quot; on hbase-user@.
+</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.2, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapred.GroupingTableMap.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapred.IdentityTableMap.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-26 04:54:27" id="613" opendate="2008-05-02 23:47:42" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Timestamp-anchored scanning fails to find all records</summary>
+			
+			
+			<description>If I add 3 versions of a cell and then scan across the first set of added cells using a timestamp that should only get values from the first upload, a bunch are missing (I added 100k on each of the three uploads).  I thought it the fact that we set the number of cells found back to 1 in HStore when we move off current row/column but that doesn&amp;amp;apos;t seem to be it.  I also tried upping the MAX_VERSIONs on my table and that seemed to have no effect.  Need to look closer.
+Build a unit test because replicating on cluster takes too much time.</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.1.3, 0.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.TestMergeTool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HTable.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.MultiRegionTable.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HBaseTestCase.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HAbstractScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.AbstractMergeTestBase.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.Memcache.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.StoreFileScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.TestRegionRebalancing.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="incorporates" type="Incorporates">681</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-12-24 01:38:25" id="543" opendate="2008-03-24 22:26:42" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>A region&amp;apos;s state is kept in several places in the master opening the possibility for race conditions</summary>
+			
+			
+			<description>A region&amp;amp;apos;s state exists in multiple maps in the RegionManager: unassignedRegions, pendingRegions, regionsToClose, closingRegions, regionsToDelete, etc.
+One of these race conditions was found in HBASE-534.
+For HBase-0.1.x, we should just patch the holes we find.
+The ultimate solution (which requires a lot of changes in HMaster) should be applied to HBase trunk.
+Proposed solution:
+Create a class that encapsulates a region&amp;amp;apos;s state and provide synchronized access to the class that validates state changes.
+There should be a single structure that holds regions in these transitional states and it should be a synchronized collection of some kind.</description>
+			
+			
+			<version>0.1.0</version>
+			
+			
+			<fixedVersion>0.19.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.MetaScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.RegionManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ServerManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMaster.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.BaseScanner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.ServerConnection.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ChangeTableState.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ProcessRegionClose.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ProcessServerShutdown.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.client.HConnectionManager.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.ProcessRegionOpen.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="blocks" type="Blocker">546</link>
+			
+			
+			<link description="blocks" type="Blocker">504</link>
+			
+			
+			<link description="relates to" type="Reference">599</link>
+			
+			
+			<link description="is related to" type="Reference">549</link>
+			
+			
+			<link description="is related to" type="Reference">1077</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

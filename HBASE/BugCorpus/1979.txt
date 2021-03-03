@@ -1,0 +1,1 @@
+murmurhash yield result refer implement size 4 2 round murmurhash revers order data length 3 data length 2 data length 1 block process remain byte data len 2 data len 1 data len

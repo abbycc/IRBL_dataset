@@ -1,0 +1,1 @@
+Move all HCatalog classes to org.apache.hive.hcatalog make sure to preserve history in SCM

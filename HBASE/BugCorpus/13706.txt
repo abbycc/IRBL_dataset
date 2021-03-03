@@ -1,0 +1,1 @@
+coprocessorclassload exempt hive class coprocessorclassload load class coprocessor jar class exempt load classload coprocessor jar load parent classpath problem categor exempt org apach hadoop hive packag start org apach hadoop exclud hive class thecoprocessorclassload hbase includ hive jar

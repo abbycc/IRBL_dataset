@@ -1,0 +1,1 @@
+sync method recoverablezookeep fail pass callback function public void sync string path asynccallback voidcallback cb object ctx throw keeperexcept checkzk sync path null null callback function cb pass obviou callback method pass sync oper zookeep amp apo async amp apo oper callback method notifi caller amp apo sync amp apo oper finish

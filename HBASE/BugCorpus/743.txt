@@ -1,0 +1,1 @@
+bin hbase migrat upgrad fail redo log exist migrat hbase 0 1 3 instanc hbase trunk stop hbase 0 1 3 cleanup leav redo log hdf problem migrat data hbase trunk fail find redo log error messag reinstal hbase shut cleanli theori eras redo log work delet redo log manual bad

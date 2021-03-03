@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HIVE">
+	<bug fixdate="2016-04-24 07:34:07" id="13494" opendate="2016-04-12 20:27:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>LLAP: Some metrics from daemon are not exposed to hadoop-metrics2</summary>
+			
+			
+			<description>LlapDaemonInfo is exposed via JMX but not sent to hadoop metrics.
+Async IO metrics also seems incorrect.</description>
+			
+			
+			<version>2.0.1</version>
+			
+			
+			<fixedVersion>2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.encoded.EncodedReaderImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.metrics.LlapDaemonCacheInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.io.decode.EncodedDataConsumer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.io.encoded.OrcEncodedDataReader.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.io.decode.OrcEncodedDataConsumer.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.llap.metrics.LlapDaemonQueueInfo.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.cache.BuddyAllocator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.metrics.LlapDaemonCacheMetrics.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.llap.metrics.MetricsUtils.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.llap.metrics.LlapDaemonQueueMetrics.java</file>
+			
+			
+			<file type="M">org.apache.hive.common.util.FixedSizedObjectPool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.common.Pool.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.io.api.impl.LlapIoImpl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.daemon.impl.LlapDaemon.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.io.decode.OrcColumnVectorProducer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.metrics.LlapDaemonExecutorInfo.java</file>
+			
+			
+			<file type="D">org.apache.hadoop.hive.llap.metrics.LlapMetricsSystem.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.metrics.LlapDaemonExecutorMetrics.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is depended upon by" type="dependent">13536</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-05-12 17:22:50" id="13621" opendate="2016-04-27 00:45:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>compute stats in certain cases fails with NPE</summary>
+			
+			
+			<description>
+
+
+FAILED: NullPointerException null
+
+java.lang.NullPointerException
+
+	at org.apache.hadoop.hive.ql.stats.StatsUtils.getColStatistics(StatsUtils.java:693)
+
+	at org.apache.hadoop.hive.ql.stats.StatsUtils.convertColStats(StatsUtils.java:739)
+
+	at org.apache.hadoop.hive.ql.stats.StatsUtils.getTableColumnStats(StatsUtils.java:728)
+
+	at org.apache.hadoop.hive.ql.stats.StatsUtils.collectStatistics(StatsUtils.java:183)
+
+	at org.apache.hadoop.hive.ql.stats.StatsUtils.collectStatistics(StatsUtils.java:136)
+
+	at org.apache.hadoop.hive.ql.stats.StatsUtils.collectStatistics(StatsUtils.java:124)
+</description>
+			
+			
+			<version>2.0.1</version>
+			
+			
+			<fixedVersion>2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.metastore.hbase.HBaseUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.optimizer.stats.annotation.StatsRulesProcFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.Operator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-07 09:46:08" id="13904" opendate="2016-06-01 15:50:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Ignore case when retrieving ColumnInfo from RowResolver</summary>
+			
+			
+			<description>To reproduce:
+
+-- upper case in subq
+
+explain
+
+select * from src b
+
+where exists
+
+  (select a.key from src a
+
+  where b.VALUE = a.VALUE
+
+  );
+
+
+</description>
+			
+			
+			<version>2.0.1</version>
+			
+			
+			<fixedVersion>2.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.QBSubQuery.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-06-15 15:31:27" id="13987" opendate="2016-06-09 22:38:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Clarify current error shown when HS2 is down</summary>
+			
+			
+			<description>When HS2 is down and a query is run, the following error is shown in beeline:
+
+
+
+0: jdbc:hive2://localhost:10000&amp;gt; show tables;
+
+Error: org.apache.thrift.transport.TTransportException (state=08S01,code=0)
+
+
+
+It may be more helpful to also indicate that the reason for this is that HS2 is down, such as:
+
+
+
+0: jdbc:hive2://localhost:10000&amp;gt; show tables;
+
+HS2 may be unavailable, check server status
+
+Error: org.apache.thrift.transport.TTransportException (state=08S01,code=0)
+
+
+</description>
+			
+			
+			<version>2.0.1</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.beeline.BeeLine.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-14 19:54:18" id="14074" opendate="2016-06-22 05:47:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RELOAD FUNCTION should update dropped functions</summary>
+			
+			
+			<description>Due to HIVE-2573, functions are stored in a per-session registry and only loaded in from the metastore when hs2 or hive cli is started. Running RELOAD FUNCTION in the current session is a way to force a reload of the functions, so that changes that occurred in other running sessions will be reflected in the current session, without having to restart the current session. However, while functions that are created in other sessions will now appear in the current session, functions that have been dropped are not removed from the current session&amp;amp;apos;s registry. It seems inconsistent that created functions are updated while dropped functions are not.</description>
+			
+			
+			<version>2.0.1</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.metadata.Hive.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-07-25 15:47:03" id="14327" opendate="2016-07-25 13:33:48" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Make RPC server inside Hive on Spark port range configuration </summary>
+			
+			
+			<description>Currently the RPC server inside the hive on spark binds to a random port, which causes the issue in production environment that firewall is enabled and certain ports are enabled. Make the range configurable so the admin can control it. 
+
+ .option(ChannelOption.SO_BACKLOG, 1)
+
+      .option(ChannelOption.SO_REUSEADDR, true)
+
+      .childOption(ChannelOption.SO_KEEPALIVE, true)
+
+      .bind(0)
+
+      .sync()
+
+      .channel();
+
+
+</description>
+			
+			
+			<version>2.0.1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.spark.client.rpc.TestRpc.java</file>
+			
+			
+			<file type="M">org.apache.hive.spark.client.rpc.RpcServer.java</file>
+			
+			
+			<file type="M">org.apache.hive.spark.client.rpc.RpcConfiguration.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.conf.HiveConf.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">12222</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-12 20:58:12" id="14433" opendate="2016-08-04 21:02:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>refactor LLAP plan cache avoidance and fix issue in merge processor</summary>
+			
+			
+			<description>Map and reduce processors do this:
+
+    if (LlapProxy.isDaemon()) {
+
+      cache = new org.apache.hadoop.hive.ql.exec.mr.ObjectCache(); // do not cache plan
+
+...
+
+
+
+but merge processor just gets the plan. If it runs in LLAP, it can get a cached plan. Need to move this logic into ObjectCache itself, via a isPlan arg or something. That will also fix this issue for merge processor</description>
+			
+			
+			<version>2.0.1</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.MapJoinOperator.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.tez.MapRecordProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.tez.MergeFileRecordProcessor.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.ObjectCacheFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.exec.tez.ReduceRecordProcessor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-19 07:13:28" id="14566" opendate="2016-08-18 01:35:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>LLAP IO reads timestamp wrongly</summary>
+			
+			
+			<description>HIVE-10127 is causing incorrect results when orc_merge12.q is run in llap.
+It reads timestamp wrongly.
+LLAP IO Enabled
+
+
+hive&amp;gt; select atimestamp1 from alltypesorc3xcols limit 10;
+
+OK
+
+1969-12-31 15:59:46.674
+
+NULL
+
+1969-12-31 15:59:55.787
+
+1969-12-31 15:59:44.187
+
+1969-12-31 15:59:50.434
+
+1969-12-31 16:00:15.007
+
+1969-12-31 16:00:07.021
+
+1969-12-31 16:00:04.963
+
+1969-12-31 15:59:52.176
+
+1969-12-31 15:59:44.569
+
+
+
+LLAP IO Disabled
+
+
+hive&amp;gt; select atimestamp1 from alltypesorc3xcols limit 10;
+
+OK
+
+1969-12-31 15:59:46.674
+
+NULL
+
+1969-12-31 15:59:55.787
+
+1969-12-31 15:59:44.187
+
+1969-12-31 15:59:50.434
+
+1969-12-31 16:00:14.007
+
+1969-12-31 16:00:06.021
+
+1969-12-31 16:00:03.963
+
+1969-12-31 15:59:52.176
+
+1969-12-31 15:59:44.569
+
+
+</description>
+			
+			
+			<version>2.0.1</version>
+			
+			
+			<fixedVersion>2.2.0, 2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.orc.impl.TreeReaderFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.io.orc.encoded.EncodedTreeReaderFactory.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.io.metadata.OrcStripeMetadata.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.llap.io.decode.OrcEncodedDataConsumer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-23 13:09:22" id="14805" opendate="2016-09-21 16:39:58" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Subquery inside a view will have the object in the subquery as the direct input </summary>
+			
+			
+			<description>Here is the repro steps.
+
+create table t1(col string);
+
+create view v1 as select * from t1;
+
+create view dataview as select * from  (select * from v1) v2;
+
+select * from dataview;
+
+
+
+If hive is configured with authorization hook like Sentry, it will require the access not only for dataview but also for v1, which should not be required.
+The subquery seems to not carry insideview property from the parent query.
+</description>
+			
+			
+			<version>2.0.1</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.parse.SemanticAnalyzer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hive.ql.plan.TestViewEntity.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-09-23 13:16:47" id="14820" opendate="2016-09-22 19:45:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RPC server for spark inside HS2 is not getting server address properly</summary>
+			
+			
+			<description>When hive.spark.client.rpc.server.address is configured, this property is not retrieved properly because we are getting the value by String hiveHost = config.get(HiveConf.ConfVars.SPARK_RPC_SERVER_ADDRESS);  which always returns null in getServerAddress() call of RpcConfiguration.java. Rather it should be String hiveHost = config.get(HiveConf.ConfVars.SPARK_RPC_SERVER_ADDRESS.varname);.
+</description>
+			
+			
+			<version>2.0.1</version>
+			
+			
+			<fixedVersion>2.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hive.spark.client.rpc.RpcConfiguration.java</file>
+			
+			
+			<file type="M">org.apache.hive.spark.client.rpc.TestRpc.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

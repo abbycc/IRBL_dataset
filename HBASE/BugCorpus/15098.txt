@@ -1,0 +1,1 @@
+switch configur newli ad global switch enabl function appar hbase default xml lt properti gt lt gt hbase enabl lt gt lt gt fals lt gt lt descript gt set true master region size tabl approxim lt descript gt lt properti gt test class set switch true implement proper statement check properli disabl featur cluster wide

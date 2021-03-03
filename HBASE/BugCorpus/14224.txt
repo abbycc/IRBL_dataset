@@ -1,0 +1,1 @@
+fix coprocessor handl duplic class discuss misti stanlei jone hbase 13907 notic inconsist copro load load consolid

@@ -1,0 +1,1 @@
+thrift server drop connect long scan thrift server connect cach drop connect hbase thrift connect max idletim millisecond time connect object access updat access time scan path default scanner fail 10 minut underli connect object oper path put

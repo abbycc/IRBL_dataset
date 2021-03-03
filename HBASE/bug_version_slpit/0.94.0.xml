@@ -1,0 +1,767 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HBASE">
+	<bug fixdate="2011-11-11 00:47:07" id="4627" opendate="2011-10-19 21:54:43" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Ability to specify a custom start/end to RegionSplitter</summary>
+			
+			
+			<description>HBASE-4489 changed the default endKey on HexStringSplit from 7FFF... to FFFF...  While this is correct, existing users of 0.90 RegionSplitter have 7FFF as the end key in their schema and the last region will not split properly under this new code.  We need to let the user specify a custom start/end key range for when situations like this arise.  Optimally, we should also write the start/end key in META so we could figure this out implicitly instead of requiring the user to explicitly specify it.</description>
+			
+			
+			<version>0.94.0</version>
+			
+			
+			<fixedVersion>0.94.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.RegionSplitter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.Bytes.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.util.TestRegionSplitter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">3778</link>
+			
+			
+			<link description="relates to" type="Reference">4489</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-05-25 04:53:13" id="6086" opendate="2012-05-24 04:55:39" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Admin operations on a table should be authorized against table permissions instead of global permissions.</summary>
+			
+			
+			<description>Still some inconsistency exists after HBASE-6061. We actually need to authorize against table permissions instead of global permissions here.
+
+
+
++  private void requireTableAdminPermission(MasterCoprocessorEnvironment e,
+
++      byte[] tableName) throws IOException {
+
++    if (isActiveUserTableOwner(e, tableName)) {
+
++      requirePermission(Permission.Action.CREATE);
+
++    } else {
+
++      requirePermission(Permission.Action.ADMIN);
+
++    }
+
++  }
+
+
+</description>
+			
+			
+			<version>0.94.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.AccessController.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.TestAccessController.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5372</link>
+			
+			
+			<link description="relates to" type="Reference">6068</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-06-09 18:16:20" id="5372" opendate="2012-02-09 23:16:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Table mutation operations should check table level rights, not global rights </summary>
+			
+			
+			<description>drop/modify/disable/enable etc table operations should not check for global CREATE/ADMIN rights, but table CREATE/ADMIN rights. Since we check for global permissions first for table permissions, configuring table access using global permissions will continue to work. </description>
+			
+			
+			<version>0.94.0</version>
+			
+			
+			<fixedVersion>0.94.1, 0.95.0</fixedVersion>
+			
+			
+			<type>Sub-task</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.AccessController.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.TestAccessController.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6086</link>
+			
+			
+			<link description="is related to" type="Reference">6209</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-06-26 18:41:31" id="6166" opendate="2012-06-05 21:16:29" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Allow thrift to start wih the server type specified in config</summary>
+			
+			
+			<description>Currently the thrift server type must be specified on the command line.  If it&amp;amp;apos;s already in config it shouldn&amp;amp;apos;t be needed.</description>
+			
+			
+			<version>0.94.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.thrift.ThriftServerRunner.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6263</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-02 18:21:07" id="6196" opendate="2012-06-11 07:19:46" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MR testcases TestImportExport does not run in Trunk with hadoop2.0</summary>
+			
+			
+			<description>TEstImportExport test cases does not run in trunk when compiled with hadoop 2.0</description>
+			
+			
+			<version>0.94.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.MapreduceTestingShim.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HBaseTestingUtility.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestImportExport.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5876</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-05 07:31:41" id="5876" opendate="2012-04-25 19:03:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestImportExport has been failing against hadoop 0.23 profile</summary>
+			
+			
+			<description>TestImportExport has been failing against hadoop 0.23 profile</description>
+			
+			
+			<version>0.94.0</version>
+			
+			
+			<fixedVersion>0.94.1, 0.95.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.MapreduceTestingShim.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.HBaseTestingUtility.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestImportExport.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6196</link>
+			
+			
+			<link description="relates to" type="Reference">5870</link>
+			
+			
+			<link description="is depended upon by" type="dependent">6307</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-08-15 19:31:34" id="6263" opendate="2012-06-22 23:33:41" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Use default mode for HBase Thrift gateway if not specified</summary>
+			
+			
+			<description>The Thrift gateway should start with a default mode if one is not selected. Currently, instead we see:
+
+Exception in thread &quot;main&quot; java.lang.AssertionError: Exactly one option out of [-hsha, -nonblocking, -threadpool, -threadedselector] has to be specified
+
+	at org.apache.hadoop.hbase.thrift.ThriftServerRunner$ImplType.setServerImpl(ThriftServerRunner.java:201)
+
+	at org.apache.hadoop.hbase.thrift.ThriftServer.processOptions(ThriftServer.java:169)
+
+	at org.apache.hadoop.hbase.thrift.ThriftServer.doMain(ThriftServer.java:85)
+
+	at org.apache.hadoop.hbase.thrift.ThriftServer.main(ThriftServer.java:192)
+
+
+
+See also BIGTOP-648. </description>
+			
+			
+			<version>0.94.0</version>
+			
+			
+			<fixedVersion>0.94.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.thrift.ThriftServerRunner.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">6166</link>
+			
+			
+			<link description="relates to" type="Reference">648</link>
+			
+			
+			<link description="is depended upon by" type="dependent">960</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-08-25 04:45:24" id="6529" opendate="2012-08-09 07:08:41" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>With HFile v2, the region server will always perform an extra copy of source files</summary>
+			
+			
+			<description>With HFile v2 implementation in HBase 0.94 &amp;amp; 0.96, the region server will use HFileSystem as its fs. When it performs bulk load in Store.bulkLoadHFile(), it checks if its fs is the same as srcFs, which however will be DistributedFileSystem. Consequently, it will always perform an extra copy of source files.</description>
+			
+			
+			<version>0.94.0</version>
+			
+			
+			<fixedVersion>0.94.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.Store.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5640</link>
+			
+			
+			<link description="is related to" type="Reference">5640</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2012-10-02 04:39:35" id="6422" opendate="2012-07-18 19:11:54" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Add switch in LoadIncrementalHFiles API to allow for programatically changing perms on output directory</summary>
+			
+			
+			<description>Hbase bulk load often requires manual chown and permission changes.
+Usually it goes something like try to run completebulkload and it fails with the following hdfs error:
+org.apache.hadoop.security.AccessControlException:
+org.apache.hadoop.security.AccessControlException:
+Permission denied:  user=hbase, access=WRITE, inode=&quot;mydata&quot;:
+hadoop:supergroup:rwxr-xr-x
+To work around this mismatch between Hadoop and HBase user permissions, you can make both users share a group: that is, the user where you run the MapReduce jobs and the user running HBase. Then, after running your MapReduce job, you can chgrp the output directory to the HBase group, and run chmod g+w. This allows the bulk loader to move the files into the HBase data directory.
+It would be useful if there was a way to do this in the LoadIncrementalHFiles API
+It is the case of linux permissions too:
+If we have:
+file owner:me group:me
+We can chown to group:x and owner:x, without needing special permissions
+chown x:x file
+Then when we trigger bulk load, HBase does the fs -mv, and finds that the owner is itself, so no permission hitches. Goes smooth.
+We are thinking that a switch to turn this on/off (default off) would be nice to have.
+</description>
+			
+			
+			<version>0.94.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>New Feature</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.SecureTestUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestLoadIncrementalHFilesSplitRecovery.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.AccessController.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestLoadIncrementalHFiles.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.TestAccessController.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">5498</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-01-15 23:54:10" id="5498" opendate="2012-03-01 00:20:46" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Secure Bulk Load</summary>
+			
+			
+			<description>Design doc: https://cwiki.apache.org/confluence/display/HCATALOG/HBase+Secure+Bulk+Load
+Short summary:
+Security as it stands does not cover the bulkLoadHFiles() feature. Users calling this method will bypass ACLs. Also loading is made more cumbersome in a secure setting because of hdfs privileges. bulkLoadHFiles() moves the data from user&amp;amp;apos;s directory to the hbase directory, which would require certain write access privileges set.
+Our solution is to create a coprocessor which makes use of AuthManager to verify if a user has write access to the table. If so, launches a MR job as the hbase user to do the importing (ie rewrite from text to hfiles). One tricky part this job will have to do is impersonate the calling user when reading the input files. We can do this by expecting the user to pass an hdfs delegation token as part of the secureBulkLoad() coprocessor call and extend an inputformat to make use of that token. The output is written to a temporary directory accessible only by hbase and then bulkloadHFiles() is called.
+</description>
+			
+			
+			<version>0.94.0</version>
+			
+			
+			<fixedVersion>0.94.5, 0.95.0</fixedVersion>
+			
+			
+			<type>Improvement</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.SecureTestUtil.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestLoadIncrementalHFilesSplitRecovery.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.AccessController.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HStore.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestLoadIncrementalHFiles.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.security.access.TestAccessController.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is blocked by" type="Blocker">6432</link>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6422</link>
+			
+			
+			<link description="is part of" type="Incorporates">6101</link>
+			
+			
+			<link description="is part of" type="Incorporates">6096</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-01-16 17:54:00" id="5640" opendate="2012-03-27 01:30:09" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>bulk load runs slowly than before</summary>
+			
+			
+			<description>I am loading data from an external system into hbase. There are many prints of the form. This is possibly a regression caused by a recent patch.
+....on different filesystem than destination store - moving to this filesystem</description>
+			
+			
+			<version>0.94.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.Store.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">6529</link>
+			
+			
+			<link description="relates to" type="Reference">6529</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2013-03-19 22:48:50" id="6446" opendate="2012-07-24 10:21:22" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Replication source will throw EOF exception when hlog size is 0</summary>
+			
+			
+			<description>when master cluster startup new hlog which size is 0 will be created. if we start replication, replication source will print many EOF exception when openreader. I think we need to ignore this case and do not print so many exception warning log .</description>
+			
+			
+			<version>0.94.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.replication.regionserver.ReplicationSource.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is duplicated by" type="Duplicate">7122</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-09-21 22:25:45" id="14079" opendate="2015-07-14 22:53:37" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>improve error message when Master fails to connect to Hadoop-auth</summary>
+			
+			
+			<description>Current error message at INFO level doesn&amp;amp;apos;t give any hint about what keytab and principle are in use
+
+2015-07-14 13:32:48,514 INFO  [main] impl.MetricsConfig: loaded properties from hadoop-metrics2-hbase.properties
+2015-07-14 13:32:48,640 INFO  [main] impl.MetricsSystemImpl: Scheduled snapshot period at 10 second(s).
+2015-07-14 13:32:48,640 INFO  [main] impl.MetricsSystemImpl: HBase metrics system started
+2015-07-14 13:32:48,776 ERROR [main] master.HMasterCommandLine: Master exiting
+java.lang.RuntimeException: Failed construction of Master: class org.apache.hadoop.hbase.master.HMaster
+        at org.apache.hadoop.hbase.master.HMaster.constructMaster(HMaster.java:2258)
+        at org.apache.hadoop.hbase.master.HMasterCommandLine.startMaster(HMasterCommandLine.java:234)
+        at org.apache.hadoop.hbase.master.HMasterCommandLine.run(HMasterCommandLine.java:140)
+        at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:70)
+        at org.apache.hadoop.hbase.util.ServerCommandLine.doMain(ServerCommandLine.java:126)
+        at org.apache.hadoop.hbase.master.HMaster.main(HMaster.java:2272)
+Caused by: javax.security.auth.login.LoginException: Unable to obtain password from user
+        at com.sun.security.auth.module.Krb5LoginModule.promptForPass(Krb5LoginModule.java:856)
+        at com.sun.security.auth.module.Krb5LoginModule.attemptAuthentication(Krb5LoginModule.java:719)
+        at com.sun.security.auth.module.Krb5LoginModule.login(Krb5LoginModule.java:584)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.lang.reflect.Method.invoke(Method.java:606)
+        at javax.security.auth.login.LoginContext.invoke(LoginContext.java:762)
+        at javax.security.auth.login.LoginContext.access$000(LoginContext.java:203)
+        at javax.security.auth.login.LoginContext$4.run(LoginContext.java:690)
+        at javax.security.auth.login.LoginContext$4.run(LoginContext.java:688)
+        at java.security.AccessController.doPrivileged(Native Method)
+        at javax.security.auth.login.LoginContext.invokePriv(LoginContext.java:687)
+        at javax.security.auth.login.LoginContext.login(LoginContext.java:595)
+        at org.apache.hadoop.security.UserGroupInformation.loginUserFromKeytab(UserGroupInformation.java:912)
+        at org.apache.hadoop.security.SecurityUtil.login(SecurityUtil.java:242)
+        at org.apache.hadoop.hbase.security.User$SecureHadoopUser.login(User.java:385)
+        at org.apache.hadoop.hbase.security.User.login(User.java:252)
+        at org.apache.hadoop.hbase.security.UserProvider.login(UserProvider.java:115)
+        at org.apache.hadoop.hbase.master.HMaster.login(HMaster.java:464)
+        at org.apache.hadoop.hbase.regionserver.HRegionServer.&amp;lt;init&amp;gt;(HRegionServer.java:553)
+        at org.apache.hadoop.hbase.master.HMaster.&amp;lt;init&amp;gt;(HMaster.java:351)
+        at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+        at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:57)
+        at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+        at java.lang.reflect.Constructor.newInstance(Constructor.java:526)
+        at org.apache.hadoop.hbase.master.HMaster.constructMaster(HMaster.java:2253)
+        ... 5 more
+increasing to DEBUG also doesn&amp;amp;apos;t help.</description>
+			
+			
+			<version>0.94.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.RSRpcServices.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.HMaster.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">14078</link>
+			
+			
+			<link description="is broken by" type="Regression">2692</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

@@ -1,0 +1,1 @@
+set cell apo seqid compact flow rs compactor performcompact hasmor scanner cell scannercontext output writer cell cell cleanseqid amp amp getsequenceid lt smallestreadpoint cellutil setsequenceid 0 writer append cell clear hasmor scanner choos hbase hstore compact kv max kv cell refer storescann prevcel cleanseqid call scanner call storescann checkscanord throw regionserv

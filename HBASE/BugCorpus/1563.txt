@@ -1,0 +1,1 @@
+incrementcolumnvalu write wal increment write wal failur scenario lose increment flush expos option client write wal

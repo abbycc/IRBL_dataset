@@ -1,0 +1,1 @@
+unhandl regionserv start hbase java lang nullpointerexcept org apach hadoop hbase regionserv hregionserv run hregionserv java 459 java lang thread run thread java 619 region server amp apo log machin machin amp apo ve discuss larsgeorg problem irc channel problem hregionserv implement patch fixi problem attach messag final variant stop hbase fix

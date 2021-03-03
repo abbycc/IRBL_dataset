@@ -1,0 +1,1 @@
+TestHBaseSchemaTool fails on master Presumably because of HIVE-13597

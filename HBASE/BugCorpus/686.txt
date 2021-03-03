@@ -1,0 +1,1 @@
+memcachescann didn apo return row exist hscannerinterfac apo output incorrect htabl obtainscann method return start row exist htabl amp apo javadoc didn amp apo desc found result htabl scanner start row test code review found bug hstore memcach memcachescann constructor set currentrow firstrow amp apo currentrow getnextrow currentrow fetch result

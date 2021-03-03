@@ -1,0 +1,765 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="HBASE">
+	<bug fixdate="2015-06-16 00:42:25" id="13905" opendate="2015-06-15 17:09:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TestRecoveredEdits.testReplayWorksThoughLotsOfFlushing failing consistently on branch-1.1</summary>
+			
+			
+			<description>
+$ JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.79.x86_64 ../apache-maven-3.3.3/bin/mvn -PrunAllTests -DreuseForks=false clean install -Dmaven.test.redirectTestOutputToFile=true -Dsurefire.rerunFailingTestsCount=4 -Dit.test=noItTest
+
+...
+
+org.apache.hadoop.hbase.regionserver.TestRecoveredEdits.testReplayWorksThoughLotsOfFlushing(org.apache.hadoop.hbase.regionserver.TestRecoveredEdits)
+
+  Run 1: TestRecoveredEdits.testReplayWorksThoughLotsOfFlushing:124-&amp;gt;verifyAllEditsMadeItIn:160 
+
+  Run 2: TestRecoveredEdits.testReplayWorksThoughLotsOfFlushing:98  IO The specified r...
+
+  Run 3: TestRecoveredEdits.testReplayWorksThoughLotsOfFlushing:98  IO The specified r...
+
+  Run 4: TestRecoveredEdits.testReplayWorksThoughLotsOfFlushing:98  IO The specified r...
+
+  Run 5: TestRecoveredEdits.testReplayWorksThoughLotsOfFlushing:98  IO The specified r...
+
+
+
+The reruns failed because the test is not idempotent. Perhaps we should have the test startup clean up it&amp;amp;apos;s workspace before starting.
+
+-------------------------------------------------------------------------------
+
+Test set: org.apache.hadoop.hbase.regionserver.TestRecoveredEdits
+
+-------------------------------------------------------------------------------
+
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 33.894 sec &amp;lt;&amp;lt;&amp;lt; FAILURE! - in org.apache.hadoop.hbase.regionserver.TestRecoveredEdits
+
+testReplayWorksThoughLotsOfFlushing(org.apache.hadoop.hbase.regionserver.TestRecoveredEdits)  Time elapsed: 0 sec  &amp;lt;&amp;lt;&amp;lt; ERROR!
+
+java.io.IOException: The specified region already exists on disk: /grid/0/hbase/hbase-server/target/test-data/0c8ee429-8588-41ab-8999-6754588cd4a6/data/default/testReplayWorksThoughLotsOfFlushing/4823016d8fca70b25503ee07f4c6d79f
+
+        at org.apache.hadoop.hbase.regionserver.HRegionFileSystem.createRegionOnFileSystem(HRegionFileSystem.java:877)
+
+        at org.apache.hadoop.hbase.regionserver.HRegion.createHRegion(HRegion.java:5923)
+
+        at org.apache.hadoop.hbase.regionserver.HRegion.createHRegion(HRegion.java:5894)
+
+        at org.apache.hadoop.hbase.regionserver.HRegion.createHRegion(HRegion.java:5869)
+
+        at org.apache.hadoop.hbase.regionserver.HRegion.createHRegion(HRegion.java:5951)
+
+        at org.apache.hadoop.hbase.regionserver.TestRecoveredEdits.testReplayWorksThoughLotsOfFlushing(TestRecoveredEdits.java:98)
+
+
+</description>
+			
+			
+			<version>1.1.1</version>
+			
+			
+			<fixedVersion>2.0.0, 1.0.2, 1.2.0, 1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestRecoveredEdits.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-06-16 01:33:10" id="13888" opendate="2015-06-11 13:31:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix refill bug from HBASE-13686</summary>
+			
+			
+			<description>As I report the RateLimiter fail to limit in HBASE-13686, then Ashish Singhi fix that problem by support two kinds of RateLimiter:  AverageIntervalRateLimiter and FixedIntervalRateLimiter. But in my use of the code, I found a new bug about refill() in AverageIntervalRateLimiter.
+
+
+
+    long delta = (limit * (now - nextRefillTime)) / super.getTimeUnitInMillis();
+
+    if (delta &amp;gt; 0) {
+
+      this.nextRefillTime = now;
+
+      return Math.min(limit, available + delta);
+
+    }   
+
+
+
+When delta &amp;gt; 0, refill maybe return available + delta. Then in the canExecute(), avail will add refillAmount again. So the new avail maybe 2 * avail + delta.
+
+
+
+    long refillAmount = refill(limit, avail);
+
+    if (refillAmount == 0 &amp;amp;&amp;amp; avail &amp;lt; amount) {
+
+      return false;
+
+    }   
+
+    // check for positive overflow
+
+    if (avail &amp;lt;= Long.MAX_VALUE - refillAmount) {
+
+      avail = Math.max(0, Math.min(avail + refillAmount, limit));
+
+    } else {
+
+      avail = Math.max(0, limit);
+
+    } 
+
+
+
+I will add more unit tests for RateLimiter in the next days.
+Review Board: https://reviews.apache.org/r/35384/</description>
+			
+			
+			<version>1.1.1</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.1.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.quotas.RateLimiter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.quotas.TestRateLimiter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.quotas.FixedIntervalRateLimiter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.quotas.AverageIntervalRateLimiter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-07-06 16:05:31" id="13646" opendate="2015-05-08 09:33:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HRegion#execService should not try to build incomplete messages</summary>
+			
+			
+			<description>If some RPC service, called on region throws exception, execService still tries to build Message. In case of complex messages with required fields it complicates service code because service need to pass fake protobuf objects, so they can be barely buildable. 
+To mitigate that I propose to check that controller was failed and return null from call instead of failing with exception.</description>
+			
+			
+			<version>1.1.1</version>
+			
+			
+			<fixedVersion>2.0.0, 0.98.14, 1.2.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegionServer.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.coprocessor.TestRegionServerCoprocessorEndpoint.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.coprocessor.TestCoprocessorEndpoint.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.coprocessor.protobuf.generated.DummyRegionServerEndpointProtos.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.protobuf.ResponseConverter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.RSRpcServices.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-08-18 20:51:36" id="14228" opendate="2015-08-15 18:29:08" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Close BufferedMutator and connection in MultiTableOutputFormat</summary>
+			
+			
+			<description>Close BufferedMutator and connection in MultiTableRecordWriter of MultiTableOutputFormat.</description>
+			
+			
+			<version>1.1.1</version>
+			
+			
+			<fixedVersion>2.0.0, 1.0.2, 1.2.0, 1.1.2, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.MultiTableOutputFormat.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2015-09-07 04:55:24" id="14317" opendate="2015-08-26 18:46:09" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Stuck FSHLog: bad disk (HDFS-8960) and can&amp;apos;t roll WAL</summary>
+			
+			
+			<description>hbase-1.1.1 and hadoop-2.7.1
+We try to roll logs because can&amp;amp;apos;t append (See HDFS-8960) but we get stuck. See attached thread dump and associated log. What is interesting is that syncers are waiting to take syncs to run and at same time we want to flush so we are waiting on a safe point but there seems to be nothing in our ring buffer; did we go to roll log and not add safe point sync to clear out ringbuffer?
+Needs a bit of study. Try to reproduce.</description>
+			
+			
+			<version>1.1.1</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.FSHLog.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestFSErrorsExposed.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.SyncFuture.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.TestLogRolling.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestHRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.LogRoller.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.TestMultiVersionConcurrencyControl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.ProtobufLogWriter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.MultiVersionConcurrencyControl.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.wal.WALKey.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.HLogKey.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.HRegion.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.FSWALEntry.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.io.hfile.HFile.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.regionserver.wal.ProtobufLogReader.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">13971</link>
+			
+			
+			<link description="relates to" type="Reference">16960</link>
+			
+			
+			<link description="is related to" type="Reference">8960</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2015-10-24 09:38:12" id="14343" opendate="2015-08-31 11:58:25" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix debug message in SimpleRegionNormalizer for small regions</summary>
+			
+			
+			<description>The SimpleRegionNormalizer has this:
+
+
+
+     if ((smallestRegion.getSecond() + smallestNeighborOfSmallestRegion.getSecond()
+
+          &amp;lt; avgRegionSize)) {
+
+        LOG.debug(&quot;Table &quot; + table + &quot;, smallest region size: &quot; + smallestRegion.getSecond()
+
+          + &quot; and its smallest neighbor size: &quot; + smallestNeighborOfSmallestRegion.getSecond()
+
+          + &quot;, less than half the avg size, merging them&quot;);
+
+
+
+It does not check for &quot;less than half the avg size&quot; but only &quot;less than the avg size&quot;, that is, drop the &quot;half&quot;. Fix message.</description>
+			
+			
+			<version>1.1.1</version>
+			
+			
+			<fixedVersion>2.0.0, 1.2.0, 1.3.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.normalizer.SimpleRegionNormalizer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-23 04:30:26" id="15247" opendate="2016-02-10 14:12:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>InclusiveStopFilter does not respect reverse Filter property</summary>
+			
+			
+			<description>InclusiveStopFilter only works with non-reversed Scans, it will not filter for reversed Scans, because it doesn&amp;amp;apos;t flip the cmp-operand in the reversed case. In fact, it doesn&amp;amp;apos;t even use the Filter.reverse flag.
+it should be something like this:
+if (reversed) {
+            if (cmp &amp;gt; 0) 
+{
+
+                done = true;
+
+            }
+        }
+        else {
+            if (cmp &amp;lt; 0) {
+                done = true;
+            }
+        }</description>
+			
+			
+			<version>1.1.1</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 0.98.18</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.TestFilter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.filter.InclusiveStopFilter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-02-26 23:22:05" id="15290" opendate="2016-02-19 06:25:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hbase Rest CheckAndAPI should save other cells along with compared cell</summary>
+			
+			
+			<description>Java CheckAndPut API allows users to save Cells (C1..C5) while comparing a Cell C1.
+But in Rest API, even though caller sent multiple cells, hbase rest code is ignoring all the cells except for compare cell.</description>
+			
+			
+			<version>1.1.1</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.2.1, 1.1.4, 0.98.18</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.RowResource.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.RowResourceBase.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.TestGetAndPutResource.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Reference">15323</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-03-16 06:22:27" id="15323" opendate="2016-02-25 03:22:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hbase Rest CheckAndDeleteAPi should be able to delete more cells</summary>
+			
+			
+			<description>Java CheckAndDelete API accepts Delete object which can be used to delete (a cell / cell version / multiple cells / column family or a row), but the rest api only allows to delete the cell (without any version)
+Need to add this capability to rest api.</description>
+			
+			
+			<version>1.1.1</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.2.1, 1.1.4, 0.98.18, 1.4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.RowResource.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.RowResourceBase.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.TestGetAndPutResource.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.rest.client.RemoteHTable.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Reference">15290</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2016-04-17 16:30:17" id="15287" opendate="2016-02-17 22:01:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>mapreduce.RowCounter returns incorrect result with binary row key inputs</summary>
+			
+			
+			<description>org.apache.hadoop.hbase.mapreduce.RowCounter takes optional start/end key as inputs (-range option). It would work only when the string representation of value is identical to the string. When row key is binary,  the string representation of the value would look like this: &quot;\x00\x01&quot;, which would be incorrect interpreted as 8 char string in the current implementation:
+https://github.com/apache/hbase/blob/master/hbase-server/src/main/java/org/apache/hadoop/hbase/mapreduce/RowCounter.java
+To fix that, we need change how the value is converted from command line inputs:
+Change 
+      scan.setStartRow(Bytes.toBytes(startKey));
+to
+      scan.setStartRow(Bytes.toBytesBinary(startKey));
+Do the same conversion to end key as well.
+The issue was discovered when the utility was used to calcualte row distribution on regions from table with binary row keys. The hbase:meta contains the start key of each region in format of above example. </description>
+			
+			
+			<version>1.1.1</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestCellCounter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.SimpleTotalOrderPartitioner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.GroupingTableMapper.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.CopyTable.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapred.GroupingTableMap.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestRowCounter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.RowCounter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestCopyTable.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.CellCounter.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TableInputFormat.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.Export.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.mapreduce.TestImportExport.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2016-08-24 06:08:35" id="16464" opendate="2016-08-22 07:56:11" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>archive folder grows bigger and bigger due to corrupt snapshot under tmp dir</summary>
+			
+			
+			<description>We met the problem on our real production cluster,  we need to cleanup some data on hbase,  we notice the archive folder is much larger than others,  so we delete all snapshots of all tables,  but the archive folder still grows bigger and bigger. 
+After check the hmaster log, we notice the exception below:
+
+
+
+2016-08-22 15:34:33,089 ERROR [f04,16000,1471240833208_ChoreService_1] snapshot.SnapshotHFileCleaner: Exception while checking if files were valid, keeping them just in case.
+
+org.apache.hadoop.hbase.snapshot.CorruptedSnapshotException: Couldn&amp;amp;apos;t read snapshot info from:hdfs://f04/hbase/.hbase-snapshot/.tmp/frog_stastic_2016-08-17/.snapshotinfo
+
+        at org.apache.hadoop.hbase.snapshot.SnapshotDescriptionUtils.readSnapshotInfo(SnapshotDescriptionUtils.java:295)
+
+        at org.apache.hadoop.hbase.snapshot.SnapshotReferenceUtil.getHFileNames(SnapshotReferenceUtil.java:328)
+
+        at org.apache.hadoop.hbase.master.snapshot.SnapshotHFileCleaner$1.filesUnderSnapshot(SnapshotHFileCleaner.java:85)
+
+        at org.apache.hadoop.hbase.master.snapshot.SnapshotFileCache.getSnapshotsInProgress(SnapshotFileCache.java:303)
+
+        at org.apache.hadoop.hbase.master.snapshot.SnapshotFileCache.getUnreferencedFiles(SnapshotFileCache.java:194)
+
+        at org.apache.hadoop.hbase.master.snapshot.SnapshotHFileCleaner.getDeletableFiles(SnapshotHFileCleaner.java:62)
+
+        at org.apache.hadoop.hbase.master.cleaner.CleanerChore.checkAndDeleteFiles(CleanerChore.java:233)
+
+        at org.apache.hadoop.hbase.master.cleaner.CleanerChore.checkAndDeleteEntries(CleanerChore.java:157)
+
+        at org.apache.hadoop.hbase.master.cleaner.CleanerChore.checkAndDeleteDirectory(CleanerChore.java:180)
+
+        at org.apache.hadoop.hbase.master.cleaner.CleanerChore.checkAndDeleteEntries(CleanerChore.java:149)
+
+        at org.apache.hadoop.hbase.master.cleaner.CleanerChore.checkAndDeleteDirectory(CleanerChore.java:180)
+
+        at org.apache.hadoop.hbase.master.cleaner.CleanerChore.checkAndDeleteEntries(CleanerChore.java:149)
+
+        at org.apache.hadoop.hbase.master.cleaner.CleanerChore.checkAndDeleteDirectory(CleanerChore.java:180)
+
+        at org.apache.hadoop.hbase.master.cleaner.CleanerChore.checkAndDeleteEntries(CleanerChore.java:149)
+
+        at org.apache.hadoop.hbase.master.cleaner.CleanerChore.checkAndDeleteDirectory(CleanerChore.java:180)
+
+        at org.apache.hadoop.hbase.master.cleaner.CleanerChore.checkAndDeleteEntries(CleanerChore.java:149)
+
+        at org.apache.hadoop.hbase.master.cleaner.CleanerChore.checkAndDeleteDirectory(CleanerChore.java:180)
+
+        at org.apache.hadoop.hbase.master.cleaner.CleanerChore.checkAndDeleteEntries(CleanerChore.java:149)
+
+        at org.apache.hadoop.hbase.master.cleaner.CleanerChore.chore(CleanerChore.java:124)
+
+        at org.apache.hadoop.hbase.ScheduledChore.run(ScheduledChore.java:185)
+
+        at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+
+        at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:308)
+
+        at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(ScheduledThreadPoolExecutor.java:180)
+
+        at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:294)
+
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+
+        at java.lang.Thread.run(Thread.java:745)
+
+Caused by: java.io.FileNotFoundException: File does not exist: /hbase/.hbase-snapshot/.tmp/frog_stastic_2016-08-17/.snapshotinfo
+
+        at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:71)
+
+        at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:61)
+
+        at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocationsInt(FSNamesystem.java:1828)
+
+        at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1799)
+
+        at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1712)
+
+        at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.getBlockLocations(NameNodeRpcServer.java:587)
+
+        at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.getBlockLocations(ClientNamenodeProtocolServerSideTranslatorPB.java:365)
+
+        at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)
+
+        at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:616)
+
+
+
+It means when SnapshotHFileCleaner begin to cleanup the archive folder, it reads the the snapshot dir to check if any links to hfiles exist, but when read the file /.hbase-snapshot/.tmp/frog_stastic_2016-08-17/.snapshotinfo, corrupt exception thrown out (not sure why the file not found),  and cleanup will be failed.
+When i check the /.hbase-snapshot/.tmp/frog_stastic_2016-08-17, i can see there is only one file exist /hbase/.hbase-snapshot/.tmp/frog_stastic_2016-08-17/region-manifest.8e3179c388e10770eba7d35e30f2777f,  /hbase/.hbase-snapshot/.tmp/frog_stastic_2016-08-17/.snapshotinfo missed. 
+I think we should catch up the exception and delete the file to ensure cleanup will go on.
+</description>
+			
+			
+			<version>1.1.1</version>
+			
+			
+			<fixedVersion>2.0.0, 1.3.0, 1.4.0, 1.1.6, 1.2.3, 0.98.22</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.snapshot.SnapshotFileCache.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.snapshot.SnapshotManifestV2.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.snapshot.TestSnapshotHFileCleaner.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.master.snapshot.TakeSnapshotHandler.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.snapshot.SnapshotTestingUtils.java</file>
+			
+			
+			<file type="M">org.apache.hadoop.hbase.snapshot.SnapshotDescriptionUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

@@ -1,0 +1,1 @@
+enhanc hbase thrift 1 includ append checkandput oper append checkandput function thrift 2 interfac thrift ad support function thrift1

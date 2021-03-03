@@ -1,0 +1,1 @@
+ItemReaderAdapter still implements unnecessary close method Summary says it all

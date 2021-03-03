@@ -1,0 +1,1 @@
+scanner handl heartbeat messag result rs scanner time limit reach mid row state stop scan send back read client mark messag heartbeat messag cell read empti respons clientscann handl situat client empti heartbeat cach empti cach empti end region open scanner region

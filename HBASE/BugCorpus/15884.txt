@@ -1,0 +1,1 @@
+npe storefilescann skipkvsnewerthanreadpoint revers scan part skipkvsnewerthanreadpoint method hf setcurrentcel hf getkeyvalu stopskippingkvsifnextrow amp amp getcompar comparerow cur getrowarrai cur getrowoffset cur getrowlength startkv getrowarrai startkv getrowoffset startkv getrowlength gt 0 hf kv cur set null step throw npe
