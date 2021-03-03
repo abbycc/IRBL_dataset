@@ -1,0 +1,1269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="BATCH">
+	<bug fixdate="2007-12-04 04:17:39" id="244" opendate="2007-12-02 19:42:17" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Repeated processing of items does not work if exception is in first chunk</summary>
+			
+			
+			<description>If an exception occurs during the processing of a chunk an ExceptionHandler in the StepOperations can be used to signal the framework to rollback the current chunk. It is assumed that the default behaviour of the DefaultStepExecutor used in all the examples has the ability to process all items again that could be handled successfully in the previous execution of the chunk. The item which caused the processing of the chunk to fail should be skipped. Unfortunately this does not work out of the box. An attached example which is based on tradeJob.xml should show this.</description>
+			
+			
+			<version>1.0-m3</version>
+			
+			
+			<fixedVersion>1.0-m3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.io.file.support.ResourceLineReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.processor.TradeProcessor.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.support.ResourceLineReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.IbatisDrivingQueryInputSource.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2007-12-10 07:00:22" id="252" opendate="2007-12-09 19:47:25" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HibernateFailureJob does not fail as expected</summary>
+			
+			
+			<description>HibernateFailureJob testcase expects the job to end with exception, but does not check it really does. In fact the job doesn&amp;amp;apos;t fail and the assert in catch block is never executed (although it would have passed if it was).</description>
+			
+			
+			<version>1.0-m3</version>
+			
+			
+			<fixedVersion>1.0.0.m4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.sample.HibernateFailureJobFunctionalTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2007-12-11 21:51:28" id="250" opendate="2007-12-07 23:20:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Wrong DB Schema for DB2 for z/OS</summary>
+			
+			
+			<description>The batch tables defnied in the schema definition for DB2 do not work out of the box with the framework DAOs when they are created on DB2 for z/OS. There&amp;amp;apos;s a problem with the SCHEDULE_DATE column.</description>
+			
+			
+			<version>1.0-m3</version>
+			
+			
+			<fixedVersion>1.0.0.m4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.SqlJobDao.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2007-12-18 04:48:04" id="212" opendate="2007-11-20 18:53:05" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Merge InputSource with ItemProvider</summary>
+			
+			
+			<description>Merge InputSource with ItemProvider - there is no real need for two interfaces, and ItemProvider is probably fine to keep.  The only complication is recovery - it needs to be delegated to a new marker interface (maybe replacing Recoverable).</description>
+			
+			
+			<version>1.0-m3</version>
+			
+			
+			<fixedVersion>1.0.0.m4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.retry.policy.ItemReaderRetryPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.launch.SimpleJobTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.tasklet.ExceptionRestartableTaskletTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.provider.StagingItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.callback.ItemReaderRetryCallbackTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.tasklet.RestartableItemOrientedTaskletTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.tasklet.ItemOrientedTaskletTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.callback.ItemReaderRetryCallback.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.DefaultStepExecutorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.tasklet.ItemOrientedTasklet.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.processor.PropertyExtractingDelegatingItemProcessor.java</file>
+			
+			
+			<file type="D">org.springframework.batch.retry.policy.ItemProviderRetryPolicyTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.ItemProvider.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.domain.PersonService.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.tasklet.ExceptionRestartableTasklet.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.tasklet.SimpleTradeTaskletTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.support.ResourceLineReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.FooInputSource.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.sql.AbstractJdbcInputSourceIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.jms.ExternalRetryTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.file.support.DefaultFlatFileInputSource.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.driving.SingleColumnJdbcDrivingQueryInputSourceIntegrationTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.file.support.SimpleFlatFileInputSource.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.driving.IbatisInputSourceIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.support.AbstractDelegatorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.FixedLengthImportJobFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.retry.callback.ItemProviderRetryCallbackTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.retry.callback.ItemProviderRetryCallback.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.RepeatCallback.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.provider.TransactionAwareListItemProviderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.ItemProviderTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.cursor.HibernateCursorInputSource.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.support.IbatisKeyGenerator.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.provider.InputSourceItemProviderTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.retry.ListItemProviderRecoverer.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.file.support.StaxEventReaderInputSourceTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.provider.InputSourceItemProvider.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.provider.AggregateItemProviderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.FailedItemIdentifier.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.provider.JmsItemProviderTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.tasklet.ItemProviderProcessTasklet.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.processor.DelegatingItemProcessor.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.file.support.DefaultFlatFileInputSourceTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.driving.IbatisDrivingQueryInputSource.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.support.AbstractDataSourceInputSourceIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.retry.jms.SynchronousTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.InputSource.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.driving.DrivingQueryInputSourceTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.provider.JmsItemProvider.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.file.support.StaxEventReaderInputSource.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.tasklet.SimpleTradeTasklet.java</file>
+			
+			
+			<file type="D">org.springframework.batch.support.AbstractDelegator.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.provider.OrderItemProvider.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.support.AbstractTransactionalIoSourceTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.provider.StagingItemProvider.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.support.ChunkedRepeatTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.provider.DelegatingItemProvider.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.provider.OrderItemProviderTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.tasklet.RestartableItemProviderTasklet.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.oxm.AbstractStaxEventReaderInputSourceTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.repeat.callback.ItemProviderRepeatCallback.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.provider.DelegatingItemProviderIntegrationTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.provider.AggregateItemProvider.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.oxm.CastorUnmarshallingTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.support.AsynchronousRepeatTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.provider.StagingItemProviderTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.cursor.JdbcCursorInputSourceIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.jms.SynchronousTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.tasklet.RestartableItemProviderTaskletTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.support.MultipleColumnJdbcKeyGenerator.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.driving.DrivingQueryInputSource.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.processor.DelegatingItemProcessorIntegrationTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.tasklet.ItemProviderProcessTaskletTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.cursor.HibernateCursorInputSourceIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.oxm.XStreamUnmarshallingTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.support.AbstractTradeBatchTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.provider.ValidatingItemProvider.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.file.support.SimpleFlatFileInputSourceTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.provider.AbstractItemProvider.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.cursor.JdbcCursorInputSource.java</file>
+			
+			
+			<file type="M">org.springframework.batch.jms.ExternalRetryInBatchTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.support.AbstractTransactionalIoSource.java</file>
+			
+			
+			<file type="D">org.springframework.batch.repeat.callback.ItemProviderRepeatCallbackTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.provider.ValidatingItemProviderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.support.SimpleRepeatTemplateTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.driving.MultipleColumnJdbcDrivingQueryInputSourceIntegrationTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.retry.policy.ItemProviderRetryPolicy.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.provider.ListItemProviderTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.provider.ListItemProvider.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.cursor.HibernateCursorInputSourceStatefulIntegrationTests.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depends">222</link>
+			
+			
+			<link description="is depended on by" type="Depends">230</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2007-12-19 00:01:56" id="170" opendate="2007-10-15 09:14:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Concurrent modification of StepExecution when running an asynchrounous step operation</summary>
+			
+			
+			<description>Use of a hibernateJobDao eventually results in a StaleObjectStateException when running an asynchrounous step operation:
+  &amp;lt;bean id=&quot;myStepExecutor&quot; class=&quot;org.springframework.batch.execution.step.simple.SimpleStepExecutor&quot; scope=&quot;prototype&quot;&amp;gt;
+    &amp;lt;property name=&quot;transactionManager&quot; ref=&quot;txManager&quot; /&amp;gt;
+    &amp;lt;property name=&quot;repository&quot; ref=&quot;simpleJobRepository&quot; /&amp;gt;  
+    &amp;lt;property name=&quot;stepOperations&quot;&amp;gt;
+      &amp;lt;bean class=&quot;org.springframework.batch.repeat.support.TaskExecutorRepeatTemplate&quot;&amp;gt;
+        &amp;lt;property name=&quot;taskExecutor&quot; ref=&quot;threadPoolTaskExecutor&quot;/&amp;gt;        
+      &amp;lt;/bean&amp;gt;
+    &amp;lt;/property&amp;gt;    
+  &amp;lt;/bean&amp;gt;
+See:
+http://forum.springframework.org/showthread.php?t=44884</description>
+			
+			
+			<version>1.0-m3</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.StepContribution.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.SqlStepDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.repository.dao.MockJdbcTemplate.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.SqlStepDaoPrefixTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.EntityTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.Entity.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.AbstractStepDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.SimpleStepExecutor.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.SimpleJobRepository.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.SqlStepDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.StepExecution.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.provider.StagingItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.StepExecutionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.SimpleJobRepositoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.JobInstance.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.SqlJobDaoQueryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.DefaultStepExecutorTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2007-12-19 07:19:22" id="261" opendate="2007-12-18 21:35:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FixedLengthTokenizer by default maps zero padded numeric fields as octal.</summary>
+			
+			
+			<description>A common formatting for numeric fields in simple flat batch input files is to pad the numeric data with leading zeros. e.g. the value 9 in a field of width 7 would be represented &quot;0000009&quot;.  Using just the DefaultFlatFileInputSource and the FixedLengthTokenizer from Spring batch 1.0-m3 to parse the input record causes the following error, as, by default, the conversion is done using Long.decode and this assumes that leading zeros imply octal. This issue was raised with Lucas Ward at the  Spring Experience  2007 who said he considered this effect on batch input data  to be a bug, and requested that we raise this issue on the JIRA.
+Exception in thread &quot;main&quot; org.springframework.batch.io.exception.FlatFileParsingException: Parsing error
+	at org.springframework.batch.io.file.support.SimpleFlatFileInputSource.read(SimpleFlatFileInputSource.java:198)
+&amp;lt;snip&amp;gt;
+Caused by: org.springframework.beans.PropertyBatchUpdateException; nested PropertyAccessExceptions (1) are:
+PropertyAccessException 1: org.springframework.beans.TypeMismatchException: Failed to convert property value of type [java.lang.String] to required type [java.lang.Long] for property &amp;amp;apos;recordSequenceNumber&amp;amp;apos;; nested exception is java.lang.NumberFormatException: For input string: &quot;0000009&quot;
+Here is a cut down version of the relevant beans in the XML config. A simple POJO was created to receive the data with the type of RecordSequenceNumber being Long.
+	&amp;lt;bean id=&quot;InterchangeTokenizer&quot;
+		class=&quot;org.springframework.batch.io.file.support.transform.FixedLengthTokenizer&quot;&amp;gt;
+		&amp;lt;property name=&quot;names&quot;
+			value=&quot;RecordSequenceNumber&quot; /&amp;gt;
+		&amp;lt;property name=&quot;columns&quot;
+			value=&quot;4-11&quot; /&amp;gt;
+	&amp;lt;/bean&amp;gt;
+	&amp;lt;bean id=&quot;inputSource&quot;
+		class=&quot;org.springframework.batch.io.file.support.DefaultFlatFileInputSource&quot;&amp;gt;
+		&amp;lt;property name=&quot;resource&quot; value=&quot;file:input.txt&quot; /&amp;gt;
+		&amp;lt;property name=&quot;fieldSetMapper&quot; ref=&quot;InterchangeMapper&quot; /&amp;gt;
+		&amp;lt;property name=&quot;tokenizer&quot; ref=&quot;InterchangeTokenizer&quot; /&amp;gt;
+	&amp;lt;/bean&amp;gt;
+	&amp;lt;bean id=&quot;InterchangeMapper&quot;
+		class=&quot;org.springframework.batch.io.file.support.mapping.BeanWrapperFieldSetMapper&quot;&amp;gt;
+		&amp;lt;property name=&quot;targetType&quot;
+			value=&quot;com.aciworldwide.backoffice.interchange.InterchangeIncomingTransaction&quot; /&amp;gt;
+	&amp;lt;/bean&amp;gt;
+It would be better if the default for processing this type of field was to assume BASE-10, or, perhaps, alternatively if there was a way of specifiying the numeric base of the fields on the tokenizer.</description>
+			
+			
+			<version>1.0-m3</version>
+			
+			
+			<fixedVersion>1.0.0.m4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.io.file.FieldSetTests.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depends">154</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2007-12-20 22:21:56" id="243" opendate="2007-11-30 00:12:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Register Job twice if beanName property is used to define a job name</summary>
+			
+			
+			<description>When the &quot;jobConfiguration&quot; bean is defined:
+      	&amp;lt;bean id=&quot;jobConfiguration&quot; parent=&quot;simpleJob&quot;&amp;gt;
+		&amp;lt;property name=&quot;beanName&quot; value=&quot;ibSplit&quot;/&amp;gt;
+		&amp;lt;property name=&quot;steps&quot;&amp;gt;
+                .... ... ...
+      the framework (org.springframework.batch.execution.configuration.MapJobConfigurationRegistry) registers the job with the &quot;beanName&quot; value, and then re-registers it with the bean&amp;amp;apos;s &quot;id&quot; value due to the BeanAwareness:
+    springframework/batch/core/configuration/JobConfiguration.java:
+    /** 
+
+The callback from 
+{@link BeanNameAware}
+ comes after the setters, so it
+will always overwrite the name with the bean id.
+
+@see org.springframework.beans.factory.BeanNameAware#setBeanName(java.lang.String)
+     */
+    public void setBeanName(String name) 
+{
+        this.name = name;
+    }
+ 
+
+    Hence I commented &amp;lt;!-- &amp;lt;property name=&quot;beanName&quot; value=&quot;ibSplit&quot;/&amp;gt; --&amp;gt; and changed the &quot;id&quot; to the actual jobname. I guess the way it works right now is the intended behavior, but that is not how it worked before according to the code I picked up.
+</description>
+			
+			
+			<version>1.0-m3</version>
+			
+			
+			<fixedVersion>1.0.0.m4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.execution.configuration.JobConfigurationRegistryBeanPostProcessorTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2007-12-21 19:42:02" id="262" opendate="2007-12-20 23:26:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Hibernate Job  blocks on flush</summary>
+			
+			
+			<description>Hibernate Job  blocks on flush (using real database).  The driving query input source is putting a range lock on the Customer objects.</description>
+			
+			
+			<version>1.0-m3</version>
+			
+			
+			<fixedVersion>1.0.0.m4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.sample.AbstractCustomerCreditIncreaseTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-01-16 23:12:25" id="296" opendate="2008-01-16 00:56:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>rollback of first chunk fails</summary>
+			
+			
+			<description>The attached test (a modification of the current one) shows that a roll back that occurs in the first chunk, of a step, does not properly reset the input source to the first record. But, instead, continues with the next record after the rollback is executed.
+I believe the solution is to call the inputreader.mark() as part of the open() method in DefaultFlatFileInputSource.java</description>
+			
+			
+			<version>1.0-m3</version>
+			
+			
+			<fixedVersion>1.0-m3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.io.file.DefaultFlatFileItemReaderTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-01-20 23:41:31" id="281" opendate="2008-01-12 22:10:48" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Null fields cause problems in Oracle and Derby</summary>
+			
+			
+			<description>Null fields cause problems in Oracle and Derby.  See forum (http://forum.springframework.org/showthread.php?t=46821) for more information.</description>
+			
+			
+			<version>1.0-m3</version>
+			
+			
+			<fixedVersion>1.0.0.m4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.AbstractJobDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.runtime.ScheduledJobIdentifier.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.JdbcJobDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.JdbcJobDaoTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-01-23 20:41:50" id="305" opendate="2008-01-22 06:32:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ItemProvider still referenced in comments / variable naming in ItemOrientedTasklet</summary>
+			
+			
+			<description>In ItemOrientedTasklet, parameter and member field are called itemProvider but method name and type are ItemReader - this is inconsistent. Additionally, ItemReader is still referred to as ItemProvider inconsistently throughout comments.</description>
+			
+			
+			<version>1.0-m3</version>
+			
+			
+			<fixedVersion>1.0.0.m4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.reader.ItemReaderAdapter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.reader.DelegatingItemReaderIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.reader.ValidatingItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.tasklet.ItemOrientedTaskletTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.processor.CompositeItemProcessor.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.tasklet.ItemOrientedTasklet.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-01-23 22:50:54" id="312" opendate="2008-01-23 20:25:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix JMX demo now that JobIdentifier has been replaced with JobParameters</summary>
+			
+			
+			<description>Fix JMX demo now that JobIdentifier has been replaced with JobParameters</description>
+			
+			
+			<version>1.0-m3</version>
+			
+			
+			<fixedVersion>1.0.0.m4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.ExportedJobLauncher.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-01-30 02:50:39" id="304" opendate="2008-01-22 00:35:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BatchCommandLineLauncher simplified and rename</summary>
+			
+			
+			<description>BatchCommandLineLauncher simplified and renamed.  There are simply too many ways to skin this cat, and we don&amp;amp;apos;t want to try and cover everyone&amp;amp;apos;s preferences in one main method.  Rename as SimpleCommandLineJobDispatcher (or something?), and make it work in the simple case that there is one application context (in XML) and a named Job (possibly one of many), with two optional runtime parameters (a key and a schedule date).  The JobLauncher is identified by type.</description>
+			
+			
+			<version>1.0-m3</version>
+			
+			
+			<fixedVersion>1.0.0.m4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.runtime.JobParametersFactory.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.JobParameters.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.DefaultJobParametersFactory.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.CommandLineJobRunner.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.DefaultJobParametersFactoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.CommandLineJobRunnerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.ScheduledJobParametersFactoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.ExitCodeMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.ScheduledJobParametersFactory.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.NoSuchJobException.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.resource.DefaultJobInstanceLabelGeneratorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.JobParametersPropertyEditorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.JobParametersBuilderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.JobParametersPropertyEditor.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.JobInstance.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.JobInstanceTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.SimpleJobRepository.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.launch.JobLauncher.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.AbstractJobDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.launch.SimpleJobLauncher.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.JdbcJobDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.MapJobDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.JobParametersBuilder.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.resource.DefaultJobInstanceLabelGenerator.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.bootstrap.support.ScheduledJobInstancePropertiesFactoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.JobRepository.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.JobDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.runtime.SimpleJobIdentifierTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.ExportedJobLauncher.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.resource.DefaultJobIdentifierLabelGeneratorTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.runtime.ScheduledJobIdentifier.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.runtime.ScheduledJobIdentifierTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.resource.JobIdentifierLabelGenerator.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.domain.JobIdentifier.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.runtime.DefaultJobIdentifierTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.runtime.SimpleJobIdentifier.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.launch.JobExecutorFacade.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.dao.JdbcJobRepositoryTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.runtime.DefaultJobIdentifier.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.resource.DefaultJobIdentifierLabelGenerator.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.launch.SimpleJobExecutorFacade.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.BatchStatus.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.BatchStatusTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.runtime.JobIdentifierFactory.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.SimpleStepExecutorFactoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.SimpleCommandLineJobRunnerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.launch.SimpleJobLauncherTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.runtime.DefaultJobIdentifierFactory.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.runtime.ScheduledJobIdentifierFactoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.SimpleJobRepositoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.MapJobDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.GracefulShutdownFunctionalTest.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.bootstrap.support.JobIdentifierPropertyEditor.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.AbstractStepDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.JobExecutionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.RestartFunctionalTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.StepExecutionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.JobRepositorySupport.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.launch.SimpleJobTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.domain.JobInstanceProperties.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.processor.StagingItemProcessorTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.runtime.SimpleJobIdentifierFactoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.StubJobLauncher.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.runtime.ScheduledJobIdentifierFactory.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.JdbcJobDaoQueryTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.domain.JobInstancePropertiesBuilder.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.AbstractBatchLauncherTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.AbstractCustomerCreditIncreaseTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.MapStepDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.job.DefaultJobExecutorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.reader.StagingItemReaderTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.runtime.SimpleJobIdentifierFactory.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.DefaultStepExecutorTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.domain.JobInstancePropertiesTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.runtime.DefaultJobIdentifierFactoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.SimpleCommandLineJobRunner.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.HibernateFailureJobFunctionalTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.StepExecutorInterruptionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.domain.JobInstancePropertiesBuilderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.JdbcStepDaoPrefixTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.bootstrap.support.JobIdentifierPropertyEditorTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.bootstrap.support.ScheduledJobInstancePropertiesFactory.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.resource.BatchResourceFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.StepInstanceTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.AbstractValidatingBatchLauncherTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.bootstrap.support.SimpleCommandLineJobDispatcherTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.bootstrap.support.SimpleCommandLineJobDispatcher.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.bootstrap.support.BatchCommandLineLauncherTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.bootstrap.support.BatchCommandLineLauncher.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-11 03:22:53" id="268" opendate="2008-01-03 01:33:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>retry configuration for ItemOrientedTasklet</summary>
+			
+			
+			<description>ItemOrientedTasklet no longer has a setter for RetryOperations which allowed to configure retry behaviour. Now only RetryPolicy can be set, but tasklet wraps it by ItemReaderRetryPolicy which rethrows exceptions by default, so exception always causes immediate rollback no matter what RetryPolicy was injected into the tasklet.</description>
+			
+			
+			<version>1.0-m3</version>
+			
+			
+			<fixedVersion>1.0.0.m5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.stream.ItemStreamAdapter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.policy.DefaultResultCompletionPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.policy.CompletionPolicySupport.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.SimpleStepExecutor.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.jms.ExternalRetryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.reader.DelegatingItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.policy.CompositeCompletionPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.jms.ExternalRetryInBatchTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.DefaultFlatFileItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.exception.WriteFailureException.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.callback.NestedRepeatCallback.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.AbstractItemReaderRecoverer.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.exception.ReadFailureException.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.AbstractStep.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depends">334</link>
+			
+			
+			<link description="is related to" type="Related">334</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-31 20:48:28" id="198" opendate="2007-11-12 17:58:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Make backoff policy tests less sensitive to virtualisation</summary>
+			
+			
+			<description>Make backoff policy tests less sensitive to virtualisation - they keep failing because they run too slowly.</description>
+			
+			
+			<version>1.0-m3</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.retry.backoff.StatelessBackOffPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.backoff.ExponentialBackOffPolicyTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.backoff.FixedBackOffPolicyTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.backoff.FixedBackOffPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.backoff.ExponentialBackOffPolicy.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

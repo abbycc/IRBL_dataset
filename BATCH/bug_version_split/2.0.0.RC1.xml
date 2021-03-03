@@ -1,0 +1,1056 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="BATCH">
+	<bug fixdate="2009-02-27 22:03:10" id="1106" opendate="2009-02-26 06:20:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SqlPagingQueryProviderFactoryBean ascending should default to true</summary>
+			
+			
+			<description>Kind of a minor issue, though it did cause me a lot of grief.  On switching to RC1 and updating my previous SimpleDelegatingPagingQueryProvider beans to use the new SqlPagingQueryProviderFactoryBean, I got was no longer getting anything past the first page of results because it was suddenly ordering &amp;amp;apos;DESC&amp;amp;apos; instead of &amp;amp;apos;ASC&amp;amp;apos;.  Even though the ascending property defaults to true in the actual query providers, the factory bean is explicitly setting the property every time and it defaults to false there.</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.mapping.PrefixMatchingCompositeLineMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.support.PatternMatcherTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.support.PatternMatcher.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.mapping.PrefixMatchingCompositeLineMapperTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.transform.PrefixMatchingCompositeLineTokenizer.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-02 03:44:54" id="1111" opendate="2009-03-02 03:18:35" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ChunkListener called before WriteListener</summary>
+			
+			
+			<description>ChunkListener called before WriteListener:  http://forum.springframework.org/showthread.php?t=68280</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.TaskletStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.BatchListenerFactoryHelper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.AbstractStep.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-02 17:50:55" id="1113" opendate="2009-03-02 10:05:02" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>query for JdbcJobExecutionDao.findRunningJobExecutions is broken</summary>
+			
+			
+			<description>JdbcJobExecutionDao.findRunningJobExecutions fails due to ambiguous columns in sql select statement.
+The method makes the following call:
+getJdbcTemplate().getJdbcOperations().query(getQuery(GET_RUNNING_EXECUTIONS), new Object[] 
+{ jobName }
+, handler);
+where GET_RUNNING_EXECUTIONS is defined as:
+private static final String GET_RUNNING_EXECUTIONS = &quot;SELECT JOB_EXECUTION_ID, START_TIME, END_TIME, STATUS, EXIT_CODE, EXIT_MESSAGE, CREATE_TIME, LAST_UPDATED, VERSION, &quot;
+   + &quot;JOB_INSTANCE_ID from %PREFIX%JOB_EXECUTION E, %PREFIX%JOB_INSTANCE I where E.JOB_INSTANCE_ID=I.JOB_INSTANCE_ID and I.JOB_NAME=? and E.END_TIME is NULL order by E.JOB_EXECUTION_ID desc&quot;;
+Relevant stack trace:
+Caused by: org.springframework.dao.DataIntegrityViolationException: PreparedStatementCallback; SQL [SELECT JOB_EXECUTION_ID, START_TIME, END_TIME, STATUS, EXIT_CODE, EXIT_MESSAGE, CREATE_TIME, LAST_UPDATED, VERSION, JOB_INSTANCE_ID from BATCH_JOB_EXECUTION E, BATCH_JOB_INSTANCE I where E.JOB_INSTANCE_ID=I.JOB_INSTANCE_ID and I.JOB_NAME=? and E.END_TIME is NULL order by E.JOB_EXECUTION_ID desc]; Column &amp;amp;apos;VERSION&amp;amp;apos; in field list is ambiguous; nested exception is com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException: Column &amp;amp;apos;VERSION&amp;amp;apos; in field list is ambiguous
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.translate(SQLStateSQLExceptionTranslator.java:114)
+	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.translate(SQLErrorCodeSQLExceptionTranslator.java:322)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:607)
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:641)
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:670)
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:686)
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:694)
+	at org.springframework.batch.core.repository.dao.JdbcJobExecutionDao.findRunningJobExecutions(JdbcJobExecutionDao.java:268)
+	at org.springframework.batch.core.explore.support.SimpleJobExplorer.findRunningJobExecutions(SimpleJobExplorer.java:82)
+While VERSION is the only column indicated as ambiguous in the stack trace, there are other ambiguous columns as well.</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.JdbcJobExecutionDao.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-03 00:28:26" id="1112" opendate="2009-03-02 08:37:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Remove cycle in infrastructure database/support</summary>
+			
+			
+			<description>Remove cycle in infrastructure database/support</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcBatchItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.AbstractSqlPagingQueryProvider.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.database.support.JdbcParameterUtilsTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.database.support.JdbcParameterUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-06 01:29:32" id="1119" opendate="2009-03-05 10:12:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>afterWrite() will only be called if an exception is raised during throttling</summary>
+			
+			
+			<description>If a chunk fails during write() then the recovery procedure will kick in.  But if all of the items pass during throttling, then no exception will be raised to try the chunk again.  Thus, the afterWrite() method will never be called because that method is only called by SimpleChunkProcessor.doWrite().</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantChunkProcessorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantChunkProcessor.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleChunkProcessor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-06 02:08:27" id="1123" opendate="2009-03-06 01:51:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ExecutionContextPromotionListener may perform promotion multiple times</summary>
+			
+			
+			<description>The ExecutionContextPromotionListener  currently performs the promotion for every matched pattern.  Instead, it should break out of the loop after finding a match.  </description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.ExecutionContextPromotionListener.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-06 09:03:21" id="1124" opendate="2009-03-06 08:51:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix error message that occurs when the same annotation is used twice on one method</summary>
+			
+			
+			<description>MethodInvokerUtils.getMethodInvokerByAnnotation() checks to make sure that the same annotation does not appear more than once on a single class.  If a duplicate is found, then an error such as the following is thrown:
+java.lang.IllegalArgumentException: found more than one method on target class [org.springframework.batch.sample.domain.trade.internal.TradeWriter@178dc08] with the annotation type [org.springframework.batch.sample.domain.trade.internal.TradeWriter@178dc08]
+The error should be:
+java.lang.IllegalArgumentException: found more than one method on target class [TradeWriter] with the annotation type [AfterWrite]</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.support.MethodInvokerUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-06 10:08:46" id="1125" opendate="2009-03-06 09:25:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NoWorkFoundStepExecutionListener doesn&amp;apos;t fail the step</summary>
+			
+			
+			<description>The NoWorkFoundStepExecutionListener throws an exception from an AfterStep method.  However, throwing an exception from an AfterStep only results in the exception being logged and has no impact on the status of the step.  Instead, the AfterStep method should return ExitStatus.FAILED.</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.NoWorkFoundStepExecutionListenerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.NoWorkFoundStepExecutionListener.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.NoWorkFoundException.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.MultiResourceItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.common.InfiniteLoopReader.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-09 04:35:11" id="1128" opendate="2009-03-08 14:28:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Make sure WRITE_COUNT and ROLLBACK_COUNT are being updated correctly</summary>
+			
+			
+			<description>From a forum post:
+Using FlatFileItemReader and loading the records into database.  File has 55 records and 55th record is skipped. Commit interval is 100.
+Results in:
+    READ_COUNT: 55
+    WRITE_COUNT: 108
+    WRITE_SKIP_COUNT: 1
+    ROLLBACK_COUNT: 2
+    COMMIT_COUNT: 1
+Database was correctly loaded with 54 records. But WRITE_COUNT and ROLLBACK_COUNT are misleading.</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.sample.SkipSampleFunctionalTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantChunkProcessor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-10 02:41:38" id="1130" opendate="2009-03-10 02:27:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Ensure Ordered is respected by generated listeners</summary>
+			
+			
+			<description/>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.JobListenerFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.JobListenerFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.StepListenerFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.StepListenerFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.MethodInvokerMethodInterceptor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-12 17:54:35" id="1143" opendate="2009-03-12 16:48:55" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Standalone &lt;step/&gt; should not be allowed to have &quot;tasklet&quot; attribute and &lt;tasklet/&gt; together</summary>
+			
+			
+			<description>Standalone &amp;lt;step/&amp;gt; should not be allowed to have &quot;tasklet&quot; attribute and &amp;lt;tasklet/&amp;gt; together.  There is logic to check for this on an inline step, but not a standalone.</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.AbstractStepParser.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.InlineStepParser.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StandaloneStepParser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-13 06:00:09" id="1147" opendate="2009-03-13 01:28:49" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StepExecution getFilterCount always return 0</summary>
+			
+			
+			<description>We use a Step FaultTolerantStepFactoryBean
+with an ItemProcessor
+We do a JUnit Test in 2.0.0 CI Snapshot
+and setup the test to have the ItemProcessor return null
+the assert says that getFilterCount == 1 is true
+After move to 2.0.0 RC1 core SpringBatch the assert is false
+because getFilterCount() return 0
+In all the other Junit Test getFilterCount() method return always 0.
+Can you explain if it is a bug or another way to configure FaultTolerantStepFactoryBean ?
+</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.sample.domain.trade.CustomerUpdateFieldSetMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleChunkProcessor.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleChunkProcessorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.CustomerFilterJobFunctionalTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-13 10:39:37" id="1131" opendate="2009-03-10 03:49:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>It is not possible to set transaction-attributes for a tasklet step</summary>
+			
+			
+			<description>When creating a chunk-oriented step, a &quot;transaction-attribute&quot;  can be configured on the &amp;lt;tasklet/&amp;gt; element.  However, since tasklet steps do not use the &amp;lt;tasklet/&amp;gt; element (they use the &amp;amp;apos;tasklet&amp;amp;apos; attribute) there is no place to configure a transaction-attribute.  If the user must use Spring&amp;amp;apos;s &quot;tx&quot; namespace and provide transaction advice, then this should be mentioned in the documentation.</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepParserTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.TaskletStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.TaskletElementParser.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.AbstractStepParser.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleStepFactoryBean.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-13 20:38:50" id="1145" opendate="2009-03-12 19:47:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Conflicts if both &lt;step/&gt; and &lt;tasklet/&gt; have a &quot;parent&quot; attribute</summary>
+			
+			
+			<description>Both &amp;lt;step/&amp;gt; and &amp;lt;tasklet/&amp;gt; affect the step factory bean  If both elements have a &quot;parent&quot; attribute, then one will override the other, causing the first to be ignored.  A solution must be found that allows two parents to be specified. </description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.TaskletElementParser.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StandaloneStepParser.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.configuration.xml.TopLevelTaskletElementParser.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.AbstractStepParser.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.CoreNamespaceHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-13 21:11:12" id="1146" opendate="2009-03-12 20:07:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Use MD5 for JobParameters key in JdbcJobInstanceDao</summary>
+			
+			
+			<description>Use MD5 for JobParameters key in JdbcJobInstanceDao</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.JdbcJobInstanceDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.JdbcJobInstanceDao.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is depended on by" type="Depends">1090</link>
+			
+			
+			<link description="is related to" type="Related">1090</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-14 04:08:33" id="1155" opendate="2009-03-14 04:01:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Cycle in reader package (FFIR and DefaultLineMapper)</summary>
+			
+			
+			<description/>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReaderCommonTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.mapping.PatternMatchingCompositeLineMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.MultiResourceItemReaderFlatFileTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.file.mapping.LineMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.mapping.DefaultLineMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.mapping.PassThroughLineMapper.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-15 07:52:19" id="1156" opendate="2009-03-15 04:25:08" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Possible &quot;null&quot; context return with MapRetryContextCache in RetryTemplate</summary>
+			
+			
+			<description>I get a lot of unexpected RetryException that kill my batch. I suppect the use of SoftReference in MapRetryContextCache could be the cause.
+The following lines show that the RetryTemplate throws a RetryException if the retryContextCache returns &quot;null&quot; for a given key. 
+But MapRetryContextCache uses a map of SofReference (as consequence of BATCH-682), that means the retry context could be deleted by the garbage collector, and the retryContextCache could return &quot;null&quot; even though containsKey() allowed entry in the if block.
+381                     else if (retryContextCache.containsKey(key)) {
+382 	
+383 	                        RetryContext context = retryContextCache.get(key);
+384 	                        if (context == null) 
+{
+385 	                                throw new RetryException(&quot;Inconsistent state for failed item: no history found. &quot;
+386 	                                                + &quot;Consider whether equals() or hashCode() for the item might be inconsistent, &quot;
+387 	                                                + &quot;or if you need to supply a better ItemKeyGenerator&quot;);
+388 	                        }
+389 	                        return context;
+390 	
+391 	                }</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.retry.policy.MapRetryContextCache.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.support.RetryTemplate.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.policy.MapRetryContextCacheTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-18 04:28:30" id="1159" opendate="2009-03-18 02:37:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>PROCESS_SKIP_COUNT seems not to ever get written to database</summary>
+			
+			
+			<description>Exceptions in readers and writers seems to be handled nicely, but there seems to be a problem throwing skippable exception from processor. StepExecution&amp;amp;apos;s processSkipCount is incremented, skip listeners are called and step listener&amp;amp;apos;s afterStep() gets correct counts in StepExecution has correct counts. But PROCESS_SKIP_COUNT is never incremented in database - allways 0. Sometimes even filterCount is incremented in StepExecution instead of processSkipCount. I tried to debug through sources but got pretty lost I&amp;amp;apos;ve checked that HibernateTemplate.flush() is called everytime in the writer. 
+This is part of our parent step configuration (FaultTolerantStepFactoryBean) used for all batches (i believe there should be no problem)
+		&amp;lt;property name=&quot;retryableExceptionClasses&quot;&amp;gt;
+			&amp;lt;list&amp;gt;
+				&amp;lt;value&amp;gt;org.springframework.dao.RecoverableDataAccessException&amp;lt;/value&amp;gt;
+				&amp;lt;value&amp;gt;org.springframework.dao.TransientDataAccessException&amp;lt;/value&amp;gt;
+			&amp;lt;/list&amp;gt;
+		&amp;lt;/property&amp;gt;
+		&amp;lt;property name=&quot;skippableExceptionClasses&quot; value=&quot;java.lang.Exception&quot; /&amp;gt;
+		&amp;lt;property name=&quot;fatalExceptionClasses&quot;&amp;gt;
+			&amp;lt;list&amp;gt;
+				&amp;lt;value&amp;gt;cz.mycompany.FatalProcessingException&amp;lt;/value&amp;gt;
+				&amp;lt;value&amp;gt;org.springframework.batch.core.JobInterruptedException&amp;lt;/value&amp;gt;
+			&amp;lt;/list&amp;gt;
+		&amp;lt;/property&amp;gt;
+Problem appeared to be there quite some time. Previously we used 2.0.0.M2 and it was already there.</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.AbstractStepExecutionDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.JdbcStepExecutionDao.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-19 18:38:54" id="1160" opendate="2009-03-19 15:17:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>In Batch xsd, stepType and flowStepType should be unordered</summary>
+			
+			
+			<description>In Batch xsd, stepType and flwoStepType should be unordered.</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.SplitParser.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.AbstractStepParser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-19 23:04:49" id="1129" opendate="2009-03-09 16:08:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Problems with exception classifications</summary>
+			
+			
+			<description>Transaction attributes of the following form don&amp;amp;apos;t seem to be preventing rollback:
+    transaction-attribute=&quot;+org.springframework.dao.DataIntegrityViolationException&quot;
+It does, however, seem to be causing the job to fail.   ie, it&amp;amp;apos;s treated as a fatal exception and prevents skipping.
+Furthermore, all exceptions seem to be skippable by default, whereas they should be fatal unless specifically configured to be skippable.
+There are some complications listed in BATCH-859, so if those complications make these scenarios impossible, that needs to be documented.  
+See http://static.springframework.org/spring-batch/reference/html/configureStep.html#d0e2594.</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.TaskletElementParser.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.AbstractStepParser.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.JobParser.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.TaskletStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.skip.LimitCheckingItemSkipPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepParserStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepWithFaultTolerantProcessTaskJobParserTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepParserTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepParserStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.TaskletStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantChunkProcessor.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.JobRepositoryParser.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantChunkProcessorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.skip.NonSkippableReadException.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.skip.SkipLimitExceededException.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-20 03:37:00" id="1165" opendate="2009-03-20 03:10:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Allow &amp;apos;id&amp;apos; and &amp;apos;ref&amp;apos; to exist together on &lt;*-listener/&gt;</summary>
+			
+			
+			<description>Allow &amp;amp;apos;id&amp;amp;apos; and &amp;amp;apos;ref&amp;amp;apos; to exist together on &amp;lt;*-listener/&amp;gt;</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepParserTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.AbstractListenerParser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-03-20 04:49:22" id="1164" opendate="2009-03-20 03:01:46" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Putting scope=&quot;step&quot; on a listener causes failure</summary>
+			
+			
+			<description>The configuration below fails because the framework is unable to set properties onto the StepListenerFactoryBean:
+  &amp;lt;step-listener id=&quot;l2&quot; ref=&quot;myListener&quot;/&amp;gt;
+  &amp;lt;beans:bean id=&quot;myListener&quot; class=&quot;MyListener&quot; scope=&quot;step&quot;&amp;gt;
+      &amp;lt;beans:property name=&quot;runId&quot; value=&quot;#
+{jobParameters[my.param]}
+&quot;/&amp;gt;
+  &amp;lt;/beans:bean&amp;gt;
+</description>
+			
+			
+			<version>2.0.0.RC1</version>
+			
+			
+			<fixedVersion>2.0.0.RC2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.support.MethodInvokerUtils.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.StepListenerMethodInterceptorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.AbstractListenerFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.scope.util.StepContextFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

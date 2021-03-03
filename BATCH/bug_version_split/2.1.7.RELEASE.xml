@@ -1,0 +1,713 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="BATCH">
+	<bug fixdate="2011-04-05 04:02:43" id="1724" opendate="2011-04-05 02:19:47" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Multithreaded step re-processing chunk without skip or retry limit</summary>
+			
+			
+			<description>I sort of understand this, and it&amp;amp;apos;s quite an amusing little bug (if rather irritating).  I doubt if it critical at all, since the outcome of the step is still failure.
+In a multi-threaded step we can only check for the failure one thread at a time, and by the time we have checked it, the failed chunk can have gone back in the queue for processing.  Oddly, though, even with a single background thread it still fails the same way, so maybe we can actually fix this at least for some special cases.</description>
+			
+			
+			<version>2.1.7</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.AsyncTaskletStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ChunkOrientedTasklet.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.support.TaskExecutorRepeatTemplate.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.TestingChunkOrientedTasklet.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleChunkProcessor.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.TaskletStepExceptionTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-02 14:36:37" id="1738" opendate="2011-04-26 01:28:38" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StaxEventItemReader stops reading when exception occurs during unmarshalling</summary>
+			
+			
+			<description>When an exception occurs during unmarshalling the reader stops reading even though there are still items / fragments to read. I think I have found the reason as well and I&amp;amp;apos;ll try to explain below. I&amp;amp;apos;m very surprised that nobody has come across this before. 
+Spring batch version used: 2.1.7
+Spring version used: 3.0.5
+Java version: 6
+Happy flow:
+1.1. In the StaxEventItemReader.doRead() method, the StaxEventItemReader first tries to move the cursor to the next fragment using the moveCursorToNextFragment(..) method; 
+1.2. If a next fragment is found, a call is made to the marshaller to unmarshall the xml fragment; 
+1.3. If the unmarshalling is ok, the reader calls &amp;amp;apos;markFragmentProcessed()&amp;amp;apos; on the fragment event reader (DefaultFragmentEventReader). At this stage, the fragment event reader members are &amp;amp;apos;endFragmentFollows=true&amp;amp;apos; and &amp;amp;apos;insideFragment=true&amp;amp;apos;. This is important to note, because these flags play a big part in this issue;
+1.4. The markFragmentProcessed() method reads all the unread events using the nextEvent() method until EndDocument is found (which is in fact the end of the fragment). Somewhere down the line, the fragment reader members &amp;amp;apos;endFragmentFollows&amp;amp;apos; and &amp;amp;apos;insideFragment&amp;amp;apos; are reset to false (which is good).
+2.1. When the next item is read, the StaxEventItemReader tries to move the cursor to the next fragment. And so on...
+Problem flow:
+1.1. In the doRead() method, the StaxEventItemReader first tries to move the cursor to the next fragment using the moveCursorToNextFragment(..) method; 
+1.2. If a next fragment is found, a call is made to the marshaller to umarshall the xml fragment;
+1.3. Exception occurs during unmarshalling and therefore the call to &amp;amp;apos;markFragmentProcessed()&amp;amp;apos; is never done. The members of the fragment event reader are therefore NOT reset and keep the values &amp;amp;apos;endFragmentFollows=true&amp;amp;apos; and &amp;amp;apos;insideFragment=true&amp;amp;apos;.
+2.1. When the next item is read, the StaxEventItemReader tries to move the cursor to the next fragment. This method will call nextEvent() on the fragment event reader, returning EndDocument because the internal state of the fragment event reader was not reset due to the exception earlier 
+(i.e. &amp;amp;apos;endFragmentFollows&amp;amp;apos; and &amp;amp;apos;insidedFragment&amp;amp;apos; are still both true). Therefore, the moveCursorToNextFragment() method will return false indicating NO next fragment was found and stops the reading.
+To prove the analysis above, I have modified the StaxEventItemReader class and ran some tests. I have moved the call to fragmentReader.markFragmentProcessed() into a finally block, making sure it will always get called (whether the unmarshalling fails or not). After this modification, the StaxEventItemReader works as expected, continuing reading and skipping input when unmarshalling fails for an item. 
+See the code modification below. Perhaps this is not the best way to solve this issue, but it proves the problem. 
+protected T doRead() throws Exception {
+    if (noInput) 
+{
+        return null;
+    }
+
+    T item = null;
+    boolean success = false;
+    try 
+{
+        success = moveCursorToNextFragment(fragmentReader);
+    }
+    catch (NonTransientResourceException e) 
+{
+        // Prevent caller from retrying indefinitely since this is fatal
+        noInput = true;
+        throw e;
+    }
+
+    if (success) {
+        fragmentReader.markStartFragment();
+        try 
+{ // Added by Pepijn Opsteegh
+            @SuppressWarnings(&quot;unchecked&quot;)
+            T mappedFragment = (T) unmarshaller.unmarshal(StaxUtils.getSource(fragmen tReader));
+            item = mappedFragment;
+        }
+ finally 
+{ // Added by Pepijn Opsteegh
+            fragmentReader.markFragmentProcessed();
+        }
+ // Added by Pepijn Opsteegh
+    }
+    return item;
+}</description>
+			
+			
+			<version>2.1.7</version>
+			
+			
+			<fixedVersion>2.1.8</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.StaxEventItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.stax.DefaultFragmentEventReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.StaxEventItemReader.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-04 01:19:24" id="1742" opendate="2011-05-04 00:43:40" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HippyMethodInvoker fails when target uses method overloading and there is no exact match for arguments</summary>
+			
+			
+			<description>See the failing test (testOverloadedMethodUsingInputWithoutExactMatch) at https://github.com/magott/spring-batch/blob/master/spring-batch-infrastructure/src/test/java/org/springframework/batch/item/adapter/HippyMethodInvokerTests.java
+ The issue is that if you have an overloaded method where one of the methods is a match, but not an exact match (ie: foo(Set) and foo(List) with TreeSet being passed as the argument). An IllegalArgumentException is thrown.</description>
+			
+			
+			<version>2.1.7</version>
+			
+			
+			<fixedVersion>2.1.8</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.adapter.HippyMethodInvokerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.adapter.HippyMethodInvoker.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-04 01:49:13" id="1743" opendate="2011-05-04 01:47:50" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Use step scope for PartitionHandler (so gridSize can be a job parameter) - broken in 2.1.7.</summary>
+			
+			
+			<description>Cloned from: BATCH-1612: Pull gridSize from job parameters
+https://jira.springsource.org/browse/BATCH-1612</description>
+			
+			
+			<version>2.1.7</version>
+			
+			
+			<fixedVersion>2.1.8</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepParserStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepParserStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.partition.support.TaskExecutorPartitionHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-04 04:05:35" id="1739" opendate="2011-04-28 08:17:32" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Inheriting from parent step with skip-limit/retry-limit causes IllegalArgumentException when the inheriting bean doesn&amp;apos;t define exception-classes.</summary>
+			
+			
+			<description>The error for the supplied example job (needs infrastructure) is: 
+&quot;IllegalArgumentException: The field &amp;amp;apos;skip-limit&amp;amp;apos; is not permitted on the step [myStep] because there is no &amp;amp;apos;skippable-exception-classes&amp;amp;apos;&quot;</description>
+			
+			
+			<version>2.1.7</version>
+			
+			
+			<fixedVersion>2.1.8</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.ParentStepFactoryBeanParserTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.ChunkElementParser.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantStepFactoryBeanRollbackTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepParserStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.ChunkElementParserTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantStepFactoryBean.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-05-05 01:06:34" id="1744" opendate="2011-05-04 04:02:47" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Revert retry-limit and skip-limit changes from BATCH-1396.</summary>
+			
+			
+			<description>The changes in BATCH-1396 for retry-limit and skip-limit caused too many problems with step inheritance (parent=&quot;...&quot; in a step).  This task is to track the release of a new version that reverts those changes.  You can still do late binding of those values by injecting a retry-policy or skip-policy, and that might be as far as we ever go. </description>
+			
+			
+			<version>2.1.7</version>
+			
+			
+			<fixedVersion>2.1.8</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.ParentStepFactoryBeanParserTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.ChunkElementParser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-08-02 09:16:30" id="1756" opendate="2011-05-24 18:41:50" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Make  round-trip JobParameters-&gt;Properties-&gt;JobParameters work for double parameters</summary>
+			
+			
+			<description>Make  round-trip JobParameters-&amp;gt;Properties-&amp;gt;JobParameters work for double parameters. Here is the customer&amp;amp;apos;s use case for this - &quot;I want to use the JobOperator interface to start jobs and that requires passing the parameters in the string format. So I need a way to generate a correct string representation of JobParameters that will be accepted by JobOperator. I assumed DefaultJobParametersConverter is the way to go. But to be even more specific I&amp;amp;apos;m trying to build a mechanism for starting jobs in a clustered environment and the approach is to use JMS messages. The client would invoke an API (passing JobParameters) which behind the scenes will take the JobParameters, convert it to the String format and put it in a JMS messages that gets placed on a queue. On the other side of the queue a component receives the message, extracts the String of job parameters and calls JobOperator. I don&amp;amp;apos;t want to be responsible for creating the correct string format of JobParameters so I&amp;amp;apos;m counting on classes provided by the framework.&quot; 
+Code snippet for demonstration:
+@Test
+public void testDefaultJobParametersConverter() {
+DefaultJobParametersConverter converter = new DefaultJobParametersConverter();
+JobParametersBuilder builder = new JobParametersBuilder();
+Double val = Double.valueOf(222);
+builder.addDouble(&quot;doubleParam&quot;, val);
+JobParameters params = builder.toJobParameters();
+Map&amp;lt;String, JobParameter&amp;gt; map = params.getParameters();
+JobParameter jp = map.get(&quot;doubleParam&quot;);
+assertNotNull(jp);
+assertEquals(ParameterType.DOUBLE, jp.getType());
+Properties props = converter.getProperties(params);
+params = converter.getJobParameters(props);
+map = params.getParameters();
+jp = map.get(&quot;doubleParam&quot;);
+assertNotNull(jp);
+assertEquals(ParameterType.DOUBLE, jp.getType());
+assertEquals(val, jp.getValue());
+}</description>
+			
+			
+			<version>2.1.7</version>
+			
+			
+			<fixedVersion>2.1.9</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.converter.DefaultJobParametersConverter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.converter.DefaultJobParametersConverterTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-06-27 02:34:38" id="1753" opendate="2011-05-19 09:36:12" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Problems With FlatFileItemWriter: error while trying to restart an execution </summary>
+			
+			
+			<description>We are having problems with property &quot;shouldDeleteIfEmpty&quot; from FlatFileItemWriter.
+If an error occurs during an execution, we are unable to restart application because the re-execution cannot find the files created at first time. For example:
+Application functionality:
+We have an application which receive an input file &quot;INPUT.TXT&quot;. The invalid data from input file gets a &quot;rejected&quot; status and are recorded in a file named &quot;INPUT.TXT.REJ&quot;. The valid data are processed and generate an output file &quot;OUTPUT.TXT&quot;.
+Both files, output and rejected, are generated by FlatFileItemWriter, and they have property &quot;shouldDeleteIfEmpty&quot; with value=true.
+Error scenario:
+If we didn&amp;amp;apos;t give reading permission and execute the application, it will not be able to read INPUT.TXT file. So an exception is thrown. Then we give reading permission, and try to re-execute the application. Another Exception is thrown because the application cannot read the output file or the rejected file that were created at first execution. The files were deleted because when the error occurred both files were empty.
+Because of these problems we can&amp;amp;apos;t execute reprocessing. I believe the re-execution should be able to create a new file if it doesn&amp;amp;apos;t exists.</description>
+			
+			
+			<version>2.1.7</version>
+			
+			
+			<fixedVersion>2.1.9</fixedVersion>
+			
+			
+			<type>Defect</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemWriterTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-11-16 11:18:36" id="1774" opendate="2011-07-26 06:36:23" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>NullPointerException on RepeatTemplate</summary>
+			
+			
+			<description>I encountered the following error : the class RepeatTemplate throws a NullPointerException (cf stacktrace below)
+The step uses a ThreadPoolTaskExecutor, and i implemented a synchronized delegate reader.
+Another person seems to have encountered the same problem in the past : http://forum.springsource.org/archive/index.php/t-61715.html
+Here is an extract from the log with the stack trace.
+
+
+
+
+
+
+2011-07-06 14:43:05,844 INFO [org.springframework.batch.core.job.SimpleStepHandler] - Executing step: [buildStep]
+
+
+
+
+2011-07-06 14:43:10,672 WARN [org.springframework.batch.core.step.item.ChunkMonitor] - No ItemReader set (must be concurrent step), so ignoring offset data.
+
+
+
+
+2011-07-06 14:43:11,396 WARN [org.springframework.batch.core.step.item.ChunkMonitor] - ItemStream was opened in a different thread.  Restart data could be compromised.
+
+
+
+
+2011-07-06 14:52:21,721 ERROR [org.springframework.batch.core.step.AbstractStep] - Encountered an error executing the step
+
+
+
+
+java.lang.NullPointerException
+
+
+
+
+	at org.springframework.batch.repeat.support.RepeatTemplate.executeInternal(RepeatTemplate.java:231)
+
+
+
+
+	at org.springframework.batch.repeat.support.RepeatTemplate.iterate(RepeatTemplate.java:143)
+
+
+
+
+	at org.springframework.batch.core.step.tasklet.TaskletStep.doExecute(TaskletStep.java:250)
+
+
+
+
+	at org.springframework.batch.core.step.AbstractStep.execute(AbstractStep.java:195)
+
+
+
+
+	at org.springframework.batch.core.job.SimpleStepHandler.handleStep(SimpleStepHandler.java:135)
+
+
+
+
+	at org.springframework.batch.core.job.flow.JobFlowExecutor.executeStep(JobFlowExecutor.java:61)
+
+
+
+
+	at org.springframework.batch.core.job.flow.support.state.StepState.handle(StepState.java:60)
+
+
+
+
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.resume(SimpleFlow.java:144)
+
+
+
+
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.start(SimpleFlow.java:124)
+
+
+
+
+	at org.springframework.batch.core.job.flow.FlowJob.doExecute(FlowJob.java:135)
+
+
+
+
+	at org.springframework.batch.core.job.AbstractJob.execute(AbstractJob.java:281)
+
+
+
+
+	at org.springframework.batch.core.launch.support.SimpleJobLauncher$1.run(SimpleJobLauncher.java:120)
+
+
+
+
+	at org.springframework.core.task.SyncTaskExecutor.execute(SyncTaskExecutor.java:48)
+
+
+
+
+	at org.springframework.batch.core.launch.support.SimpleJobLauncher.run(SimpleJobLauncher.java:114)
+
+
+
+
+	at org.springframework.batch.core.launch.support.CommandLineJobRunner.start(CommandLineJobRunner.java:349)
+
+
+
+
+	at org.springframework.batch.core.launch.support.CommandLineJobRunner.main(CommandLineJobRunner.java:574)
+
+
+
+
+
+</description>
+			
+			
+			<version>2.1.7</version>
+			
+			
+			<fixedVersion>2.2.0, 2.2.0 - Sprint 6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.repeat.support.TaskExecutorRepeatTemplate.java</file>
+			
+			
+			<file type="D">org.springframework.batch.repeat.support.TaskExecutorRepeatTemplateBulkAsynchronousTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-12-27 08:04:33" id="1795" opendate="2011-09-19 20:29:18" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ExponentialBackOffPolicy and BackOffContext</summary>
+			
+			
+			<description>Hi,
+I configure a ExponentialBackOffPolicy like this:
+
+
+
+
+
+
+ 
+
+
+
+
+    &amp;lt;bean id=&quot;exponentialBackOffPolicy&quot; class=&quot;org.springframework.batch.retry.backoff.ExponentialBackOffPolicy&quot;
+
+
+
+
+        p:initialInterval=&quot;500&quot; p:maxInterval=&quot;30000&quot; p:multiplier=&quot;2&quot; /&amp;gt;
+
+
+
+
+
+
+and use it for DeadLockLoserDataAccessException. Then I intentionally throw a DeadLockLoserDataAccessException in the main part of my item processor code and observe the behaviour. However, the retry never backoffs exponentially. I trace through the RetryTemplate class (in particulary lines 197 - 256 in 2.1.7 release), and the backOffPolicy and its context seem stateless in runtime:
+
+
+
+
+
+
+ 
+
+
+
+
+	protected &amp;lt;T&amp;gt; T doExecute(RetryCallback&amp;lt;T&amp;gt; retryCallback, RecoveryCallback&amp;lt;T&amp;gt; recoveryCallback, RetryState state)
+
+
+
+
+			throws Exception, ExhaustedRetryException {
+
+
+
+
+
+
+
+
+
+		RetryPolicy retryPolicy = this.retryPolicy;
+
+
+
+
+		BackOffPolicy backOffPolicy = this.backOffPolicy;
+
+
+
+
+
+
+
+
+
+...
+
+
+
+
+		// Start the backoff context...
+
+
+
+
+		BackOffContext backOffContext = backOffPolicy.start(context);
+
+
+
+
+...
+
+
+
+
+		backOffPolicy.backOff(backOffContext);
+
+
+
+
+...
+
+
+
+
+
+
+That is, the backOffPolicy is never updated and the backOffContext is never saved after the call to backoff, hence the interval stays the same value.
+I submitted the same issue to the Spring forum and StackOverflow and no answer, hence created this issue.
+Thanks, Kev
+</description>
+			
+			
+			<version>2.1.7</version>
+			
+			
+			<fixedVersion>2.2.0, 2.2.0 - Sprint 9</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.retry.support.RetryTemplate.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.support.RetryTemplateTests.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="relates to" type="Relate">226</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+</bugrepository>

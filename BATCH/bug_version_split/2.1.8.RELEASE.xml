@@ -1,0 +1,1519 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="BATCH">
+	<bug fixdate="2011-07-27 01:39:07" id="1775" opendate="2011-07-27 00:03:46" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Inner beans of same type inside &lt;chunk/&gt; elements with scope =&quot;step&quot; leads to mistaken override of bean definitions</summary>
+			
+			
+			<description>I&amp;amp;apos;v the following job configuration: 
+
+
+
+
+
+
+&amp;lt;batch:job id=&quot;file2fileJob&quot;&amp;gt;
+
+
+
+
+	&amp;lt;batch:step id=&quot;file2fileJobStep1&quot;&amp;gt;
+
+
+
+
+		&amp;lt;batch:tasklet&amp;gt;
+
+
+
+
+			&amp;lt;batch:chunk commit-interval=&quot;1&quot; writer=&quot;itemToStringFlatFileItemWriter&quot;&amp;gt;
+
+
+
+
+				&amp;lt;batch:reader&amp;gt;
+
+
+
+
+					&amp;lt;bean class=&quot;org.springframework.batch.item.file.FlatFileItemReader&quot; scope=&quot;step&quot;&amp;gt;
+
+
+
+
+						&amp;lt;property name=&quot;resource&quot; value=&quot;#{jobParameters[&amp;amp;apos;input.file.name&amp;amp;apos;]}&quot; /&amp;gt;
+
+
+
+
+						&amp;lt;property name=&quot;lineMapper&quot;&amp;gt;
+
+
+
+
+							&amp;lt;bean class=&quot;org.springframework.batch.item.file.mapping.PassThroughLineMapper&quot; /&amp;gt;
+
+
+
+
+						&amp;lt;/property&amp;gt;
+
+
+
+
+					&amp;lt;/bean&amp;gt;
+
+
+
+
+				&amp;lt;/batch:reader&amp;gt;
+
+
+
+
+			&amp;lt;/batch:chunk&amp;gt;
+
+
+
+
+		&amp;lt;/batch:tasklet&amp;gt;
+
+
+
+
+	&amp;lt;/batch:step&amp;gt;
+
+
+
+
+&amp;lt;/batch:job&amp;gt;
+
+
+
+
+
+
+and the following test: 
+
+
+
+
+
+
+@Test
+
+
+
+
+public void file2fileJob() throws Exception {
+
+
+
+
+	/* setup */
+
+
+
+
+	Map&amp;lt;String, JobParameter&amp;gt; parameters = new HashMap&amp;lt;String, JobParameter&amp;gt;();
+
+
+
+
+	parameters.put(&quot;input.file.name&quot;, new JobParameter(&quot;users.csv&quot;));
+
+
+
+
+	File output = testFolder.newFile(&quot;output.txt&quot;);
+
+
+
+
+	output.createNewFile();
+
+
+
+
+	parameters.put(&quot;output.file.name&quot;, new JobParameter(&quot;file:&quot; + output.getAbsolutePath()));
+
+
+
+
+	/* exercise */
+
+
+
+
+	launcher.run(file2fileJob, new JobParameters(parameters));
+
+
+
+
+	/* verify */
+
+
+
+
+	Resource input = new ClassPathResource(&quot;users.csv&quot;);
+
+
+
+
+	assertEquals(&quot;Input and output should be equal&quot;, FileUtils.readLines(input.getFile()), FileUtils.readLines(output));
+
+
+
+
+}
+
+
+
+
+
+
+The test is successful. 
+But if I had the following job configuration:
+
+
+
+
+
+
+&amp;lt;batch:job id=&quot;file2DatabaseJob&quot;&amp;gt;
+
+
+
+
+	&amp;lt;batch:step id=&quot;file2DatabaseJobStep1&quot;&amp;gt;
+
+
+
+
+		&amp;lt;batch:tasklet&amp;gt;
+
+
+
+
+			&amp;lt;batch:chunk commit-interval=&quot;1&quot; writer=&quot;itemToStringFlatFileItemWriter&quot;&amp;gt;
+
+
+
+
+			&amp;lt;!-- TODO - save the User in the database --&amp;gt;
+
+
+
+
+				&amp;lt;batch:reader&amp;gt;
+
+
+
+
+					&amp;lt;bean class=&quot;org.springframework.batch.item.file.FlatFileItemReader&quot; scope=&quot;step&quot;&amp;gt;
+
+
+
+
+						&amp;lt;property name=&quot;resource&quot; value=&quot;#{jobParameters[&amp;amp;apos;input.file.name&amp;amp;apos;]}&quot; /&amp;gt;
+
+
+
+
+						&amp;lt;property name=&quot;lineMapper&quot;&amp;gt;
+
+
+
+
+							&amp;lt;bean class=&quot;org.springframework.batch.item.file.mapping.DefaultLineMapper&quot;&amp;gt;
+
+
+
+
+								&amp;lt;property name=&quot;lineTokenizer&quot;&amp;gt;
+
+
+
+
+									&amp;lt;bean class=&quot;org.springframework.batch.item.file.transform.DelimitedLineTokenizer&quot; /&amp;gt;
+
+
+
+
+								&amp;lt;/property&amp;gt;
+
+
+
+
+								&amp;lt;property name=&quot;fieldSetMapper&quot;&amp;gt;
+
+
+
+
+									&amp;lt;bean class=&quot;org.springframework.batch.UserFieldSetMapper&quot; /&amp;gt;
+
+
+
+
+								&amp;lt;/property&amp;gt;
+
+
+
+
+							&amp;lt;/bean&amp;gt;
+
+
+
+
+						&amp;lt;/property&amp;gt;
+
+
+
+
+					&amp;lt;/bean&amp;gt;
+
+
+
+
+				&amp;lt;/batch:reader&amp;gt;
+
+
+
+
+			&amp;lt;/batch:chunk&amp;gt;
+
+
+
+
+		&amp;lt;/batch:tasklet&amp;gt;
+
+
+
+
+	&amp;lt;/batch:step&amp;gt;
+
+
+
+
+&amp;lt;/batch:job&amp;gt;
+
+
+
+
+
+
+the same test fails because the &amp;amp;apos;file2fileJobStep1&amp;amp;apos; lineMapper is no more a PassThroughLineMapper but the same as the file2DatabaseJobStep1 lineMapper... 
+If I remove the scope attribute (and update the resource value to an hard-coded value) of the file2fileJobStep1 reader, the test is successful again.  </description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.1.9</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.InlineItemHandlerParserTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.ChunkElementParser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-10-09 03:52:23" id="1798" opendate="2011-10-07 13:40:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MultiResourceItemReader fails on Restart if read() method was not called.</summary>
+			
+			
+			<description>The MultiResourceItemReader starts with -1 as currentResource. If the ItemProcessor fails on first commit (I tested with a &quot;throw new RuntimeException()&quot;), this index remains -1 on ExecutionContext. Then, on restart, we get:
+ java.lang.ArrayIndexOutOfBoundsException: -1
+	at org.springframework.batch.item.file.MultiResourceItemReader.open(MultiResourceItemReader.java:171)
+The fix is something like:
+   if (executionContext.containsKey(executionContextUserSupport.getKey(RESOURCE_KEY))) {
+	currentResource = executionContext.getInt(executionContextUserSupport.getKey(RESOURCE_KEY));
+	// begin fix block
+	if (currentResource == -1) 
+{
+		currentResource = 0;
+	}
+        // end fix block
+        delegate.setResource(resources[currentResource]);
+	delegate.open(executionContext);
+   }</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.1.9</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.MultiResourceItemReaderIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.MultiResourceItemReader.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-11-02 06:52:12" id="1783" opendate="2011-08-10 06:21:53" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Throwing exceptions inside a ChunkListener results in endless loop</summary>
+			
+			
+			<description>If an exception is thrown in beforeChunk in a ChunkListener and the job is configured with skips (but not to skip the exception that is thrown from the ChunkListener) it will result in an endless loop. Same will happen if you have configured your job for retries.
+If neither retry nor skip is configured, the job will end with ExitStatus.FAILED, as expected. Which makes me suspect the issue is in the exception handling in some of the components added when skip or retry comes into play.
+I&amp;amp;apos;ve attached two files based on the Spring Batch template from STS that can be dropped in to reproduce the issue.</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.1.9</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantStepFactoryBeanRollbackTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleStepFactoryBean.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-02-22 08:24:36" id="1837" opendate="2012-02-21 16:46:48" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Spring 3 Compatibility Tests Failing</summary>
+			
+			
+			<description>Compile errors in 2 tests.</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.sample.domain.mail.internal.TestMailSender.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.InlineItemHandlerParserTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-05-11 05:05:41" id="1841" opendate="2012-03-01 17:50:58" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Upgrading to spring batch 2.1.8 causes error in processing xml configuration</summary>
+			
+			
+			<description>We are just upgrading to 2.1.8 and our existing xml batch configuration will no longer load.  
+Here is a snippet of the configuration that is failing:
+
+
+
+
+
+
+    &amp;lt;bean id=&quot;simpleStep&quot; class=&quot;org.springframework.batch.core.step.item.FaultTolerantStepFactoryBean&quot;
+
+
+
+
+          abstract=&quot;true&quot;&amp;gt;
+
+
+
+
+        &amp;lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot;/&amp;gt;
+
+
+
+
+        &amp;lt;property name=&quot;jobRepository&quot; ref=&quot;jobRepository&quot;/&amp;gt;
+
+
+
+
+        &amp;lt;property name=&quot;startLimit&quot; value=&quot;100&quot;/&amp;gt;
+
+
+
+
+        &amp;lt;property name=&quot;commitInterval&quot; value=&quot;1&quot;/&amp;gt;
+
+
+
+
+        &amp;lt;property name=&quot;backOffPolicy&quot;&amp;gt;
+
+
+
+
+            &amp;lt;bean class=&quot;org.springframework.batch.retry.backoff.ExponentialBackOffPolicy&quot;&amp;gt;
+
+
+
+
+                &amp;lt;property name=&quot;initialInterval&quot; value=&quot;1000&quot;/&amp;gt;
+
+
+
+
+            &amp;lt;/bean&amp;gt;
+
+
+
+
+        &amp;lt;/property&amp;gt;
+
+
+
+
+        &amp;lt;property name=&quot;retryLimit&quot; value=&quot;5&quot;/&amp;gt;
+
+
+
+
+        &amp;lt;property name=&quot;retryableExceptionClasses&quot;&amp;gt;
+
+
+
+
+            &amp;lt;map&amp;gt;
+
+
+
+
+                &amp;lt;entry key=&quot;org.springframework.dao.ConcurrencyFailureException&quot; value=&quot;true&quot;/&amp;gt;
+
+
+
+
+            &amp;lt;/map&amp;gt;
+
+
+
+
+        &amp;lt;/property&amp;gt;
+
+
+
+
+    &amp;lt;/bean&amp;gt;
+
+
+
+
+
+
+
+
+
+    &amp;lt;step id=&quot;createCatalogueValidateStep&quot; parent=&quot;simpleStep&quot; next=&quot;createCataloguePostValidateStep&quot;&amp;gt;
+
+
+
+
+         &amp;lt;tasklet transaction-manager=&quot;transactionManager&quot;&amp;gt;
+
+
+
+
+             &amp;lt;chunk reader=&quot;csvStagedProductReader&quot; writer=&quot;hibernateStagedProductWriter&quot; commit-interval=&quot;10&quot;/&amp;gt;
+
+
+
+
+             &amp;lt;listeners&amp;gt;
+
+
+
+
+                 &amp;lt;listener ref=&quot;createCatalogueValidateItemListener&quot;/&amp;gt;
+
+
+
+
+             &amp;lt;/listeners&amp;gt;
+
+
+
+
+         &amp;lt;/tasklet&amp;gt;
+
+
+
+
+    &amp;lt;/step&amp;gt;
+
+
+
+
+
+
+And we are getting the error:
+The field &amp;amp;apos;retry-limit&amp;amp;apos; is not permitted on the step [createCatalogueValidateStep] because there is no &amp;amp;apos;retryable-exception-classes&amp;amp;apos;.
+When I debug the code, I can see that the StepParserStepFactoryBean has a retryLimit which it got from the parent bean but no retryableExceptionClasses.  Further investigation lead me to this code in ChunkElementParser:
+
+
+
+
+
+
+	// Even if there is no retryLimit, we can still accept exception
+
+
+
+
+	// classes for an abstract parent bean definition
+
+
+
+
+	propertyValues.addPropertyValue(&quot;retryableExceptionClasses&quot;, retryableExceptions);
+
+
+
+
+
+
+The problem is that this always sets the retryableExceptionClasses property even if it is not provided.  When the bean definitions are merged, the parent bean&amp;amp;apos;s definition of retryableExceptionClasses is overridden by an empty definition.</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.1.9</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.ChunkElementParser.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.ChunkElementParserTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-06-27 07:52:00" id="1804" opendate="2011-10-28 07:39:15" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Retry does not work if additional exception occurs in the ItemWriter during scan for failure</summary>
+			
+			
+			<description>I expect the configuration &amp;lt;chunk commit-interval=&quot;5&quot; retry-limit=&quot;5&quot; skip-limit=&quot;5&quot;&amp;gt; to be applied for both processor and writer. This does not seem to work as expected with the writer, where retry is non at all, if the writer runs in &quot;recoverer&quot;.
+The attachment contains a maven-project that demonstrates the issue:
+1. springbatch.test.components.batch.retry_in_writer.RetryInWriterTest
+2. springbatch.test.components.batch.retry_in_processor.RetryInProcessorTest
+The first test will do all work in the writer and the batch fails because a functional error causes the writer to be run in recoverer. The first item will be skipped. The second item will get a deadlock on the first try, this is not handled with a retry and causes the batch to fail.
+The second test does the work in the processor (which seems like the right thing to do, but that is not the point. The first item will be skipped. The second item will get the deadlock, retried and the processor will continue to process the rest of the chunk.
+It seems that the errorhandling works as expected in the processor, but not in the writer. Our solution is to use the processor and just do flush in the writer, but it would be nice to have the same errorhandling in the writer or an explanation on why not.</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.1.9</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantChunkProcessorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantChunkProcessor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-06-28 07:26:02" id="1761" opendate="2011-06-17 06:25:26" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Only first item in chunk is re-processed on retry of failed write</summary>
+			
+			
+			<description>http://forum.springsource.org/showthread.php?110196-itemprocessor-recalled-only-for-first-item-in-chunk-when-retryable-exception
+All items are eventually re-processed if the chunk fails the same way deterministically, or if retry is not used (skip may be though).</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.1.9</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantStepFactoryBeanRetryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantStepFactoryBeanRollbackTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.BatchRetryTemplate.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantChunkProcessor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-17 01:22:35" id="1813" opendate="2011-11-11 10:05:13" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BeanWrapperFieldSetMapper properties caching is broken</summary>
+			
+			
+			<description>The fix for BATCH-1709 broke the caching of the property name mapping cache in getBeanProperties().
+On the first run through an empty ConcurrentHashMap is put in &quot;propertiesMatched&quot; at the top of getBeanProperties(), the &quot;matches&quot; Map is then seeded with this empty ConcurrentHashMap but at the bottom of getBeanProperties the updated &quot;matches&quot; Map isn&amp;amp;apos;t written back to that ConcurrentHashMap.
+On large numbers of items with a lot of properties, this really hurts performance.</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.1.9</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-17 01:26:30" id="1848" opendate="2012-04-03 06:37:22" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JdbcPagingItemReader does not support table or column aliases due to sortKey being used in where clause, order by clause and for retrieval of result set column</summary>
+			
+			
+			<description>The SqlPagingQueryProviderFactoryBean class takes a parameter sortKey used to enable paged queries.  This is used in the where clause (to select skip rows already selected in subsequent queries), in an order by clause and to retrieve the result set value for the last item read.  The exact use is determined by the database type, but the general pattern remains the same.
+The examples in the tutorial appear fairly simple, involving a single table only.  We have a use case where two aliased tables are involved.  As the table alias prefix is required in the where clause, appears to be optional in the order by clause and cannot be present when retrieving the result set column by name we have a problem as sortKey is used in all three cases.
+For a page size of 2 we set the reader&amp;amp;apos;s queryProvider properties set as follows:
+		&amp;lt;property name=&quot;queryProvider&quot;&amp;gt;
+			&amp;lt;bean class=&quot;org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean&quot;&amp;gt;
+				&amp;lt;property name=&quot;selectClause&quot; value=&quot;select  t1.id, t1.field, t2.other_field&quot; /&amp;gt;
+				&amp;lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&amp;gt;
+				&amp;lt;property name=&quot;fromClause&quot; value=&quot;from TABLE_1 t1, TABLE_2 t2 &quot; /&amp;gt;
+				&amp;lt;property name=&quot;whereClause&quot; value=&quot;t1.id = t2.id&quot; /&amp;gt;
+				&amp;lt;property name=&quot;sortKey&quot; value=&quot;t1.id&quot; /&amp;gt;
+			&amp;lt;/bean&amp;gt;
+		&amp;lt;/property&amp;gt;
+The Derby query resulting for the first page is:
+SELECT * FROM ( SELECT t1.id, t1.field, t2.other_field, ROW_NUMBER() OVER () AS ROW_NUMBER FROM TABLE_1 t1, TABLE_2 t2 WHERE t1.id = t2.id ORDER BY t1.id ASC) AS TMP_SUB WHERE TMP_SUB.ROW_NUMBER &amp;lt;= 2
+And queries for subsequent pages are:
+SELECT * FROM ( SELECT t1.id, t1.field, t2.other_field, ROW_NUMBER() OVER () AS ROW_NUMBER FROM TABLE_1 t1, TABLE_2 t2 WHERE t1.id = t2.id  AND t1.id &amp;gt; ? ORDER BY t1.id ASC) AS TMP_SUB WHERE TMP_SUB.ROW_NUMBER &amp;lt;= 2
+In H2 the query for the initial page is:
+SELECT TOP 2 t1.id, t1.field, t2.other_field FROM TABLE_1 t1, TABLE_2 t2 WHERE t1.id = t2.id ORDER BY t1.id ASC
+And queries for sebsequent pages are:
+SELECT TOP 2 t1.id, t1.field, t2.other_field FROM TABLE_1 t1, TABLE_2 t2 WHERE t1.id = t2.id AND t1.id &amp;gt; :_sortKey ORDER BY id ASC
+In both Derby and H2 the result set column retrieval fails.
+We&amp;amp;apos;ve worked around the problem by subclassing JdbcPagingItemReader and with tricks with reflection effectively changing the line in the inner class JdbcPagingItemReader.PagingRowMapper &quot;startAfterValue = rs.getObject(queryProvider.getSortKey());&quot; to &quot;startAfterValue = rs.getObject(stripAlias(queryProvider.getSortKey()));&quot; where the method stripAlias is defined as:
+        private String stripAlias(String column) {
+            int separator = column.indexOf(&amp;amp;apos;.&amp;amp;apos;);
+            if(separator &amp;gt; 0) {
+                int columnIndex = separator + 1;
+                if(columnIndex &amp;lt; column.length()) 
+{
+                    column = column.substring(columnIndex);
+                }
+            }
+            return column;
+        }
+We&amp;amp;apos;d like this change made to this class directly or something else with similar effect.
+Another issue you might wish to consider is that a column alias would further confuse things (as it would be required to be used for the order by clause and to retrieve the value from the result set, but not for the where clause).  Perhaps an additional optional property &quot;sortKeyAlias&quot;?</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.1.9</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.AbstractSqlPagingQueryProvider.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.SqlPagingQueryUtils.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.SqlWindowingPagingQueryProvider.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcPagingItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.PagingQueryProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-17 01:31:03" id="1853" opendate="2012-05-04 07:49:39" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JobParamters.getDate() throws NPE if no value exists for that date</summary>
+			
+			
+			<description>The following test fails:
+@Test
+public void testDateReturnsNullWhenKeyDoesntExit(){
+     assertNull(new JobParameters().getDate(&quot;keythatdoesntexist&quot;));
+}
+In the same scenario, if you ask for a key that doesn&amp;amp;apos;t have a corresponding parameter, you will get Null in the case of String, 0 for Long, 0.0 for double, and NPE for Date. Date should return null.</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.JobParametersTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.JobParameters.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-07-23 03:52:15" id="1822" opendate="2011-12-09 10:33:25" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Job execution marked as STOPPED when exception occurs while committing StepExecution</summary>
+			
+			
+			<description>When an exception occurs while committing StepExecution (in org.springframework.batch.core.step.tasklet.TaskletStep.ChunkTransactionCallback#doInTransaction()) setTerminateOnly is being called on the step execution. This results in the job execution being marked as STOPPED. I think it&amp;amp;apos;s better to mark the job execution as FAILED? The STOPPED status in general indicates the job has been stopped in a controlled way (via spring-batch gui, programmatically via the JobOperator API, ...).</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.1.9</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.job.flow.FlowJobTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.JobInterruptedException.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.AbstractJob.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.SimpleJobTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.flow.JobFlowExecutor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-10-26 06:23:02" id="1780" opendate="2011-08-03 03:56:06" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Code exception is masked by a batch exception</summary>
+			
+			
+			<description>I use a listener class like this:
+@Transactional(value = CreditorServicesConstants.TRANSACTION_MANAGER, propagation = Propagation.REQUIRES_NEW)
+public class AlertOnErrorItemReadListener implements ItemReadListener&amp;lt;Object&amp;gt; {
+  public void onReadError(Exception ex) 
+{
+     ... some code
+    
+     FileIn myFileIn = (FileIn) dao.findFileByFileName(filename);
+
+     ... some other code
+  }
+
+
+When I import a test file which contains an error in one record the onReadError method is called with a FlatFileParseException.  
+Now the dao call throws a JPA NonUniqueResultException which is translated into org.springframework.dao.IncorrectResultSizeDataAccessException.
+This last exception however is never seen nor reported in log output. Only the FlatFileParseException is logged and the code after the dao call is silently
+not executed:
+[03/08/2011 09:52:49][DEBUG] (AlertOnErrorItemReadListener.java:onReadError:81) EmddItemReadListener.onReadError(class org.springframework.batch.item.file.FlatFileParseException)
+[03/08/2011 09:52:49][INFO ] (AlertOnErrorItemReadListener.java:onReadError:116) A technical failure event is raised with the following error message: Parsing error at line: 3 in resource=[URL file:./target/test-classes/data//dom80/work/dom80MigrationTestfile_readError.dat], input=[200000001reference3334445556BE44445555666677111222333446000000 ...
+Hibernate: select filein0_.id as id58_, filein0_.creationdate as creation3_58_, filein0_.creditororganization_id as credito15_58_, filein0_.errorcode as errorcode58_, filein0_.errordescription as errordes5_58_, filein0_.fileformat as fileformat58_, filein0_.filename as filename58_, filein0_.lastupdate as lastupdate58_, filein0_.nbofoperations as nbofoper9_58_, filein0_.status as status58_, filein0_.answered as answered58_, filein0_.nbofokrequests as nbofokr12_58_ from File filein0_ where filein0_.DTYPE=&amp;amp;apos;FileIn&amp;amp;apos; and filein0_.filename=? limit ?
+[03/08/2011 09:52:49][ERROR] (AbstractStep.java:execute:212) Encountered an error executing the step
+org.springframework.batch.core.listener.StepListenerFailedException: Error in onReadError.
+java.lang.IllegalArgumentException: Unable to invoke method: [public final void $Proxy61.onReadError(java.lang.Exception)] on object: [net.awl.emdd.creditor.files.in.chunk.dom80.AlertOnErrorListener@11a4e9b] with arguments: [[org.springframework.batch.item.file.FlatFileParseException: Parsing error at line: 3 in resource=[URL file:./target/test-classes/data//dom80/work/dom80MigrationTestfile_readError.dat], input=[200000001reference3334445556BE4444555566667711122233344600000001012010Erwin Lindemann                    125, rue de Bouton 4748 Hergenrath 4748      Hergenrath               KREDBEBB   3334445556614122010]]]
+	at org.springframework.batch.core.listener.MulticasterBatchListener.onReadError(MulticasterBatchListener.java:232) ~[spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.step.item.SimpleChunkProvider.doRead(SimpleChunkProvider.java:95) ~[spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.step.item.SimpleChunkProvider.read(SimpleChunkProvider.java:148) ~[spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.step.item.SimpleChunkProvider$1.doInIteration(SimpleChunkProvider.java:108) ~[spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.repeat.support.RepeatTemplate.getNextResult(RepeatTemplate.java:367) ~[spring-batch-infrastructure-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.repeat.support.RepeatTemplate.executeInternal(RepeatTemplate.java:214) ~[spring-batch-infrastructure-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.repeat.support.RepeatTemplate.iterate(RepeatTemplate.java:143) ~[spring-batch-infrastructure-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.step.item.SimpleChunkProvider.provide(SimpleChunkProvider.java:103) ~[spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.step.item.ChunkOrientedTasklet.execute(ChunkOrientedTasklet.java:68) ~[spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:386) ~[spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:130) ~[spring-tx-3.0.4.RELEASE.jar:3.0.4.RELEASE]
+	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:264) ~[spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.scope.context.StepContextRepeatCallback.doInIteration(StepContextRepeatCallback.java:76) ~[spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.repeat.support.RepeatTemplate.getNextResult(RepeatTemplate.java:367) ~[spring-batch-infrastructure-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.repeat.support.RepeatTemplate.executeInternal(RepeatTemplate.java:214) ~[spring-batch-infrastructure-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.repeat.support.RepeatTemplate.iterate(RepeatTemplate.java:143) ~[spring-batch-infrastructure-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.step.tasklet.TaskletStep.doExecute(TaskletStep.java:250) ~[spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.step.AbstractStep.execute(AbstractStep.java:195) ~[spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.job.SimpleStepHandler.handleStep(SimpleStepHandler.java:135) [spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.job.flow.JobFlowExecutor.executeStep(JobFlowExecutor.java:61) [spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.job.flow.support.state.StepState.handle(StepState.java:60) [spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.resume(SimpleFlow.java:144) [spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.job.flow.support.SimpleFlow.start(SimpleFlow.java:124) [spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.job.flow.FlowJob.doExecute(FlowJob.java:135) [spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.job.AbstractJob.execute(AbstractJob.java:281) [spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.batch.core.launch.support.SimpleJobLauncher$1.run(SimpleJobLauncher.java:120) [spring-batch-core-2.1.8.RELEASE.jar:na]
+	at org.springframework.core.task.SyncTaskExecutor.execute(SyncTaskExecutor.java:48) [spring-core-3.0.4.RELEASE.jar:3.0.4.RELEASE]
+	at org.springframework.batch.core.launch.support.SimpleJobLauncher.run(SimpleJobLauncher.java:114) [spring-batch-core-2.1.8.RELEASE.jar:na]
+	at net.awl.emdd.creditor.files.in.chunk.dom80.TestDom80Migration.runJob(TestDom80Migration.java:100) [test-classes/:na]
+After analysing the Spring Batch sources I found the location why this happened:
+The Javadoc of StepListenerFailedException constructor says about the two Exception parameters:
+public StepListenerFailedException(String message,
+                                   Throwable ex,
+                                   RuntimeException e)
+Parameters:
+    message - describes the error to the user
+    ex - the exception that was thrown by a listener
+    e - the exception that caused the skip
+Following the documentation, in MulticasterBatchListener.onReadError(Exception) the two Exceptions in StepListenerFailedException constructor should be set vice versa:
+public void onReadError(Exception ex) {
+		try 
+{
+			itemReadListener.onReadError(ex);
+		}
+		catch (RuntimeException e) {
+			throw new StepListenerFailedException(&quot;Error in onReadError.&quot;, e, ex);
+		}
+}
+
+instead of
+
+public void onReadError(Exception ex) {
+		try {			itemReadListener.onReadError(ex);		}
+		catch (RuntimeException e) 
+{
+			throw new StepListenerFailedException(&quot;Error in onReadError.&quot;, ex, e);
+		}
+}</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.2.0, 2.2.0 - Sprint 3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.StepListenerFailedException.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleChunkProvider.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.MulticasterBatchListener.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.MulticasterBatchListenerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.StepListenerFailedExceptionTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2012-12-21 07:45:02" id="1916" opendate="2012-12-05 08:16:10" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RecordSeparatorPolicy#isEndOfRecord wrong javadoc?</summary>
+			
+			
+			<description>I have an issue using FlatFileItemReader with a custom RecordSeparatorPolicy. The javadoc of RecordSeparatorPolicy#isEndOfRecord  tells 
+
+Signal the end of a record based on the content of a line, being the latest line read from an input source. The input is what you would expect from BufferedReader.readLine() - i.e. no line separator character at the end. But it might have line separators embedded in it.
+I would think the parameter is last read line from file. If I see the code of 
+FlatFileItemReader#applyRecordSeparatorPolicy
+
+
+
+
+
+
+ 
+
+
+
+
+while (line != null &amp;amp;&amp;amp; !recordSeparatorPolicy.isEndOfRecord(record)) {
+
+
+
+
+
+
+Actually this is not a line, this is whole record. It makes FlatFileItemReader unusable for my purposes. </description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.2.0, 2.2.0 - Sprint 8</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.separator.RecordSeparatorPolicy.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-03-01 16:17:04" id="1847" opendate="2012-03-30 06:37:53" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>scope=&quot;step&quot; inheritance from parent bean definitions causes odd effects</summary>
+			
+			
+			<description>In a Spring Batch project we (Ewan Benfield and myself) found that Spring Batch was attempting to instantiate a bean defined as abstract in its context (abstract=&quot;true&quot;) when marked with step scope (scope=&quot;step&quot;).  Note that scope should be inheritable).
+In an attempt to reproduce the issue outside of the project an odd error was instead noted that the child bean cannot be instantiated due to not having a matching constructor (despite the abstract bean and its child having only default constructors).  The project for this attempt is included.  The exact error given is &quot;BeanCreationException: Error creating bean with name &amp;amp;apos;concrete&amp;amp;apos; defined in class path resource [abstractstepscope/AbstractStepScopeTest-context.xml]: 1 constructor arguments specified but no matching constructor found in bean &amp;amp;apos;concrete&amp;amp;apos; (hint: specify index and/or type arguments for simple parameters to avoid type ambiguities)&quot;.
+Note that if the Spring Batch beans are removed or if the scope is defined on the child (also or instead of the parent) no error is given when running the provided test &quot;AbstractStepScopeTest&quot;.
+Although tested only against Spring Batch 2.1.8 I assume this affects subsequent releases as nothing in org.springframework.batch.core.scope appears to have changed for a while.
+We&amp;amp;apos;ve worked around the issue by placing the attribute scope=&quot;step&quot; on the child bean definitions instead.</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.2.0, 2.2.0 - Sprint 16</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.annotation.StepScopeConfigurationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.scope.StepScope.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-03-21 08:17:33" id="1959" opendate="2013-02-08 03:02:22" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Problem with FlatFileItemWriter restart using multi-byte encoding</summary>
+			
+			
+			<description>With FlatFileItemWriter, size saved in the step_context on update (under current.count key) is the sum of fileChannel.size (current file size in bytes) and Buffered string length (see FlatFileItemWriter.OutputState.position() method)
+With an out file encoded in UTF-8 and buffer string containing two bytes caracters, the saved position is wrong =&amp;gt; restart will erase out file content.
+In attachment, maven project with :
+
+a first test case comparing real file size after a 1rst job run with failure and current.countsaved data
+a second test case comparing in file size and out file size after a 1rst job run with failure and a 2nd job restart with no failure
+
+</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.2.0, 2.2.0 - Sprint 19</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemWriterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.support.transaction.TransactionAwareBufferedWriterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.support.transaction.TransactionAwareBufferedWriter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-04-04 14:55:58" id="1865" opendate="2012-05-29 00:50:46" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SimpleChunkProvider calls afterRead listener even if the file is finished</summary>
+			
+			
+			<description>the doRead method of SimpleChunkProvider always calls listener.afterRead even if the returned item is null.
+A null returned item indicates the file is complete, so the doRead shouldn&amp;amp;apos;t be calling the afterRead listener.</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.2.0, 2.2.0 - Sprint 21</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleChunkProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-04-04 15:09:06" id="1860" opendate="2012-05-21 04:14:37" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JdbcPagingItemReader can skip rows for Derby (and DB/2, SqlServer and Sybase?) due to paging by row number occuring before ordering</summary>
+			
+			
+			<description>The queries (generated by DerbyPagingQueryProvider) are of this form.
+ first page query
+SELECT * FROM (
+    SELECT &amp;lt;select clause&amp;gt;, ROW_NUMBER() OVER () AS ROW_NUMBER
+    FROM &amp;lt;from clause&amp;gt;
+    WHERE &amp;lt;where clause&amp;gt;
+    ORDER BY &amp;lt;sort key&amp;gt; ASC
+) AS TMP_SUB
+WHERE TMP_SUB.ROW_NUMBER &amp;lt;= &amp;lt;page size&amp;gt;
+ remaining pages query
+SELECT * FROM (
+    SELECT &amp;lt;select clause&amp;gt;, ROW_NUMBER() OVER () AS ROW_NUMBER
+    FROM &amp;lt;from clause&amp;gt;
+    WHERE &amp;lt;where clause&amp;gt; AND ID &amp;gt; &amp;lt;last sort key value&amp;gt;
+    ORDER BY ID ASC
+) AS TMP_SUB
+WHERE TMP_SUB.ROW_NUMBER &amp;lt;= &amp;lt;page size&amp;gt;
+Most of this is determined by the superclass SqlWindowingPagingQueryProvider, which is also extended by Db2PagingQueryProvider, SqlServerPagingQueryProvider and SybasePagingQueryProvider.
+Unfortunately (at least for Derby, I haven&amp;amp;apos;t verified for DB/2, SqlServer or Sybase) the row number is appended to the unordered rows before the ordering.  This results in rows sometimes being skipped when the page size is less than the total number of rows as the subsequent remaining rows queries will retrieve only rows with a sort key value &amp;gt; the last row&amp;amp;apos;s sort key value.
+To illustrate this more clearly take this simple schema and data.
+CREATE TABLE SAMPLE (
+    ID VARCHAR(10) NOT NULL
+);
+INSERT INTO SAMPLE (ID) VALUES (&amp;amp;apos;Z&amp;amp;apos;);
+INSERT INTO SAMPLE (ID) VALUES (&amp;amp;apos;A&amp;amp;apos;);
+This would involve two queries with the first query retrieving the wrong row (not the first by sort key) and second query no rows at all.
+ first page query
+SELECT * FROM (
+    SELECT ID, ROW_NUMBER() OVER () AS ROW_NUMBER
+    FROM SAMPLE
+    ORDER BY ID ASC
+) AS TMP_SUB
+WHERE TMP_SUB.ROW_NUMBER &amp;lt;= 1
+ returns &amp;amp;apos;Z&amp;amp;apos;, 1
+ remaining pages query
+SELECT * FROM (
+    SELECT ID, ROW_NUMBER() OVER () AS ROW_NUMBER
+    FROM SAMPLE
+    WHERE ID &amp;gt; &amp;amp;apos;Z&amp;amp;apos;
+    ORDER BY ID ASC
+) AS TMP_SUB
+WHERE TMP_SUB.ROW_NUMBER &amp;lt;= 1
+ returns (no rows)
+I suggest ensuring that the row number column is added after the ordering.
+ first page query
+SELECT * FROM (
+   SELECT
+       &amp;lt;select clause&amp;gt;,
+       ROW_NUMBER() OVER () AS ROW_NUMBER
+   FROM (
+       SELECT &amp;lt;select clause&amp;gt;
+       FROM &amp;lt;from clause&amp;gt;
+       WHERE &amp;lt;where clause&amp;gt;
+       ORDER BY &amp;lt;sort key&amp;gt;
+   ) AS TMP_ORDERED
+) AS TMP_SUB
+WHERE TMP_SUB.ROW_NUMBER &amp;lt;= &amp;lt;page size&amp;gt;
+ remaining pages query
+SELECT * FROM (
+   SELECT
+       &amp;lt;select clause&amp;gt;,
+       ROW_NUMBER() OVER () AS ROW_NUMBER
+   FROM (
+       SELECT &amp;lt;select clause&amp;gt;
+       FROM &amp;lt;from clause&amp;gt;
+       WHERE &amp;lt;where clause&amp;gt; AND &amp;lt;sort key&amp;gt; &amp;gt; &amp;lt;last sort key value&amp;gt;
+       ORDER BY &amp;lt;sort key&amp;gt;
+   ) AS TMP_ORDERED
+) AS TMP_SUB
+WHERE TMP_SUB.ROW_NUMBER &amp;lt;= &amp;lt;page size&amp;gt;
+Alternatively (although I don&amp;amp;apos;t wish to propose this), no ordering or sort key is required at all (for descendants of SqlWindowingPagingQueryProvider). A range of row numbers could be selected for each page.  I presume this is undesirable as the developer may be expecting order (even though it&amp;amp;apos;s only a side-effect of the paging):
+ first and remaining pages query (with &amp;lt;last row number&amp;gt; initialised to 0)
+SELECT * FROM (
+   SELECT
+       &amp;lt;select clause&amp;gt;,
+       ROW_NUMBER() OVER () AS ROW_NUMBER
+   FROM (
+       SELECT &amp;lt;select clause&amp;gt;
+       FROM &amp;lt;from clause&amp;gt;
+       WHERE &amp;lt;where clause&amp;gt;
+   ) AS TMP_ORDERED
+) AS TMP_SUB
+WHERE TMP_SUB.ROW_NUMBER &amp;gt; &amp;lt;last row number&amp;gt; AND TMP_SUB.ROW_NUMBER &amp;lt;= &amp;lt;last row number + page size&amp;gt;
+Although I&amp;amp;apos;ve selected a priority of major, this issue doesn&amp;amp;apos;t currently affect us.  We shifted to HSQL from Derby for testing due to BATCH-1848 and I&amp;amp;apos;m raising it only as I detected the problem when testing for regressions.</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.2.0, 2.2.0 - Sprint 21</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.DerbyPagingQueryProviderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.SqlWindowingPagingQueryProviderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.DerbyPagingQueryProvider.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.SybasePagingQueryProvider.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcPagingRestartIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JpaPagingItemReaderAsyncTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcPagingQueryIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.IbatisPagingItemReaderAsyncTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.SqlWindowingPagingQueryProvider.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcPagingItemReaderAsyncTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-04-10 14:58:41" id="2172" opendate="2014-02-10 05:00:56" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Spring batch fails to autodetect database type DB2ZOS</summary>
+			
+			
+			<description>The auto-detection code in DatabaseType.fromMetaData() stopped working when we switched from jdbc driver versjon 3.64.111 to 3.65.102.
+While the older jdbc driver getDatabaseProductName() returns &quot;DB2&quot;, the new one returns &quot;DB2 for DB2 UDB for z/OS&quot;. getDatabaseProductVersion() returns &quot;DSN10015&quot; in both cases. 
+Suggestion: use startsWith() instead of equals()</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>2.2.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.support.DatabaseTypeTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.support.DatabaseType.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2014-09-15 13:29:12" id="1863" opendate="2012-05-25 06:54:30" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>The batch namespace can not be used with allowBeanDefinitionOverriding=false</summary>
+			
+			
+			<description>Problem description
+It is not possible to use the batch namespace in spring configuration files if the allowBeanDefinitionOverriding is set to false in the application context. The application context loading fails with a org.springframework.beans.factory.parsing.BeanDefinitionParsingException exception.
+This is caused by the JobParser and InlineFlowParser from package org.springframework.batch.core.configuration.xml. JobParser creates for non abstract job definition a SimpleFlow which is unfortunately registered under the same bean name as the job parsed by the JobParser - the problematic code is on line 120 of the JobParser. The application context loading fails as 2 beans with the same names are going to be registered. The first one is a factory bean for SimpleFlow and the second one is a factory bean for FlowJob.
+This fact is visible also from logs when the allowBeanDefinitionOverriding is set to true:
+
+
+
+
+
+
+org.springframework.beans.factory.support.DefaultListableBeanFactory registerBeanDefinition
+
+
+
+
+INFO: Overriding bean definition for bean &amp;amp;apos;dummyJob&amp;amp;apos;: replacing [Generic bean: class [org.springframework.batch.core.configuration.xml.SimpleFlowFactoryBean]; scope=singleton; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Generic bean: class [org.springframework.batch.core.configuration.xml.JobParserJobFactoryBean]; scope=singleton; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null]
+
+
+
+
+
+
+I have attached a very simple application to this issue, which contains 2 unit tests. One with allowBeanDefinitionOverriding=true and another one with allowBeanDefinitionOverriding=false. The second one fails with the org.springframework.beans.factory.parsing.BeanDefinitionParsingException exception.
+Possible fix
+The factory bean for SimpleFlow could be represented by a random name (or by a prefix/suffix added to the bean name of the FlowJob&amp;amp;apos;s factroy bean), as the SimpleFlow is just a bean which will be not used as a &quot;main&quot;, standalone bean, but it is used only as the flow attribute of the SimpleFlow. So its bean name is not important, however it should named differently as its owner FlowJob. The current implementation of the InlineFlowParser uses the same value for the flow name and for the bean name. If flow name is important and it makes no sense to use a random name or a modified name, then an additional value should be provided for the InlineFlowParser&amp;amp;apos;s constructor, which will be the bean name to use.
+</description>
+			
+			
+			<version>2.1.8</version>
+			
+			
+			<fixedVersion>3.0.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.InlineFlowParser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

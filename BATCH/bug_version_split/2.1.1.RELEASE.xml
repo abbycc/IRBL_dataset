@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="BATCH">
+	<bug fixdate="2010-05-17 22:12:56" id="1569" opendate="2010-05-17 05:42:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MultiResourceItemReader.getCurrentResource cause java.lang.ArrayIndexOutOfBoundsException when .read() was not called</summary>
+			
+			
+			<description>Only after first .read(), variable currentResource got a value greather or equal to zero(0). So if stream was openned, or not read yet, one activation on getCurrentResource method generates ArrayIndexOutOfBoundsException.
+Below a proposed fix:
+	public Resource getCurrentResource() {
+		if (currentResource &amp;gt;= resources.length ) 
+{ //proposed: || currentResource  &amp;lt; 0
+			return null;
+		}
+		return resources[currentResource];
+	}</description>
+			
+			
+			<version>2.1.1</version>
+			
+			
+			<fixedVersion>2.1.2</fixedVersion>
+			
+			
+			<type>Defect</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.MultiResourceItemReaderIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.MultiResourceItemReader.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-23 15:20:40" id="1573" opendate="2010-05-21 09:12:14" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>End transition states will cause the batch job to finish with an Unknown status if the namespace prefix is used.</summary>
+			
+			
+			<description>If you run the following job:
+&amp;lt;batch:job id=&quot;job1&quot;&amp;gt;
+		&amp;lt;batch:step id=&quot;noopStep&quot; parent=&quot;noopStep1&quot;&amp;gt;
+            &amp;lt;batch:next on=&quot;COMPLETED&quot; to=&quot;step4&quot; /&amp;gt;
+            &amp;lt;batch:end on=&quot;NOOP&quot; /&amp;gt;
+            &amp;lt;batch:fail on=&quot;*&quot; /&amp;gt;
+        &amp;lt;/batch:step&amp;gt;
+        &amp;lt;batch:step id=&quot;step4&quot; parent=&quot;step45&quot; /&amp;gt;
+	&amp;lt;/batch:job&amp;gt;
+    &amp;lt;batch:step id=&quot;noopStep1&quot;&amp;gt;
+        &amp;lt;batch:tasklet ref=&quot;noopTasklet&quot; /&amp;gt;
+    &amp;lt;/batch:step&amp;gt;
+And the first step returns an exit status of NOOP, the job will finish with a BatchStatus of UNKNOWN, and an ExitStatus of NOOP.  If you remove the batch namespace from the element, it will complete with a BatchStatus of COMPLETED and an Exit status of the same.
+This is because in AbstractFlowParser.getBatchStatusFromEndTransitionName() line 393, the element name is checked to see if it is an &amp;amp;apos;End transition&amp;amp;apos;.  However, this check doesn&amp;amp;apos;t strip out the batch: from the front of the element first.
+I have attached a failing unit test as well.  </description>
+			
+			
+			<version>2.1.1</version>
+			
+			
+			<fixedVersion>2.1.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.AbstractFlowParser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-06-23 19:43:26" id="1582" opendate="2010-06-15 08:01:54" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DefaultStepExecutionAggregator can simply ignore null or empty input</summary>
+			
+			
+			<description>Current implementation of DefaultStepExecutionAggregator validates the arguments and restricts null or empty sets of executions. In my opinion the validation is too strict and prohibit usage of DefaultStepExecutionAggregator in various cases when using namespace support for partitions (there is no possibility to set the aggregator when using batch namespace). I have implementation of the partitioner that ignores gridSize and in certain occasions return empty map of executions. I believe the framework should be able to deal with such situations.
+The strict validation seems odd to me also in context of other default components provided by the framework to deal with partitioning. For instance, TaskExecutorPartitionHandler can process empty collections of executions returned by the splitter. SimpleStepExecutionSplitter is also fine.</description>
+			
+			
+			<version>2.1.1</version>
+			
+			
+			<fixedVersion>2.1.2</fixedVersion>
+			
+			
+			<type>Defect</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.partition.support.DefaultStepExecutionAggregator.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.partition.support.DefaultStepExecutionAggregatorTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-06-24 23:26:43" id="1587" opendate="2010-06-24 03:15:06" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DefaultFieldSetFactory is not setting the numberFormat in the enhance() call</summary>
+			
+			
+			<description>enhance is testing for (numberFormat!=null) but then calling fieldSet.setDateFormat(dateFormat);
+	private FieldSet enhance(DefaultFieldSet fieldSet) {
+		if (dateFormat!=null) 
+{
+			fieldSet.setDateFormat(dateFormat);
+		}
+		if (numberFormat!=null) {			fieldSet.setDateFormat(dateFormat);		}
+ 
+		return fieldSet;
+	}</description>
+			
+			
+			<version>2.1.1</version>
+			
+			
+			<fixedVersion>2.1.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.transform.DefaultFieldSetFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-06-28 03:56:29" id="1588" opendate="2010-06-28 00:24:35" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Job Excecution Listener - XML Namespace parsing fails for methods named different to &quot;beforeJob&quot;, &quot;afterJob&quot;</summary>
+			
+			
+			<description>The following XML configuration for a job listener does not work as the two configured methods are not called:
+-------- XML - Configuration --------
+&amp;lt;job id=&quot;...&quot;&amp;gt;
+  ...
+  &amp;lt;listener ref=&quot;pojoListener&quot; before-job-method=&quot;before&quot; after-job-method=&quot;after&quot;/&amp;gt;
+&amp;lt;/job&amp;gt;
+&amp;lt;bean id=&quot;pojoListener&quot; class=&quot;com.example.MyListener&quot;/&amp;gt;
+--------
+MyListener is a simple POJO and does not implement JobExecutionListener and has no annotated methods either.
+I&amp;amp;apos;ve debugged the problem and it seems the offending code is in the private method
+AbstractListenerParser#getMethodNameAttributes
+That method returns 
+{&quot;beforeJob&quot;, &quot;afterJob&quot;}
+ instead of the XML attribute names 
+{&quot;before-job-method&quot;, &quot;after-job-method&quot;}
+.
+The unit test &quot;JobExecutionListenerParserTests&quot; does not seem to test this case.
+I suspect that the same problem exists for Step Listeners as they share the same code base.</description>
+			
+			
+			<version>2.1.1</version>
+			
+			
+			<fixedVersion>2.1.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.TestListener.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.AbstractListenerParser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-06-28 21:16:55" id="1590" opendate="2010-06-28 04:45:38" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>OraclePagingQueryProvider.generateJumpToItemQuery generates an incorrect query</summary>
+			
+			
+			<description>When running a partitioned job that uses JdbcPagingItemReader as the input, some input rows are being omitted and some are being processed twice. This is happening as a result of JdbcPagingItemReader.doJumpToPage attempting to position the reader at the start of that partition (the &amp;amp;apos;read.count&amp;amp;apos; and &amp;amp;apos;read.count.max&amp;amp;apos; properties have been set in the step execution context to delimit the partitions). 
+This problem is only seen when the sortKey will cause the rows to be sorted in an order other than the underlying database storage engine returns them (e.g., not the primary clustering key or query-covering index).
+The jumpToItemSql that is generated by the query provider looks something like the following:
+SELECT * FROM (SELECT customer AS SORT_KEY, ROWNUM as TMP_ROW_NUM FROM batch_input ORDER BY customer ASC) WHERE TMP_ROW_NUM = 30
+This does not return the intended result because the assignment of the TMP_ROW_NUM values happens before the sort, so the effect is exactly the same as if the ORDER BY clause was omitted.
+A possible workaround is to add another select level so that the sort happens before TMP_ROW_NUM values are assigned:
+SELECT * FROM (SELECT SORT_KEY, ROWNUM AS TMP_ROW_NUM FROM (SELECT customer AS SORT_KEY FROM batch_input ORDER BY SORT_KEY ASC)) WHERE TMP_ROW_NUM = 30</description>
+			
+			
+			<version>2.1.1</version>
+			
+			
+			<fixedVersion>2.1.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.OraclePagingQueryProvider.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.TaskletParserBeanPropertiesTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcPagingQueryIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.SqlPagingQueryUtils.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.OraclePagingQueryProviderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.SqlPagingQueryUtilsTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-08 21:53:18" id="1594" opendate="2010-07-08 20:46:12" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StepListenerSupport implements method onErrorInStep which is not declared in any of the implemented interfaces</summary>
+			
+			
+			<description>The onErrorInStep method is not declared in any of the listener interfaces, nor is it called as far as I can see from the code executing steps. onErrorInStep was removed from the StepExecutionListener in changeset 2338 and jira BATCH-825.
+While the onErrorInStep method in StepListenerSupport will not cause problems directly, it is misleading for developers extending StepListenerSupport.
+(When editing the StepListenerSupport, you might want to update the non-javadoc referencing StepListener to reference StepExecutionListener instead as well)</description>
+			
+			
+			<version>2.1.1</version>
+			
+			
+			<fixedVersion>2.1.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.sample.common.StagingItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.NonAbstractStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.common.StagingItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.MulticasterBatchListenerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.StepListenerSupport.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-07-23 08:10:27" id="1600" opendate="2010-07-22 02:34:21" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CommandLineJobRunner cannot stop a Job execution that was restarted</summary>
+			
+			
+			<description>Mode execution restarting is not stopped with mode execution stop:
+The error is this line from the file:
+
+Class: org.springframework.batch.core.launch.support. CommandLineJobRunner
+method: private List&amp;lt;JobExecution&amp;gt; getJobExecutionsWithStatusGreaterThan(String jobIdentifier, BatchStatus minStatus){}.
+line: 344: JobExecution jobExecution = jobExecutions.get(jobExecutions.size() - 1);
+
+Possible fix:
+
+line: 344: JobExecution jobExecution = jobExecutions.get(0);
+
+</description>
+			
+			
+			<version>2.1.1</version>
+			
+			
+			<fixedVersion>2.1.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.launch.support.CommandLineJobRunnerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.launch.support.CommandLineJobRunner.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-13 01:25:58" id="1616" opendate="2010-08-12 07:56:15" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>A custom partitioner no longer restart the job properly upon failure</summary>
+			
+			
+			<description>The changes in BATCH-1531 introduced a regression. If the partitions are not named partition0, partition1, partition2, Spring Batch considers that the execution does not exist and start a fresh new instance without calling the partitioner, which fails since the partitioner sets mandatory value for the partition to run properly.
+For the record we use the following
+public static final String PARTITION_PREFIX = &quot;partition-&quot;;
+// ...
+final String partitionNumberFormat = &quot;%0&quot; + String.valueOf(gridSize).length() + &quot;d&quot;;
+// for partition i
+final String partitionName = PARTITION_PREFIX + String.format(partitionNumberFormat, i);</description>
+			
+			
+			<version>2.1.1</version>
+			
+			
+			<fixedVersion>2.1.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.partition.support.SimpleStepExecutionSplitter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.partition.support.SimpleStepExecutionSplitterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.partition.support.PartitionStepTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-13 03:47:38" id="1605" opendate="2010-07-29 01:24:30" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HippyMethodInvoker candidate arguments repeated</summary>
+			
+			
+			<description>I&amp;amp;apos;m trying out the PropertyExtractingDelegatingItemWriter, and I&amp;amp;apos;m seeing that if the arguments are not of the exact types as the targetMethod, then HippyMethodInvoker#findMatchingMethod is called.
+When finding candidate arguments, the findMatchingMethod method will populate all fields with the first possible match.
+The following is the sample I&amp;amp;apos;m using:
+
+
+
+
+
+
+&amp;lt;bean id=&quot;adaptedItemWriter&quot; class=&quot;org.springframework.batch.item.adapter.PropertyExtractingDelegatingItemWriter&quot;&amp;gt;
+
+
+
+
+    &amp;lt;property name=&quot;targetObject&quot; ref=&quot;myWriter&quot; /&amp;gt;
+
+
+
+
+    &amp;lt;property name=&quot;targetMethod&quot; value=&quot;doIt&quot; /&amp;gt;
+
+
+
+
+    &amp;lt;property name=&quot;fieldsUsedAsTargetMethodArguments&quot;&amp;gt;
+
+
+
+
+        &amp;lt;list&amp;gt;
+
+
+
+
+            &amp;lt;value&amp;gt;firstName&amp;lt;/value&amp;gt;
+
+
+
+
+            &amp;lt;value&amp;gt;lastName&amp;lt;/value&amp;gt;
+
+
+
+
+            &amp;lt;value&amp;gt;network&amp;lt;/value&amp;gt;
+
+
+
+
+        &amp;lt;/list&amp;gt;
+
+
+
+
+    &amp;lt;/property&amp;gt;
+
+
+
+
+&amp;lt;/bean&amp;gt;
+
+
+
+
+	
+
+
+
+
+&amp;lt;bean id=&quot;myWriter&quot; class=&quot;com.mycom.writers.MyWriter&quot;/&amp;gt;
+
+
+
+
+
+
+The item being passed has three properties: firstName, lastName, and network. All are Strings. In order to make MyWriter more reusable, I had the doIt(...) method use Object for one of the parameters:
+
+
+
+
+
+
+public class MyWriter {
+
+
+
+
+	public void doIt(String a, String b, Object c) {
+
+
+
+
+		System.out.println(a + &quot;, &quot; + b + &quot;, and &quot; + c); 
+
+
+
+
+	}
+
+
+
+
+}
+
+
+
+
+
+
+If the &quot;c&quot; argument is a String &quot;public void doIt(String a, String b, String c)&quot;, then the output is as expected (i.e., firstName, lastName and network are printed out). When &quot;c&quot; is an Object &quot;public void doIt(String a, String b, Object c)&quot;, then HippyMethodInvoker tries to find a method and selects candidate arguments. All three candidate arguments are the first value passed in (i.e., the result is firstName, firstName and firstName printed out).
+Any ideas on how to use more generic argument types? </description>
+			
+			
+			<version>2.1.1</version>
+			
+			
+			<fixedVersion>2.1.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.adapter.HippyMethodInvokerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.adapter.HippyMethodInvoker.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-09-27 01:17:31" id="1572" opendate="2010-05-20 02:20:50" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Step not failing on org.springframework.transaction.UnexpectedRollbackException</summary>
+			
+			
+			<description>The transaction is timing out for a read by the reader in a step due to a lock. The transaction manager marks the out come of the transaction to be rollback only. Once the lock is released and the reader returns  a org.springframework.transaction.UnexpectedRollbackException is thrown while updating the chunk to database. Batch is considering this exception to be a non fatal exception and is continuing with the next chunk just by logging the exception at a debug level. Instead ity should fail the step I guess.
+Problem : I am loosing all the records in that chunk. 
+I changed the org.springframework.batch.core.step.item.SimpleRetryExceptionHandler.java&amp;amp;apos;s constructor like 
+public SimpleRetryExceptionHandler(RetryPolicy retryPolicy, ExceptionHandler exceptionHandler, Collection&amp;lt;Class&amp;lt;? extends Throwable&amp;gt;&amp;gt; fatalExceptionClasses) 
+{
+		this.retryPolicy = retryPolicy;
+		this.exceptionHandler = exceptionHandler;
+		fatalExceptionClasses.add(org.springframework.transaction.UnexpectedRollbackException.class);
+		this.fatalExceptionClassifier = new BinaryExceptionClassifier(fatalExceptionClasses);
+	}
+
+and tested. Now it is failing the step.
+</description>
+			
+			
+			<version>2.1.1</version>
+			
+			
+			<fixedVersion>2.1.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.TaskletStepExceptionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.TaskletStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.Entity.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.MapStepExecutionDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantStepFactoryBeanRollbackTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.AbstractStep.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-11-26 03:02:14" id="1659" opendate="2010-11-23 23:21:42" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FileUtils setUpOutputFile fails on NAS from linux</summary>
+			
+			
+			<description>FlatFileItemWriter is failing on a NAS running on linux. It fails in FileUtils.setUpOutputFile where it calls file.createNewFile();
+A simple test program reproduces the problem. If I run this once I get the exception, but it successfully creates the file. If I run it a second time it works.
+public class TestNAS 
+{
+    public static void main( String[] args ) throws IOException
+    {
+        File file = new File(&quot;./test.txt&quot;);
+        file.createNewFile();
+    }
+}
+The exception is 
+Exception in thread &quot;main&quot; java.lang.reflect.InvocationTargetException
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:597)
+        at com.simontuffs.onejar.Boot.run(Boot.java:329)
+        at com.simontuffs.onejar.Boot.main(Boot.java:164)
+Caused by: java.io.IOException: Permission denied
+        at java.io.UnixFileSystem.createFileExclusively(Native Method)
+        at java.io.File.createNewFile(File.java:883)
+        at com.jpmorgan.wss.test.TestNAS.main(TestNAS.java:16)
+        ... 6 more</description>
+			
+			
+			<version>2.1.1</version>
+			
+			
+			<fixedVersion>2.1.6</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.util.FileUtilsTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.transform.FieldSetFactory.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.transform.DefaultFieldSet.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.util.FileUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

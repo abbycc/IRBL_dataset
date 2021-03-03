@@ -1,0 +1,1348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="BATCH">
+	<bug fixdate="2008-03-30 23:54:00" id="533" opendate="2008-03-30 22:25:53" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>prefix in the JobRepositoryFactoryBean does not apply to the sequences</summary>
+			
+			
+			<description>...
+dao.setJobIncrementer(incrementerFactory.getIncrementer(databaseType, &quot;BATCH_JOB_SEQ&quot;));
+...
+dao.setJobExecutionIncrementer(incrementerFactory.getIncrementer(databaseType, &quot;BATCH_JOB_EXECUTION_SEQ&quot;));
+...
+dao.setStepExecutionIncrementer(incrementerFactory.getIncrementer(databaseType, &quot;BATCH_STEP_EXECUTION_SEQ&quot;));
+....
+As you can see, the prefix is not applied to any of the sequences.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.support.JobRepositoryFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.support.JobRepositoryFactoryBeanTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-31 22:08:59" id="529" opendate="2008-03-29 00:02:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StepExecutionListener.afterStep() should only be called on success</summary>
+			
+			
+			<description>StepExecutionListener.afterStep() should only be called on success.  The interface javadocs don&amp;amp;apos;t say this, but I think it makes more sense for this callback to come only on a successful completion (since there is an onError() callback for the failure case).</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStepTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-31 22:10:09" id="532" opendate="2008-03-29 20:28:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StepExecutionListener can influence exit status but not status of step execution</summary>
+			
+			
+			<description>StepExecutionListener can influence exit status but not status of step execution.  The exit status can be downgraded from COMPLETE to FAILED by returning FAILED from the afterStep() callback.  But the BatchStatus in the stepExecution is unchanged, so it looks as if the step was successful.  It&amp;amp;apos;s a hard decision to decide how to fix this.  I suggest that StepExecutionListener should be allowed to throw an exception to signal a failure, and treat that as a normal way for steps to fail, instead of trying to map exit codes to statuses.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.StepExecutionListener.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.TaskletStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.TaskletStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStepTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-01 06:16:21" id="538" opendate="2008-04-01 05:42:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HibernateCursorItemReader close() doesn&amp;apos;t close statefull sessions correctly</summary>
+			
+			
+			<description>	public void close(ExecutionContext executionContext) {
+		initialized = false;
+		if (cursor != null) 
+{
+			cursor.close();
+		}
+		currentProcessedRow = 0;
+		if (useStatelessSession) {
+			if (statelessSession != null) 
+{
+				statelessSession.close();
+			}
+		}
+		else {
+			if (statelessSession != null) {				statelessSession.close();			}
+		}
+	}
+The close method above won&amp;amp;apos;t close correctly because if useStatelessSession is false, the statelessSession will always been false as well.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.HibernateCursorItemReaderStatefulIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.HibernateCursorItemReader.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-01 07:07:57" id="537" opendate="2008-04-01 01:41:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Bad ItemKeyGenerator strategy can lead to infinite loop in retry</summary>
+			
+			
+			<description>Bad ItemKeyGenerator strategy can lead to infinite loop in retry. http://forum.springframework.org/showthread.php?t=51766 is a good example.  Part of the problem here is that the skip limit is ignored when retry is in place (that&amp;amp;apos;s a bug as well).</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.retry.policy.ItemWriterRetryPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleRetryExceptionHandlerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.StatefulRetryStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.StatefulRetryStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleRetryExceptionHandler.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.policy.RetryContextCache.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.policy.MapRetryContextCache.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.policy.ItemWriterRetryPolicyTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-01 19:19:15" id="542" opendate="2008-04-01 18:38:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StatefulRetryStepFactoryBean still uses a local variable that refers to item provider</summary>
+			
+			
+			<description>Local variable itemProviderRetryPolicy should be itemWriterRetryPolicy. No biggie.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.StatefulRetryStepFactoryBean.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-02 01:45:34" id="545" opendate="2008-04-02 00:26:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>RetryTemplate swallows Throwables that are not Exception or Error</summary>
+			
+			
+			<description>The following code is missing an else clause that would rethrow unclassified throwable as RetryException perhaps:
+private static void unwrapAndThrow(Throwable ex) throws Exception {
+		if (ex instanceof Exception) 
+{
+			throw (Exception) ex;
+		}
+		else if (ex instanceof Error) 
+{
+			throw (Error) ex;
+		}
+}</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.retry.support.RetryTemplate.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.support.RetryTemplateTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-02 02:52:12" id="549" opendate="2008-04-02 02:29:41" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JdbcCursorItemReader will not handle more than one restart</summary>
+			
+			
+			<description>The JdbcCursorItemReader won&amp;amp;apos;t handle restarting more than once, since the BufferedResultSetReader returns only the records it&amp;amp;apos;s processed.  An extra unit test for this scenario should be added to the abstract integration tests as well.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcCursorItemReaderIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcCursorItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.AbstractDataSourceItemReaderIntegrationTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-02 23:21:48" id="552" opendate="2008-04-02 22:12:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Fix samples-14 CI build (MBeanServer not automatically created in Java 1.4)</summary>
+			
+			
+			<description>Fix samples-14 CI build (MBeanServer not automatically created in Java 1.4)</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.sample.launch.RemoteLauncherTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-06 18:19:37" id="560" opendate="2008-04-04 23:37:49" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StepExecutionResourceProxy can not be used with FlatFileItemWriter</summary>
+			
+			
+			<description>StepExecutionResourceProxy can work with FlatFileItemReader, but FlatFileItemWriter. It seems FlatFileItemWriter try to get the real file during its afterPropertiesSet(), which means before StepExecutionResourceProxy.beforeStep() get called. Hence, the &quot;The delegate resource has not been initialised...&quot; exception always get thrown by StepExecutionResourceProxy.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemWriterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.util.FileUtilsTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.util.FileUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-06 19:09:25" id="561" opendate="2008-04-06 14:45:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ItemReaderAdapter still implements unnecessary close method</summary>
+			
+			
+			<description>Summary says it all</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.adapter.ItemReaderAdapter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-06 19:19:50" id="558" opendate="2008-04-04 14:38:45" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TaskletAdapter still maps to CONTINUABLE by default</summary>
+			
+			
+			<description>Summary says it all.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.TaskletAdapter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.TaskletAdapterTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-06 20:40:34" id="564" opendate="2008-04-06 20:39:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CompositeSkipListener has method from StepExecutionListener</summary>
+			
+			
+			<description>CompositeSkipListener has method from StepExecutionListener - clearly should be removed as it will never be called.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.CompositeSkipListener.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-06 21:37:37" id="565" opendate="2008-04-06 21:02:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StatefulRetryStepFactoryBean ignores skip configuration</summary>
+			
+			
+			<description>StatefulRetryStepFactoryBean ignores skip limit and exceptions</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.StatefulRetryStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.StatefulRetryStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitStepFactoryBeanTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-08 14:44:20" id="531" opendate="2008-03-29 03:06:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Off by one error in itemCount of StepExecution</summary>
+			
+			
+			<description>The StepExecution always has one more item at the end than it should.  Here&amp;amp;apos;s a unit test (insert in ItemOrientedStepTests):
+	public void testStepToCompletion() throws Exception 
+{
+
+		RepeatTemplate template = new RepeatTemplate();
+
+		// process all items:
+		template.setCompletionPolicy(new DefaultResultCompletionPolicy());
+		itemOrientedStep.setStepOperations(template);
+		
+		JobExecution jobExecutionContext = new JobExecution(jobInstance);
+		StepExecution stepExecution = new StepExecution(itemOrientedStep, jobExecutionContext);
+
+		itemOrientedStep.execute(stepExecution);
+		assertEquals(3, processed.size());
+		assertEquals(3, stepExecution.getItemCount().intValue());
+	}
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleItemHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-08 14:56:08" id="553" opendate="2008-04-03 03:02:17" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>There is no way to set the ChunkOperations ExceptionHandler in any factory bean</summary>
+			
+			
+			<description>The SimpleStepFactoryBean has a setter for the ExceptionHandler, but it isn&amp;amp;apos;t used anywhere.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleStepFactoryBean.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-11 08:18:54" id="579" opendate="2008-04-11 08:18:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Remove redundant IOException from throws declaration in FlatFileIteReader</summary>
+			
+			
+			<description>Remove redundant IOException from throws declaration in FlatFileIteReader</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReader.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-15 23:44:19" id="590" opendate="2008-04-15 22:54:08" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>broken rollback/buffering in JdbcCursorItemReader</summary>
+			
+			
+			<description>The reader keeps moving  the result set cursor while returning items from the buffer (after rollback). This means after next commit the buffer is cleared and some items from the chunk following the rollbacked chunk are skipped e.g.
+read -&amp;gt; 1
+commit
+read -&amp;gt; 2
+rollback
+read -&amp;gt;2
+commit
+read -&amp;gt; 4 // 3 was skipped during re-reading 2</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcCursorItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.CommonItemReaderTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-16 20:30:17" id="577" opendate="2008-04-10 23:13:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JdbcCursorItemReader doesn&amp;apos;t work with Derby</summary>
+			
+			
+			<description>Using embedded Derby driver:
+java.sql.SQLException: The &amp;amp;apos;getRow()&amp;amp;apos; method is only allowed on scroll cursors.
+	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedResultSet.checkScrollCursor(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedResultSet.getRow(Unknown Source)
+	at org.apache.commons.dbcp.DelegatingResultSet.getRow(DelegatingResultSet.java:331)
+	at org.springframework.batch.item.database.JdbcCursorItemReader$BufferredResultSetReader.read(JdbcCursorItemReader.java:475)
+</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcCursorItemReader.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-20 19:07:49" id="593" opendate="2008-04-20 17:21:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Calling update before read on DrivingQueryItemReader causes ArrayIndexOutOfBoundsError</summary>
+			
+			
+			<description>When calling the update method on the DrivingQueryItemReader to save the state to the execution context, an attempt is made to get the current key by doing a get(currentIndex - 1) on the keys list.  Unfortunately, since the read() method has not yet been called, the currentIndex is still at 0, and an ArrayIndexOutOfBoundsError is thrown.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.CommonItemStreamItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.DrivingQueryItemReader.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-21 22:27:55" id="595" opendate="2008-04-21 19:59:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Incorrect JDBC type for job parameters of long type</summary>
+			
+			
+			<description>The JDBC type for long parameters is Types.INTEGER in JdbcJobInstanceDao.insertParameter. This makes the values become truncated to int before they are inserted into the table. The type should probably be Types.BIGINT.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.JdbcJobInstanceDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.AbstractJobInstanceDaoTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-25 11:15:27" id="604" opendate="2008-04-25 07:00:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JdbcStepExecutionDao isn&amp;apos;t deserializing objects correctly.</summary>
+			
+			
+			<description>I&amp;amp;apos;m not sure how this issue has been there so long.  I checked back and it&amp;amp;apos;s been doing the following since I originally wrote it:
+executionContext.put(key, rs.getObject(&quot;OBJECT_VAL&quot;));
+Which will never work, since getObject will just return a Byte[].  Perhaps it&amp;amp;apos;s a reflection of usage that no one has caught this?</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.JdbcStepExecutionDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.AbstractStepExecutionDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.StatefulRetryStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.JdbcStepExecutionDao.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-04-27 23:11:13" id="571" opendate="2008-04-09 18:53:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Remove reference to Step from StepExecution and reference to Job from JobInstance</summary>
+			
+			
+			<description>Remove reference to Step from StepExecution.  It is only used to get the name of the step, and it doesn&amp;amp;apos;t really belong in an Entity (makes it questionably Serializable for example).</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.JobExecutionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.AbstractStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.support.SimpleJobRepositoryIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.JdbcJobInstanceDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.writer.StagingItemWriterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemSkipPolicyItemHandlerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.AbstractJobInstanceDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.JobInstance.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.resource.StepExecutionPreparedStatementSetterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.SimpleJobTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.TaskletStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.reader.StagingItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.AbstractJobExecutionDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.support.SimpleJobRepositoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.MapJobInstanceDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.resource.StepExecutionResourceProxyTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.RepeatOperationsStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.JdbcJobDaoQueryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.StepExecutionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.resource.JdbcCursorItemReaderPreparedStatementIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.JobInstanceTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.CompositeJobExecutionListenerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.CompositeStepExecutionListenerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.AbstractStepDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.AbstractStepExecutionDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.StepExecution.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.StepExecutorInterruptionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.JdbcStepExecutionDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.ThreadStepInterruptionPolicyTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.JobExecution.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.StatefulRetryStepFactoryBeanTests.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is depended on by" type="Depends">603</link>
+			
+			
+			<link description="is depended on by" type="Depends">29</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-05-02 02:21:32" id="610" opendate="2008-05-02 01:58:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JdbcCursorItemReader cannot be reopened once closed.</summary>
+			
+			
+			<description>The JdbcCursorItemReader cannot be reopned because it does a check to ensure the previous resultset is null before opening.  However, the close method only closes the resultset and doesn&amp;amp;apos;t set it to null.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1, 1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.FooInputSource.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.StaxEventItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.CommonItemStreamItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcCursorItemReader.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-05-04 19:48:17" id="608" opendate="2008-04-30 18:54:10" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JobExecutionListener.onInterrupt() is never called by spring batch framework</summary>
+			
+			
+			<description>The onInterrupt() callback method of JobExecutionListener should be called by SimpleJob once JobInterruptedException is caught</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.0.1, 1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.job.SimpleJobTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.SimpleJob.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-05-06 19:04:19" id="613" opendate="2008-05-05 21:02:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StaxEventItemReader can run out of memory</summary>
+			
+			
+			<description>StaxEventItemReader buffers XMLEvents, which causes out of memory error if the XML document has a large part that contains no items. This should be resolved by buffering items instead of XMLEvents.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.StaxEventItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.CommonItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.StaxEventItemReaderTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-05-09 08:25:41" id="603" opendate="2008-04-25 01:22:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JobExecution fields could be modified in another Thread and are not volatile</summary>
+			
+			
+			<description>JobExecution fields could be modified in another Thread and are not volatile.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.StepExecution.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.JobExecutionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.StepExecutionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.JobExecution.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.JobInstance.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.StepContributionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.StepContribution.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="depends on" type="Depends">571</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-04 00:48:36" id="650" opendate="2008-06-03 03:45:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Use FORWARD_ONLY as scroll mode in HibernateCursorItemReader</summary>
+			
+			
+			<description>When using a HibernateCursorItemReader with the thin Oracle Database Driver hughe amounts of date lead to a Memory Exception. The current implementation doesn&amp;amp;apos;t set the cursor that is opened to FORWARD_ONLY. FORWARD_ONLY disables the caching in the driver, otherwise every row that is fetched is stored in the drivers caching mechanism.
+A possible fix for this issue is: 
+if (useStatelessSession) {
+  statelessSession = sessionFactory.openStatelessSession();
+  cursor = statelessSession.createQuery(queryString).scroll(FORWARD_ONLY);
+} else {
+  statefulSession = sessionFactory.openSession();
+  cursor = statefulSession.createQuery(queryString).scroll(FORWARD_ONLY);
+} </description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.sample.AbstractCustomerCreditIncreaseTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.domain.CustomerCredit.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.CommonItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.writer.BatchSqlCustomerCreditIncreaseWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.writer.CustomerCreditIncreaseProcessorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.writer.CustomerCreditIncreaseWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.HibernateCursorItemReader.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-10 22:31:13" id="548" opendate="2008-04-02 02:29:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>skipping items can lead to an invalidated mark in the ResourceItemReader</summary>
+			
+			
+			<description>since spring batch does not apply skipped items to the commit interval so a large chunk of skippable items can cause the underlying BufferedItemReader to invalidate its mark.  Then, if reset is invoked, the reader will throw an IOException.</description>
+			
+			
+			<version>1.0.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReaderBasicTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReaderAdvancedTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

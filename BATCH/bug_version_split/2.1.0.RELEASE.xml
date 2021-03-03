@@ -1,0 +1,1099 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="BATCH">
+	<bug fixdate="2010-02-07 20:37:41" id="1507" opendate="2010-02-07 20:20:18" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FlowJob.getStep() only looks at state names, not step names</summary>
+			
+			
+			<description>FlowJob.getStep() only looks at state names, not step names, so anyone using the StepLocator interface is in for a surprise.  The state name happens to be the same as the step name in the existing uint tests (irony), but when created by the XML namespace parsers they are different.</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepWithSimpleTaskJobParserTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepNameTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.flow.FlowJobTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.flow.FlowJob.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-26 23:49:58" id="1513" opendate="2010-02-14 21:52:52" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>HibernateItemReaderHelper requires queryProvider field to be an instance of AbstractHibernateQueryProvider</summary>
+			
+			
+			<description>HibernateItemReaderHelper.afterPropertiesSet() method contains the following code:
+Assert.state(queryProvider instanceof AbstractHibernateQueryProvider,
+					&quot;Hibernate query provider must be set&quot;);
+I think this is not needed as the queryProvider field is not cast to AbstractHibernateQueryProvider within HibernateItemReaderHelper.
+Also if query provider defined as a scoped bean:
+&amp;lt;bean id=&quot;myQueryProvider&quot; class=&quot;MyQueryProvider&quot; scope=&quot;step&quot; /&amp;gt; 
+proxy is not an instance of AbstractHibernateQueryProvider even though MyQueryProvider extends AbstractHibernateQueryProvider   </description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.HibernateItemReaderHelper.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-02-28 22:54:36" id="1510" opendate="2010-02-11 18:02:13" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>List of stepnames incomplete for nested flow job</summary>
+			
+			
+			<description>The function  getStepNames on a job returns only those step names from a FlowJob, whose steps are defined directly within the flow.
+But if the job contains nested flows the list of stepnames is incomplete. Only those of the outermost flow (the job itself) are returned but none of the nested flow(s).
+If the job does only reference sub flows the list will be empty at all.
+The function should return the complete list of steps, including nested flows within subflows (recursively)</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepNameTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.SimpleFlowFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.flow.FlowJobTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.flow.FlowJob.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.flow.support.state.FlowState.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.flow.support.state.SplitState.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.SplitJobParserTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-02 03:17:41" id="1525" opendate="2010-03-01 20:24:59" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ExitStatus description can be null when re-hyrated from  Oracle</summary>
+			
+			
+			<description>The equals implementation (or the toString) of ExitStatus may not work legitimately in all cases.
+In Oracle, an empty String is considered as null and fails our build because we assert the exit status matched the expected (that is, a given exit code and an empty exit description). 
+We got this
+java.lang.AssertionError: expected:&amp;lt;exitCode=COMPLETED WITH ERROR;exitDescription=&amp;gt; but was:&amp;lt;exitCode=COMPLETED WITH ERROR;exitDescription=null&amp;gt;
+It&amp;amp;apos;s not a big deal and we can deal with that in our test utilities but if the equals supported that use case, that would be great since we don&amp;amp;apos;t really want to put a &amp;amp;apos;null&amp;amp;apos; exit description. Besides the default constructor does this
+public ExitStatus(String exitCode) {
+   this(exitCode, &quot;&quot;);
+}
+</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.ExitStatusTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.ExitStatus.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-02 22:48:03" id="1522" opendate="2010-03-01 00:07:36" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Intermittent failure of FaultTolerantStepFactoryBean in multi-threaded test</summary>
+			
+			
+			<description>Intermittent failure of FaultTolerantStepFactoryBean in multi-threaded test.  Could be nothing (because the test FaultTolerantStepFactoryBeanRollbackTests uses a MapJobRepositoryFactoryBean).</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.StepExecutorInterruptionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.TaskletStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.StepExecution.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.support.SimpleJobRepository.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.test.step.FaultTolerantStepFactoryBeanRollbackTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.Chunk.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.ThreadStepInterruptionPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.support.transaction.TransactionAwareProxyFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-03-09 18:31:11" id="1528" opendate="2010-03-08 12:01:38" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Namespace context partition element requires bean with name &quot;transactionManager&quot;</summary>
+			
+			
+			<description>When trying to use the batch:partition context element, I get the error:
+Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No bean named &amp;amp;apos;transactionManager&amp;amp;apos; is defined
+Looking at the code, it looks like a problem in CoreNamespacePostProcessor.injectDefaults at line 136. The processor checks for a transactionManager and if not found, uses the default. However the AbstractStepParser.parsePartition method never looks for or sets a transaction manager. This results in a lookup to the default transaction manager which fails.
+The bean configuration is:
+&amp;lt;batch:job id=&quot;simpleJob&quot; job-repository=&quot;jobRepository&quot;&amp;gt;
+        &amp;lt;batch:step id=&quot;step1.master&quot;&amp;gt;
+          &amp;lt;batch:partition step=&quot;step1&quot; partitioner=&quot;partitioner&quot;&amp;gt;
+              &amp;lt;batch:handler grid-size=&quot;10&quot; task-executor=&quot;keyValueExtractionTaskExecutor&quot;/&amp;gt;
+          &amp;lt;/batch:partition&amp;gt;
+        &amp;lt;/batch:step&amp;gt;
+    &amp;lt;/batch:job&amp;gt;
+        &amp;lt;batch:step id=&quot;step1&quot;&amp;gt;
+            &amp;lt;batch:tasklet transaction-manager=&quot;catalogTransactionManager&quot;&amp;gt;
+                &amp;lt;batch:chunk reader=&quot;granuleStaleItemReader&quot; writer=&quot;keyValueItemWriter&quot;
+                    commit-interval=&quot;20&quot; processor=&quot;granuleKeyValueExtractionProcessor&quot;/&amp;gt;
+            &amp;lt;/batch:tasklet&amp;gt;
+        &amp;lt;/batch:step&amp;gt;
+The stack trace is attached.</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepParserStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.FaultTolerantStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.CoreNamespacePostProcessor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-04-03 03:09:39" id="1545" opendate="2010-04-03 02:29:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FlatFileItemWriter logs as JdbcBatchItemWriter</summary>
+			
+			
+			<description>Updating your log configuration (log4j.properties) to see logs specifically from org.springframework.batch.item.file.FlatFileItemWriter does not work because that class incorrectly identifies itself as org.springframework.batch.item.database.JdbcBatchItemWriter.
+A patch is attached, which has been verified with a full maven build against the trunk.</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemWriter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-04-05 18:50:05" id="1546" opendate="2010-04-03 03:15:57" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Some issues with pagination in Oracle</summary>
+			
+			
+			<description>Some issues with pagination in Oracle were reported in the forum, but not raised in JIRA.  Here is a ticket to track the investigation...  http://forum.springsource.org/showthread.php?t=85919</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.OraclePagingQueryProvider.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcPagingRestartIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.support.AbstractItemCountingItemStreamItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.SqlPagingQueryUtils.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.OraclePagingQueryProviderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.SqlPagingQueryUtilsTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcPagingItemReaderAsyncTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.CustomerFilterJobFunctionalTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepNameTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-04-22 20:33:26" id="1551" opendate="2010-04-11 17:48:51" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Db2PagingQueryProvider needs an alias in the jump to subquery </summary>
+			
+			
+			<description>same Problem as in BATCH-1499 but for DB2</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.Db2PagingQueryProviderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.Db2PagingQueryProvider.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-05-25 03:32:58" id="1574" opendate="2010-05-25 03:05:03" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TaskExecutor configuration ignored in 2.1 namespace for &lt;tasklet/&gt; with no &lt;chunk/&gt;</summary>
+			
+			
+			<description>The task-executor attribute moved in the schema and the factory bean didn&amp;amp;apos;t accommodate the change.</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepParserStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.StepParserStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.TaskletStep.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-06-23 20:33:12" id="1543" opendate="2010-03-30 01:18:47" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>OrderedComposite cannot register two items with the same order</summary>
+			
+			
+			<description>We have added a custom listener that extends StepListener and OrderedComposite is very handy to use when multiple listeners are involved. Unfortunately, it&amp;amp;apos;s not public. 
+Can you make it public or part of the API?</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.OrderedCompositeTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.OrderedComposite.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-13 03:22:03" id="1597" opendate="2010-07-19 19:56:18" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DirectPoller only works with timeout in milliseconds</summary>
+			
+			
+			<description>DirectPoller only works with timeout in milliseconds.  Doesn&amp;amp;apos;t have any effect on mainstream Batch use, only if the poller is used and only if the timeout is not in millisecs.</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.poller.DirectPoller.java</file>
+			
+			
+			<file type="M">org.springframework.batch.poller.DirectPollerTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-27 00:43:51" id="1620" opendate="2010-08-27 00:12:10" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FlowStep never fails</summary>
+			
+			
+			<description/>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.support.transaction.TransactionAwareMapFactoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.tasklet.TaskletStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.partition.support.SimpleStepExecutionSplitter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.support.transaction.TransactionAwareProxyFactory.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.MapStepExecutionDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.flow.FlowStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.flow.FlowStep.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-08-29 00:38:22" id="1598" opendate="2010-07-19 19:58:42" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JobRepositoryTestUtils delete job execution fails if there is another execution with the same job instance</summary>
+			
+			
+			<description>JobRepositoryTestUtils delete job execution fails if there is another execution with the same job instance</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.3</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.test.JobRepositoryTestUtilsTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.test.JobRepositoryTestUtils.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-09-07 05:05:01" id="1539" opendate="2010-03-24 22:56:18" resolution="Duplicate">
+		
+		
+		<buginformation>
+			
+			
+			<summary>composite item writer does not honour the item stream interface</summary>
+			
+			
+			<description>If you use a composite item writer with a writer that implements the iteam stream interface, you get a org.springframework.batch.item.WriterNotOpenException: Writer must be open before it can be written to</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.support.CompositeItemWriterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.support.CompositeItemWriter.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="duplicates" type="Duplicate">836</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2010-09-26 23:06:24" id="1632" opendate="2010-09-24 04:40:18" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DefaultFieldSet#readBigDecimal(String, BigDecimal) and NumberFormatException</summary>
+			
+			
+			<description>Here the code of DefaultFieldSet#readBigDecimal(String, BigDecimal):
+
+
+
+
+
+
+466	        public BigDecimal readBigDecimal(String name, BigDecimal defaultValue) {
+
+
+
+
+467	                try {
+
+
+
+
+468	                        return readBigDecimal(indexOf(name), defaultValue);
+
+
+
+
+469	                }
+
+
+
+
+470	                catch (IllegalArgumentException e) {
+
+
+
+
+471	                        throw new IllegalArgumentException(e.getMessage() + &quot;, name: [&quot; + name + &quot;]&quot;);
+
+
+
+
+472	                }
+
+
+
+
+473	        }
+
+
+
+
+
+
+The problem is that a NumberFormatException is also an IllegalArgumentException.
+So at this point, we can not make the difference between between indexOf failure and BigDecimal conversion failure.
+The fix:
+
+
+
+
+
+
+466	        public BigDecimal readBigDecimal(String name, BigDecimal defaultValue) {
+
+
+
+
+467	                try {
+
+
+
+
+468	                        return readBigDecimal(indexOf(name), defaultValue);
+
+
+
+
+469	                }
+
+
+
+
+470	                catch (NumberFormatException e) {
+
+
+
+
+471	                        throw new NumberFormatException(e.getMessage() + &quot;, name: [&quot; + name + &quot;]&quot;);
+
+
+
+
+472	                }
+
+
+
+
+473	                catch (IllegalArgumentException e) {
+
+
+
+
+474	                        throw new IllegalArgumentException(e.getMessage() + &quot;, name: [&quot; + name + &quot;]&quot;);
+
+
+
+
+475	                }
+
+
+
+
+476	        }
+
+
+
+
+
+
+</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.transform.DefaultFieldSet.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2010-10-13 18:01:25" id="1640" opendate="2010-10-13 17:55:52" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>File writers do not behave correctly on rollback</summary>
+			
+			
+			<description>File writers do not behave correctly on rollback.  It doesn&amp;amp;apos;t seem to affect regular users of FlatFileItemWriter (and XML) but if you write one item at a time instead of all at once in a transaction which rolls back, then no data are ever written by the writer.
+The bug is in TransactionAwareBufferedWriter which fails to clear its transaction resource on rollback.</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.support.transaction.TransactionAwareBufferedWriterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.support.transaction.TransactionAwareBufferedWriter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-03-21 02:25:28" id="1717" opendate="2011-03-21 02:23:42" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Failure in RetryPolicy leads to infinite loop in Step</summary>
+			
+			
+			<description>Failure in RetryPolicy leads to infinite loop in Step.  Really this is a corner case because none of the retry policies supplied by the framework should have this problem, but one provided by a user might.  The problem arises if a RetryPolicy throws an exception which according to it&amp;amp;apos;s own rules in retryable. In particular the problem is if registerThrowable() itself fails.</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.7</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.retry.support.RetryTemplate.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-04-05 03:54:15" id="1725" opendate="2011-04-05 03:52:59" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SubclassClassifier should use ConcurrentHashMap</summary>
+			
+			
+			<description>SubclassClassifier should use ConcurrentHashMap, otherwise there can be concurrent modification exceptions when it is used concurrently.</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.8</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.classify.SubclassClassifier.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2011-04-15 03:27:27" id="1727" opendate="2011-04-15 01:36:23" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Child contexts created by AutomaticJobRegistrar cannot easily use PropertyPlaceholderConfigurer</summary>
+			
+			
+			<description>See also BATCHADM-110.  ClassPathXmlApplicationContextFactory registers the parent PPC as a singleton (internal) BFPP using addBeanFactoryPostProcessor(), and those BFPP take precedence over those defined using bean definitions.   A workaround is to use SpEL instead of PPC in the child context.</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.1.8</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.support.ClassPathXmlApplicationContextFactoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.support.ClassPathXmlApplicationContextFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-01-22 11:32:06" id="1745" opendate="2011-05-04 09:18:44" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>XSD inconsistency: allow-start-if-complete is not allowed on non-tasklet step</summary>
+			
+			
+			<description>XSD inconsistency: allow-start-if-complete is not allowed on non-tasklet step.  There is a workaround, but it&amp;amp;apos;s a bit awkward, e.g. here is a flow step which is startable if complete:
+
+
+
+
+
+
+	&amp;lt;step id=&quot;step1&quot; parent=&quot;startable&quot;&amp;gt;
+
+
+
+
+		&amp;lt;flow parent=&quot;flow&quot; /&amp;gt;
+
+
+
+
+	&amp;lt;/step&amp;gt;
+
+
+
+
+
+
+
+
+
+	&amp;lt;beans:bean id=&quot;startable&quot; abstract=&quot;true&quot;&amp;gt;
+
+
+
+
+		&amp;lt;beans:property name=&quot;allowStartIfComplete&quot; value=&quot;true&quot; /&amp;gt;
+
+
+
+
+	&amp;lt;/beans:bean&amp;gt;
+
+
+
+
+	
+
+
+
+
+	&amp;lt;flow id=&quot;flow&amp;gt;...&amp;lt;/flow&amp;gt;
+
+
+
+
+
+</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.2.0 - Sprint 12</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.TaskletStepAllowStartIfCompleteTest.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.configuration.xml.AbstractStepParser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2013-02-05 08:03:58" id="1757" opendate="2011-05-29 16:09:27" resolution="Complete">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MinMaxPartitioner sets incorrect max value</summary>
+			
+			
+			<description>The max value in MinMaxPartitioner is incorrect set, as min is effectively being multiplied twice by range:
+			 int min = (i++)*range;
+			 int max = Math.min(total, (min+1)*range);
+The max line should presumably be:
+			int max = Math.min(total, i * range);
+(I am assuming that this is what the partitioner is supposed to be doing)</description>
+			
+			
+			<version>2.1.0</version>
+			
+			
+			<fixedVersion>2.2.0, 2.2.0 - Sprint 14</fixedVersion>
+			
+			
+			<type>Defect</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.partition.MinMaxPartitioner.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

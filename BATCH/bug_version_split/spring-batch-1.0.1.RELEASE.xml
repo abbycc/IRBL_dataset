@@ -1,0 +1,857 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="BATCH">
+	<bug fixdate="2008-04-16 00:14:41" id="589" opendate="2008-04-15 07:32:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StepExecutionResourceProxy&amp;apos;s toString() leads to NPE</summary>
+			
+			
+			<description>Since it is possible to call toString before the delegate is set, toString will throw a NPE.
+For example, when setResource() is invoked on FlatFileItemReader
+public void setResource(Resource resource) throws IOException {
+		this.resource = resource;
+		path = resource.toString();
+		if (path.length() &amp;gt; 50) 
+{
+			path = path.substring(0, 20) + &quot;...&quot; + path.substring(path.length());
+		}
+	}
+you end up with a NPE when you try to get the path.
+</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.0.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.resource.StepExecutionResourceProxyTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.resource.StepExecutionResourceProxy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReader.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-05-11 19:49:19" id="616" opendate="2008-05-09 02:04:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Possible overflow in exit description if a stream.open() throws exception</summary>
+			
+			
+			<description>Possible overflow in exit description if a stream.open() throws exception.  Since we only truncate the exitStatus.description on update, if an exception is thrown before the initial insert would normally happen (ItemOrientedStep.doExecute) then the description could overflow the database column.  Fix would be to truncate on insert as well.</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.JdbcStepExecutionDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.AbstractStepExecutionDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.JdbcStepExecutionDao.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-05-15 01:57:49" id="625" opendate="2008-05-14 22:29:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SkipListener#onSkipInWrite(..) called multiple times for the same item and not called without rollback</summary>
+			
+			
+			<description>SkipListener#onSkipInWrite(..) is called every time the problematic item is encountered i.e. multiple times in case of rollbacks. It should instead be called once per skipped item (i.e. the listener should be called when the write error was encountered and the item was marked for future skipping).</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.SkipListener.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemSkipPolicyItemHandlerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemSkipPolicyItemHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-04 19:59:39" id="651" opendate="2008-06-04 00:56:27" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>buffered readers don&amp;apos;t handle volatile commit interval</summary>
+			
+			
+			<description>If commit interval is decreased after rollback buffered readers simply clear the item buffer on mark() - this happens when used e.g. with batchUpdateWriter which causes commits on each item after rollback.
+All buffered readers should be consolidated not to duplicate the item buffering logic (common superclass is probably the way to go until BATCH-592 can be implemented).</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcCursorItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.StaxEventItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.MultiResourceItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.CommonItemReaderTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-09 19:13:02" id="638" opendate="2008-05-21 04:14:53" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ItemSkipPolicyItemHandler does not count items</summary>
+			
+			
+			<description>In 1.0.1 release, the resolution of  &quot;http://jira.springframework.org/browse/BATCH-531&quot; issue causes another issue.
+The item count has move to SimpleItemHandler. The write method calls contribution.incrementItemCount().
+The problem is in ItemSkipPolicyItemHandler, subclass of SimpleItemHandler. This class doesn&amp;amp;apos;t call incrementItemCount.
+In my application, using 1.0.0 release item count ends with one number more than total items, and in 1.0.1, ends always with 0 (zero).</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemSkipPolicyItemHandlerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleItemHandler.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-09 19:21:37" id="623" opendate="2008-05-14 01:09:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StatefulRetryStepFactoryBean causes item count to be lost in database</summary>
+			
+			
+			<description>StatefulRetryStepFactoryBean causes item count to be lost in database</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.StatefulRetryStepFactoryBeanTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-10 19:54:32" id="660" opendate="2008-06-10 19:03:51" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary> SimpleStepFactoryBean#setExceptionHandler() not working</summary>
+			
+			
+			<description>Copied from http://forum.springframework.org/showthread.php?t=55706
+It appears that while SkipLimitFactoryBean and StatefulRetryFactoryBean propogate the ExceptionHandler set in setExceptionHandler(), SimpleStepFactoryBean does not. The resulting ItemOrientedStep does not have anything other than DefaultExceptionHandler.
+I believe that a call to ItemOrientedStep#setExceptionHandler() within SimpleStepFactoryBean#applyConfiguration() will fix the issue.</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleStepFactoryBean.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-11 19:21:30" id="661" opendate="2008-06-10 19:26:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>broken job interruption logic</summary>
+			
+			
+			<description>Currenlty jobExecution#stop() is implemented by setting the &quot;terminateOnly&quot; flag on all step executions created so far. Therefore in case stop() is called e.g. in StepListener#afterStep(..) it has no effect on the following steps. Also the terminateOnly flag is checked only in ItemOrientedStep so a job consisting of arbitrary number of TaskletSteps can&amp;amp;apos;t be stopped unless the Tasklet implementations support interruption.</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.job.SimpleJobTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.SimpleJob.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">401</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-11 19:36:39" id="665" opendate="2008-06-11 01:14:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ChunkListeners are registered on stepOperations in RepeatOperationsStepFactoryBean - should be chunkOperations</summary>
+			
+			
+			<description>In RepeatOperationsStepFactoryBean.applyConfiguration(), the chunk listeners are registered on the stepOperations, which means they are executed when the step starts and when it ends, which seems to be wrong : as name and javadoc mentions it, ChunkListeners are executed around a chunk, i.e. inside the transaction boundaries.
+The other step factory bean SimpleStepFactoryBean correctly registers the chunk listeners on the chunkOperations.</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.RepeatOperationsStepFactoryBean.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">666</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-17 20:47:51" id="654" opendate="2008-06-05 02:31:58" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Ensure best efforts are made to commit StepExecution when commit fails</summary>
+			
+			
+			<description>When the commit operation fails in an ItemOrientedStep, the writing of the Spring Batch metadata fails (trying to write the rollback information). 
+When trying to commit the transaction, SB has already set the information it&amp;amp;apos;s about to persist in the StepExecutionContext. Then, in another transaction, SB wants to store that a rollback ocurred. Nevertheless, SB hasn&amp;amp;apos;t read the current persisted state from the database, so it still has the Version it read when trying to commit. That&amp;amp;apos;s why we think it fails.
+Furthermore, even if it succeeded, the persisted information wouldn&amp;amp;apos;t be accurate, because, as I&amp;amp;apos;ve pointed out, the StepExecutionContext hasn&amp;amp;apos;t been reset.</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.AbstractStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.SimpleJobTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.support.SimpleJobRepository.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.ExecutionContext.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.ExecutionContextTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStepTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-06-24 22:57:34" id="687" opendate="2008-06-24 22:41:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>BatchUpdateItemWriter should fail if any of the statements does not update any rows (at least by default).</summary>
+			
+			
+			<description>BatchUpdateItemWriter should fail if any of the statements does not update any rows (at least by default).</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.BatchSqlUpdateItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.BatchSqlUpdateItemWriterTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-02 18:19:27" id="703" opendate="2008-07-01 23:32:21" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JdbcJobInstanceDao doesn&amp;apos;t locate JOB_INSTANCE on Oracle where JOB_KEY is empty</summary>
+			
+			
+			<description>Oracle has this &quot;feature&quot; where an empty string is stored as NULL.  This causes the JdbcJobInstanceDao to fail to look up existing JOB_INSTANCE where the key is empty since the JOB_KEY is stored as NULL in the database and must be queried using JOB_KEY IS NULL.  The end result is that there will be a new JOB_INSTANCE created even though a matching one already exists.
+The JdbcJobRepositoryTests expose this issue.</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.JdbcJobInstanceDao.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-02 18:24:57" id="705" opendate="2008-07-02 02:03:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>TradeJobFunctionalTests might fail since verification queries don&amp;apos;t have ORDER clause</summary>
+			
+			
+			<description>TradeJobFunctionalTests might randomly fail since verification queries don&amp;amp;apos;t have ORDER clause.  When the data stored is verified it might fail if rows are retrieved in a random order that is different from the order the rows where added.</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.sample.TradeJobFunctionalTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-03 05:51:09" id="713" opendate="2008-07-03 05:09:53" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FlatFileItemWriter initialization causes file deletion</summary>
+			
+			
+			<description>FlatFileItemWriter will inadvertently delete it&amp;amp;apos;s output file multiple times if open is not called first.  The following unit test fails on my machine:
+	public void testWriteBeforeOpen() throws Exception
+{
+		
+		writer.write(&quot;test1&quot;);
+		writer.flush();
+		writer.open(executionContext);
+		writer.write(&quot;test2&quot;);
+		writer.flush();
+		assertEquals(&quot;test1&quot;, readLine());
+		assertEquals(&quot;test2&quot;, readLine());
+	}
+
+The issue is that the write method initializes the buffer:
+public void write(String line) throws IOException {
+			if (!initialized) 
+{
+				initializeBufferedWriter();
+			}
+
+			outputBufferedWriter.write(line);
+			outputBufferedWriter.flush();
+			linesWritten++;
+		}
+Note: the above is from OutputState#write
+However, the open method never checks to see if it&amp;amp;apos;s already been initialized:
+	public void open(ExecutionContext executionContext) throws ItemStreamException {
+		OutputState outputState = getOutputState();
+		if (executionContext.containsKey(getKey(RESTART_DATA_NAME))) 
+{
+			outputState.restoreFrom(executionContext);
+		}
+		try 
+{
+			outputState.initializeBufferedWriter();
+		}
+		catch (IOException ioe) 
+{
+			throw new ItemStreamException(&quot;Failed to initialize writer&quot;, ioe);
+		}
+		if (outputState.lastMarkedByteOffsetPosition == 0) {
+			for (Iterator iterator = headerLines.iterator(); iterator.hasNext() 
+{
+				String line = (String) iterator.next();
+				lineBuffer.add(line + lineSeparator);
+			}
+		}
+	}
+Thus, the FileUtils will call delete on the file.
+</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.WriterNotOpenException.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemWriterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.transform.FixedLengthTokenizerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.transform.DelimitedLineTokenizerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemWriter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-20 19:25:45" id="737" opendate="2008-07-18 03:56:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>JdbcCursorItemReader will spin through entire resultset if numberOfProcessRows=0</summary>
+			
+			
+			<description>If a step using jdbccursoritemreader to read fails in the processing-step (itemwriter), number of processed rows (0) will be persisted in ExecutionContext. When re-running the step, 0 will be read as the number of processed rows, and the code will call moveCursorToRow with 0 as param.
+The way the private method moveCursorToRow is implemented now, it will always call next() and increment count once, before checking if count==rows. At this point count=1 and row=0, this resultset will be traveresed until next()=false.
+Checked the history of the file, and it seems this behavior has been there since before the private method was introduced.
+The code below should solve this problem:
+	/**
+
+Moves the cursor in the resultset to the position specified by the in param by
+traversing the resultset
+@param row
+	 */
+	private void moveCursorToRow(int row){
+		try 
+Unknown macro: {			for (int skipped = 0; skipped &amp;lt; row &amp;amp;&amp;amp; rs.next(); skipped++) {
+				//Do nothing
+			}		} 
+		catch (SQLException se) 
+{
+			throw getExceptionTranslator().translate(&quot;Attempted to move ResultSet to last committed row&quot;, sql, se);
+		}
+ 
+	}
+
+</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.1, 2.0.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcCursorItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.AbstractDataSourceItemReaderIntegrationTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-08-14 01:33:49" id="782" opendate="2008-08-13 21:48:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Synchronization issue in ItemOrientedStep if exception is throw in chunk processing</summary>
+			
+			
+			<description>I have read source code of 1.0.x and 1.1.x and both share similar problem
+In ItemOrientedStep:
+Code:
+protected ExitStatus doExecute(final StepExecution stepExecution) throws Exception {
+    // blablabla
+    return stepOperations.iterate(new RepeatCallback() {
+        public ExitStatus doInIteration(RepeatContext context) throws Exception {
+            // balblabla
+            try {
+                // Process chunk .... (1)
+                try 
+{
+                    synchronizer.lock(stepExecution);
+                }
+                catch (InterruptedException e) 
+{
+                    stepExecution.setStatus(BatchStatus.STOPPED);
+                    Thread.currentThread().interrupt();
+                }
+                // step execution persistence
+            }
+            catch (Error e) 
+{
+                processRollback(stepExecution, contribution, fatalException, transaction);
+                throw e;
+            }
+            catch (Exception e) {                processRollback(stepExecution, contribution, fatalException, transaction);                throw e;            }
+            finally 
+{
+                synchronizer.release(stepExecution);
+            }
+            //blblabla
+            return exitStatus;
+        }
+    });
+}
+In case of any exception occured in (1) or during synchronizer.lock(), the internal semaphore in synchronizer is NOT acquired. However, the outer final block releases synchronizer, and hence, releasing the semaphore.
+From JDK API of 1.5, it stated that Semaphore can be released by another thread which is not the original acquirer of semaphore.
+So, in case of parallel processing, I may goes into some case:
+Thread 1 acquired the semaphore and doing those step execution persistence stuff.
+Thread 2 have exception in processChunk, and hence releasing the semaphore.
+Thread 3, originally waiting for semaphore, is now acquired the semaphore because Thread 2 releases it, and hence, it goes to the peresistence block of code.
+In such case, Thread 1 and 3 goes into the should-be-protected block of code for step execution persistence.
+In my environment, I throwed an exception in my writer, and it caused this exception:
+[ERROR] SimpleAsyncTaskExecutor-1 [step.AbstractStep] Encountered an error executing the step
+org.springframework.batch.core.step.AbstractStep$FatalException: Fatal error detected during save of step execution context
+// stack trace deleted
+Caused by: org.springframework.dao.OptimisticLockingFailureException: Attempt to update step execution id=609 with wrong version (5), where current version is 4
+// stack trace deleted
+It is caused by concurrent access and persistence of step execution because of the above mentioned issue.  
+Upon happening, in DB, the step execution will be updated with UNKNOWN status, and hence, preventing it from re-run.
+A quick fix is to set a flag after synchronizer lock, and only release if flag is set.  However it does not cater for interruption exception during synchronizer locking.</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.2, 2.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.StepExecutorInterruptionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.StepHandlerStep.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-09-30 21:53:39" id="682" opendate="2008-06-22 20:35:12" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Use SoftReference and/or expiry to store entries in RetryContextCache implementation(s)</summary>
+			
+			
+			<description>Use SoftReference and/or expiry to store entries in RetryContextCache implementation(s).  If the map-based cache is used in a multi-VM environment, stale cache entries can easily be accumulated inadvertently because the successful processing of a previously failed item happened on a different node than the original failure.  A good start would be to use SoftReferences in the map-based implementation.  Expiry and more complicated features would be best left to mature cache technologies, and custom implementations of the RetryContextCache interface.</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>2.0.0.M2</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.retry.policy.MapRetryContextCache.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2009-02-15 08:25:52" id="618" opendate="2008-05-13 01:40:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DefaultJobParametersConverter does not parse parameters of type double</summary>
+			
+			
+			<description>Although JobParameters and JobParametersBuilder support parameters of type double, the DefaultJobParametersConverter does not handle double parameters. Other types (string, date, long) are correctly managed.</description>
+			
+			
+			<version>1.0.1</version>
+			
+			
+			<fixedVersion>1.1.Maintenance, 2.0.0.RC1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.converter.DefaultJobParametersConverter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.converter.DefaultJobParametersConverterTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

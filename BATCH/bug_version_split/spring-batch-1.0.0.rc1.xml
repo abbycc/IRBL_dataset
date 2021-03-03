@@ -1,0 +1,1088 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="BATCH">
+	<bug fixdate="2008-03-05 18:25:39" id="427" opendate="2008-03-05 16:52:37" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Another example of dual extends and implements</summary>
+			
+			
+			<description>Using eUML to reverse engineer the models and finding more examples of cleanup that needs to occur in the ItemWriter hierarchy - a very small fix.  In this case CompositeItemWriter is both extending AbstractItemWriter and implementing ItemWriter.  Remove ItemWriter from implements list.</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0.rc1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.writer.CompositeItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.support.HibernateAwareItemWriter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-14 20:47:59" id="468" opendate="2008-03-14 05:54:09" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ExitStatusExceptionClassifier, ExitCodeMapper and simple versions thereof (and others?) incorrectly moved into step.item package</summary>
+			
+			
+			<description>Interfaces mentioned in summary and their implementations should be under the step package - they are just as relevant to TaskletSteps or ChunkedSteps as they are to ItemOrientedSteps
+I&amp;amp;apos;m also confused as to what the StepExecutionSynchronizer, et al. and StepInterruptionPolicy et al. are doing there. These seem like general step concerns, not item-related step concerns.</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0.rc1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.NeverSkipItemSkipPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemSkipPolicyItemHandler.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.SimpleExitStatusExceptionClassifierTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.ExitStatusExceptionClassifier.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.launch.support.SimpleJvmExitCodeMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.AbstractStepDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStep.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.StepExecutionSynchronizer.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.SkipLimitExceededException.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.SimpleExitStatusExceptionClassifier.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.launch.support.ExitCodeMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.StepContributionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.StepExecutorInterruptionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.StepContribution.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.BackportConcurrentStepExecutionSynchronizer.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.LimitCheckingItemSkipPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.SimpleJobTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.launch.support.CommandLineJobRunner.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.StepInterruptionPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.launch.support.SimpleJvmExitCodeMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.ThreadStepInterruptionPolicy.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.JdkConcurrentStepExecutionSynchronizer.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.step.support.NoopStepInterruptionPolicy.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.ThreadStepInterruptionPolicyTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitReadFailurePolicyTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.ItemSkipPolicy.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.AlwaysSkipItemSkipPolicy.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.StepExecutionSyncronizerFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-14 20:55:13" id="465" opendate="2008-03-14 05:33:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>The term &quot;exit code&quot; is overloaded</summary>
+			
+			
+			<description>In the ExitStatus class exit code refers to the string representing the exit status e.g. FAILED
+In the CommandLineJobRunner exit code refers to what will be returned to the OS
+One of these should be changed to remove confusion, e.g.
+ return exitCodeMapper.getExitCode(jobExecution.getExitStatus().getExitCode());  
+At first glance can you tell what the heck this does? 
+</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0.rc1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.NeverSkipItemSkipPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemSkipPolicyItemHandler.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.SimpleExitStatusExceptionClassifierTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.ExitStatusExceptionClassifier.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.launch.support.SimpleJvmExitCodeMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.AbstractStepDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStep.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.StepExecutionSynchronizer.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.SkipLimitExceededException.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.SimpleExitStatusExceptionClassifier.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.launch.support.ExitCodeMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.StepContributionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.StepExecutorInterruptionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.StepContribution.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.BackportConcurrentStepExecutionSynchronizer.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.LimitCheckingItemSkipPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.SimpleJobTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.launch.support.CommandLineJobRunner.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.StepInterruptionPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.launch.support.SimpleJvmExitCodeMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.ThreadStepInterruptionPolicy.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.JdkConcurrentStepExecutionSynchronizer.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.step.support.NoopStepInterruptionPolicy.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.ThreadStepInterruptionPolicyTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitReadFailurePolicyTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.ItemSkipPolicy.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.AlwaysSkipItemSkipPolicy.java</file>
+			
+			
+			<file type="D">org.springframework.batch.core.step.item.StepExecutionSyncronizerFactory.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-18 07:13:33" id="483" opendate="2008-03-18 06:59:49" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ExecutionContext does not handle null values correctly</summary>
+			
+			
+			<description>ExecutionContext still does not handle null values correctly:
+	public void put(String key, Object value) 
+{
+		Assert.isInstanceOf(Serializable.class, value, &quot;Value: [ &quot; + value + &quot;must be serializable.&quot;);
+		dirty = true;
+		map.put(key, value);
+	}
+
+since null won&amp;amp;apos;t pass this test, it will throw an error.</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.ExecutionContext.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.ExecutionContextTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-19 01:44:13" id="489" opendate="2008-03-19 00:32:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>undocumented JobExecutionException</summary>
+			
+			
+			<description>The root of job-centric exception hierarchy has empty javadoc</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.JobExecutionException.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-19 02:06:17" id="490" opendate="2008-03-19 01:11:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>SkipLimitStepFactoryBean ignores the skippableExceptionClasses property</summary>
+			
+			
+			<description>The value of this property should be passed to the underlying ExceptionHandler, but gets overwritten in this suspicious code fragment:
+SimpleLimitExceptionHandler exceptionHandler = new SimpleLimitExceptionHandler();
+exceptionHandler.setLimit(skipLimit);
+exceptionHandler.setExceptionClasses(skippableExceptionClasses);
+setExceptionHandler(new SimpleLimitExceptionHandler(skipLimit));</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitStepFactoryBeanTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-19 02:56:02" id="492" opendate="2008-03-19 02:12:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CommandLineJobRunner should close the spring context</summary>
+			
+			
+			<description>In CommandLineJobRunner.start (), you create a new Spring context but don&amp;amp;apos;t close it at the end.
+That means that if any spring bean is expecting some close method to be called (for flushing generated file for example), it won&amp;amp;apos;t work.
+Grard COLLIN</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.launch.support.CommandLineJobRunnerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.launch.support.CommandLineJobRunner.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-24 21:03:47" id="495" opendate="2008-03-20 01:35:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>readers must not clear buffers on mark()</summary>
+			
+			
+			<description>Historically readers implemented TransactionSynchronization and the logic from afterCommit() was largely moved into current mark(). However, the contract of mark() differs significantly - it is not a point where the reader can safely forget the past events and clear its buffers. This relates to skipped item buffers in general and specifically to buffered XMLEvents in StaxEventItemReader.
+The basic issue is that mark() is called also before re-processing rolled back chunk.</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.ItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStep.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-24 23:01:21" id="491" opendate="2008-03-19 02:05:25" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>checked exception handling</summary>
+			
+			
+			<description>Specifying exception types for stepOperations&amp;amp;apos; exception handler doesn&amp;amp;apos;t work properly for checked exceptions. This is because chunkOperations&amp;amp;apos; exception handler is called first and wraps the checked exception into runtime RepeatException.</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.repeat.support.RepeatTemplate.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.interceptor.RepeatOperationsInterceptorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.exception.LogOrRethrowExceptionHandler.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.exception.DefaultExceptionHandler.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.exception.RethrowOnThresholdExceptionHandler.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleRetryExceptionHandlerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.exception.handler.FootballExceptionHandler.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.exception.ExceptionHandler.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.exception.RethrowOnThresholdExceptionHandlerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.exception.DefaultExceptionHandlerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleRetryExceptionHandler.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.exception.LogOrRethrowExceptionHandlerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.exception.SimpleLimitExceptionHandler.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.exception.SimpleLimitExceptionHandlerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.exception.CompositeExceptionHandler.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.exception.CompositeExceptionHandlerTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-24 23:09:07" id="478" opendate="2008-03-17 08:56:57" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Incorrect message logged in SimpleJobLauncher when TaskExecutor is set</summary>
+			
+			
+			<description>Regardless of whether a (custom) TaskExecutor is specified, SimpleJobLauncher always logs the following message in afterPropertiesSet(): &quot;No TaskExecutor has been set, defaulting to synchronous executor&quot;. See attached patch for a fix. Note that this patch requires that afterPropertiesSet() is called or else a NPE will be thrown.</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.launch.SimpleJobLauncherTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.support.JobRepositoryFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.launch.support.SimpleJobLauncher.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-25 02:40:59" id="507" opendate="2008-03-25 01:11:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FlatFileItemWriter OutputSource not initialised on FlatFileItemReader.open()</summary>
+			
+			
+			<description>FlatFileItemWriter.OutputSource contains a number of member variables that are only initialised via the FlatFileItemWriter.set methods - for example setShouldDeleteIfExists.
+If a writer is closed and then re-opened (ie same FlatFileItemWriter object is reused in same vm), a new OutputSource object is created, but it is not reinitialised so these attributes are defaulted - eg shouldDeleteIfExists defaults to true.
+Apologies if this is a product of the way I am using the FlatFileItemWriter.  I am new to Spring and SpringBatch and don&amp;amp;apos;t properly understand the lifecycle of the beans. I might be misusing the FlatFileItemWriter - perhaps it should not be possible to close and then re-open one of these?
+I have been using code below based on one of the sample jobs which seems to reuse the same writer on the second run of the jobs. My aim was to reproduce a second potential bug, whereby FlatFileItemWriter won&amp;amp;apos;t restart if it already exists but  no record of it exists in StepExecutionContext (eg if first run of job failed before this step commits for first time), however this bug is preventing me from doing this  - I am dependant on shouldDeleteIfExists being false, however I am finding that it is false on first run (set via my job.xml), but true on second run.
+public class FlatFileItemWriterRestartTests extends AbstractBatchLauncherTests {
+    public void testLaunchJob() throws Exception {
+        final JobParameters jobParameters = new JobParameters();
+        logger.info(&quot;Starting test&quot;);
+        JobExecution jobExecution = null;
+        try 
+{
+            jobExecution = launcher.run(getJob(), jobParameters);
+        }
+        catch (InfrastructureException expected) 
+{
+            logger.info(&quot;Caught Exception&quot;);
+            logger.info(expected);
+            assertTrue(&quot;Not planned exception: &quot;+expected.getMessage(), expected.getMessage().toLowerCase().indexOf(&quot;planned&quot;)&amp;gt;=0);
+        }
+
+        // At this point existing FlatFileItemWriter is reused, 
+        // but new OutputState  
+        // is created, with default shouldDeleteIfExists=true 
+        jobExecution = launcher.run(getJob(), jobParameters); 
+        assertEquals(BatchStatus.COMPLETED, jobExecution.getStatus());
+        logger.info(&quot;Completed&quot;);
+    }
+}
+For reference I mentioned this on:
+http://forum.springframework.org/showthread.php?t=51190</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemWriterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemWriter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-25 18:41:43" id="513" opendate="2008-03-25 13:16:36" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>CompositeItemReadListener, CompositeItemWriteListener using ChunkListeners?</summary>
+			
+			
+			<description>The setListeners method in both composite listeners takes type ChunkListener[].... since we use 1.4.2, the list they get added to isn&amp;amp;apos;t parameterized so this would only get caught at runtime when they are cast back  this seems very broken to me.
+I think this should be ItemReadListener[] and ItemWriteListener[], respectively?</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.CompositeItemWriteListener.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.CompositeItemWriteListenerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.CompositeItemReadListener.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.CompositeItemReadListenerTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-25 21:48:57" id="510" opendate="2008-03-25 03:12:03" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FlatFileItemWriter.restarted logic fails if step fails before first chunk commit.</summary>
+			
+			
+			<description>Forum ref  http://forum.springframework.org/showthread.php?p=171215
+Scenario:
+
+I have a Step that reads in items, and outputs via FFIW with shouldDeleteIfExists=false;
+Step runs through a few items and output file buffer is flushed to disk
+Job fails before first chunk commit (I am ending the job in a debugger).
+
+On restart:
+
+Output file accessed via FFIW will exist on the file system.
+No record of it exists in the STEP_EXECUTION_CONTEXT table.
+
+Restart the job (has to be in a new vm becasue of #batch-507) and it will fail with:
+org.springframework.batch.item.exception.StreamException: Resource already exists: file [D:\temp\output1.csv]
+at org.springframework.batch.io.file.FlatFileItemWriter$OutputState.initializeBufferedWriter(FlatFileItemWriter.java:378)
+I think this is because outputState.restoreFrom is not getting called because STEP_EXECUTION_CONTEXT table has no data for this step (see code extract below).
+        /**
+
+Initialize the Output Template.
+*
+@see ResourceLifecycle#open()
+*/
+public void open(ExecutionContext executionContext) {
+    OutputState outputState = getOutputState();
+    if (executionContext.containsKey(getKey(RESTART_DATA_NAME))) 
+{
+        outputState.restoreFrom(executionContext);
+    }
+}
+
+This means FFIW.restarted is false, and then initializeBufferedWriter fails in
+....
+    if (!restarted) {
+	if (file.exists()) {
+	    if (shouldDeleteIfExists) 
+{
+		file.delete();
+	    }
+ else 
+{
+		throw new ItemStreamException(&quot;Resource already exists: &quot; + resource);
+	    }
+	}
+.... </description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStepTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-26 22:05:41" id="517" opendate="2008-03-26 20:59:53" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>item writers need to handle empty flush gracefully</summary>
+			
+			
+			<description>In case &quot;item_count mod commit_interval == 0&quot; there will be an empty extra chunk that only calls the item reader that will return null to indicate all items have been read. This results in flushing item writer without calling write(item) previously - an &quot;empty&quot; flush, that needs to be handled gracefully (e.g. BatchSqlUpdateItemWriter throws a confusing exception).
+In principle the execution logic should be smart enough not to do silly things such as empty flushing, but it&amp;amp;apos;s unrealistic to fix for 1.0. Making sure writers handle empty flushing gracefully should be good enough for now.</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.database.BatchSqlUpdateItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.BatchSqlUpdateItemWriterTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-26 22:32:48" id="511" opendate="2008-03-25 08:07:55" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>read failures cause rollback</summary>
+			
+			
+			<description>when using &amp;amp;apos;skipping&amp;amp;apos;, the item handler rethrows any read exception to delegate to the exception handler
+protected Object read(StepContribution contribution) throws Exception {
+		try 
+{
+			return getItemReader().read();
+		}
+		catch (Exception e) {
+			if (itemSkipPolicy.shouldSkip(e, contribution.getStepSkipCount())) {
+				contribution.incrementSkipCount();
+				if (getItemReader() instanceof Skippable) 
+{
+					((Skippable) getItemReader()).skip();
+				}
+			}
+			===&amp;gt;&amp;gt; throw e; &amp;lt;&amp;lt;===
+		}
+	}
+the exception handler picks up the exception at the step level
+...
+SimpleLimitExceptionHandler exceptionHandler = new SimpleLimitExceptionHandler();
+			exceptionHandler.setLimit(skipLimit);
+			exceptionHandler.setExceptionClasses(skippableExceptionClasses);
+			exceptionHandler.setFatalExceptionClasses(fatalExceptionClasses);
+			setExceptionHandler(exceptionHandler);
+			getStepOperations().setExceptionHandler(getExceptionHandler());
+...
+so, whenever you encounter an exception in the read, it rolls back all successful writes instead of just skipping the item and continuing.</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.StepExecution.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemSkipPolicyItemHandler.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemSkipPolicyItemHandlerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.StepContribution.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitStepFactoryBeanTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitStepFactoryBean.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-27 21:13:33" id="523" opendate="2008-03-27 20:48:34" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FlatFileItemReader calls mark??</summary>
+			
+			
+			<description>Line 151: 		mark();
+Seems like this is a bug  it would break the mark/reset logic of the enclosing Step.</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReader.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-28 02:11:50" id="498" opendate="2008-03-20 10:16:31" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Skip method should get ExecutionContext as an argument</summary>
+			
+			
+			<description>Skippable readers and writers are, most of the time, going to keep some sort of statistic about how much or what was skipped. It makes sense for these collaborators to have the ExecutionContext directly supplied as an argument the skip method rather than making each Skippable have to also implement StepListener to become context aware.
+Since this is a change to a public API, requesting consideration for 1.0.0 release. Please vote / comment ASAP. Thanks.</description>
+			
+			
+			<version>1.0.0.rc1</version>
+			
+			
+			<fixedVersion>1.0.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.retry.policy.ItemWriterRetryPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.callback.ItemWriterRetryCallbackTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.callback.ItemWriterRetryCallback.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemSkipPolicyItemHandlerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemSkipPolicyItemHandler.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.BatchListenerFactoryHelper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.CompositeStepExecutionListenerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.FailedItemIdentifier.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.callback.ItemReaderRetryCallback.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.RepeatOperationsStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.policy.ItemReaderRetryPolicyTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.SimpleJob.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.policy.ItemReaderRetryPolicy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.MulticasterBatchListener.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.SimpleJobTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleStepFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.listener.CompositeJobExecutionListenerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReaderAdvancedTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.support.DelegatingItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.JdbcCursorItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.support.DelegatingItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.AbstractDataSourceItemReaderIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.DrivingQueryItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.support.DelegatingItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.StaxEventItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.StaxEventItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.HibernateCursorItemReader.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.Skippable.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.domain.CustomerCredit.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SimpleItemHandler.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.SkipLimitStepFactoryBeanTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

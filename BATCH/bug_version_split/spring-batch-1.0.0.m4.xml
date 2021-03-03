@@ -1,0 +1,1880 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="BATCH">
+	<bug fixdate="2008-01-15 20:34:46" id="285" opendate="2008-01-14 07:44:54" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Problem with DelimitedLineTokenizer and whitespace after quote</summary>
+			
+			
+			<description>The DelimitedLineTokenizer doesn&amp;amp;apos;t seem to gracefully handle lines that end with a quoted value that also has extra whitespaces after the closing quote. ie:
+(whitespace replaced by _)
+a,b,&quot;c&quot;_
+returns c&quot; as the string value at index 2.
+a,b,&quot;c&quot;__
+returns &quot;c&quot; as the string value at index 2.
+I&amp;amp;apos;ll attach a patch that adds both test cases to the DelimitedLineTokenizerTests class.</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.io.file.transform.DelimitedLineTokenizer.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.transform.DelimitedLineTokenizerTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-01-16 00:18:27" id="293" opendate="2008-01-15 07:08:00" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ResourceLineReader eats newlines within a record&amp;apos;s field</summary>
+			
+			
+			<description>Considering the lines:
+1,2,&quot;3
+4&quot;
+5,6,7
+The expected return value of two consecutive calls to the read() method of ResourceLineReader are (without &amp;lt; and &amp;gt;):
+call 1:
+&amp;lt;1,2,&quot;3
+4&quot;&amp;gt;
+call 2:
+&amp;lt;5,6,7&amp;gt;
+But currently, call 1 returns 
+&amp;lt;1,2,&quot;34&quot;
+&amp;gt;
+(notice that the newline is misplaced...)</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.io.file.separator.ResourceLineReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.ResourceLineReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.separator.RecordSeparatorPolicy.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-01-28 21:05:40" id="322" opendate="2008-01-28 09:48:29" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Keyword  KEY is not allowed in the script mysql</summary>
+			
+			
+			<description>when you run spring batch with mysql, i have a sqlexception. 
+after analyse, i think that the keyword key in table BATCH_JOB_INSTANCE_PROPERTIES is not authorized in mysql. To fix this bug you must modify the name of this field, and modify the org.springframework.batch.execution.repository.dao.JdbcJobDao
+my stack trace
+00:32:36,290  INFO main FootballJobFunctionalTests:210 - Loading context for locations: jobs/footballJob.xml
+java.sql.SQLException: Syntax error or access violation: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &amp;amp;apos;VARCHAR(100) NOT NULL , 
+	STRING_VAL VARCHAR(250) , 
+	DATE_VAL TIMESTAMP ,
+	LONG&amp;amp;apos; at line 4
+	at org.gjt.mm.mysql.MysqlIO.sendCommand(MysqlIO.java:508)
+	at org.gjt.mm.mysql.MysqlIO.sqlQueryDirect(MysqlIO.java:561)
+	at org.gjt.mm.mysql.MysqlIO.sqlQuery(MysqlIO.java:646)
+	at org.gjt.mm.mysql.Connection.execSQL(Connection.java:973)
+	at org.gjt.mm.mysql.Connection.execSQL(Connection.java:897)
+	at org.gjt.mm.mysql.Statement.execute(Statement.java:598)
+	at org.gjt.mm.mysql.jdbc2.Statement.execute(Statement.java:116)
+	at org.springframework.jdbc.core.JdbcTemplate$1ExecuteStatementCallback.doInStatement(JdbcTemplate.java:397)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:371)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:404)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean$1.doInTransaction(InitializingDataSourceFactoryBean.java:119)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:128)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean.doExecuteScript(InitializingDataSourceFactoryBean.java:103)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean.createInstance(InitializingDataSourceFactoryBean.java:91)
+	at org.springframework.beans.factory.config.AbstractFactoryBean.afterPropertiesSet(AbstractFactoryBean.java:120)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean.afterPropertiesSet(InitializingDataSourceFactoryBean.java:76)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1390)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1359)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:540)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory$1.run(AbstractAutowireCapableBeanFactory.java:485)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:455)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:251)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:169)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:248)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:170)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:407)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:735)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:369)
+	at org.springframework.context.support.ClassPathXmlApplicationContext.&amp;lt;init&amp;gt;(ClassPathXmlApplicationContext.java:122)
+	at org.springframework.context.support.ClassPathXmlApplicationContext.&amp;lt;init&amp;gt;(ClassPathXmlApplicationContext.java:66)
+	at org.springframework.batch.sample.AbstractBatchLauncherTests.createApplicationContext(AbstractBatchLauncherTests.java:53)
+	at org.springframework.test.AbstractSingleSpringContextTests.loadContextLocations(AbstractSingleSpringContextTests.java:212)
+	at org.springframework.test.AbstractSingleSpringContextTests.loadContext(AbstractSingleSpringContextTests.java:187)
+	at org.springframework.test.AbstractSpringContextTests.getContext(AbstractSpringContextTests.java:140)
+	at org.springframework.test.AbstractSingleSpringContextTests.setUp(AbstractSingleSpringContextTests.java:100)
+	at junit.framework.TestCase.runBare(TestCase.java:125)
+	at org.springframework.test.ConditionalTestCase.runBare(ConditionalTestCase.java:76)
+	at junit.framework.TestResult$1.protect(TestResult.java:106)
+	at junit.framework.TestResult.runProtected(TestResult.java:124)
+	at junit.framework.TestResult.run(TestResult.java:109)
+	at junit.framework.TestCase.run(TestCase.java:118)
+	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+	at junit.framework.TestSuite.run(TestSuite.java:203)
+	at org.eclipse.jdt.internal.junit.runner.junit3.JUnit3TestReference.run(JUnit3TestReference.java:128)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:460)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:673)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:386)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:196)
+java.sql.SQLException: Syntax error or access violation: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &amp;amp;apos;VARCHAR(100) NOT NULL , 
+	STRING_VAL VARCHAR(250) , 
+	DATE_VAL TIMESTAMP ,
+	LONG&amp;amp;apos; at line 4
+	at org.gjt.mm.mysql.MysqlIO.sendCommand(MysqlIO.java:508)
+	at org.gjt.mm.mysql.MysqlIO.sqlQueryDirect(MysqlIO.java:561)
+	at org.gjt.mm.mysql.MysqlIO.sqlQuery(MysqlIO.java:646)
+	at org.gjt.mm.mysql.Connection.execSQL(Connection.java:973)
+	at org.gjt.mm.mysql.Connection.execSQL(Connection.java:897)
+	at org.gjt.mm.mysql.Statement.execute(Statement.java:598)
+	at org.gjt.mm.mysql.jdbc2.Statement.execute(Statement.java:116)
+	at org.springframework.jdbc.core.JdbcTemplate$1ExecuteStatementCallback.doInStatement(JdbcTemplate.java:397)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:371)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:404)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean$1.doInTransaction(InitializingDataSourceFactoryBean.java:119)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:128)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean.doExecuteScript(InitializingDataSourceFactoryBean.java:103)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean.createInstance(InitializingDataSourceFactoryBean.java:91)
+	at org.springframework.beans.factory.config.AbstractFactoryBean.afterPropertiesSet(AbstractFactoryBean.java:120)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean.afterPropertiesSet(InitializingDataSourceFactoryBean.java:76)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1390)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1359)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:540)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory$1.run(AbstractAutowireCapableBeanFactory.java:485)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:455)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:251)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:169)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:248)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:170)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:407)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:735)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:369)
+	at org.springframework.context.support.ClassPathXmlApplicationContext.&amp;lt;init&amp;gt;(ClassPathXmlApplicationContext.java:122)
+	at org.springframework.context.support.ClassPathXmlApplicationContext.&amp;lt;init&amp;gt;(ClassPathXmlApplicationContext.java:66)
+	at org.springframework.batch.sample.AbstractBatchLauncherTests.createApplicationContext(AbstractBatchLauncherTests.java:53)
+	at org.springframework.test.AbstractSingleSpringContextTests.loadContextLocations(AbstractSingleSpringContextTests.java:212)
+	at org.springframework.test.AbstractSingleSpringContextTests.loadContext(AbstractSingleSpringContextTests.java:187)
+	at org.springframework.test.AbstractSpringContextTests.getContext(AbstractSpringContextTests.java:140)
+	at org.springframework.test.AbstractSingleSpringContextTests.setUp(AbstractSingleSpringContextTests.java:100)
+	at junit.framework.TestCase.runBare(TestCase.java:125)
+	at org.springframework.test.ConditionalTestCase.runBare(ConditionalTestCase.java:76)
+	at junit.framework.TestResult$1.protect(TestResult.java:106)
+	at junit.framework.TestResult.runProtected(TestResult.java:124)
+	at junit.framework.TestResult.run(TestResult.java:109)
+	at junit.framework.TestCase.run(TestCase.java:118)
+	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+	at junit.framework.TestSuite.run(TestSuite.java:203)
+	at org.eclipse.jdt.internal.junit.runner.junit3.JUnit3TestReference.run(JUnit3TestReference.java:128)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:460)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:673)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:386)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:196)
+java.sql.SQLException: Syntax error or access violation: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &amp;amp;apos;VARCHAR(100) NOT NULL , 
+	STRING_VAL VARCHAR(250) , 
+	DATE_VAL TIMESTAMP ,
+	LONG&amp;amp;apos; at line 4
+	at org.gjt.mm.mysql.MysqlIO.sendCommand(MysqlIO.java:508)
+	at org.gjt.mm.mysql.MysqlIO.sqlQueryDirect(MysqlIO.java:561)
+	at org.gjt.mm.mysql.MysqlIO.sqlQuery(MysqlIO.java:646)
+	at org.gjt.mm.mysql.Connection.execSQL(Connection.java:973)
+	at org.gjt.mm.mysql.Connection.execSQL(Connection.java:897)
+	at org.gjt.mm.mysql.Statement.execute(Statement.java:598)
+	at org.gjt.mm.mysql.jdbc2.Statement.execute(Statement.java:116)
+	at org.springframework.jdbc.core.JdbcTemplate$1ExecuteStatementCallback.doInStatement(JdbcTemplate.java:397)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:371)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:404)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean$1.doInTransaction(InitializingDataSourceFactoryBean.java:119)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:128)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean.doExecuteScript(InitializingDataSourceFactoryBean.java:103)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean.createInstance(InitializingDataSourceFactoryBean.java:91)
+	at org.springframework.beans.factory.config.AbstractFactoryBean.afterPropertiesSet(AbstractFactoryBean.java:120)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean.afterPropertiesSet(InitializingDataSourceFactoryBean.java:76)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1390)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1359)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:540)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory$1.run(AbstractAutowireCapableBeanFactory.java:485)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:455)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:251)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:169)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:248)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:170)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:407)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:735)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:369)
+	at org.springframework.context.support.ClassPathXmlApplicationContext.&amp;lt;init&amp;gt;(ClassPathXmlApplicationContext.java:122)
+	at org.springframework.context.support.ClassPathXmlApplicationContext.&amp;lt;init&amp;gt;(ClassPathXmlApplicationContext.java:66)
+	at org.springframework.batch.sample.AbstractBatchLauncherTests.createApplicationContext(AbstractBatchLauncherTests.java:53)
+	at org.springframework.test.AbstractSingleSpringContextTests.loadContextLocations(AbstractSingleSpringContextTests.java:212)
+	at org.springframework.test.AbstractSingleSpringContextTests.loadContext(AbstractSingleSpringContextTests.java:187)
+	at org.springframework.test.AbstractSpringContextTests.getContext(AbstractSpringContextTests.java:140)
+	at org.springframework.test.AbstractSingleSpringContextTests.setUp(AbstractSingleSpringContextTests.java:100)
+	at junit.framework.TestCase.runBare(TestCase.java:125)
+	at org.springframework.test.ConditionalTestCase.runBare(ConditionalTestCase.java:76)
+	at junit.framework.TestResult$1.protect(TestResult.java:106)
+	at junit.framework.TestResult.runProtected(TestResult.java:124)
+	at junit.framework.TestResult.run(TestResult.java:109)
+	at junit.framework.TestCase.run(TestCase.java:118)
+	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+	at junit.framework.TestSuite.run(TestSuite.java:203)
+	at org.eclipse.jdt.internal.junit.runner.junit3.JUnit3TestReference.run(JUnit3TestReference.java:128)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:460)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:673)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:386)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:196)
+java.sql.SQLException: Syntax error or access violation: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &amp;amp;apos;VARCHAR(100) NOT NULL , 
+	STRING_VAL VARCHAR(250) , 
+	DATE_VAL TIMESTAMP ,
+	LONG&amp;amp;apos; at line 4
+	at org.gjt.mm.mysql.MysqlIO.sendCommand(MysqlIO.java:508)
+	at org.gjt.mm.mysql.MysqlIO.sqlQueryDirect(MysqlIO.java:561)
+	at org.gjt.mm.mysql.MysqlIO.sqlQuery(MysqlIO.java:646)
+	at org.gjt.mm.mysql.Connection.execSQL(Connection.java:973)
+	at org.gjt.mm.mysql.Connection.execSQL(Connection.java:897)
+	at org.gjt.mm.mysql.Statement.execute(Statement.java:598)
+	at org.gjt.mm.mysql.jdbc2.Statement.execute(Statement.java:116)
+	at org.springframework.jdbc.core.JdbcTemplate$1ExecuteStatementCallback.doInStatement(JdbcTemplate.java:397)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:371)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:404)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean$1.doInTransaction(InitializingDataSourceFactoryBean.java:119)
+	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:128)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean.doExecuteScript(InitializingDataSourceFactoryBean.java:103)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean.createInstance(InitializingDataSourceFactoryBean.java:91)
+	at org.springframework.beans.factory.config.AbstractFactoryBean.afterPropertiesSet(AbstractFactoryBean.java:120)
+	at test.jdbc.datasource.InitializingDataSourceFactoryBean.afterPropertiesSet(InitializingDataSourceFactoryBean.java:76)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1390)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1359)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:540)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory$1.run(AbstractAutowireCapableBeanFactory.java:485)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:455)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:251)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:169)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:248)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:170)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:407)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:735)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:369)
+	at org.springframework.context.support.ClassPathXmlApplicationContext.&amp;lt;init&amp;gt;(ClassPathXmlApplicationContext.java:122)
+	at org.springframework.context.support.ClassPathXmlApplicationContext.&amp;lt;init&amp;gt;(ClassPathXmlApplicationContext.java:66)
+	at org.springframework.batch.sample.AbstractBatchLauncherTests.createApplicationContext(AbstractBatchLauncherTests.java:53)
+	at org.springframework.test.AbstractSingleSpringContextTests.loadContextLocations(AbstractSingleSpringContextTests.java:212)
+	at org.springframework.test.AbstractSingleSpringContextTests.loadContext(AbstractSingleSpringContextTests.java:187)
+	at org.springframework.test.AbstractSpringContextTests.getContext(AbstractSpringContextTests.java:140)
+	at org.springframework.test.AbstractSingleSpringContextTests.setUp(AbstractSingleSpringContextTests.java:100)
+	at junit.framework.TestCase.runBare(TestCase.java:125)
+	at org.springframework.test.ConditionalTestCase.runBare(ConditionalTestCase.java:76)
+	at junit.framework.TestResult$1.protect(TestResult.java:106)
+	at junit.framework.TestResult.runProtected(TestResult.java:124)
+	at junit.framework.TestResult.run(TestResult.java:109)
+	at junit.framework.TestCase.run(TestCase.java:118)
+	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+	at junit.framework.TestSuite.run(TestSuite.java:203)
+	at org.eclipse.jdt.internal.junit.runner.junit3.JUnit3TestReference.run(JUnit3TestReference.java:128)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:460)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:673)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:386)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:196)</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m4</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.JdbcJobDao.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-06 00:21:34" id="343" opendate="2008-02-05 22:31:50" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>close() is called twice on ItemReaders/ItemWriters</summary>
+			
+			
+			<description>ItemReaders and ItemWriters implement both DisposableBean and ItemStream, which results in calling the close() method twice (e.g. in case of HibernateCursorItemReader the second calls result in error as hibernate session is already closed)</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.io.cursor.JdbcCursorItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.support.AbstractDataSourceItemReaderIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.FlatFileItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.FooInputSource.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.cursor.HibernateCursorItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.xml.StaxEventItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.separator.ResourceLineReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.reader.StagingItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.cursor.HibernateCursorItemReaderIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.xml.StaxEventItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.xml.StaxEventWriterItemWriterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.xml.StaxEventItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.DrivingQueryItemReader.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-10 02:30:07" id="347" opendate="2008-02-08 06:57:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>aop / template interceptor class names ambiguous</summary>
+			
+			
+			<description>RepeatInterceptor vs. RepeatOperationsInterceptor
+RetryInterceptor vs. RetryOperationsInterceptor
+Each of these pairs is badly named. Perhaps the aop ones might be renamed &quot;Advisor&quot; so as not to be as confusing?
+i.e.
+RepeatOperationsAdvisor
+RetryOperationsAdvisor</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="D">org.springframework.batch.retry.interceptor.RetryListenerSupportTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.support.RepeatTemplate.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.tasklet.TaskletStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.support.RetryTemplate.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.support.HibernateAwareItemWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.retry.interceptor.RetryInterceptorSupportTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.repeat.interceptor.ApplicationEventPublisherRepeatInterceptor.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.aop.RetryOperationsInterceptor.java</file>
+			
+			
+			<file type="D">org.springframework.batch.repeat.interceptor.ApplicationEventPublisherRepeatInterceptorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.support.HibernateAwareItemWriterTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.retry.interceptor.RetryInterceptorSupport.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.RepeatOperationsStepTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.retry.RetryInterceptor.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.SimpleStepExecutorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.tasklet.TaskletStepTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.repeat.RepeatInterceptor.java</file>
+			
+			
+			<file type="D">org.springframework.batch.retry.interceptor.RetryInterceptorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.dao.HibernateCreditWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.repeat.interceptor.RepeatInterceptorTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.repeat.interceptor.RepeatInterceptorAdapter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.aop.RepeatOperationsInterceptor.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-10 22:29:44" id="350" opendate="2008-02-10 09:44:22" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Remove close() method from non ItemStreams</summary>
+			
+			
+			<description>The following classes have a default close method implementation which does not belong and should be removed:
+org.springframework.batch.execution.launch.EmptyItemWriter
+org.springframework.batch.item.writer.ItemWriterAdapter
+org.springframework.batch.item.reader.ItemReaderAdapter
+Here&amp;amp;apos;s an interesting question  how do you deal with something that needs to be both an ItemStream and a RepeatInterceptor?
+Take org.springframework.batch.io.support.HibernateAwareItemWriter for instance  suppose you want this to be transaction managed as an ItemStream, how would you do that?</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.execution.launch.EmptyItemWriter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-14 22:17:22" id="362" opendate="2008-02-14 02:21:19" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Rename ExecutionAttributes to ExecutionContext</summary>
+			
+			
+			<description>Rename ExecutionAttributes to ExecutionContext.  Arjen in particular thought that &quot;context&quot; was much more descriptive (he even suggested &quot;state&quot;, but we all voted him down on that).</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.reader.DelegatingItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.writer.ItemWriterItemProcessorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.FlatFileItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.support.SingleColumnJdbcKeyGenerator.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.StepContribution.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.reader.DelegatingItemReader.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.ExecutionAttributesProvider.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.cursor.HibernateCursorItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.support.MultipleColumnJdbcKeyGenerator.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.SimpleExportedJobLauncherTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.StepSupport.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.reader.StagingItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.SimpleStepExecutorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.SimpleJobRepositoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.FooInputSource.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.support.IbatisKeyGenerator.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.stream.StreamManager.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.scope.SimpleStepContext.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.cursor.JdbcCursorItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.AbstractStepDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.JdbcStepInstanceDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.stream.SimpleStreamManager.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.DrivingQueryItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.StepInstanceDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.StepExecutionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.driving.support.ColumnMapExecutionAttributesRowMapperTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.support.MultipleColumnJdbcKeyGeneratorIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.scope.StepContext.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.FlatFileItemWriterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.xml.StaxEventWriterItemWriterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.StepSupportTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.support.AbstractDataSourceItemReaderIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.JdbcStepExecutionDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.tasklet.InfiniteLoopTasklet.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.stream.ItemStreamAdapter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.KeyGenerator.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.SimpleJobRepository.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.StepExecution.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.MapStepDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.stream.SimpleStreamManagerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.xml.StaxEventItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.StepContributionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.MapStepDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.StepExecutionDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.ExecutionAttributesTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.Step.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.driving.support.ColumnMapExecutionAttributesRowMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.xml.StaxEventItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.ChunkedStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.JobRepository.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.SimpleStepExecutor.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.FlatFileItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.bootstrap.support.SimpleExportedJobLauncher.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.driving.support.ExecutionAttributesRowMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.ExecutionAttributes.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.FlatFileItemReaderAdvancedTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.MockStepDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.SimpleStepConfigurationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.DrivingQueryItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.reader.GeneratingItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.support.SingleColumnJdbcKeyGeneratorIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.xml.StaxEventItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.sql.AbstractJdbcItemReaderIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.tasklet.SimpleTradeWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.scope.SimpleStepContextTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.ItemStream.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-17 20:40:17" id="367" opendate="2008-02-14 23:34:16" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>When the samples run, all the execution attributes are of type STRING - this must be wrong.</summary>
+			
+			
+			<description>When the samples run, all the execution attributes are of type STRING - this must be wrong.  Surely most of them are longs?</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.stream.SimpleStreamManagerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.stream.SimpleStreamManager.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-19 22:33:14" id="373" opendate="2008-02-19 20:32:07" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>jobExecution.getJobInstance().getJob() return null when re-run</summary>
+			
+			
+			<description>It is found that, if a job is re-run (by passing same JobParameters), the JobExecution created is referring to a JobInstance which refers to null for its Job.
+i.e.
+JobExecution x = jobLauncher.run(job, jobParam);
+x.getJobInstance().getJob();  // returns null
+It seems that for re-run job, the Job passed in the JobLauncher is not set to the JobInstance restored from DB.
+As I am trying to intercept the Job&amp;amp;apos;s execute() by AOP, the only method I can get know of which job being executed is by jobExecution.getJobInstance().getJob()
+</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.SimpleJobRepository.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-21 20:57:53" id="376" opendate="2008-02-21 03:46:20" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Problem with DelimitedLineTokenizer and empty quoted value</summary>
+			
+			
+			<description>The DelimitedLineTokenizer throws a StringIndexOutOfBoundsException when a line contains an empty quoted field.
+example line: &quot;a&quot;, &quot;b&quot;, &quot;&quot;, &quot;d&quot;
+I will attach a patch with test for this scenario.</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion/>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.io.file.transform.DelimitedLineTokenizer.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.transform.DelimitedLineTokenizerTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-25 01:00:47" id="371" opendate="2008-02-19 04:44:17" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FlatFileItemWriter no longer uses LineAggregator</summary>
+			
+			
+			<description>It seems that the FlatFileItemWriter no longer takes a LineAggregator to determine how lines should be written. This seems to be an oversight?
+It could be argued that the ItemTransformer that&amp;amp;apos;s injectable could be used instead, except that it only gets invoked when the item type is not String. Additionally, it is asymmetrical with the ItemReader&amp;amp;apos;s LineTokenizer. Also, there is no packaged ItemTransformer equivalent to the LineAggregators.
+Anyway, as of the moment, it seems the LineAggregators are not used or injectable anywhere, so they should either be made injectable and invoked appropriately again, OR equivalent ItemTransformers should be provided and the LineTokenizers should also be replaced, and the transformer should be invoked even if the item is a String...</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="D">org.springframework.batch.item.stream.ItemStreamAdapter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.stream.SimpleStreamManagerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.mapping.PassThroughFieldSetMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.writer.ItemWriterAdapterIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.separator.ResourceLineReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.reader.ItemReaderAdapter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.mapping.PassThroughFieldSetMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.interceptor.RepeatListenerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.interceptor.RetryListenerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.support.AbstractTransactionalIoSource.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.reader.AbstractItemStreamItemReader.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.file.mapping.FieldSetUnmapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.file.transform.FieldSetUnmapperItemTransformer.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.FlatFileItemWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.retry.interceptor.RetryListenerAdapter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.repeat.interceptor.RepeatListenerAdapter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.retry.interceptor.RetryListenerAdapterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.FlatFileItemWriterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.writer.DelegatingItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.MultilineJobFunctionalTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.transform.LineAggregatorItemTransformerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.transform.LineAggregatorItemTransformer.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.transform.RecursiveCollectionItemTransformer.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.file.transform.LineAggregatorStub.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.dao.FlatFileOrderWriterTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.LineAggregatorStub.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.transform.FixedLengthLineAggregatorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.transform.DelimitedLineAggregatorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.transform.LineAggregator.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.dao.OrderTransformer.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.transform.FixedLengthLineAggregator.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.transform.DelimitedLineAggregator.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.configuration.JobBeanDefinitionParser.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-25 03:10:43" id="349" opendate="2008-02-10 09:25:24" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ItemStreamAdapter isn&amp;apos;t an Adapter</summary>
+			
+			
+			<description>Perhaps this should be called ItemStreamSupport? Thanks.</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="D">org.springframework.batch.item.stream.ItemStreamAdapter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.stream.SimpleStreamManagerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.mapping.PassThroughFieldSetMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.writer.ItemWriterAdapterIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.separator.ResourceLineReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.reader.ItemReaderAdapter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.mapping.PassThroughFieldSetMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.interceptor.RepeatListenerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.retry.interceptor.RetryListenerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.support.AbstractTransactionalIoSource.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.reader.AbstractItemStreamItemReader.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.file.mapping.FieldSetUnmapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.io.file.transform.FieldSetUnmapperItemTransformer.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.FlatFileItemWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.retry.interceptor.RetryListenerAdapter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.repeat.interceptor.RepeatListenerAdapter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.retry.interceptor.RetryListenerAdapterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.FlatFileItemWriterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.ItemOrientedStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.TaskletStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.support.RepeatOperationsStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.writer.DelegatingItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.ChunkedStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.writer.AbstractItemStreamItemWriter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-25 17:44:09" id="364" opendate="2008-02-14 02:48:01" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StepScope responsibilities can be assumed by Step (not ApplicationContext)</summary>
+			
+			
+			<description>StepScope responsibilities can be assumed by Step (not ApplicationContext).  The aim (to clarify issues raised below), is to make scope=&quot;step&quot; strongly advised but not mandatory for item readers and writers in simple steps.  Application programmers are very welcome to use scope=&quot;step&quot; where they need access to the context through StepContextAware, since this is consistent with other custom scope usages.  They are also advised to use scope=&quot;step&quot; wherever there is a possibility of more than one thread executing the same step - as in the case of a JMX launcher (see samples) or a web service that runs jobs.  Step scope is not necessary for single JVM, single Job processes, but it would be recommended to use it anyway, in case the job is ever run in a mult-threaded container.</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.StepExecution.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.Entity.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.SimpleStepExecutor.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.ItemChunker.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.MapStepDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.MockStepDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.Chunker.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.StepExecutionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.SimpleJobRepositoryTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.JdbcStepExecutionDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.scope.SimpleStepContext.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.reader.AggregateItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.stream.SimpleStreamManagerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.stream.StreamManager.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.stream.SimpleStreamManager.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.reader.DelegatingItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.reader.OrderItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.ChunkedStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.simple.SimpleStepExecutorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.scope.StepContext.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.tasklet.ExceptionThrowingItemReaderProxy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.tasklet.ExceptionThrowingItemReaderProxyTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.scope.SimpleStepContextTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.context.SynchronizedAttributeAccessorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.FlatFileItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.support.AbstractTradeBatchTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.FlatFileItemReaderAdvancedTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.AbstractBatchLauncherTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.xml.StaxEventItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.reader.StagingItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.JobRepository.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.reader.StagingItemReaderTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.step.simple.ChunkedStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.FixedLengthImportJobFunctionalTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.xml.StaxEventItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.FlatFileItemReaderBasicTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.xml.StaxEventItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.xml.StaxEventWriterItemWriterTests.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is depended on by" type="Depends">366</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-26 02:26:25" id="380" opendate="2008-02-21 19:51:06" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Step Scope problem in TaskletStep</summary>
+			
+			
+			<description>snippet of app context config:
+    &amp;lt;!-- stuffs that copied from simple-container-definition.xml --&amp;gt;
+    &amp;lt;bean id=&quot;job&quot; parent=&quot;simpleJob&quot;&amp;gt;
+        &amp;lt;property name=&quot;steps&quot;&amp;gt;
+            &amp;lt;list&amp;gt;
+                &amp;lt;bean id=&quot;step1&quot; parent=&quot;taskletStep&quot;&amp;gt;
+                    &amp;lt;property name=&quot;tasklet&quot;&amp;gt;
+                        &amp;lt;bean id=&quot;tradeTasklet&quot;
+                                class=&quot;foo.sample.TradeMatchTasklet&quot;
+                                scope=&quot;step&quot;&amp;gt;
+                            &amp;lt;aop:scoped-proxy /&amp;gt;
+                            &amp;lt;property name=&quot;status&quot; value=&quot;9&quot;/&amp;gt;
+                        &amp;lt;/bean&amp;gt;
+                    &amp;lt;/property&amp;gt;
+                &amp;lt;/bean&amp;gt;
+            &amp;lt;/list&amp;gt;
+        &amp;lt;/property&amp;gt;
+    &amp;lt;/bean&amp;gt;
+My Unit test:
+@RunWith(SpringJUnit4ClassRunner.class)
+@TransactionConfiguration
+@Transactional
+@ContextConfiguration(locations=
+{&quot;/mysample/sample1-job.xml&quot;}
+)
+public class TradeMatchBatchTests {
+    @Resource
+    JobLauncher jobLauncher;
+    @Resource
+    private Job job;
+    @Resource
+    MapJobRegistry jobConfigurationRegistry;
+    @Test
+    public void testLaunchJob() throws Exception 
+{
+        Map&amp;lt;String, String&amp;gt; strParam = new HashMap&amp;lt;String, String&amp;gt;();
+        strParam.put(&quot;KEY&quot;, &quot;1&quot;);
+        JobParameters jobParam = new JobParameters(strParam, new HashMap(), new HashMap());
+
+        JobExecution x = jobLauncher.run(job, jobParam);
+    }
+}
+Once it is run, following exception is thrown:
+2008-02-21 19:26:01,645 INFO [org.springframework.batch.execution.launch.SimpleJobLauncher] - &amp;lt;Job: [SimpleJob: [name=job]] failed with the following parameters: [
+{KEY=1}
+{}{}]&amp;gt;
+org.springframework.batch.io.exception.BatchCriticalException: org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;amp;apos;scopedTarget.tradeTasklet&amp;amp;apos;: Scope &amp;amp;apos;step&amp;amp;apos; is not active for the current thread; consider defining a scoped proxy for this bean if you intend to refer to it from a singleton; nested exception is java.lang.IllegalStateException: No context holder available for step scope
+	at org.springframework.batch.execution.step.tasklet.TaskletStep.execute(TaskletStep.java:134)
+	at org.springframework.batch.execution.job.simple.SimpleJob.execute(SimpleJob.java:88)
+	at org.springframework.batch.execution.launch.SimpleJobLauncher$1.run(SimpleJobLauncher.java:85)
+	at org.springframework.core.task.SyncTaskExecutor.execute(SyncTaskExecutor.java:49)
+	at org.springframework.batch.execution.launch.SimpleJobLauncher.run(SimpleJobLauncher.java:80)
+	at foo.sample.TradeMatchBatchTests.testLaunchJob(TradeMatchBatchTests.java:117)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at org.springframework.test.context.junit4.SpringTestMethod.invoke(SpringTestMethod.java:198)
+	at org.springframework.test.context.junit4.SpringMethodRoadie.runTestMethod(SpringMethodRoadie.java:274)
+	at org.springframework.test.context.junit4.SpringMethodRoadie$2.run(SpringMethodRoadie.java:207)
+	at org.springframework.test.context.junit4.SpringMethodRoadie.runBeforesThenTestThenAfters(SpringMethodRoadie.java:254)
+	at org.springframework.test.context.junit4.SpringMethodRoadie.runWithRepetitions(SpringMethodRoadie.java:234)
+	at org.springframework.test.context.junit4.SpringMethodRoadie.runTest(SpringMethodRoadie.java:204)
+	at org.springframework.test.context.junit4.SpringMethodRoadie.run(SpringMethodRoadie.java:146)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.invokeTestMethod(SpringJUnit4ClassRunner.java:151)
+	at org.junit.internal.runners.JUnit4ClassRunner.runMethods(JUnit4ClassRunner.java:51)
+	at org.junit.internal.runners.JUnit4ClassRunner$1.run(JUnit4ClassRunner.java:44)
+	at org.junit.internal.runners.ClassRoadie.runUnprotected(ClassRoadie.java:27)
+	at org.junit.internal.runners.ClassRoadie.runProtected(ClassRoadie.java:37)
+	at org.junit.internal.runners.JUnit4ClassRunner.run(JUnit4ClassRunner.java:42)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:38)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:460)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:673)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:386)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:196)
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;amp;apos;scopedTarget.tradeTasklet&amp;amp;apos;: Scope &amp;amp;apos;step&amp;amp;apos; is not active for the current thread; consider defining a scoped proxy for this bean if you intend to refer to it from a singleton; nested exception is java.lang.IllegalStateException: No context holder available for step scope
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:299)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:170)
+	at org.springframework.aop.target.SimpleBeanTargetSource.getTarget(SimpleBeanTargetSource.java:33)
+	at org.springframework.aop.framework.Cglib2AopProxy$DynamicAdvisedInterceptor.getTarget(Cglib2AopProxy.java:662)
+	at org.springframework.aop.framework.Cglib2AopProxy$DynamicAdvisedInterceptor.intercept(Cglib2AopProxy.java:612)
+	at foo.sample.TradeMatchTasklet$$EnhancerByCGLIB$$f5e84820.execute(&amp;lt;generated&amp;gt;)
+	at org.springframework.batch.execution.step.tasklet.TaskletStep$1.doInIteration(TaskletStep.java:124)
+	at org.springframework.batch.repeat.support.RepeatTemplate.getNextResult(RepeatTemplate.java:324)
+	at org.springframework.batch.repeat.support.RepeatTemplate.executeInternal(RepeatTemplate.java:201)
+	at org.springframework.batch.repeat.support.RepeatTemplate.iterate(RepeatTemplate.java:131)
+	at org.springframework.batch.execution.step.tasklet.TaskletStep.execute(TaskletStep.java:122)
+	... 28 more
+Caused by: java.lang.IllegalStateException: No context holder available for step scope
+	at org.springframework.batch.execution.scope.StepScope.getContext(StepScope.java:127)
+	at org.springframework.batch.execution.scope.StepScope.get(StepScope.java:68)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:285)
+	... 38 more</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.domain.JobExecutionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.TaskletStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.TaskletStep.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-27 03:06:36" id="368" opendate="2008-02-15 01:40:30" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StepExecution attributes can overflow and cause spurious OptimisticLockingException</summary>
+			
+			
+			<description>StepExecution attributes can overflow in the attrs table and in the step execution table (the &quot;compressed&quot; version).  I hacked the DDL to extend the columns, but we have to catch the exceptions and deal with them better - the job cannot be re-run if the meta-data are corrupt (it should get status UNKNOWN).</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.JdbcStepExecutionDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.job.AbstractJob.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.AbstractStepDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.JobRepository.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.TaskletStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.SimpleJobRepository.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.support.JobRepositorySupport.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.MapStepDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.TaskletStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.ItemOrientedStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.MockStepDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.StepExecutionDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.ItemOrientedStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.SimpleJobRepositoryTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-28 18:23:48" id="400" opendate="2008-02-28 03:11:39" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Batch support schemas does not include RI and primary keys </summary>
+			
+			
+			<description>It looks like BATCH_JOB_PARAMS and BATCH_STEP_EXECUTION_ATTRS do not include primary keys. (It also appears that these two tables are not yet used anywhere). Also, the schema does include referential integrity between tables. 
+It becomes difficult to get an approval from DBA&amp;amp;apos;s to approve such table structure...
+Of course, RI can be manually added as an easy workaround, but still... </description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.sample.dao.JdbcJobRepositoryTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-02-28 23:28:07" id="385" opendate="2008-02-25 18:13:35" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Merge user attributes in StepContext with ExecutionContext</summary>
+			
+			
+			<description>Developers find StepContext easy to locate and use, and mistakenly assume that its attributes ight be persisted (like the ExecutionContext).  It&amp;amp;apos;s an easy mistake to make, so maybe user defined attributes in StepContext should use an ExecutionContext, or maybe a separate API in StepContext could provide the same feature.</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.writer.DelegatingItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.reader.DelegatingItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.reader.GeneratingItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.reader.DelegatingItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.repeat.support.AbstractTradeBatchTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.writer.TradeWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.scope.SimpleStepContext.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.scope.StepContextAwareStepScopeTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.scope.StepScope.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.scope.JobParametersAware.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.scope.StepScopeTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.scope.SimpleStepContextTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.listener.CompositeItemWriteListener.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.job.SimpleJob.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.scope.StepContext.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.TaskletStepTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.scope.StepContextAware.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.job.SimpleJobTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.scope.StepSynchronizationManager.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.scope.JobParametersAwareStepScopeTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.resource.StepExecutionProxyResourceTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.writer.StagingItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.ItemOrientedStepTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.resource.BatchResourceFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.ItemOrientedStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.reader.StagingItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.item.reader.StagingItemReaderTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.execution.resource.BatchResourceFactoryBeanTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.StagingItemProcessorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.TaskletStep.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.step.support.ListenerMulticaster.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.ExecutionContext.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-03 20:18:34" id="393" opendate="2008-02-27 01:23:09" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DefaultFieldSet should not always trim whitespace from the value returned</summary>
+			
+			
+			<description>DefaultFieldSet should not always trim whitespace from the value returned.  (I think it&amp;amp;apos;s valid for trimming to occur on the &quot;name&quot; of a field.)  It&amp;amp;apos;s a valid use-case for people to want the raw data that was read with whitespace included.  (It also can slightly slow performance during the reading of a file when trimming is done).
+Please allow users to decide which field(s) they would like trimming to occur on.</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.m5</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.io.file.mapping.FieldSet.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.FieldSetTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.file.mapping.DefaultFieldSet.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-04 05:36:10" id="413" opendate="2008-03-04 04:55:02" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Unhandled IndexOutOfBounds in DrivingQueryItemReader</summary>
+			
+			
+			<description>In the getCurrentKey() method of org.springframework.batch.io.driving.DrivingQueryItemReader, if currentIndex is 0, you will get an ArrayIndexOutOfBoundsException. This occurred when my KeyGenerator query returned 0 results for a particular batch job.
+Is this supposed to be handled gracefully or is it an error?  Is it a condition that my query must return at least 1 result?</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.rc1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.DrivingQueryItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.io.driving.DrivingQueryItemReaderTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-08 06:59:50" id="329" opendate="2008-01-29 20:38:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Make &quot;VERSION&quot; meaningful?</summary>
+			
+			
+			<description>The version field in Entity and the corresponding VERSION field in the database schema doesn&amp;amp;apos;t seem to have any meaning right now. Where are these values supposed to come from? I can&amp;amp;apos;t seem to track it down in the code. 
+It would make sense for job instance to have the version number of the job config as defined by the user, and likewise for step / step config
+I can&amp;amp;apos;t imagine what version would mean for the execution metadata... if it has the same meaning then it&amp;amp;apos;s redundant.
+Or am I misunderstanding what the version field is supposed to mean?</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.rc1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.MapJobExecutionDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.MapStepExecutionDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.MapStepExecutionDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.MapJobInstanceDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.MapJobExecutionDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.JdbcJobInstanceDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.AbstractJobDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.MapJobInstanceDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.execution.repository.dao.JdbcJobExecutionDao.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-03-10 07:40:28" id="335" opendate="2008-02-04 00:31:26" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MultipleColumnJdbcKeyGenerator, various</summary>
+			
+			
+			<description>In class: org.springframework.batch.io.driving.support.MultipleColumnJdbcKeyGenerator
+1) Method setRestartQuery is a duplicate method of setRestartSql
+2) The restart data key mapper (field keyMapper of type StreamContextRowMapper) should probably not be settable ...
+3) ... it should probably be renamed from keyMapper to something to the effect of restartKeyMapper...
+4) ... accordingly, a separate injectable keyMapper should be added (symmetrically with the SingleColumn version)  it&amp;amp;apos;s useless for me to map my results to restart data, I need to map it to a business domain object</description>
+			
+			
+			<version>1.0.0.m4</version>
+			
+			
+			<fixedVersion>1.0.0.rc1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="D">org.springframework.batch.item.database.KeyGenerator.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.SingleColumnJdbcDrivingQueryItemReaderIntegrationTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.database.support.IbatisKeyGenerator.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.DrivingQueryItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.IbatisDrivingQueryItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.SingleColumnJdbcKeyGeneratorIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.MultipleColumnJdbcKeyGeneratorIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.ExecutionContextRowMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.IbatisItemReaderIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.MultipleColumnJdbcDrivingQueryItemReaderIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.DrivingQueryItemReader.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.database.support.SingleColumnJdbcKeyGenerator.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.database.support.ColumnMapExecutionContextRowMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.item.database.support.MultipleColumnJdbcKeyGenerator.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>

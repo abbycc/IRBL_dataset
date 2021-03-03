@@ -1,0 +1,1583 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bugrepository name="BATCH">
+	<bug fixdate="2008-06-11 00:08:29" id="663" opendate="2008-06-10 23:30:09" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MultiResourceItemReader doesn&amp;apos;t restart correctly after multi-resource rollback</summary>
+			
+			
+			<description>MultiResourceItemReader needs to track the last marked resource and delegates position within that resource to restart correctly after multi-resource rollback. After rollback it also needs to handle possible shortening of the commit interval.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.MultiResourceItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.CommonItemStreamItemReaderTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-01 00:52:13" id="698" opendate="2008-06-30 22:49:52" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StaxEventItemWriter test failures</summary>
+			
+			
+			<description>cca one half of the StaxItemWriterTests keep failing (reproduced on two machines, Windows &amp;amp; Linux).</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.StaxEventItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.StaxEventItemWriterTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-02 03:46:24" id="706" opendate="2008-07-02 02:49:28" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Commit exception is lost if update fails as well</summary>
+			
+			
+			<description>http://forum.springframework.org/showthread.php?t=56783</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.StepExecution.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.StepExecutionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.item.ItemOrientedStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.AbstractStepTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.AbstractStep.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-07 18:48:02" id="715" opendate="2008-07-05 01:17:15" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Default value of saveState flag should be true</summary>
+			
+			
+			<description>Default value of saveState flag should be true - restartable should be the default.  Assigning to Robert because he did the original abstraction so he might know why the default isn&amp;amp;apos;t already true.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.StaxEventItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.support.AbstractBufferedItemReaderItemStream.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-12 22:47:35" id="722" opendate="2008-07-12 22:35:55" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>No framework logic should depend on the value of ExitStatus</summary>
+			
+			
+			<description>No framework logic should depend on the value of ExitStatus - BatchStatus is fixed by the framework, but users can set the ExitStatus codes to what they like.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.retry.support.RetryTemplate.java</file>
+			
+			
+			<file type="M">org.springframework.batch.integration.job.StepExecutionMessageHandlerTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.integration.job.StepExecutionMessageHandler.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.SimpleJobTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.integration.chunk.ChunkMessageChannelItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.job.SimpleJob.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-13 18:35:16" id="723" opendate="2008-07-13 13:54:08" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>tablePrefix property is not injected into JbdcExecutionContextDao</summary>
+			
+			
+			<description>When using an alternate table prefix in the batch repository schema and
+setting this property on the JobRepositoryFactoryBean, the setting is properly injected into the three primary daos
+(  JdbcJobInstanceDao, JdbcJobExecutionDao, JdbcStepExecutionDao ).
+However the setting is not injected into the JdbcExecutionContextDao, resulting in an inconsistent table naming prefix strategy in the batch schema.
+It appears to me that the JdbcJobExecutionDao and JdbcStepExecutionDao each create an instance of the JdbcExecutionContextDao, referred to as &quot;ecDao&quot;, and should inject the tablePrefix.  
+They already set some properties of the &quot;ecDao&quot; in their afterPropertiesSet() .. but seems they neglect to inject the tablePrefix as well.
+Should be a simple one line fix in each dao?
+</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.1.0</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.JdbcJobExecutionDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.AbstractJdbcBatchMetadataDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.JdbcStepExecutionDao.java</file>
+			
+		
+		</fixedFiles>
+		
+		
+		<links>
+			
+			
+			<link description="is related to" type="Related">724</link>
+			
+		
+		</links>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-17 04:05:29" id="732" opendate="2008-07-17 02:18:02" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FlatFileItemReader doesn&amp;apos;t take &quot;firstLineIsHeader&quot; flag into account when restarting</summary>
+			
+			
+			<description>FlatFileItemReader doesn&amp;amp;apos;t take &quot;firstLineIsHeader&quot; flag into account when restarting so the restart begins with the last successfully processed item rather than the one following it.  This is only an issue if the flat file contains a header line.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReaderAdvancedTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-21 22:23:09" id="741" opendate="2008-07-21 19:03:40" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>DefaultFieldSet should clone the tokens before exposing them in getValues()</summary>
+			
+			
+			<description>DefaultFieldSet should clone the tokens before exposing them in getValues()</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.1.1, 2.0.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.mapping.DefaultFieldSet.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-24 18:36:02" id="744" opendate="2008-07-24 17:59:56" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>restart.count is always 0 in FlatFileItemWriter</summary>
+			
+			
+			<description/>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemWriterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemWriter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-27 19:06:09" id="693" opendate="2008-06-27 03:19:16" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>Refactor samples along domain contours</summary>
+			
+			
+			<description>It has always bugged me that the samples have technical packaging.  It is really hard to isolate the individual domains (e.g. football).</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.HibernateCreditDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.CustomerCreditUpdateWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.FutureDateFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.IbatisCustomerCreditDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.TotalOrderItemsFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.CustomerDebitRowMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.CustomerUpdateProcessorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.domain.order.OrderItemReaderTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.ValidateDiscountsFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.FlatFileCustomerCreditDaoTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.RetrySampleFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.TradeFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.OrderItemFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.ShippingFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.CustomerCreditIncreaseProcessorTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.domain.order.BillingFieldSetMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.CustomerFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.ValidateDiscountsFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.xml.Customer.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.TradeRowMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.football.PlayerSummaryRowMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.ValidateShippingPricesFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.OrderItemReader.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.AddressFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.football.JdbcGameDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.ValidatePricesFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.JdbcTradeWriterTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.football.JdbcPlayerSummaryDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.CustomerCreditRowMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.GeneratingItemReaderTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.domain.order.OrderItemFieldSetMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.FlatFileCustomerCreditDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.JdbcCustomerDebitDaoTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.football.JdbcPlayerSummaryDaoIntegrationTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.person.PersonWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.CustomerCreditUpdatePreparedStatementSetterTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.CustomerCreditRowMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.TradeProcessorTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.TradeFieldSetMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.xml.Shipper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.xml.Order.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.CustomerCreditIncreaseWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.football.PlayerSummaryMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.football.FootballExceptionHandler.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.CustomerCreditUpdateProcessorTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.football.PlayerFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.OrderTransformer.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.football.JdbcPlayerDaoIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.domain.order.FlatFileOrderWriterTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.domain.order.AddressFieldSetMapperTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.AbstractCustomerCreditIncreaseTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.FixedLengthImportJobFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.ValidateQuantitiesFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.ValidateHandlingPricesFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.ValidateQuantitiesFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.TradeWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.ValidateIdsFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.GeneratingTradeItemReader.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.football.PlayerItemWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.FutureDateFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.JdbcCustomerDebitDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.TotalOrderItemsFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.JdbcTradeDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.HeaderFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.ValidatePricesFunctionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.HibernateFailureJobFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.football.JdbcPlayerDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.CustomerUpdateWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.ValidateHandlingPricesFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.football.GameFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.TradeRowMapperTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.domain.order.HeaderFieldSetMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.trade.CustomerCreditUpdatePreparedStatementSetter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.ValidateIdsFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.ValidateTotalPricesFunctionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.domain.order.CustomerFieldSetMapperTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.domain.order.OrderTransformerTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.ValidateShippingPricesFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.football.JdbcGameDaoIntegrationTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.BillingFieldSetMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.domain.order.ShippingFieldSetMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.valang.ValidateTotalPricesFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.order.xml.LineItem.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.JdbcJobRepositoryTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.JdbcTradeWriterTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.JdbcPlayerDaoIntegrationTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.JdbcGameDaoIntegrationTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.FlatFileCustomerCreditDaoTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.JdbcCustomerDebitDaoTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.JdbcPlayerSummaryDaoIntegrationTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.tasklet.ExceptionThrowingItemReaderProxyTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.AbstractFieldSetMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.StagingItemWriterTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.tasklet.JobSupport.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.quartz.JobLauncherDetailsTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.tasklet.SimpleSystemProcessExitCodeMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.tasklet.StepSupport.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.reader.StagingItemReaderTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.tasklet.ConfigurableSystemProcessExitCodeMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.RetrySampleItemWriterTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.tasklet.SystemCommandTaskletIntegrationTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.advice.JobExecutionNotificationPublisherTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.AbstractRowMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.TradeProcessorTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.CustomerCreditUpdatePreparedStatementSetterTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.TradeFieldSetMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.TradeRowMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.CustomerCreditUpdateProcessorTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.reader.GeneratingItemReaderTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.CustomerCreditRowMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.CustomerUpdateProcessorTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.CustomerCreditIncreaseProcessorTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.ShippingFieldSetMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.OrderTransformerTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.HeaderFieldSetMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.AddressFieldSetMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.OrderItemFieldSetMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.reader.OrderItemReaderTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.FlatFileOrderWriterTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.CustomerFieldSetMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.BillingFieldSetMapperTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.CustomerUpdateWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.IbatisCustomerCreditDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.xml.Customer.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.CustomerCreditRowMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.Customer.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.xml.Order.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.football.PlayerDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.Address.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.FlatFileCustomerCreditDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.person.PersonService.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.xml.Shipper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.Order.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.person.PersonWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.xml.LineItem.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.TradeWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.football.JdbcPlayerSummaryDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.GeneratingTradeItemReader.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.ShippingInfo.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.TotalOrderItemsFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.football.PlayerSummary.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.football.Game.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.retry.RetrySampleItemWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.CustomerFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.TradeFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.football.GameFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.FutureDateFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.Trade.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.football.PlayerSummaryMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.ValidatePricesFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.HeaderFieldSetMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.TradeJobFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.HibernateCreditDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.TotalOrderItemsFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.OrderItemReader.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.football.FootballExceptionHandler.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.ValidatePricesFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.person.Person.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.CustomerDebitDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.CompositeItemWriterSampleFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.football.JdbcPlayerDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.ValidateHandlingPricesFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.OrderDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.ValidateShippingPricesFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.FutureDateFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.football.Player.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.CustomerCreditDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.BillingInfo.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.CustomerCreditUpdatePreparedStatementSetter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.TradeRowMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.ValidateTotalPricesFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.ValidateDiscountsFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.CustomerCredit.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.football.PlayerSummaryRowMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.ShippingFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.ValidateQuantitiesFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.JdbcTradeDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.ValidateIdsFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.CustomerDebit.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.person.Child.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.OrderItemFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.CustomerCreditIncreaseWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.ValidateQuantitiesFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.football.PlayerFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.ValidateDiscountsFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.LineItem.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.OrderTransformer.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.ValidateIdsFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.TradeDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.football.PlayerItemWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.football.JdbcGameDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.CustomerDebitRowMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.AddressFieldSetMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.DelegatingJobFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.BillingFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.ValidateHandlingPricesFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.ValidateShippingPricesFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.CustomerCreditUpdateWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.valang.ValidateTotalPricesFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.trade.JdbcCustomerDebitDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.advice.JobExecutionNotificationPublisher.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.advice.StepExecutionApplicationEventAdvice.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.advice.SimpleMessageApplicationEvent.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.common.ExceptionThrowingItemReaderProxy.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.SkipSampleFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.common.DummyItemWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.advice.LogAdvice.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.common.ItemTrackingItemWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.advice.ProcessorLogAdvice.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.advice.MethodExecutionLogAdvice.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.advice.TradeWriterLogAdvice.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.order.Child.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.PersonService.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.FlatFileCustomerCreditDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.IbatisCustomerCreditDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.Person.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.RetrySampleItemWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.CustomerCreditDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.JdbcCustomerDebitDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.PersonWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.JdbcTradeDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.HibernateCreditDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.TradeDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.CustomerDebitDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.ValidateDiscountsFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.Address.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.ValidateTotalPricesFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.OrderTransformer.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.RestartFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.ValidatePricesFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.ShippingInfo.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.ValidateShippingPricesFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.ValidateHandlingPricesFunction.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.MultilineOrderJobFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.xml.Shipper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.xml.LineItem.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.ShippingFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.reader.OrderItemReader.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.ValidateTotalPricesFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.ValidateShippingPricesFunction.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.ParallelJobFunctionalTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.IbatisJobFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.BillingFieldSetMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.TaskletJobFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.ValidateIdsFunction.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.GracefulShutdownFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.OrderItemFieldSetMapper.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.JobExecutionContextSampleFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.ValidatePricesFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.ValidateDiscountsFunctionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.FootballJobFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.Order.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.TotalOrderItemsFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.xml.Customer.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.LineItem.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.MultilineJobFunctionalTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.HibernateJobFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.AddressFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.TotalOrderItemsFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.BillingInfo.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.Child.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.ValidateQuantitiesFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.FutureDateFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.ValidateIdsFunctionTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.MultiResourceJobFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.HeaderFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.ValidateHandlingPricesFunctionTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.Customer.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.xml.Order.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.CustomerFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.OrderDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.ValidateQuantitiesFunction.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.validation.valang.custom.FutureDateFunction.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.BeanWrapperMapperSampleJobFunctionalTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.sample.BatchSqlUpdateJobFunctionalTests.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.TradeFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.CustomerCredit.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.CustomerDebitRowMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.CustomerCreditIncreaseWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.CustomerDebit.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.PlayerSummary.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.reader.ExceptionThrowingItemReaderProxy.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.Game.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.Trade.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.reader.GeneratingTradeItemReader.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.CustomerUpdateWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.CustomerCreditUpdatePreparedStatementSetter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.domain.Player.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.TradeWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.ItemTrackingItemWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.CustomerCreditRowMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.CustomerCreditUpdateWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.TradeRowMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.GameFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.JdbcPlayerDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.PlayerItemWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.PlayerFieldSetMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.JdbcPlayerSummaryDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.PlayerDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.dao.JdbcGameDao.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.PlayerSummaryRowMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.reader.GeneratingItemReader.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.mapping.PlayerSummaryMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.FieldSetResultSetExtractor.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.tasklet.SystemCommandException.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.StagingItemWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.exception.handler.FootballExceptionHandler.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.writer.DummyItemWriter.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.item.reader.StagingItemReader.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.tasklet.ConfigurableSystemProcessExitCodeMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.tasklet.SystemProcessExitCodeMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.tasklet.SimpleSystemProcessExitCodeMapper.java</file>
+			
+			
+			<file type="D">org.springframework.batch.sample.tasklet.SystemCommandTasklet.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-29 19:07:03" id="751" opendate="2008-07-29 01:10:32" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ensure StepExecution is saved before trying to save ExecutionContext</summary>
+			
+			
+			<description>http://forum.springframework.org/showthread.php?t=57647</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.step.JobRepositorySupport.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.step.AbstractStepTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-07-30 00:58:59" id="752" opendate="2008-07-30 00:19:46" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>FlatFileItemReader restart broken for non-default RecordSeparatorPolicy (record &gt; 1 line)</summary>
+			
+			
+			<description>Simple fix is to remove the overriden jumpToItem(int) method and use the default provided by superclass</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.1.1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReaderAdvancedTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-08-14 02:42:17" id="734" opendate="2008-07-17 06:17:47" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>ItemReaders and ItemWriters using Resource(s) should check for file during ItemStream#open</summary>
+			
+			
+			<description>During bean initialization MultiResourceItemReader checks [in afterPropertiesSet()] that it actually has resources to read. If not, it throws an exception. There are use cases where the resources might not be created at bean initialization time (see http://forum.springframework.org/showthread.php?t=57502 for details).
+Lucas Ward suggests that this check might better be made during ItemStream#open().</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.1.2, 2.0.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.MultiResourceItemReaderXmlTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.MultiResourceItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.MultiResourceItemReaderFlatFileTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.FlatFileItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.StaxEventItemWriter.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.file.MultiResourceItemReaderIntegrationTests.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.StaxEventItemReader.java</file>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.StaxEventItemReaderTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-09-24 21:02:24" id="761" opendate="2008-08-05 05:10:14" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>StaxEventItemWriter writes extra end document tag with Woodstox 3.2.6</summary>
+			
+			
+			<description>Woodstox 3.2.6 (current stable)&amp;amp;apos;s StaxEventWriter implementation automatically writes end tags and end document tags that it detects as still open on close.  When StaxEventItemWriter wraps Woodstox with a NoStartEndDocumentStreamWriter for the chunk writer (eventWriter), and another Woodstox instance for the document writer (delegateEventWriter), the result is two end document tags being written.  This is because even though the NoStartEndDocumentStreamWriter prevents the end document event from being written to the chunk writer, it writes the end document tag on close() anyway, on top of the one being written by StaxEventItemWriter.endDocument(delegateEventWriter) itself.
+Here&amp;amp;apos;s the relevant stack trace:
+Thread [main] (Suspended)	
+	com.ctc.wstx.sw.SimpleNsStreamWriter(com.ctc.wstx.sw.BaseStreamWriter).finishDocument() line: 1672	
+	com.ctc.wstx.sw.SimpleNsStreamWriter(com.ctc.wstx.sw.BaseStreamWriter).close() line: 288	
+	com.ctc.wstx.evt.WstxEventWriter.close() line: 237	
+	org.springframework.batch.item.xml.stax.NoStartEndDocumentStreamWriter(org.springframework.batch.item.xml.stax.AbstractEventWriterWrapper).close() line: 32	
+	org.springframework.batch.item.xml.StaxEventItemWriter.close(org.springframework.batch.item.ExecutionContext) line: 376	
+This was captured with Spring 1.1.0, but I diff&amp;amp;apos;ed StaxEventItemWriter and NoStartEndDocumentStreamWriter for 1.1.0 vs. 1.1.1 in FishEye, and am not seeing anything that would change the behavior.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>1.1.2, 2.0.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.item.xml.StaxEventItemWriter.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+	<bug fixdate="2008-09-30 23:17:14" id="778" opendate="2008-08-11 04:43:17" resolution="Fixed">
+		
+		
+		<buginformation>
+			
+			
+			<summary>MapJobRepositoryFactoryBean shouldn&amp;apos;t require transactionManager</summary>
+			
+			
+			<description>If you&amp;amp;apos;re using:
+&amp;lt;bean id=&quot;jobRepository&quot;
+		class=&quot;org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean&quot; /&amp;gt;
+This exception occurs:
+java.lang.IllegalArgumentException: TransactionManager must not be null
+This is because MapJobRepositoryFactoryBean extends AbstractJobRepositoryFactoryBean (same as JobRepositoryFactoryBean) and this
+abstract class require a TransactionManager set. (in afterPropertiesSet method)
+I believe the TransactionManager  should be requiered only for JobRepositoryFactoryBean, because only in this we have database operations involved.</description>
+			
+			
+			<version>1.1.0</version>
+			
+			
+			<fixedVersion>2.0.0.M1</fixedVersion>
+			
+			
+			<type>Bug</type>
+			
+		
+		</buginformation>
+		
+		
+		<fixedFiles>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.MapJobInstanceDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.MapJobExecutionDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.MapExecutionContextDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.dao.MapStepExecutionDao.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.support.AbstractJobRepositoryFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.support.JobRepositoryFactoryBean.java</file>
+			
+			
+			<file type="M">org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBeanTests.java</file>
+			
+		
+		</fixedFiles>
+		
+	
+	</bug>
+</bugrepository>
